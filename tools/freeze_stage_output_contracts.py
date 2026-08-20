@@ -72,7 +72,7 @@ UNWRAP_FILESETS = (
 )
 
 
-# Canonical persistent products of scripts/03b_build_exact_support_cache.py.
+# Canonical persistent products of scripts/build_exact_support_cache.py.
 # The stage script is a thin runpy wrapper around tools/build_exact_support_cache.py,
 # so the generic AST inventory cannot discover these writes from the wrapper.
 EXACT_SUPPORT_CACHE_OUTPUTS = (

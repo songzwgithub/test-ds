@@ -94,3 +94,10 @@ construction/parity evidence. Some older snapshots describe
 architecture and is not the current sequential-production contract.
 
 Version: **1.0.0**
+
+## Production script naming
+
+The v1 production tree uses semantic command filenames. Historical numbered
+experiment identifiers such as `08u`, `u34`, and `u35` are not production
+interfaces; retained experiment utilities live under
+`development/phase_linking_experiments/`.

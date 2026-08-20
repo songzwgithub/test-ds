@@ -39,7 +39,7 @@ class StageContract:
     """
     Formal production contract metadata for one pipeline stage.
 
-    Phase B1 is structural only:
+    Production-contract layer:
       - contracts are centrally declared;
       - automatic cache reuse remains disabled;
       - output completeness rules are added incrementally
@@ -64,117 +64,117 @@ class StageContract:
 STAGES = [
     Stage(
         "ds_statistics",
-        "04_prepare_ds_statistics.py",
+        "build_ds_statistics.py",
     ),
     Stage(
         "phase_cache",
-        "03_build_phase_cache.py",
+        "build_phase_cache.py",
     ),Stage(
     "exact_support_cache",
-    "03b_build_exact_support_cache.py",
+    "build_exact_support_cache.py",
 ),
 
     Stage(
         "phase_linking",
-        "04_run_psds.py",
+        "run_phase_linking.py",
     ),
     Stage(
         "ds_selection",
-        "05_select_ds.py",
+        "select_ds.py",
     ),
     Stage(
         "ps_finalize",
-        "06b_finalize_ps_geometry.py",
+        "finalize_ps_geometry.py",
     ),
     Stage(
         "point_stack",
-        "06_build_point_phase_stack.py",
+        "build_point_phase_stack.py",
     ),
 
     Stage(
         "network_prepare",
-        "07_build_network.py",
+        "prepare_temporal_network.py",
     ),
     Stage(
         "network_build",
-        "07b_build_directional_network.py",
+        "build_temporal_network.py",
     ),
     Stage(
         "network_cycle_quality",
-        "07c_quality_cycle_coverage_directional.py",
+        "assess_network_cycle_quality.py",
     ),
     Stage(
         "network_finalize",
-        "07d_finalize_network.py",
+        "finalize_temporal_network.py",
     ),
 
     Stage(
         "virtual_ifg_quality",
-        "08a_quality_virtual_ifg.py",
+        "assess_virtual_ifg_quality.py",
     ),
     Stage(
         "spatial_graph_quality",
-        "08b_quality_spatial_point_graph.py",
+        "assess_spatial_graph_quality.py",
     ),
     Stage(
         "spatial_bridge_quality",
-        "08c_quality_spatial_bridge_radius.py",
+        "assess_spatial_bridge_quality.py",
     ),
     Stage(
         "spatial_component_quality",
-        "08d_quality_residual_spatial_components.py",
+        "assess_spatial_components.py",
     ),
     Stage(
         "spatial_anchor_quality",
-        "08e_quality_residual_two_anchor.py",
+        "assess_spatial_anchor_quality.py",
     ),
     Stage(
         "spatial_anchor_summary",
-        "08f_summarize_residual_anchor_radius.py",
+        "summarize_spatial_anchor_quality.py",
     ),
     Stage(
         "spatial_local_graph_quality",
-        "08g_quality_sparse_local_graph.py",
+        "assess_local_spatial_graph.py",
     ),
     Stage(
         "spatial_graph",
-        "08h_build_production_spatial_graph.py",
+        "build_spatial_graph.py",
     ),
     Stage(
         "spatial_gradient_quality",
-        "08i_quality_spatial_phase_gradient.py",
+        "assess_spatial_phase_gradient.py",
     ),
     Stage(
         "unwrap_policy",
-        "08j_finalize_unwrap_component_policy.py",
+        "finalize_unwrap_policy.py",
     ),
 
     Stage(
         "unwrap",
-        "08p_batch_unwrap_all_ifgs.py",
+        "unwrap_all_ifgs.py",
     ),
     Stage(
         "unwrap_severity_quality",
-        "08q_quality_full_batch_severity.py",
+        "assess_unwrap_severity.py",
     ),
     Stage(
         "unwrap_conflict_quality",
-        "08r_quality_safe_conflict_acquisition_attribution.py",
+        "assess_unwrap_conflicts.py",
     ),
     Stage(
         "unwrap_acquisition_quality",
-        "08s_quality_acquisition_safe_fragments.py",
+        "assess_unwrap_acquisition_quality.py",
     ),
     Stage(
         "temporal_closure",
-        "08t_quality_temporal_integer_closure.py",
+        "assess_temporal_integer_closure.py",
     ),
 
     # Sparse integer candidates required by the
     # downstream fragment-signature feasibility stage.
     Stage(
         "temporal_integer_candidate",
-        "08u_temporal_sparse_integer_candidate.py",
+        "build_temporal_integer_candidates.py",
     ),
 
     # Spatial counterfactual validation of the temporal
@@ -182,25 +182,25 @@ STAGES = [
     # overwrite the accepted unwrap solution.
     Stage(
         "temporal_candidate_spatial_quality",
-        "08v_spatial_validate_temporal_candidates.py",
+        "validate_temporal_integer_candidates.py",
     ),
 
     Stage(
         "unwrap_signature_quality",
-        "08w_quality_fragment_signature_feasibility.py",
+        "assess_unwrap_signature_feasibility.py",
     ),
     Stage(
         "unwrap_finalize",
-        "08x_finalize_unwrap_quality_and_gauge.py",
+        "finalize_unwrap_solution.py",
     ),
 
     Stage(
         "timeseries_inversion",
-        "09a_network_inversion_tree_l2_parity.py",
+        "invert_timeseries.py",
     ),
     Stage(
         "reference",
-        "09c_apply_reference_region.py",
+        "apply_reference.py",
     ),
 ]
 
@@ -216,7 +216,7 @@ STAGE_INDEX = {
 # ============================================================
 # Formal stage contracts
 #
-# Phase B1:
+# Production-contract registry:
 #   every production stage must have exactly one contract.
 #
 # IMPORTANT:
@@ -456,7 +456,7 @@ def _build_run_stage_signature(
     Build the provenance signature for one pipeline stage.
 
     IMPORTANT:
-    This is record-only in v1.0.1 signature phase A.
+    This is record-only in provenance-signature layer.
     It does NOT currently permit automatic stage skipping.
     """
 
@@ -706,7 +706,7 @@ def _stage_args(
     elif stage.name == "phase_linking":
 
         # Preserve validated numerical execution settings for first-release parity
-        # for the first v1 parity run. They are benchmarked and
+        # for validated production parity. They are benchmarked and
         # auto-tuned only after parity is frozen.
         args += [
             "--center-mode",

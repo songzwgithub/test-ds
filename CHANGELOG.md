@@ -21,3 +21,4 @@
 - Added canonical Gamma streaming for sequential Phase Linking.
 - Made the full corrected-YXT cache optional for sequential production through `PYPSDS_PHASE_SOURCE=auto|gamma|cache`.
 - Preserved the corrected-YXT cache path for explicit cache mode and legacy `full_scm`.
+- Replaced experiment-step script prefixes with semantic production command names.

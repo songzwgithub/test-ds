@@ -5,8 +5,8 @@
   "stage_count": 32,
   "stages": {
     "ds_statistics": {
-      "script": "04_prepare_ds_statistics.py",
-      "script_sha256": "9b904a5942ae66b8d068f84d9ea001539e18ab877e017cddb8dd09aa60d09f15",
+      "script": "build_ds_statistics.py",
+      "script_sha256": "b986e6a5c1b70744c9cbd4cc05ef7fb1a4628fe911eb7cb00f3d26bd7235ab2c",
       "status": "REVIEW",
       "resolved_file_refs": [
         {
@@ -119,7 +119,7 @@
       ]
     },
     "phase_cache": {
-      "script": "03_build_phase_cache.py",
+      "script": "build_phase_cache.py",
       "script_sha256": "72a83953792b7df4fbf293ad80d13cb8241dda57ab2f5d3ababc7456c1556121",
       "status": "REVIEW",
       "resolved_file_refs": [
@@ -172,7 +172,7 @@
       ]
     },
     "exact_support_cache": {
-      "script": "03b_build_exact_support_cache.py",
+      "script": "build_exact_support_cache.py",
       "script_sha256": "f35a549ef31e991129d636df753b7fe41d28f8882464bdcab730a149ea23e1b6",
       "status": "REVIEW",
       "resolved_file_refs": [],
@@ -183,8 +183,8 @@
       "missing_exact": []
     },
     "phase_linking": {
-      "script": "04_run_psds.py",
-      "script_sha256": "bb74496e5c90b6dacbc6a80a166420cdd6a3a75172c28c454b19ed213a532dbf",
+      "script": "run_phase_linking.py",
+      "script_sha256": "604844f19d5bf9d95f9ed3e611c34dd4407043a3ec1ee7c4eddf950192f1b0b0",
       "status": "REVIEW",
       "resolved_file_refs": [
         {
@@ -423,7 +423,7 @@
       ]
     },
     "ds_selection": {
-      "script": "05_select_ds.py",
+      "script": "select_ds.py",
       "script_sha256": "d8dcc09b0c5362313a3231807c3c752318492de17d535c51e7b2e769101715b2",
       "status": "AUTO_READY",
       "resolved_file_refs": [
@@ -505,8 +505,8 @@
       "missing_exact": []
     },
     "ps_finalize": {
-      "script": "06b_finalize_ps_geometry.py",
-      "script_sha256": "48fc2f7a10db1156a13ad9d55bcdc7096492e50d9dfbab30415241cf73d80cbf",
+      "script": "finalize_ps_geometry.py",
+      "script_sha256": "731b191c25cd01c6a8e6a14d1f1a6602b708e11aa8e489661f2c8c7c3fe4c2cd",
       "status": "REVIEW",
       "resolved_file_refs": [
         {
@@ -575,8 +575,8 @@
       "missing_exact": []
     },
     "point_stack": {
-      "script": "06_build_point_phase_stack.py",
-      "script_sha256": "9f2cddfcd427e8282ab07f8000593cd136b813d5a4b29852957d542ea119abd5",
+      "script": "build_point_phase_stack.py",
+      "script_sha256": "3771d247f441aa9b32372451d0ca871ee594a6d095b78b3a05bb1bf662891476",
       "status": "REVIEW",
       "resolved_file_refs": [
         {
@@ -830,8 +830,8 @@
       "missing_exact": []
     },
     "network_prepare": {
-      "script": "07_build_network.py",
-      "script_sha256": "7b2a9e5a8cfc2a727a9f1486ea71e469d222ac3f7968fb78efb44984effbf261",
+      "script": "prepare_temporal_network.py",
+      "script_sha256": "6b451ab805ab548f84929abe0091e49d877147b40d7cd462b32d6216cd9818cc",
       "status": "REVIEW",
       "resolved_file_refs": [
         {
@@ -909,8 +909,8 @@
       "missing_exact": []
     },
     "network_build": {
-      "script": "07b_build_directional_network.py",
-      "script_sha256": "c472cae05f1dec4920622ed9917299fccc7954fefaf3cdd0b192e80e72c9f863",
+      "script": "build_temporal_network.py",
+      "script_sha256": "6a7e0aa928012b0d7806839f98542c2661a3046c79c0458a9c19cf86199b5ba6",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -983,8 +983,8 @@
       "missing_exact": []
     },
     "network_cycle_quality": {
-      "script": "07c_quality_cycle_coverage_directional.py",
-      "script_sha256": "563b495f7f43614063f962514491b9a5e6697a6e1e645a60e8aefad1dda3d749",
+      "script": "assess_network_cycle_quality.py",
+      "script_sha256": "7d9f266ef537aada1354802fcba691af5d10c9877233d6747db84d14b440b76e",
       "status": "REVIEW",
       "resolved_file_refs": [
         {
@@ -1062,8 +1062,8 @@
       "missing_exact": []
     },
     "network_finalize": {
-      "script": "07d_finalize_network.py",
-      "script_sha256": "0242e5fb1d5ff580380421df67500be6622438a4b7b9fe1e314d379f29ad86f1",
+      "script": "finalize_temporal_network.py",
+      "script_sha256": "0d529565db9a0a48ed64c6630962962de69930bf2677181a31eeeb045e998e1e",
       "status": "REVIEW",
       "resolved_file_refs": [
         {
@@ -1207,8 +1207,8 @@
       "missing_exact": []
     },
     "virtual_ifg_quality": {
-      "script": "08a_quality_virtual_ifg.py",
-      "script_sha256": "67822bba5d29d195a9d33cb456a2d0d929165b58d2cf145d3219a5e7578ce7ae",
+      "script": "assess_virtual_ifg_quality.py",
+      "script_sha256": "d04e494d54cda2b2b3985427684105763c25b1b94bf203c7ee66dc6967df5464",
       "status": "REVIEW",
       "resolved_file_refs": [
         {
@@ -1302,8 +1302,8 @@
       "missing_exact": []
     },
     "spatial_graph_quality": {
-      "script": "08b_quality_spatial_point_graph.py",
-      "script_sha256": "905d25a3a3f4151b4232aae3a9f450f767f70aa6f4e15797bfde89f6047054d0",
+      "script": "assess_spatial_graph_quality.py",
+      "script_sha256": "6e9de6cb133507aa6156a1e1efd6a5b16b6f49f9749e06d612f115c44e707a22",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -1396,8 +1396,8 @@
       "missing_exact": []
     },
     "spatial_bridge_quality": {
-      "script": "08c_quality_spatial_bridge_radius.py",
-      "script_sha256": "a6caaa8bd4b59b9299cf72e97e9c5f411651bff8f89e1c866c2515e2ab74b7fe",
+      "script": "assess_spatial_bridge_quality.py",
+      "script_sha256": "1196a968256ee9cc6866982e87ab518f60825637f152d4e8efd703a709827b79",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -1450,8 +1450,8 @@
       "missing_exact": []
     },
     "spatial_component_quality": {
-      "script": "08d_quality_residual_spatial_components.py",
-      "script_sha256": "1e055ac4b018551ab4715ed7594fdbd923dda1c39ba71a54fef32b8f03e4d964",
+      "script": "assess_spatial_components.py",
+      "script_sha256": "ed3e04ecf4c1cfb2b67069efcaec2ac913d3cf85fac0a828c1d8b7c6ce9fd487",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -1514,8 +1514,8 @@
       "missing_exact": []
     },
     "spatial_anchor_quality": {
-      "script": "08e_quality_residual_two_anchor.py",
-      "script_sha256": "c0ce5c492fd6d2eca82223922150446e4739eacfe4264d76168f1511e06bb3a3",
+      "script": "assess_spatial_anchor_quality.py",
+      "script_sha256": "42c0a9ac270cbb1d51e3227db8ae424d9b93d390de861f47f611bc270a635fed",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -1578,8 +1578,8 @@
       "missing_exact": []
     },
     "spatial_anchor_summary": {
-      "script": "08f_summarize_residual_anchor_radius.py",
-      "script_sha256": "4d265284f0d38c54ced8ea1db7aa8d1dc14beaf9d42bb829fb60f1beeafc5f81",
+      "script": "summarize_spatial_anchor_quality.py",
+      "script_sha256": "13c783c832220eae35751f4ab1c01177d56e247c5ef3fc44ea8fe41402f477b4",
       "status": "REVIEW",
       "resolved_file_refs": [
         {
@@ -1601,8 +1601,8 @@
       "missing_exact": []
     },
     "spatial_local_graph_quality": {
-      "script": "08g_quality_sparse_local_graph.py",
-      "script_sha256": "ed5fd964682f401d563c4e7d054ed9e1c8224c617e0ade70350c59944d4ca0a6",
+      "script": "assess_local_spatial_graph.py",
+      "script_sha256": "fefdb671b908078ec5473fe9eb6b455641f0d7fac001b9cf16d0429d6272baa6",
       "status": "REVIEW",
       "resolved_file_refs": [
         {
@@ -1671,8 +1671,8 @@
       "missing_exact": []
     },
     "spatial_graph": {
-      "script": "08h_build_production_spatial_graph.py",
-      "script_sha256": "b4a713ef8c5e94fe337506e7b3c05cb69317429230aa6ae63ad5d8bd1725ce8b",
+      "script": "build_spatial_graph.py",
+      "script_sha256": "a7316a765f3ff67f4dc20714d34e59c4464644806e62a367227a04c95bbfedb8",
       "status": "REVIEW",
       "resolved_file_refs": [
         {
@@ -1851,8 +1851,8 @@
       "missing_exact": []
     },
     "spatial_gradient_quality": {
-      "script": "08i_quality_spatial_phase_gradient.py",
-      "script_sha256": "b7f4825a934a472a8bba2fb9836cae327b32c857514651f06fdd90e1d45ef318",
+      "script": "assess_spatial_phase_gradient.py",
+      "script_sha256": "34f121b493445666d777a5454168e99e56b11f2173ce7ed74bcba4877901e082",
       "status": "REVIEW",
       "resolved_file_refs": [
         {
@@ -1991,8 +1991,8 @@
       "missing_exact": []
     },
     "unwrap_policy": {
-      "script": "08j_finalize_unwrap_component_policy.py",
-      "script_sha256": "b4b3036c1fb4491c0781943fb5edc43c8f471d419fa1c2ac1e437728faa9216d",
+      "script": "finalize_unwrap_policy.py",
+      "script_sha256": "bde5a17c09dce2c1c4937b04386350ee2c91133b3b80b9455ad328f2fee4113d",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -2145,8 +2145,8 @@
       "missing_exact": []
     },
     "unwrap": {
-      "script": "08p_batch_unwrap_all_ifgs.py",
-      "script_sha256": "e4e7715c0ef8236a85a72ca508c574decf026eea2559c6833e1441f272a22924",
+      "script": "unwrap_all_ifgs.py",
+      "script_sha256": "18477186f5acc74bfb924e85a10b6c22cdf048673424b469fa498740795b908f",
       "status": "REVIEW",
       "resolved_file_refs": [
         {
@@ -2214,12 +2214,12 @@
         },
         {
           "kind": "output",
-          "symbolic_path": "$OUTPUT/processing/batch_unwrap_validation/logs/*_08n.log",
-          "output_relative": "processing/batch_unwrap_validation/logs/*_08n.log",
+          "symbolic_path": "$OUTPUT/processing/batch_unwrap_validation/logs/*_single_ifg.log",
+          "output_relative": "processing/batch_unwrap_validation/logs/*_single_ifg.log",
           "api": "helper:run_script:log_path",
           "line": 655,
-          "exists": true,
-          "match_count": 108
+          "exists": false,
+          "match_count": 0
         }
       ],
       "exact_output_inputs": [
@@ -2268,12 +2268,12 @@
         },
         {
           "kind": "output",
-          "symbolic_path": "$OUTPUT/processing/batch_unwrap_validation/logs/*_08n.log",
-          "output_relative": "processing/batch_unwrap_validation/logs/*_08n.log",
+          "symbolic_path": "$OUTPUT/processing/batch_unwrap_validation/logs/*_single_ifg.log",
+          "output_relative": "processing/batch_unwrap_validation/logs/*_single_ifg.log",
           "api": "helper:run_script:log_path",
           "line": 655,
-          "exists": true,
-          "match_count": 108
+          "exists": false,
+          "match_count": 0
         }
       ],
       "unresolved_io": [
@@ -2286,8 +2286,8 @@
       "missing_exact": []
     },
     "unwrap_severity_quality": {
-      "script": "08q_quality_full_batch_severity.py",
-      "script_sha256": "336211f0069dd2598c327e82c92725115029218ce7c966cd7aa688e26027abbd",
+      "script": "assess_unwrap_severity.py",
+      "script_sha256": "adcb9d1b3fc49638ab2364ad1b43995b67ba22c2a57a64f780ba65ab7bcfb3d8",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -2491,8 +2491,8 @@
       "missing_exact": []
     },
     "unwrap_conflict_quality": {
-      "script": "08r_quality_safe_conflict_acquisition_attribution.py",
-      "script_sha256": "e2c0171e66a00e1f1bccddb9b09f0f0c088b5491e2e6b5cf4c18a8df8674583c",
+      "script": "assess_unwrap_conflicts.py",
+      "script_sha256": "24780ed606b64f76c58201601d097ac7ac455fa00d8e215f9b74a243802c46f4",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -2654,8 +2654,8 @@
       "missing_exact": []
     },
     "unwrap_acquisition_quality": {
-      "script": "08s_quality_acquisition_safe_fragments.py",
-      "script_sha256": "30d81e2d7dfc4401a66b8f81baaa125a8e53f02269dc8aa7da370a1b4f12a036",
+      "script": "assess_unwrap_acquisition_quality.py",
+      "script_sha256": "d3d6389fc2a5309d82b6755cdac35de640281eba7a99842d7c85d8c9dcb99366",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -2747,8 +2747,8 @@
       "missing_exact": []
     },
     "temporal_closure": {
-      "script": "08t_quality_temporal_integer_closure.py",
-      "script_sha256": "b5b4518773d6df5239d58a594851f69b8167f1b3b0df11708159be23bb837dac",
+      "script": "assess_temporal_integer_closure.py",
+      "script_sha256": "39f851a030d70a872f569927a118679ac49b81d71c2e697951b4f4da6666a12e",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -2910,8 +2910,8 @@
       "missing_exact": []
     },
     "temporal_integer_candidate": {
-      "script": "08u_temporal_sparse_integer_candidate.py",
-      "script_sha256": "e301dbef99da1a272ab460a82652be0549c6d32fbcb32a044bd5dad5140011de",
+      "script": "build_temporal_integer_candidates.py",
+      "script_sha256": "9df68d43e19ef8f187672c7355d3bca4d97918f183e9c42d1559a67785f37e73",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -3093,8 +3093,8 @@
       "missing_exact": []
     },
     "temporal_candidate_spatial_quality": {
-      "script": "08v_spatial_validate_temporal_candidates.py",
-      "script_sha256": "f1d5e7d9649a6b533aa177c6f9a64b4e3aada42e219f18ea0b5fc94aed1fba71",
+      "script": "validate_temporal_integer_candidates.py",
+      "script_sha256": "55fda425033c43f3998287da060eeacaeabb10e2a49f891dbb0ee9cde3cea294",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -3264,8 +3264,8 @@
       "missing_exact": []
     },
     "unwrap_signature_quality": {
-      "script": "08w_quality_fragment_signature_feasibility.py",
-      "script_sha256": "1f372fee42d18a3342104543b03cffd05ff2337f2ca0a21fb4f4f652caed0bc5",
+      "script": "assess_unwrap_signature_feasibility.py",
+      "script_sha256": "5c8575dda200b29169a52c6d1501eddf5f1a8d46ec4def9eb69fffbd96370b88",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -3427,8 +3427,8 @@
       "missing_exact": []
     },
     "unwrap_finalize": {
-      "script": "08x_finalize_unwrap_quality_and_gauge.py",
-      "script_sha256": "57826147aa289bda556f334d8ac6909e88a0916a13a9b2514ef5146eb687225d",
+      "script": "finalize_unwrap_solution.py",
+      "script_sha256": "0c62dfcc59a38c9e34647cd3e1bf89b29b6693028c3d2e22a09b41727ba05aa1",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -3698,8 +3698,8 @@
       "missing_exact": []
     },
     "timeseries_inversion": {
-      "script": "09a_network_inversion_tree_l2_parity.py",
-      "script_sha256": "852b5011f00738053212c8e405094f96fa5ad5bf7a073e6aedfc7e6635784a09",
+      "script": "invert_timeseries.py",
+      "script_sha256": "5d21b89755405d4969e256478bdbe3ef1860a3d563399c7280bb301a81503d71",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {
@@ -3881,8 +3881,8 @@
       "missing_exact": []
     },
     "reference": {
-      "script": "09c_apply_reference_region.py",
-      "script_sha256": "1bed9432502a4448e5d96805d420061e2a7da606dca57401bd7e012c63d3ae83",
+      "script": "apply_reference.py",
+      "script_sha256": "aa7c69144484e6460231bb0e48255a8aad7f6fb6e68ddc31bf9c6a4c4a6fbf07",
       "status": "AUTO_READY",
       "resolved_file_refs": [
         {

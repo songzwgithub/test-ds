@@ -5,7 +5,7 @@ REVIEW     : 19
 
 ==============================================================================================================
 STAGE: phase_linking
-SCRIPT: 04_run_psds.py
+SCRIPT: run_phase_linking.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -157,7 +157,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: ds_selection
-SCRIPT: 05_select_ds.py
+SCRIPT: select_ds.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -216,7 +216,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: ps_finalize
-SCRIPT: 06b_finalize_ps_geometry.py
+SCRIPT: finalize_ps_geometry.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -279,7 +279,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: point_stack
-SCRIPT: 06_build_point_phase_stack.py
+SCRIPT: build_point_phase_stack.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -446,7 +446,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: network_prepare
-SCRIPT: 07_build_network.py
+SCRIPT: prepare_temporal_network.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -595,7 +595,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: network_cycle_quality
-SCRIPT: 07c_quality_cycle_coverage_directional.py
+SCRIPT: assess_network_cycle_quality.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -696,7 +696,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: network_finalize
-SCRIPT: 07d_finalize_network.py
+SCRIPT: finalize_temporal_network.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -931,7 +931,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: virtual_ifg_quality
-SCRIPT: 08a_quality_virtual_ifg.py
+SCRIPT: assess_virtual_ifg_quality.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -1036,7 +1036,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: spatial_anchor_summary
-SCRIPT: 08f_summarize_residual_anchor_radius.py
+SCRIPT: summarize_spatial_anchor_quality.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -1051,7 +1051,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: spatial_local_graph_quality
-SCRIPT: 08g_quality_sparse_local_graph.py
+SCRIPT: assess_local_spatial_graph.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -1113,7 +1113,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: spatial_graph
-SCRIPT: 08h_build_production_spatial_graph.py
+SCRIPT: build_spatial_graph.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -1197,7 +1197,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: spatial_gradient_quality
-SCRIPT: 08i_quality_spatial_phase_gradient.py
+SCRIPT: assess_spatial_phase_gradient.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -1273,7 +1273,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: unwrap
-SCRIPT: 08p_batch_unwrap_all_ifgs.py
+SCRIPT: unwrap_all_ifgs.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -1495,7 +1495,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: unwrap_severity_quality
-SCRIPT: 08q_quality_full_batch_severity.py
+SCRIPT: assess_unwrap_severity.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -1772,7 +1772,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: unwrap_conflict_quality
-SCRIPT: 08r_quality_safe_conflict_acquisition_attribution.py
+SCRIPT: assess_unwrap_conflicts.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -1930,7 +1930,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: unwrap_acquisition_quality
-SCRIPT: 08s_quality_acquisition_safe_fragments.py
+SCRIPT: assess_unwrap_acquisition_quality.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -1996,7 +1996,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: temporal_candidate_spatial_quality
-SCRIPT: 08v_spatial_validate_temporal_candidates.py
+SCRIPT: validate_temporal_integer_candidates.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -2193,7 +2193,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: unwrap_signature_quality
-SCRIPT: 08w_quality_fragment_signature_feasibility.py
+SCRIPT: assess_unwrap_signature_feasibility.py
 ==============================================================================================================
 
 RESOLVED INPUTS:
@@ -2311,7 +2311,7 @@ POTENTIAL I/O SOURCE LINES:
 
 ==============================================================================================================
 STAGE: unwrap_finalize
-SCRIPT: 08x_finalize_unwrap_quality_and_gauge.py
+SCRIPT: finalize_unwrap_solution.py
 ==============================================================================================================
 
 RESOLVED INPUTS:

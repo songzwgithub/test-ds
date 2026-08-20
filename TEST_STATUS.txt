@@ -34,3 +34,10 @@ Stage output contract:
 Scientific regression:
   frozen production counts unchanged
   Step04 Gamma fast-resume PASS
+
+Production naming:
+  numbered production script prefixes removed
+  active scripts use semantic filenames
+  historical u33/u34/u35 experiment tools archived under development/
+  production stage names unchanged
+  PASS
