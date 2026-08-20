@@ -1,0 +1,2488 @@
+pyPSDS-GAMMA StageContract review bundle
+TOTAL      : 31
+AUTO_READY : 12
+REVIEW     : 19
+
+==============================================================================================================
+STAGE: phase_linking
+SCRIPT: 04_run_psds.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/cache/phase_corrected_yxt.npy
+  IN  processing/cache/phase_geometry_valid.npy
+  IN  processing/center_cols.npy
+  IN  processing/center_rows.npy
+
+RESOLVED OUTPUTS:
+  OUT processing/center_cols.npy
+  OUT processing/center_prior.npy
+  OUT processing/center_rows.npy
+  OUT processing/ps_mask.npy
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=75 api=np.load path=
+       57:             c2 = cc[ids]
+       58:             ngood = valid[r2, c2] & ~ps[r2, c2]
+       59:             if not np.any(ngood):
+       60:                 continue
+       61:             ids2 = ids[ngood]
+       62:             r3 = rr[ids2]
+       63:             c3 = cc[ids2]
+       64:             stat = glrt_statistic(
+       65:                 center_scale[ids2],
+       66:                 scale2[r3, c3],
+       67:                 nslc=ndate,
+       68:             )
+       69:             out[ids2, ky, kx] = np.isfinite(stat) & (stat < thr)
+       70:     return out
+       71: 
+       72: 
+       73: def open_or_create_npy(path: Path, *, shape, dtype, fill, resume: bool):
+       74:     if resume and path.is_file():
+>>>    75:         arr = np.load(path, mmap_mode="r+")
+       76:         if arr.shape != tuple(shape) or arr.dtype != np.dtype(dtype):
+       77:             raise RuntimeError(
+       78:                 f"resume cache mismatch: {path}: shape={arr.shape}, dtype={arr.dtype}, "
+       79:                 f"expected={shape}/{np.dtype(dtype)}"
+       80:             )
+       81:         return arr
+       82:     arr = np.lib.format.open_memmap(path, mode="w+", dtype=dtype, shape=shape)
+       83:     arr[...] = fill
+       84:     arr.flush()
+       85:     return arr
+       86: 
+       87: 
+       88: def save_map(arr, path, title, label, vmin=None, vmax=None):
+       89:     fig, ax = plt.subplots(figsize=(14, 5))
+       90:     im = ax.imshow(arr, origin="upper", aspect="auto", vmin=vmin, vmax=vmax)
+       91:     fig.colorbar(im, ax=ax, label=label)
+       92:     ax.set_title(title)
+       93:     ax.set_xlabel("Range column")
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=82 api=np.lib.format.open_memmap path=
+       64:             stat = glrt_statistic(
+       65:                 center_scale[ids2],
+       66:                 scale2[r3, c3],
+       67:                 nslc=ndate,
+       68:             )
+       69:             out[ids2, ky, kx] = np.isfinite(stat) & (stat < thr)
+       70:     return out
+       71: 
+       72: 
+       73: def open_or_create_npy(path: Path, *, shape, dtype, fill, resume: bool):
+       74:     if resume and path.is_file():
+       75:         arr = np.load(path, mmap_mode="r+")
+       76:         if arr.shape != tuple(shape) or arr.dtype != np.dtype(dtype):
+       77:             raise RuntimeError(
+       78:                 f"resume cache mismatch: {path}: shape={arr.shape}, dtype={arr.dtype}, "
+       79:                 f"expected={shape}/{np.dtype(dtype)}"
+       80:             )
+       81:         return arr
+>>>    82:     arr = np.lib.format.open_memmap(path, mode="w+", dtype=dtype, shape=shape)
+       83:     arr[...] = fill
+       84:     arr.flush()
+       85:     return arr
+       86: 
+       87: 
+       88: def save_map(arr, path, title, label, vmin=None, vmax=None):
+       89:     fig, ax = plt.subplots(figsize=(14, 5))
+       90:     im = ax.imshow(arr, origin="upper", aspect="auto", vmin=vmin, vmax=vmax)
+       91:     fig.colorbar(im, ax=ax, label=label)
+       92:     ax.set_title(title)
+       93:     ax.set_xlabel("Range column")
+       94:     ax.set_ylabel("Azimuth row")
+       95:     fig.tight_layout()
+       96:     fig.savefig(path, dpi=160)
+       97:     plt.close(fig)
+       98: 
+       99: 
+      100: def main():
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=202 api=np.load path=
+      184:             "Run scripts/07d_prepare_yxt_cache.py first."
+      185:         )
+      186:     rslc_yxt = np.load(yxt_path, mmap_mode="r")
+      187:     if rslc_yxt.shape != (H, W, ndate):
+      188:         raise RuntimeError(f"YXT cache shape={rslc_yxt.shape}, expected={(H,W,ndate)}")
+      189: 
+      190:     if args.geom_valid:
+      191:         geom_path = Path(args.geom_valid)
+      192:     else:
+      193:         geom_path = Path(paths.output_dir) / "processing" / "cache" / "phase_geometry_valid.npy"
+      194:     geom_valid = np.load(geom_path, mmap_mode="r").astype(bool, copy=False)
+      195:     valid &= geom_valid
+      196: 
+      197:     # ---------------------------------------------------------
+      198:     # Center prior
+      199:     # ---------------------------------------------------------
+      200:     if args.center_mode == "moraine":
+      201:         prior_path = Path(args.moraine_npz) if args.moraine_npz else Path(paths.output_dir) / "processing" / "moraine_center_prior.npz"
+>>>   202:         z = np.load(prior_path)
+      203:         center_prior = z["candidate_mask"].astype(bool)
+      204:     else:
+      205:         center_prior = valid.copy()
+      206:     center_prior &= valid
+      207:     center_prior &= ~ps
+      208:     rr, cc = np.where(center_prior)
+      209:     rr = rr.astype(np.int32)
+      210:     cc = cc.astype(np.int32)
+      211:     if args.max_centers > 0 and len(rr) > args.max_centers:
+      212:         ids = np.linspace(0, len(rr) - 1, args.max_centers, dtype=np.int64)
+      213:         rr, cc = rr[ids], cc[ids]
+      214:     total = len(rr)
+      215:     print(f"DS centers      : {total}")
+      216: 
+      217:     # Save exact center order for reliable resume.
+      218:     rows_path = outdir / "center_rows.npy"
+      219:     cols_path = outdir / "center_cols.npy"
+      220:     if args.resume and rows_path.is_file() and cols_path.is_file():
+
+POTENTIAL I/O SOURCE LINES:
+     75:         arr = np.load(path, mmap_mode="r+")
+     82:     arr = np.lib.format.open_memmap(path, mode="w+", dtype=dtype, shape=shape)
+    186:     rslc_yxt = np.load(yxt_path, mmap_mode="r")
+    194:     geom_valid = np.load(geom_path, mmap_mode="r").astype(bool, copy=False)
+    202:         z = np.load(prior_path)
+    221:         old_r = np.load(rows_path)
+    222:         old_c = np.load(cols_path)
+    226:         np.save(rows_path, rr)
+    227:         np.save(cols_path, cc)
+    250:     np.save(outdir / "ps_mask.npy", ps)
+    251:     np.save(outdir / "center_prior.npy", center_prior)
+
+==============================================================================================================
+STAGE: ds_selection
+SCRIPT: 05_select_ds.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/estimator_code.npy
+  IN  processing/median_pair_coherence.npy
+  IN  processing/pl_valid.npy
+  IN  processing/ps_mask.npy
+  IN  processing/temporal_coherence.npy
+
+RESOLVED OUTPUTS:
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=44 api=np.save path=$OUTPUT/processing/final_ds_*.npy
+       26:     d = Path(paths.output_dir) / "processing"
+       27:     ps = np.load(d / "ps_mask.npy")
+       28:     pl = np.load(d / "pl_valid.npy")
+       29:     tc = np.load(d / "temporal_coherence.npy")
+       30:     pc = np.load(d / "median_pair_coherence.npy")
+       31:     est = np.load(d / "estimator_code.npy")
+       32: 
+       33:     ds = pl & ~ps & np.isfinite(tc) & np.isfinite(pc)
+       34:     ds &= tc >= args.tc_min
+       35:     ds &= pc >= args.pair_min
+       36:     if args.emi_only:
+       37:         ds &= est == 1
+       38:     elif not args.accept_evd:
+       39:         # Safe default: keep only EMI unless EVD is explicitly accepted.
+       40:         ds &= est == 1
+       41: 
+       42:     tag = f"tc{args.tc_min:.3f}_pc{args.pair_min:.3f}_" + ("evd" if args.accept_evd else "emi")
+       43:     out = d / f"final_ds_{tag}.npy"
+>>>    44:     np.save(out, ds)
+       45: 
+       46:     print("=" * 80)
+       47:     print("v1.0 final DS selection")
+       48:     print("=" * 80)
+       49:     print(f"TC min       : {args.tc_min}")
+       50:     print(f"pair min     : {args.pair_min}")
+       51:     print(f"accept EVD   : {args.accept_evd}")
+       52:     print(f"selected DS  : {ds.sum()} ({100*ds.mean():.3f}%)")
+       53:     print(f"saved        : {out}")
+       54: 
+       55: 
+       56: if __name__ == "__main__":
+       57:     main()
+
+POTENTIAL I/O SOURCE LINES:
+     27:     ps = np.load(d / "ps_mask.npy")
+     28:     pl = np.load(d / "pl_valid.npy")
+     29:     tc = np.load(d / "temporal_coherence.npy")
+     30:     pc = np.load(d / "median_pair_coherence.npy")
+     31:     est = np.load(d / "estimator_code.npy")
+     44:     np.save(out, ds)
+
+==============================================================================================================
+STAGE: ps_finalize
+SCRIPT: 06b_finalize_ps_geometry.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/linked_phase.npy
+  IN  processing/ps_mask.npy
+
+RESOLVED OUTPUTS:
+  OUT processing/final_ps_mask.npy
+  OUT processing/step06_ps_finalize/rejected_ps.csv
+  OUT processing/step06_ps_finalize/rejected_ps_mask.npy
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=176 api=np.load path=
+      158:     print(
+      159:         "[06b:2/4] Classifying against geometry-valid mask..."
+      160:     )
+      161: 
+      162:     geom_path = find_geometry_mask(
+      163:         processing
+      164:     )
+      165: 
+      166:     if geom_path is None:
+      167:         raise RuntimeError(
+      168:             "Could not locate phase_geometry_valid.npy "
+      169:             "under processing or processing/cache."
+      170:         )
+      171: 
+      172:     print(
+      173:         f"geometry mask   : {geom_path}"
+      174:     )
+      175: 
+>>>   176:     geom = np.load(
+      177:         geom_path,
+      178:         mmap_mode="r",
+      179:     ).astype(
+      180:         bool,
+      181:         copy=False,
+      182:     )
+      183: 
+      184:     if geom.shape != (
+      185:         H,
+      186:         W,
+      187:     ):
+      188:         raise RuntimeError(
+      189:             f"geometry mask shape "
+      190:             f"{geom.shape}, expected {(H,W)}"
+      191:         )
+      192: 
+      193:     ps_geom_invalid = (
+      194:         ps
+
+POTENTIAL I/O SOURCE LINES:
+     92:     ps = np.load(
+    100:     phase = np.load(
+    176:     geom = np.load(
+    346:     np.save(
+    352:     np.save(
+
+==============================================================================================================
+STAGE: point_stack
+SCRIPT: 06_build_point_phase_stack.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/linked_phase.npy
+  IN  processing/point_phase_stack/phase_rad.npy
+
+RESOLVED OUTPUTS:
+  OUT processing/point_phase_stack/cols.npy
+  OUT processing/point_phase_stack/dates.txt
+  OUT processing/point_phase_stack/emi_eigenvalue.npy
+  OUT processing/point_phase_stack/estimator_code.npy
+  OUT processing/point_phase_stack/evd_eigenvalue.npy
+  OUT processing/point_phase_stack/gamma_min_eigenvalue.npy
+  OUT processing/point_phase_stack/glrt_support_K.npy
+  OUT processing/point_phase_stack/manifest.json
+  OUT processing/point_phase_stack/median_pair_coherence.npy
+  OUT processing/point_phase_stack/phase_rad.npy
+  OUT processing/point_phase_stack/point_id.npy
+  OUT processing/point_phase_stack/point_type.npy
+  OUT processing/point_phase_stack/points.csv
+  OUT processing/point_phase_stack/rows.npy
+  OUT processing/point_phase_stack/temporal_coherence.npy
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=22 api=np.load path=
+        4: import argparse
+        5: import csv
+        6: import json
+        7: from pathlib import Path
+        8: 
+        9: import numpy as np
+       10: 
+       11: from pypsds.context import open_from_config
+       12: 
+       13: 
+       14: TYPE_PS = np.uint8(1)
+       15: TYPE_DS = np.uint8(2)
+       16: 
+       17: EST_NONE = np.int16(-1)
+       18: 
+       19: 
+       20: def optional_load(path: Path, mmap_mode="r"):
+       21:     if path.exists():
+>>>    22:         return np.load(
+       23:             path,
+       24:             mmap_mode=mmap_mode,
+       25:         )
+       26:     return None
+       27: 
+       28: 
+       29: def main():
+       30: 
+       31:     ap = argparse.ArgumentParser(
+       32:         description=(
+       33:             "Build the final PS/DS PointPhaseStack "
+       34:             "from geometry-valid PS and final DS."
+       35:         )
+       36:     )
+       37: 
+       38:     ap.add_argument(
+       39:         "--config",
+       40:         required=True,
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=168 api=np.load path=
+      150:         "[06:1/7] Loading final PS/DS masks..."
+      151:     )
+      152: 
+      153:     if not ps_path.exists():
+      154:         raise FileNotFoundError(
+      155:             f"Missing final PS mask: {ps_path}"
+      156:         )
+      157: 
+      158:     if not ds_path.exists():
+      159:         raise FileNotFoundError(
+      160:             f"Missing final DS mask: {ds_path}"
+      161:         )
+      162: 
+      163:     if not phase_path.exists():
+      164:         raise FileNotFoundError(
+      165:             f"Missing linked phase: {phase_path}"
+      166:         )
+      167: 
+>>>   168:     ps = np.load(
+      169:         ps_path,
+      170:         mmap_mode="r",
+      171:     ).astype(
+      172:         bool,
+      173:         copy=False,
+      174:     )
+      175: 
+      176:     ds = np.load(
+      177:         ds_path,
+      178:         mmap_mode="r",
+      179:     ).astype(
+      180:         bool,
+      181:         copy=False,
+      182:     )
+      183: 
+      184:     if ps.shape != (H, W):
+      185:         raise RuntimeError(
+      186:             f"PS shape={ps.shape}, "
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=176 api=np.load path=
+      158:     if not ds_path.exists():
+      159:         raise FileNotFoundError(
+      160:             f"Missing final DS mask: {ds_path}"
+      161:         )
+      162: 
+      163:     if not phase_path.exists():
+      164:         raise FileNotFoundError(
+      165:             f"Missing linked phase: {phase_path}"
+      166:         )
+      167: 
+      168:     ps = np.load(
+      169:         ps_path,
+      170:         mmap_mode="r",
+      171:     ).astype(
+      172:         bool,
+      173:         copy=False,
+      174:     )
+      175: 
+>>>   176:     ds = np.load(
+      177:         ds_path,
+      178:         mmap_mode="r",
+      179:     ).astype(
+      180:         bool,
+      181:         copy=False,
+      182:     )
+      183: 
+      184:     if ps.shape != (H, W):
+      185:         raise RuntimeError(
+      186:             f"PS shape={ps.shape}, "
+      187:             f"expected={(H,W)}"
+      188:         )
+      189: 
+      190:     if ds.shape != (H, W):
+      191:         raise RuntimeError(
+      192:             f"DS shape={ds.shape}, "
+      193:             f"expected={(H,W)}"
+      194:         )
+
+POTENTIAL I/O SOURCE LINES:
+     22:         return np.load(
+    168:     ps = np.load(
+    176:     ds = np.load(
+    196:     phase = np.load(
+    329:     phase_rad = np.lib.format.open_memmap(
+    449:     np.save(
+    454:     np.save(
+    459:     np.save(
+    469:     np.save(
+    634:     np.save(
+    640:     np.save(
+    646:     np.save(
+    652:     np.save(
+    658:     np.save(
+    664:     np.save(
+    670:     np.save(
+    862:     phase_check = np.load(
+
+==============================================================================================================
+STAGE: network_prepare
+SCRIPT: 07_build_network.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/network/acquisitions.csv
+  IN  processing/network/pairs.csv
+
+RESOLVED OUTPUTS:
+  OUT processing/network/acquisition_bperp_m.npy
+  OUT processing/network/degree.npy
+  OUT processing/network/manifest.json
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=169 api=Path.open path=
+      151:     # local, an original entry such as
+      152:     #
+      153:     #   RSLC/20141006.rslc RSLC/20141006.rslc.par
+      154:     #
+      155:     # would otherwise be interpreted relative to gamma_dir.
+      156:     # --------------------------------------------------------
+      157: 
+      158:     src_tab = Path(
+      159:         paths.rslc_tab
+      160:     ).expanduser().resolve()
+      161: 
+      162:     abs_tab = (
+      163:         gamma_dir
+      164:         / "RSLC_tab.absolute"
+      165:     )
+      166: 
+      167:     n_tab = 0
+      168: 
+>>>   169:     with src_tab.open(
+      170:         "r",
+      171:         encoding="utf-8",
+      172:         errors="ignore",
+      173:     ) as fi, abs_tab.open(
+      174:         "w",
+      175:         encoding="utf-8",
+      176:     ) as fo:
+      177: 
+      178:         for raw in fi:
+      179: 
+      180:             line = raw.strip()
+      181: 
+      182:             if (
+      183:                 not line
+      184:                 or line.startswith("#")
+      185:             ):
+      186:                 continue
+      187: 
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=376 api=Path.read_text path=
+      358:     path,
+      359:     dates,
+      360: ):
+      361: 
+      362:     date_to_idx = {
+      363:         d: i
+      364:         for i, d in enumerate(
+      365:             dates
+      366:         )
+      367:     }
+      368: 
+      369:     raw_pairs = []
+      370: 
+      371:     baseline_samples = {
+      372:         d: []
+      373:         for d in dates
+      374:     }
+      375: 
+>>>   376:     lines = path.read_text(
+      377:         encoding="utf-8",
+      378:         errors="ignore",
+      379:     ).splitlines()
+      380: 
+      381:     for raw in lines:
+      382: 
+      383:         f = raw.split()
+      384: 
+      385:         if len(f) < 5:
+      386:             continue
+      387: 
+      388:         try:
+      389: 
+      390:             d1 = f[1]
+      391:             d2 = f[2]
+      392: 
+      393:             db = float(
+      394:                 f[3]
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=1194 api=Path.open path=
+     1176: 
+     1177:     for u in range(n):
+     1178: 
+     1179:         if tin[u] < 0:
+     1180: 
+     1181:             dfs(
+     1182:                 u,
+     1183:                 -1,
+     1184:             )
+     1185: 
+     1186:     return out
+     1187: 
+     1188: 
+     1189: def write_itab(
+     1190:     path,
+     1191:     edges,
+     1192: ):
+     1193: 
+>>>  1194:     with path.open(
+     1195:         "w",
+     1196:         encoding="utf-8",
+     1197:     ) as f:
+     1198: 
+     1199:         for k, e in enumerate(
+     1200:             sorted(
+     1201:                 edges,
+     1202:                 key=lambda x:
+     1203:                     (
+     1204:                         x.i,
+     1205:                         x.j,
+     1206:                     ),
+     1207:             ),
+     1208:             start=1,
+     1209:         ):
+     1210: 
+     1211:             f.write(
+     1212:                 f"{e.i+1:4d} "
+
+POTENTIAL I/O SOURCE LINES:
+    169:     with src_tab.open(
+    173:     ) as fi, abs_tab.open(
+    303:     with log_file.open(
+    321:             log_lines = log_file.read_text(
+    376:     lines = path.read_text(
+   1194:     with path.open(
+   1611:     np.save(
+   1619:     np.save(
+   1638:     ).open(
+   1681:     ).open(
+   2052:     ).write_text(
+
+==============================================================================================================
+STAGE: network_cycle_quality
+SCRIPT: 07c_quality_cycle_coverage_directional.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/network/acquisition_bperp_m.npy
+  IN  processing/network/cycle_quality_directional/edge_cycle_coverage.csv
+  IN  processing/network/cycle_quality_directional/summary.txt
+
+RESOLVED OUTPUTS:
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=28 api=Path.read_text path=
+       10: import matplotlib
+       11: matplotlib.use("Agg")
+       12: import matplotlib.pyplot as plt
+       13: import numpy as np
+       14: 
+       15: from pypsds.context import open_from_config
+       16: 
+       17: 
+       18: def pdate(s):
+       19:     return datetime.strptime(
+       20:         str(s),
+       21:         "%Y%m%d",
+       22:     )
+       23: 
+       24: 
+       25: def load_network(path: Path):
+       26:     edges = []
+       27: 
+>>>    28:     for raw in path.read_text().splitlines():
+       29:         f = raw.split()
+       30: 
+       31:         if len(f) < 2:
+       32:             continue
+       33: 
+       34:         i = int(f[0]) - 1
+       35:         j = int(f[1]) - 1
+       36: 
+       37:         if i > j:
+       38:             i, j = j, i
+       39: 
+       40:         edges.append((i, j))
+       41: 
+       42:     if len(edges) != len(set(edges)):
+       43:         raise RuntimeError(
+       44:             "Duplicate edges found in network."
+       45:         )
+       46: 
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=622 api=Path.open path=$OUTPUT/processing/network/cycle_quality_directional/cycles_*.csv
+      604:                 ),
+      605:             ])
+      606: 
+      607:     # ---------------------------------------------------------
+      608:     # Explicit cycle lists
+      609:     # ---------------------------------------------------------
+      610: 
+      611:     for k in (
+      612:         3,
+      613:         4,
+      614:         5,
+      615:     ):
+      616: 
+      617:         p = (
+      618:             outdir
+      619:             / f"cycles_{k}.csv"
+      620:         )
+      621: 
+>>>   622:         with p.open(
+      623:             "w",
+      624:             newline="",
+      625:         ) as f:
+      626: 
+      627:             w = csv.writer(f)
+      628: 
+      629:             w.writerow(
+      630:                 [
+      631:                     "cycle_id"
+      632:                 ]
+      633:                 +
+      634:                 [
+      635:                     f"node{q+1}"
+      636:                     for q in range(k)
+      637:                 ]
+      638:                 +
+      639:                 [
+      640:                     f"date{q+1}"
+
+POTENTIAL I/O SOURCE LINES:
+     28:     for raw in path.read_text().splitlines():
+    252:     bperp = np.load(
+    561:     with edge_csv.open(
+    622:         with p.open(
+    838:     ).open(
+
+==============================================================================================================
+STAGE: network_finalize
+SCRIPT: 07d_finalize_network.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/network/acquisition_bperp_m.npy
+  IN  processing/network/network_directional.itab
+  IN  processing/network/pairs_directional.csv
+
+RESOLVED OUTPUTS:
+  OUT processing/network/NETWORK_FROZEN.txt
+  OUT processing/network/degree.npy
+  OUT processing/network/left_connection_count.npy
+  OUT processing/network/network.itab
+  OUT processing/network/network_manifest.json
+  OUT processing/network/pairs.csv
+  OUT processing/network/right_connection_count.npy
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=20 api=Path.open path=
+        2: from __future__ import annotations
+        3: 
+        4: import argparse
+        5: import hashlib
+        6: import json
+        7: import math
+        8: import shutil
+        9: from datetime import datetime, timezone
+       10: from pathlib import Path
+       11: 
+       12: import numpy as np
+       13: 
+       14: from pypsds.config import cfg_get
+       15: from pypsds.context import open_from_config
+       16: 
+       17: 
+       18: def sha256(path: Path) -> str:
+       19:     h = hashlib.sha256()
+>>>    20:     with path.open("rb") as f:
+       21:         while True:
+       22:             b = f.read(1024 * 1024)
+       23:             if not b:
+       24:                 break
+       25:             h.update(b)
+       26:     return h.hexdigest()
+       27: 
+       28: 
+       29: def pdate(s):
+       30:     return datetime.strptime(str(s), "%Y%m%d")
+       31: 
+       32: 
+       33: def load_itab(path: Path):
+       34:     edges = []
+       35: 
+       36:     for raw in path.read_text().splitlines():
+       37:         f = raw.split()
+       38: 
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=36 api=Path.read_text path=
+       18: def sha256(path: Path) -> str:
+       19:     h = hashlib.sha256()
+       20:     with path.open("rb") as f:
+       21:         while True:
+       22:             b = f.read(1024 * 1024)
+       23:             if not b:
+       24:                 break
+       25:             h.update(b)
+       26:     return h.hexdigest()
+       27: 
+       28: 
+       29: def pdate(s):
+       30:     return datetime.strptime(str(s), "%Y%m%d")
+       31: 
+       32: 
+       33: def load_itab(path: Path):
+       34:     edges = []
+       35: 
+>>>    36:     for raw in path.read_text().splitlines():
+       37:         f = raw.split()
+       38: 
+       39:         if len(f) < 2:
+       40:             continue
+       41: 
+       42:         i = int(f[0]) - 1
+       43:         j = int(f[1]) - 1
+       44: 
+       45:         if i > j:
+       46:             i, j = j, i
+       47: 
+       48:         edges.append((i, j))
+       49: 
+       50:     if len(edges) != len(set(edges)):
+       51:         raise RuntimeError(
+       52:             f"Duplicate edges in {path}"
+       53:         )
+       54: 
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=144 api=Path.read_text path=
+      126:                 )
+      127: 
+      128:                 if low[v] > tin[u]:
+      129:                     bridges.append(eid)
+      130: 
+      131:     for u in range(n):
+      132:         if tin[u] < 0:
+      133:             dfs(u, -1)
+      134: 
+      135:     return len(bridges)
+      136: 
+      137: 
+      138: def read_summary(path: Path):
+      139:     out = {}
+      140: 
+      141:     if not path.exists():
+      142:         return out
+      143: 
+>>>   144:     for raw in path.read_text().splitlines():
+      145: 
+      146:         if "=" not in raw:
+      147:             continue
+      148: 
+      149:         k, v = raw.split("=", 1)
+      150:         k = k.strip()
+      151:         v = v.strip()
+      152: 
+      153:         try:
+      154:             if "." in v:
+      155:                 val = float(v)
+      156:             else:
+      157:                 val = int(v)
+      158:         except ValueError:
+      159:             val = v
+      160: 
+      161:         out[k] = val
+      162: 
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=173 api=shutil.copy2 path=
+      155:                 val = float(v)
+      156:             else:
+      157:                 val = int(v)
+      158:         except ValueError:
+      159:             val = v
+      160: 
+      161:         out[k] = val
+      162: 
+      163:     return out
+      164: 
+      165: 
+      166: def backup_once(src: Path, dst: Path):
+      167: 
+      168:     if (
+      169:         src.exists()
+      170:         and
+      171:         not dst.exists()
+      172:     ):
+>>>   173:         shutil.copy2(src, dst)
+      174: 
+      175: 
+      176: def main():
+      177: 
+      178:     ap = argparse.ArgumentParser()
+      179: 
+      180:     ap.add_argument(
+      181:         "--config",
+      182:         required=True,
+      183:     )
+      184: 
+      185:     args = ap.parse_args()
+      186: 
+      187:     (
+      188:         cfg,
+      189:         config_path,
+      190:         paths,
+      191:         stack,
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=173 api=shutil.copy2 path=
+      155:                 val = float(v)
+      156:             else:
+      157:                 val = int(v)
+      158:         except ValueError:
+      159:             val = v
+      160: 
+      161:         out[k] = val
+      162: 
+      163:     return out
+      164: 
+      165: 
+      166: def backup_once(src: Path, dst: Path):
+      167: 
+      168:     if (
+      169:         src.exists()
+      170:         and
+      171:         not dst.exists()
+      172:     ):
+>>>   173:         shutil.copy2(src, dst)
+      174: 
+      175: 
+      176: def main():
+      177: 
+      178:     ap = argparse.ArgumentParser()
+      179: 
+      180:     ap.add_argument(
+      181:         "--config",
+      182:         required=True,
+      183:     )
+      184: 
+      185:     args = ap.parse_args()
+      186: 
+      187:     (
+      188:         cfg,
+      189:         config_path,
+      190:         paths,
+      191:         stack,
+
+POTENTIAL I/O SOURCE LINES:
+     20:     with path.open("rb") as f:
+     36:     for raw in path.read_text().splitlines():
+    144:     for raw in path.read_text().splitlines():
+    173:         shutil.copy2(src, dst)
+    249:     bperp = np.load(
+    523:     shutil.copy2(
+    528:     shutil.copy2(
+    533:     np.save(
+    538:     np.save(
+    544:     np.save(
+    675:     manifest_path.write_text(
+    693:     summary_path.write_text(
+
+==============================================================================================================
+STAGE: virtual_ifg_quality
+SCRIPT: 08a_quality_virtual_ifg.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/network/network_manifest.json
+  IN  processing/point_phase_stack/phase_rad.npy
+  IN  processing/virtual_ifg_quality/triangle_closure_qa.csv
+  IN  processing/virtual_ifg_quality/virtual_ifg_pairs.csv
+
+RESOLVED OUTPUTS:
+  OUT processing/virtual_ifg_quality/virtual_ifg_quality_manifest.json
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=29 api=Path.read_text path=
+       11: 
+       12: from pypsds.context import open_from_config
+       13: 
+       14: 
+       15: def wrap_phase(x):
+       16:     """
+       17:     Production wrapped phase in [-pi, pi].
+       18:     Preserve float32 behavior where possible.
+       19:     """
+       20:     return np.arctan2(
+       21:         np.sin(x),
+       22:         np.cos(x),
+       23:     ).astype(np.float32, copy=False)
+       24: 
+       25: 
+       26: def read_dates(path: Path):
+       27:     dates = [
+       28:         x.strip()
+>>>    29:         for x in path.read_text().splitlines()
+       30:         if x.strip()
+       31:     ]
+       32: 
+       33:     if len(dates) != len(set(dates)):
+       34:         raise RuntimeError(
+       35:             "Duplicate acquisition dates in dates.txt"
+       36:         )
+       37: 
+       38:     return dates
+       39: 
+       40: 
+       41: def load_itab(path: Path, ndate: int):
+       42:     edges = []
+       43: 
+       44:     for line_no, raw in enumerate(
+       45:         path.read_text().splitlines(),
+       46:         start=1,
+       47:     ):
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=45 api=Path.read_text path=
+       27:     dates = [
+       28:         x.strip()
+       29:         for x in path.read_text().splitlines()
+       30:         if x.strip()
+       31:     ]
+       32: 
+       33:     if len(dates) != len(set(dates)):
+       34:         raise RuntimeError(
+       35:             "Duplicate acquisition dates in dates.txt"
+       36:         )
+       37: 
+       38:     return dates
+       39: 
+       40: 
+       41: def load_itab(path: Path, ndate: int):
+       42:     edges = []
+       43: 
+       44:     for line_no, raw in enumerate(
+>>>    45:         path.read_text().splitlines(),
+       46:         start=1,
+       47:     ):
+       48:         line = raw.strip()
+       49: 
+       50:         if not line or line.startswith("#"):
+       51:             continue
+       52: 
+       53:         f = line.split()
+       54: 
+       55:         if len(f) < 2:
+       56:             raise RuntimeError(
+       57:                 f"Invalid ITAB line {line_no}: {raw}"
+       58:             )
+       59: 
+       60:         i = int(f[0]) - 1
+       61:         j = int(f[1]) - 1
+       62: 
+       63:         if not (
+
+POTENTIAL I/O SOURCE LINES:
+     29:         for x in path.read_text().splitlines()
+     45:         path.read_text().splitlines(),
+    250:         manifest_path.read_text()
+    284:     phase = np.load(
+    751:     with tri_csv.open(
+    820:     with pair_csv.open(
+    970:     manifest_out.write_text(
+
+==============================================================================================================
+STAGE: spatial_anchor_summary
+SCRIPT: 08f_summarize_residual_anchor_radius.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.csv
+
+RESOLVED OUTPUTS:
+
+ISSUE SOURCE CONTEXT:
+
+POTENTIAL I/O SOURCE LINES:
+     44:     with path.open() as f:
+
+==============================================================================================================
+STAGE: spatial_local_graph_quality
+SCRIPT: 08g_quality_sparse_local_graph.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/point_phase_stack/cols.npy
+  IN  processing/point_phase_stack/rows.npy
+  IN  processing/spatial_sparse_graph_quality/sparse_local_graph_sweep.csv
+
+RESOLVED OUTPUTS:
+  OUT processing/spatial_sparse_graph_quality/sparse_local_graph_sweep.json
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=21 api=Path.read_text path=
+        3: 
+        4: import argparse
+        5: import csv
+        6: import gc
+        7: import json
+        8: import math
+        9: from pathlib import Path
+       10: 
+       11: import numpy as np
+       12: from numba import njit
+       13: 
+       14: from pypsds.config import cfg_get
+       15: from pypsds.context import open_from_config
+       16: 
+       17: 
+       18: def read_gamma_value(path: Path, key: str):
+       19:     key0 = key.rstrip(":") + ":"
+       20: 
+>>>    21:     for raw in path.read_text(
+       22:         errors="ignore"
+       23:     ).splitlines():
+       24: 
+       25:         f = raw.split()
+       26: 
+       27:         if not f:
+       28:             continue
+       29: 
+       30:         if f[0] == key0:
+       31: 
+       32:             for x in f[1:]:
+       33: 
+       34:                 try:
+       35:                     return float(x)
+       36:                 except ValueError:
+       37:                     continue
+       38: 
+       39:     return None
+
+POTENTIAL I/O SOURCE LINES:
+     21:     for raw in path.read_text(
+    531:     rows = np.load(
+    538:     cols = np.load(
+    827:     with csv_path.open(
+    875:     json_path.write_text(
+
+==============================================================================================================
+STAGE: spatial_graph
+SCRIPT: 08h_build_production_spatial_graph.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/point_phase_stack/cols.npy
+  IN  processing/point_phase_stack/rows.npy
+  IN  processing/spatial_graph_residual_quality/component_label_r4.npy
+  IN  processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.csv
+
+RESOLVED OUTPUTS:
+  OUT processing/spatial_graph/anchor_class.npy
+  OUT processing/spatial_graph/anchor_distance_m.npy
+  OUT processing/spatial_graph/anchor_radius.npy
+  OUT processing/spatial_graph/anchor_u.npy
+  OUT processing/spatial_graph/anchor_v.npy
+  OUT processing/spatial_graph/local_component.npy
+  OUT processing/spatial_graph/local_distance_m.npy
+  OUT processing/spatial_graph/local_u.npy
+  OUT processing/spatial_graph/local_v.npy
+  OUT processing/spatial_graph/main_component_mask.npy
+  OUT processing/spatial_graph/spatial_graph_manifest.json
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=20 api=Path.read_text path=
+        2: from __future__ import annotations
+        3: 
+        4: import argparse
+        5: import csv
+        6: import json
+        7: import math
+        8: from pathlib import Path
+        9: 
+       10: import numpy as np
+       11: from numba import njit
+       12: 
+       13: from pypsds.config import cfg_get
+       14: from pypsds.context import open_from_config
+       15: 
+       16: 
+       17: def read_gamma_value(path: Path, key: str):
+       18:     target = key.rstrip(":") + ":"
+       19: 
+>>>    20:     for raw in path.read_text(errors="ignore").splitlines():
+       21:         f = raw.split()
+       22: 
+       23:         if not f or f[0] != target:
+       24:             continue
+       25: 
+       26:         for x in f[1:]:
+       27:             try:
+       28:                 return float(x)
+       29:             except ValueError:
+       30:                 pass
+       31: 
+       32:     return None
+       33: 
+       34: 
+       35: def build_offsets(radius, row_spacing, col_spacing):
+       36:     items = []
+       37: 
+       38:     for dr in range(-radius, radius + 1):
+
+POTENTIAL I/O SOURCE LINES:
+     20:     for raw in path.read_text(errors="ignore").splitlines():
+    227:     rows = np.load(
+    231:     cols = np.load(
+    377:     full_labels = np.load(
+    470:     with anchor_csv.open() as f:
+    584:     np.save(
+    589:     np.save(
+    594:     np.save(
+    599:     np.save(
+    604:     np.save(
+    609:     np.save(
+    614:     np.save(
+    619:     np.save(
+    624:     np.save(
+    629:     np.save(
+    830:     manifest_path.write_text(
+
+==============================================================================================================
+STAGE: spatial_gradient_quality
+SCRIPT: 08i_quality_spatial_phase_gradient.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/point_phase_stack/phase_rad.npy
+  IN  processing/spatial_graph/anchor_class.npy
+  IN  processing/spatial_graph/anchor_distance_m.npy
+  IN  processing/spatial_graph/anchor_radius.npy
+  IN  processing/spatial_graph/anchor_u.npy
+  IN  processing/spatial_graph/anchor_v.npy
+  IN  processing/spatial_graph/local_distance_m.npy
+  IN  processing/spatial_graph/local_u.npy
+  IN  processing/spatial_graph/local_v.npy
+  IN  processing/spatial_phase_gradient_quality/per_ifg_spatial_gradient_qa.csv
+
+RESOLVED OUTPUTS:
+  OUT processing/spatial_phase_gradient_quality/spatial_gradient_quality.json
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=27 api=Path.read_text path=
+        9: import numpy as np
+       10: 
+       11: from pypsds.context import open_from_config
+       12: 
+       13: 
+       14: def wrap(x):
+       15:     return np.arctan2(
+       16:         np.sin(x),
+       17:         np.cos(x),
+       18:     ).astype(
+       19:         np.float32,
+       20:         copy=False,
+       21:     )
+       22: 
+       23: 
+       24: def load_itab(path, ndate):
+       25:     edges = []
+       26: 
+>>>    27:     for raw in path.read_text().splitlines():
+       28: 
+       29:         f = raw.split()
+       30: 
+       31:         if len(f) < 2:
+       32:             continue
+       33: 
+       34:         i = int(f[0]) - 1
+       35:         j = int(f[1]) - 1
+       36: 
+       37:         if not (
+       38:             0 <= i < ndate
+       39:             and
+       40:             0 <= j < ndate
+       41:         ):
+       42:             raise RuntimeError(
+       43:                 f"Invalid ITAB edge: {raw}"
+       44:             )
+       45: 
+
+POTENTIAL I/O SOURCE LINES:
+     27:     for raw in path.read_text().splitlines():
+    194:     phase = np.load(
+    210:     local_u = np.load(
+    215:     local_v = np.load(
+    220:     local_dist = np.load(
+    225:     anchor_u = np.load(
+    229:     anchor_v = np.load(
+    233:     anchor_class = np.load(
+    237:     anchor_radius = np.load(
+    241:     anchor_dist = np.load(
+    713:     with csv_path.open(
+    807:     json_path.write_text(
+
+==============================================================================================================
+STAGE: unwrap
+SCRIPT: 08p_batch_unwrap_all_ifgs.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv
+
+RESOLVED OUTPUTS:
+  OUT processing/batch_unwrap_validation/all_ifg_unwrap_qa.json
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=24 api=Path.open path=
+        6: import json
+        7: import subprocess
+        8: import sys
+        9: from pathlib import Path
+       10: 
+       11: import numpy as np
+       12: 
+       13: from pypsds.context import open_from_config
+       14: 
+       15: 
+       16: # ============================================================
+       17: # Utilities
+       18: # ============================================================
+       19: 
+       20: def load_08i(path: Path):
+       21: 
+       22:     rows = []
+       23: 
+>>>    24:     with path.open() as f:
+       25: 
+       26:         for r in csv.DictReader(f):
+       27: 
+       28:             rows.append({
+       29:                 "pair_id":
+       30:                     int(r["pair_id"]),
+       31: 
+       32:                 "date1":
+       33:                     r["date1"],
+       34: 
+       35:                 "date2":
+       36:                     r["date2"],
+       37: 
+       38:                 "frac_gt_pi2":
+       39:                     float(
+       40:                         r[
+       41:                             "local_frac_gt_pi_2"
+       42:                         ]
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=80 api=Path.read_text path=
+       62:             x["pair_id"]
+       63:     )
+       64: 
+       65:     return rows
+       66: 
+       67: 
+       68: def tag_of(r):
+       69: 
+       70:     return (
+       71:         f"pair{r['pair_id']:03d}_"
+       72:         f"{r['date1']}_"
+       73:         f"{r['date2']}"
+       74:     )
+       75: 
+       76: 
+       77: def read_json(path: Path):
+       78: 
+       79:     return json.loads(
+>>>    80:         path.read_text()
+       81:     )
+       82: 
+       83: 
+       84: def run_script(
+       85:     script,
+       86:     config,
+       87:     pair_id,
+       88:     log_path,
+       89: ):
+       90: 
+       91:     cmd = [
+       92:         sys.executable,
+       93:         str(script),
+       94:         "--config",
+       95:         str(config),
+       96:         "--pair-id",
+       97:         str(pair_id),
+       98:     ]
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=100 api=Path.open path=$OUTPUT/processing/batch_unwrap_validation/logs/*_08n.log
+       82: 
+       83: 
+       84: def run_script(
+       85:     script,
+       86:     config,
+       87:     pair_id,
+       88:     log_path,
+       89: ):
+       90: 
+       91:     cmd = [
+       92:         sys.executable,
+       93:         str(script),
+       94:         "--config",
+       95:         str(config),
+       96:         "--pair-id",
+       97:         str(pair_id),
+       98:     ]
+       99: 
+>>>   100:     with log_path.open(
+      101:         "w"
+      102:     ) as log:
+      103: 
+      104:         p = subprocess.run(
+      105:             cmd,
+      106:             stdout=log,
+      107:             stderr=subprocess.STDOUT,
+      108:             text=True,
+      109:         )
+      110: 
+      111:     if p.returncode != 0:
+      112: 
+      113:         raise RuntimeError(
+      114:             f"{script.name} failed "
+      115:             f"for pair {pair_id}. "
+      116:             f"See {log_path}"
+      117:         )
+      118: 
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=186 api=Path.open path=$OUTPUT/processing/safe_fragment_integer_quality/*_fragment_pair_consensus.csv
+      168: 
+      169:         self.parent[b] = a
+      170: 
+      171:         self.size[a] += (
+      172:             self.size[b]
+      173:         )
+      174: 
+      175:         return True
+      176: 
+      177: 
+      178: def quality_selected_superforest(
+      179:     group_csv: Path,
+      180:     nsafe: int,
+      181:     target_edges: int,
+      182: ):
+      183: 
+      184:     rows = []
+      185: 
+>>>   186:     with group_csv.open() as f:
+      187: 
+      188:         for r in csv.DictReader(f):
+      189: 
+      190:             rows.append({
+      191:                 "fragment_a":
+      192:                     int(
+      193:                         r["fragment_a"]
+      194:                     ),
+      195: 
+      196:                 "fragment_b":
+      197:                     int(
+      198:                         r["fragment_b"]
+      199:                     ),
+      200: 
+      201:                 "edge_count":
+      202:                     int(
+      203:                         r["edge_count"]
+      204:                     ),
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=375 api=Path.open path=
+      357:         "selected_min_consensus":
+      358:             float(
+      359:                 min_ratio
+      360:             ),
+      361: 
+      362:         "selected_min_support":
+      363:             int(
+      364:                 min_support
+      365:             ),
+      366:     }
+      367: 
+      368: 
+      369: def rejected_constraint_stats(
+      370:     path: Path,
+      371: ):
+      372: 
+      373:     rejected = []
+      374: 
+>>>   375:     with path.open() as f:
+      376: 
+      377:         for r in csv.DictReader(f):
+      378: 
+      379:             if (
+      380:                 r["status"]
+      381:                 ==
+      382:                 "rejected_cycle_outlier"
+      383:             ):
+      384: 
+      385:                 rejected.append({
+      386:                     "edge_count":
+      387:                         int(
+      388:                             r[
+      389:                                 "edge_count"
+      390:                             ]
+      391:                         ),
+      392: 
+      393:                     "mode_count":
+
+POTENTIAL I/O SOURCE LINES:
+     24:     with path.open() as f:
+     80:         path.read_text()
+    100:     with log_path.open(
+    186:     with group_csv.open() as f:
+    375:     with path.open() as f:
+   1210:     with csv_path.open(
+   1357:     manifest_path.write_text(
+
+==============================================================================================================
+STAGE: unwrap_severity_quality
+SCRIPT: 08q_quality_full_batch_severity.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/batch_unwrap_severity_quality/all_ifg_forest_severity.csv
+  IN  processing/batch_unwrap_severity_quality/safe_conflict_detail.csv
+  IN  processing/network/network.itab
+  IN  processing/point_phase_stack/cols.npy
+  IN  processing/point_phase_stack/phase_rad.npy
+  IN  processing/point_phase_stack/rows.npy
+  IN  processing/spatial_graph/local_u.npy
+  IN  processing/spatial_graph/local_v.npy
+
+RESOLVED OUTPUTS:
+  OUT processing/batch_unwrap_severity_quality/severity_quality.json
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=19 api=Path.open path=
+        1: #!/usr/bin/env python3
+        2: from __future__ import annotations
+        3: 
+        4: import argparse
+        5: import csv
+        6: import json
+        7: from collections import deque
+        8: from pathlib import Path
+        9: 
+       10: import numpy as np
+       11: 
+       12: from pypsds.context import open_from_config
+       13: 
+       14: 
+       15: def load_08i(path: Path):
+       16: 
+       17:     out = []
+       18: 
+>>>    19:     with path.open() as f:
+       20: 
+       21:         for r in csv.DictReader(f):
+       22: 
+       23:             out.append({
+       24:                 "pair_id": int(r["pair_id"]),
+       25:                 "date1": r["date1"],
+       26:                 "date2": r["date2"],
+       27:             })
+       28: 
+       29:     out.sort(
+       30:         key=lambda x: x["pair_id"]
+       31:     )
+       32: 
+       33:     return out
+       34: 
+       35: 
+       36: def tag_of(r):
+       37: 
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=49 api=Path.open path=
+       31:     )
+       32: 
+       33:     return out
+       34: 
+       35: 
+       36: def tag_of(r):
+       37: 
+       38:     return (
+       39:         f"pair{r['pair_id']:03d}_"
+       40:         f"{r['date1']}_"
+       41:         f"{r['date2']}"
+       42:     )
+       43: 
+       44: 
+       45: def read_groups(path: Path):
+       46: 
+       47:     rows = []
+       48: 
+>>>    49:     with path.open() as f:
+       50: 
+       51:         for r in csv.DictReader(f):
+       52: 
+       53:             rows.append({
+       54:                 "fragment_a":
+       55:                     int(r["fragment_a"]),
+       56: 
+       57:                 "fragment_b":
+       58:                     int(r["fragment_b"]),
+       59: 
+       60:                 "edge_count":
+       61:                     int(r["edge_count"]),
+       62: 
+       63:                 "mode_count":
+       64:                     int(r["mode_count"]),
+       65: 
+       66:                 "consensus_ratio":
+       67:                     float(r["consensus_ratio"]),
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=493 api=Path.read_text path=$OUTPUT/processing/safe_fragment_integer_quality/*_manifest.json
+      475:             dir08l
+      476:             / f"{tag}_bad_edge_ids.npy"
+      477:         )
+      478: 
+      479:         if not (
+      480:             ml_path.exists()
+      481:             and
+      482:             mn_path.exists()
+      483:             and
+      484:             group_path.exists()
+      485:             and
+      486:             frag_path.exists()
+      487:         ):
+      488:             raise RuntimeError(
+      489:                 f"Missing Step08l/n products: {tag}"
+      490:             )
+      491: 
+      492:         ml = json.loads(
+>>>   493:             ml_path.read_text()
+      494:         )
+      495: 
+      496:         mn = json.loads(
+      497:             mn_path.read_text()
+      498:         )
+      499: 
+      500:         safe_fragment = np.load(
+      501:             frag_path,
+      502:             mmap_mode="r",
+      503:         )
+      504: 
+      505:         frag_weights = np.bincount(
+      506:             np.asarray(
+      507:                 safe_fragment,
+      508:                 dtype=np.int32,
+      509:             )
+      510:         )
+      511: 
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=497 api=Path.read_text path=$OUTPUT/processing/single_ifg_robust_solution/*_manifest.json
+      479:         if not (
+      480:             ml_path.exists()
+      481:             and
+      482:             mn_path.exists()
+      483:             and
+      484:             group_path.exists()
+      485:             and
+      486:             frag_path.exists()
+      487:         ):
+      488:             raise RuntimeError(
+      489:                 f"Missing Step08l/n products: {tag}"
+      490:             )
+      491: 
+      492:         ml = json.loads(
+      493:             ml_path.read_text()
+      494:         )
+      495: 
+      496:         mn = json.loads(
+>>>   497:             mn_path.read_text()
+      498:         )
+      499: 
+      500:         safe_fragment = np.load(
+      501:             frag_path,
+      502:             mmap_mode="r",
+      503:         )
+      504: 
+      505:         frag_weights = np.bincount(
+      506:             np.asarray(
+      507:                 safe_fragment,
+      508:                 dtype=np.int32,
+      509:             )
+      510:         )
+      511: 
+      512:         nsafe = int(
+      513:             ml[
+      514:                 "topology"
+      515:             ][
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=500 api=np.load path=$OUTPUT/processing/safe_fragment_integer_quality/*_safe_fragment.npy
+      482:             mn_path.exists()
+      483:             and
+      484:             group_path.exists()
+      485:             and
+      486:             frag_path.exists()
+      487:         ):
+      488:             raise RuntimeError(
+      489:                 f"Missing Step08l/n products: {tag}"
+      490:             )
+      491: 
+      492:         ml = json.loads(
+      493:             ml_path.read_text()
+      494:         )
+      495: 
+      496:         mn = json.loads(
+      497:             mn_path.read_text()
+      498:         )
+      499: 
+>>>   500:         safe_fragment = np.load(
+      501:             frag_path,
+      502:             mmap_mode="r",
+      503:         )
+      504: 
+      505:         frag_weights = np.bincount(
+      506:             np.asarray(
+      507:                 safe_fragment,
+      508:                 dtype=np.int32,
+      509:             )
+      510:         )
+      511: 
+      512:         nsafe = int(
+      513:             ml[
+      514:                 "topology"
+      515:             ][
+      516:                 "safe_fragments"
+      517:             ]
+      518:         )
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=696 api=np.load path=$OUTPUT/processing/safe_fragment_integer_quality/*_bad_edge_ids.npy
+      678:                 ),
+      679:         }
+      680: 
+      681:         all_rows.append(row)
+      682: 
+      683:         # ====================================================
+      684:         # For only SAFE-conflict IFGs:
+      685:         # inspect actual conflicting SAFE edges.
+      686:         # ====================================================
+      687: 
+      688:         if safe_bad > 0:
+      689: 
+      690:             if not bad_ids_path.exists():
+      691: 
+      692:                 raise RuntimeError(
+      693:                     f"Missing bad edge IDs: {tag}"
+      694:                 )
+      695: 
+>>>   696:             bad_ids = np.load(
+      697:                 bad_ids_path
+      698:             ).astype(
+      699:                 np.int64,
+      700:                 copy=False,
+      701:             )
+      702: 
+      703:             ti, tj = temporal_edges[
+      704:                 pair["pair_id"] - 1
+      705:             ]
+      706: 
+      707:             ifg = np.arctan2(
+      708:                 np.sin(
+      709:                     np.asarray(
+      710:                         phase[:, tj],
+      711:                         dtype=np.float32,
+      712:                     )
+      713:                     -
+      714:                     np.asarray(
+
+POTENTIAL I/O SOURCE LINES:
+     19:     with path.open() as f:
+     49:     with path.open() as f:
+    360:     phase = np.load(
+    366:     rows_point = np.load(
+    372:     cols_point = np.load(
+    378:     local_u = np.load(
+    384:     local_v = np.load(
+    425:     ).open() as f:
+    493:             ml_path.read_text()
+    497:             mn_path.read_text()
+    500:         safe_fragment = np.load(
+    696:             bad_ids = np.load(
+   1094:     with csv1.open(
+   1118:         with csv2.open(
+   1186:     json_path.write_text(
+
+==============================================================================================================
+STAGE: unwrap_conflict_quality
+SCRIPT: 08r_quality_safe_conflict_acquisition_attribution.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/point_phase_stack/cols.npy
+  IN  processing/point_phase_stack/phase_rad.npy
+  IN  processing/point_phase_stack/rows.npy
+  IN  processing/safe_conflict_acquisition_quality/acquisition_attribution.csv
+  IN  processing/safe_conflict_acquisition_quality/recurrent_safe_conflict_edges.csv
+  IN  processing/safe_conflict_acquisition_quality/safe_conflict_occurrences.csv
+  IN  processing/spatial_graph/local_u.npy
+  IN  processing/spatial_graph/local_v.npy
+
+RESOLVED OUTPUTS:
+  OUT processing/safe_conflict_acquisition_quality/acquisition_attribution.json
+  OUT processing/safe_conflict_acquisition_quality/suspicious_edge_acquisition_gradient.npy
+  OUT processing/safe_conflict_acquisition_quality/suspicious_edge_ids.npy
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=25 api=Path.open path=
+        7: from collections import Counter, defaultdict
+        8: from pathlib import Path
+        9: 
+       10: import numpy as np
+       11: 
+       12: from pypsds.context import open_from_config
+       13: 
+       14: 
+       15: def wrap(x):
+       16:     return np.arctan2(
+       17:         np.sin(x),
+       18:         np.cos(x),
+       19:     )
+       20: 
+       21: 
+       22: def load_network(path: Path):
+       23:     out = []
+       24: 
+>>>    25:     with path.open() as f:
+       26: 
+       27:         for raw in f:
+       28: 
+       29:             x = raw.split()
+       30: 
+       31:             if len(x) < 2:
+       32:                 continue
+       33: 
+       34:             out.append(
+       35:                 (
+       36:                     int(x[0]) - 1,
+       37:                     int(x[1]) - 1,
+       38:                 )
+       39:             )
+       40: 
+       41:     return out
+       42: 
+       43: 
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=48 api=Path.open path=
+       30: 
+       31:             if len(x) < 2:
+       32:                 continue
+       33: 
+       34:             out.append(
+       35:                 (
+       36:                     int(x[0]) - 1,
+       37:                     int(x[1]) - 1,
+       38:                 )
+       39:             )
+       40: 
+       41:     return out
+       42: 
+       43: 
+       44: def load_qa(path: Path):
+       45: 
+       46:     rows = []
+       47: 
+>>>    48:     with path.open() as f:
+       49: 
+       50:         for r in csv.DictReader(f):
+       51: 
+       52:             rows.append({
+       53:                 "pair_id":
+       54:                     int(r["pair_id"]),
+       55: 
+       56:                 "date1":
+       57:                     r["date1"],
+       58: 
+       59:                 "date2":
+       60:                     r["date2"],
+       61: 
+       62:                 "safe_internal_bad":
+       63:                     int(
+       64:                         r[
+       65:                             "safe_internal_bad"
+       66:                         ]
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=252 api=np.load path=$OUTPUT/processing/safe_fragment_integer_quality/pair*_*_*_bad_edge_ids.npy
+      234: 
+      235:         tag = (
+      236:             f"pair{pair_id:03d}_"
+      237:             f"{stack.dates[i]}_"
+      238:             f"{stack.dates[j]}"
+      239:         )
+      240: 
+      241:         bad_path = (
+      242:             dir08l
+      243:             / f"{tag}_bad_edge_ids.npy"
+      244:         )
+      245: 
+      246:         if not bad_path.exists():
+      247: 
+      248:             raise FileNotFoundError(
+      249:                 bad_path
+      250:             )
+      251: 
+>>>   252:         bad_ids = np.load(
+      253:             bad_path
+      254:         ).astype(
+      255:             np.int64,
+      256:             copy=False,
+      257:         )
+      258: 
+      259:         # Recalculate this IFG's spatial gradient,
+      260:         # then retain only bad edges that are SAFE.
+      261:         ifg = wrap(
+      262:             np.asarray(
+      263:                 phase[:, j],
+      264:                 dtype=np.float32,
+      265:             )
+      266:             -
+      267:             np.asarray(
+      268:                 phase[:, i],
+      269:                 dtype=np.float32,
+      270:             )
+
+POTENTIAL I/O SOURCE LINES:
+     25:     with path.open() as f:
+     48:     with path.open() as f:
+    136:     phase = np.load(
+    142:     rows_pt = np.load(
+    148:     cols_pt = np.load(
+    154:     local_u = np.load(
+    160:     local_v = np.load(
+    252:         bad_ids = np.load(
+    960:     with occurrence_csv.open(
+    984:     with acq_csv.open(
+   1008:     with edge_csv.open(
+   1027:     np.save(
+   1033:     np.save(
+   1080:     json_path.write_text(
+
+==============================================================================================================
+STAGE: unwrap_acquisition_quality
+SCRIPT: 08s_quality_acquisition_safe_fragments.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/acquisition_safe_fragment_quality/acquisition_safe_fragment_quality.csv
+  IN  processing/point_phase_stack/phase_rad.npy
+  IN  processing/spatial_graph/local_u.npy
+  IN  processing/spatial_graph/local_v.npy
+  IN  processing/unwrap_component_policy/local_component.npy
+
+RESOLVED OUTPUTS:
+  OUT processing/acquisition_safe_fragment_quality/acquisition_safe_fragment_quality.json
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=631 api=np.save path=$OUTPUT/processing/acquisition_safe_fragment_quality/*_safe_bad_edge_ids.npy
+      613:                     ]
+      614:                 )
+      615:             )
+      616: 
+      617:             bad_g_min = float(
+      618:                 bad_abs_g.min()
+      619:             )
+      620: 
+      621:             bad_g_med = float(
+      622:                 np.median(
+      623:                     bad_abs_g
+      624:                 )
+      625:             )
+      626: 
+      627:             bad_g_max = float(
+      628:                 bad_abs_g.max()
+      629:             )
+      630: 
+>>>   631:             np.save(
+      632:                 outdir
+      633:                 / (
+      634:                     f"{stack.dates[t]}"
+      635:                     "_safe_bad_edge_ids.npy"
+      636:                 ),
+      637:                 bad_safe_edge_ids.astype(
+      638:                     np.int64
+      639:                 ),
+      640:             )
+      641: 
+      642:         else:
+      643: 
+      644:             bad_points = np.empty(
+      645:                 0,
+      646:                 dtype=np.int32,
+      647:             )
+      648: 
+      649:             bad_g_min = 0.0
+
+POTENTIAL I/O SOURCE LINES:
+    324:     phase = np.load(
+    330:     local_u = np.load(
+    336:     local_v = np.load(
+    342:     local_component = np.load(
+    631:             np.save(
+    865:     with csv_path.open(
+    931:     json_path.write_text(
+
+==============================================================================================================
+STAGE: temporal_candidate_spatial_quality
+SCRIPT: 08v_spatial_validate_temporal_candidates.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/point_phase_stack/cols.npy
+  IN  processing/point_phase_stack/phase_rad.npy
+  IN  processing/point_phase_stack/rows.npy
+  IN  processing/spatial_graph/local_u.npy
+  IN  processing/spatial_graph/local_v.npy
+  IN  processing/temporal_candidate_spatial_validation/candidate_safe_fragment_coherence.csv
+  IN  processing/temporal_candidate_spatial_validation/candidate_spatial_validation_by_ifg.csv
+  IN  processing/temporal_sparse_integer_candidate/bad_point_ids.npy
+  IN  processing/temporal_sparse_integer_candidate/point_integer_correction_matrix.npy
+
+RESOLVED OUTPUTS:
+  OUT processing/temporal_candidate_spatial_validation/candidate_spatial_validation.json
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=28 api=Path.open path=
+       10: 
+       11: from pypsds.context import open_from_config
+       12: 
+       13: 
+       14: TWOPI = 2.0 * np.pi
+       15: 
+       16: 
+       17: def wrap(x):
+       18:     return np.arctan2(
+       19:         np.sin(x),
+       20:         np.cos(x),
+       21:     )
+       22: 
+       23: 
+       24: def load_itab(path: Path, ndate: int):
+       25: 
+       26:     edges = []
+       27: 
+>>>    28:     with path.open() as f:
+       29: 
+       30:         for raw in f:
+       31: 
+       32:             x = raw.split()
+       33: 
+       34:             if len(x) < 2:
+       35:                 continue
+       36: 
+       37:             i = int(x[0]) - 1
+       38:             j = int(x[1]) - 1
+       39: 
+       40:             if not (
+       41:                 0 <= i < ndate
+       42:                 and
+       43:                 0 <= j < ndate
+       44:             ):
+       45:                 raise RuntimeError(
+       46:                     f"Invalid ITAB line: {raw}"
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=63 api=Path.open path=
+       45:                 raise RuntimeError(
+       46:                     f"Invalid ITAB line: {raw}"
+       47:                 )
+       48: 
+       49:             edges.append(
+       50:                 (i, j)
+       51:             )
+       52: 
+       53:     return edges
+       54: 
+       55: 
+       56: def read_batch_qa(path: Path):
+       57: 
+       58:     out = {}
+       59: 
+       60:     if not path.exists():
+       61:         return out
+       62: 
+>>>    63:     with path.open() as f:
+       64: 
+       65:         for r in csv.DictReader(f):
+       66: 
+       67:             pid = int(
+       68:                 r["pair_id"]
+       69:             )
+       70: 
+       71:             out[pid] = {
+       72:                 "safe_internal_bad":
+       73:                     int(
+       74:                         r[
+       75:                             "safe_internal_bad"
+       76:                         ]
+       77:                     ),
+       78: 
+       79:                 "final_safe_bad":
+       80:                     int(
+       81:                         r[
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=472 api=np.load path=$OUTPUT/processing/safe_fragment_integer_quality/pair*_*_*_safe_fragment.npy
+      454:         unwrap_path = (
+      455:             unwrap_dir
+      456:             / (
+      457:                 f"{tag}_"
+      458:                 "unwrapped_phase_rad.npy"
+      459:             )
+      460:         )
+      461: 
+      462:         if not safe_fragment_path.exists():
+      463:             raise FileNotFoundError(
+      464:                 safe_fragment_path
+      465:             )
+      466: 
+      467:         if not unwrap_path.exists():
+      468:             raise FileNotFoundError(
+      469:                 unwrap_path
+      470:             )
+      471: 
+>>>   472:         safe_fragment = np.load(
+      473:             safe_fragment_path,
+      474:             mmap_mode="r",
+      475:         )
+      476: 
+      477:         U = np.load(
+      478:             unwrap_path,
+      479:             mmap_mode="r",
+      480:         )
+      481: 
+      482:         if safe_fragment.size != npoint:
+      483:             raise RuntimeError(
+      484:                 f"{tag}: fragment size mismatch"
+      485:             )
+      486: 
+      487:         # ====================================================
+      488:         # A. Fragment-coherence quality
+      489:         # ====================================================
+      490: 
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=477 api=np.load path=$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy
+      459:             )
+      460:         )
+      461: 
+      462:         if not safe_fragment_path.exists():
+      463:             raise FileNotFoundError(
+      464:                 safe_fragment_path
+      465:             )
+      466: 
+      467:         if not unwrap_path.exists():
+      468:             raise FileNotFoundError(
+      469:                 unwrap_path
+      470:             )
+      471: 
+      472:         safe_fragment = np.load(
+      473:             safe_fragment_path,
+      474:             mmap_mode="r",
+      475:         )
+      476: 
+>>>   477:         U = np.load(
+      478:             unwrap_path,
+      479:             mmap_mode="r",
+      480:         )
+      481: 
+      482:         if safe_fragment.size != npoint:
+      483:             raise RuntimeError(
+      484:                 f"{tag}: fragment size mismatch"
+      485:             )
+      486: 
+      487:         # ====================================================
+      488:         # A. Fragment-coherence quality
+      489:         # ====================================================
+      490: 
+      491:         corrected_points = bad_point_ids[
+      492:             nz_bad_idx
+      493:         ]
+      494: 
+      495:         corrected_delta = dx_bad[
+
+POTENTIAL I/O SOURCE LINES:
+     28:     with path.open() as f:
+     63:     with path.open() as f:
+    180:     phase = np.load(
+    186:     rows_pt = np.load(
+    192:     cols_pt = np.load(
+    198:     local_u = np.load(
+    204:     local_v = np.load(
+    210:     bad_point_ids = np.load(
+    218:     correction = np.load(
+    472:         safe_fragment = np.load(
+    477:         U = np.load(
+   1420:     with pair_csv.open(
+   1442:     with frag_csv.open(
+   1593:     json_path.write_text(
+
+==============================================================================================================
+STAGE: unwrap_signature_quality
+SCRIPT: 08w_quality_fragment_signature_feasibility.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/fragment_signature_feasibility/bad_signature_groups.csv
+  IN  processing/fragment_signature_feasibility/temporal_bad_point_signature_status.csv
+  IN  processing/point_phase_stack/cols.npy
+  IN  processing/point_phase_stack/rows.npy
+  IN  processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy
+  IN  processing/temporal_sparse_integer_candidate/bad_point_ids.npy
+  IN  processing/unwrap_component_policy/main_component_mask.npy
+
+RESOLVED OUTPUTS:
+  OUT processing/fragment_signature_feasibility/fragment_signature_feasibility.json
+  OUT processing/fragment_signature_feasibility/main_signature_group.npy
+  OUT processing/fragment_signature_feasibility/main_signature_hash1.npy
+  OUT processing/fragment_signature_feasibility/main_signature_hash2.npy
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=21 api=Path.open path=$OUTPUT/processing/safe_fragment_integer_quality/pair*_*_*_safe_fragment.npy
+        3: 
+        4: import argparse
+        5: import csv
+        6: import json
+        7: from collections import defaultdict
+        8: from pathlib import Path
+        9: 
+       10: import numpy as np
+       11: 
+       12: from pypsds.context import open_from_config
+       13: 
+       14: 
+       15: MASK64 = (1 << 64) - 1
+       16: 
+       17: 
+       18: def load_itab(path: Path, ndate: int):
+       19:     edges = []
+       20: 
+>>>    21:     with path.open() as f:
+       22:         for raw in f:
+       23:             x = raw.split()
+       24: 
+       25:             if len(x) < 2:
+       26:                 continue
+       27: 
+       28:             i = int(x[0]) - 1
+       29:             j = int(x[1]) - 1
+       30: 
+       31:             if not (
+       32:                 0 <= i < ndate
+       33:                 and
+       34:                 0 <= j < ndate
+       35:             ):
+       36:                 raise RuntimeError(
+       37:                     f"Invalid ITAB line: {raw}"
+       38:                 )
+       39: 
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=102 api=Path.open path=
+       84:         )
+       85: 
+       86:     return x
+       87: 
+       88: 
+       89: def read_bad_point_patterns(
+       90:     sparse_csv: Path,
+       91:     bad_point_ids,
+       92: ):
+       93:     """
+       94:     Step08u sparse correction CSV contains one or more
+       95:     entries per bad point and carries pattern_id.
+       96: 
+       97:     Recover one pattern ID per bad point.
+       98:     """
+       99: 
+      100:     pattern_by_point = {}
+      101: 
+>>>   102:     with sparse_csv.open() as f:
+      103:         for r in csv.DictReader(f):
+      104: 
+      105:             pid = int(
+      106:                 r["point_id"]
+      107:             )
+      108: 
+      109:             pattern = int(
+      110:                 r["pattern_id"]
+      111:             )
+      112: 
+      113:             old = pattern_by_point.get(
+      114:                 pid
+      115:             )
+      116: 
+      117:             if (
+      118:                 old is not None
+      119:                 and
+      120:                 old != pattern
+
+POTENTIAL I/O SOURCE LINES:
+     21:     with path.open() as f:
+    102:     with sparse_csv.open() as f:
+    225:     rows_pt = np.load(
+    231:     cols_pt = np.load(
+    253:     main_mask = np.load(
+    270:     bad_point_ids = np.load(
+    280:     temporal_bad_count = np.load(
+    393:         frag = np.load(
+   1053:     with group_csv.open(
+   1077:     with point_csv.open(
+   1096:     np.save(
+   1102:     np.save(
+   1108:     np.save(
+   1206:     json_path.write_text(
+
+==============================================================================================================
+STAGE: unwrap_finalize
+SCRIPT: 08x_finalize_unwrap_quality_and_gauge.py
+==============================================================================================================
+
+RESOLVED INPUTS:
+  IN  processing/final_unwrap/excluded_or_flagged_points.csv
+  IN  processing/final_unwrap/global_ifg_integer_gauge.csv
+  IN  processing/fragment_signature_feasibility/temporal_bad_point_signature_status.csv
+  IN  processing/point_phase_stack/cols.npy
+  IN  processing/point_phase_stack/rows.npy
+  IN  processing/safe_conflict_acquisition_quality/suspicious_edge_ids.npy
+  IN  processing/spatial_graph/local_u.npy
+  IN  processing/spatial_graph/local_v.npy
+  IN  processing/temporal_integer_closure_quality/cycle_matrix.npy
+  IN  processing/temporal_integer_closure_quality/cycle_modal_integer.npy
+  IN  processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy
+  IN  processing/temporal_integer_closure_quality/temporal_cycle_qa.csv
+  IN  processing/unwrap_component_policy/main_component_mask.npy
+
+RESOLVED OUTPUTS:
+  OUT processing/final_unwrap/all_ifg_registered_mask.npy
+  OUT processing/final_unwrap/final_unwrap_candidate_manifest.json
+  OUT processing/final_unwrap/global_ifg_integer_delta.npy
+  OUT processing/final_unwrap/spatial_safe_conflict_point_mask.npy
+  OUT processing/final_unwrap/strict_unwrap_valid_mask.npy
+  OUT processing/final_unwrap/structural_incompatible_mask.npy
+  OUT processing/final_unwrap/temporal_integer_bad_mask.npy
+  OUT processing/final_unwrap/temporal_valid_mask.npy
+
+ISSUE SOURCE CONTEXT:
+
+----------------------------------------------------------------------------------------------------
+UNRESOLVED line=20 api=Path.open path=
+        2: from __future__ import annotations
+        3: 
+        4: import argparse
+        5: import csv
+        6: import json
+        7: from pathlib import Path
+        8: 
+        9: import numpy as np
+       10: 
+       11: from pypsds.context import open_from_config
+       12: 
+       13: 
+       14: TWOPI = 2.0 * np.pi
+       15: 
+       16: 
+       17: def load_itab(path: Path, ndate: int):
+       18:     edges = []
+       19: 
+>>>    20:     with path.open() as f:
+       21:         for raw in f:
+       22:             x = raw.split()
+       23: 
+       24:             if len(x) < 2:
+       25:                 continue
+       26: 
+       27:             i = int(x[0]) - 1
+       28:             j = int(x[1]) - 1
+       29: 
+       30:             if not (
+       31:                 0 <= i < ndate
+       32:                 and
+       33:                 0 <= j < ndate
+       34:             ):
+       35:                 raise RuntimeError(
+       36:                     f"Invalid ITAB line: {raw}"
+       37:                 )
+       38: 
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=233 api=np.load path=$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy
+      215:             / f"{tag}_unwrapped_phase_rad.npy"
+      216:         )
+      217: 
+      218:         reg_path = (
+      219:             unwrap_dir
+      220:             / f"{tag}_registered_mask.npy"
+      221:         )
+      222: 
+      223:         if not phase_path.exists():
+      224:             raise FileNotFoundError(
+      225:                 phase_path
+      226:             )
+      227: 
+      228:         if not reg_path.exists():
+      229:             raise FileNotFoundError(
+      230:                 reg_path
+      231:             )
+      232: 
+>>>   233:         U = np.load(
+      234:             phase_path,
+      235:             mmap_mode="r",
+      236:         )
+      237: 
+      238:         R = np.load(
+      239:             reg_path,
+      240:             mmap_mode="r",
+      241:         )
+      242: 
+      243:         if U.size != npoint:
+      244:             raise RuntimeError(
+      245:                 f"{phase_path.name}: "
+      246:                 "point count mismatch"
+      247:             )
+      248: 
+      249:         if R.size != npoint:
+      250:             raise RuntimeError(
+      251:                 f"{reg_path.name}: "
+
+----------------------------------------------------------------------------------------------------
+DYNAMIC line=238 api=np.load path=$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_registered_mask.npy
+      220:             / f"{tag}_registered_mask.npy"
+      221:         )
+      222: 
+      223:         if not phase_path.exists():
+      224:             raise FileNotFoundError(
+      225:                 phase_path
+      226:             )
+      227: 
+      228:         if not reg_path.exists():
+      229:             raise FileNotFoundError(
+      230:                 reg_path
+      231:             )
+      232: 
+      233:         U = np.load(
+      234:             phase_path,
+      235:             mmap_mode="r",
+      236:         )
+      237: 
+>>>   238:         R = np.load(
+      239:             reg_path,
+      240:             mmap_mode="r",
+      241:         )
+      242: 
+      243:         if U.size != npoint:
+      244:             raise RuntimeError(
+      245:                 f"{phase_path.name}: "
+      246:                 "point count mismatch"
+      247:             )
+      248: 
+      249:         if R.size != npoint:
+      250:             raise RuntimeError(
+      251:                 f"{reg_path.name}: "
+      252:                 "point count mismatch"
+      253:             )
+      254: 
+      255:         phase_maps.append(U)
+      256:         registration_maps.append(R)
+
+POTENTIAL I/O SOURCE LINES:
+     20:     with path.open() as f:
+    130:     rows_pt = np.load(
+    135:     cols_pt = np.load(
+    155:     C = np.load(
+    162:     cycle_mode = np.load(
+    169:     main_mask = np.load(
+    177:     temporal_bad_count = np.load(
+    233:         U = np.load(
+    238:         R = np.load(
+    293:     with cycle_csv.open() as f:
+    485:         edge_ids = np.load(
+    492:         local_u = np.load(
+    497:         local_v = np.load(
+    545:         with point_status_csv.open() as f:
+    840:     np.save(
+    848:     np.save(
+    854:     np.save(
+    860:     np.save(
+    866:     np.save(
+    872:     np.save(
+    878:     np.save(
+    922:     with gauge_csv.open(
+   1028:     with flag_csv.open(
+   1194:     manifest_path.write_text(

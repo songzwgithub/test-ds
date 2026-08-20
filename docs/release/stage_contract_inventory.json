@@ -1,0 +1,4043 @@
+{
+  "format": "pyPSDS-GAMMA-stage-contract-inventory-v1",
+  "config": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/config/pypsds.yaml",
+  "output_root": "/home/ubuntu/Downloads/psds/output",
+  "stage_count": 32,
+  "stages": {
+    "ds_statistics": {
+      "script": "04_prepare_ds_statistics.py",
+      "script_sha256": "9b904a5942ae66b8d068f84d9ea001539e18ab877e017cddb8dd09aa60d09f15",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/cache/phase_geometry_valid.npy",
+          "output_relative": "processing/cache/phase_geometry_valid.npy",
+          "api": "np.load",
+          "line": 948,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/final_ps_mask.npy",
+          "output_relative": "processing/final_ps_mask.npy",
+          "api": "np.load",
+          "line": 1074,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/ps_mask.npy",
+          "output_relative": "processing/ps_mask.npy",
+          "api": "np.load",
+          "line": 1042,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/ds_statistics/amplitude_dispersion_index.npy",
+          "output_relative": "processing/ds_statistics/amplitude_dispersion_index.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 632,
+          "exists": false,
+          "match_count": 0
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/ds_statistics/manifest.json",
+          "output_relative": "processing/ds_statistics/manifest.json",
+          "api": "Path.write_text",
+          "line": 1237,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/ds_statistics/ps_mask.npy",
+          "output_relative": "processing/ds_statistics/ps_mask.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 621,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/ds_statistics/raw_valid.npy",
+          "output_relative": "processing/ds_statistics/raw_valid.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 601,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/ds_statistics/rayleigh_scale2.npy",
+          "output_relative": "processing/ds_statistics/rayleigh_scale2.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 611,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/ds_statistics/tile_done.npy",
+          "output_relative": "processing/ds_statistics/tile_done.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 644,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/cache/phase_geometry_valid.npy",
+        "processing/final_ps_mask.npy",
+        "processing/ps_mask.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/ds_statistics/amplitude_dispersion_index.npy",
+        "processing/ds_statistics/manifest.json",
+        "processing/ds_statistics/ps_mask.npy",
+        "processing/ds_statistics/raw_valid.npy",
+        "processing/ds_statistics/rayleigh_scale2.npy",
+        "processing/ds_statistics/tile_done.npy"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [],
+      "missing_exact": [
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/ds_statistics/amplitude_dispersion_index.npy",
+          "output_relative": "processing/ds_statistics/amplitude_dispersion_index.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 632,
+          "exists": false,
+          "match_count": 0
+        }
+      ]
+    },
+    "phase_cache": {
+      "script": "03_build_phase_cache.py",
+      "script_sha256": "72a83953792b7df4fbf293ad80d13cb8241dda57ab2f5d3ababc7456c1556121",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/cache/phase_cache_manifest.json",
+          "output_relative": "processing/cache/phase_cache_manifest.json",
+          "api": "Path.write_text",
+          "line": 111,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/cache/phase_corrected_yxt.npy",
+          "output_relative": "processing/cache/phase_corrected_yxt.npy",
+          "api": "np.lib.format.open_memmap",
+          "line": 53,
+          "exists": false,
+          "match_count": 0
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/cache/phase_geometry_valid.npy",
+          "output_relative": "processing/cache/phase_geometry_valid.npy",
+          "api": "np.save",
+          "line": 95,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [],
+      "exact_output_outputs": [
+        "processing/cache/phase_cache_manifest.json",
+        "processing/cache/phase_corrected_yxt.npy",
+        "processing/cache/phase_geometry_valid.npy"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [],
+      "missing_exact": [
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/cache/phase_corrected_yxt.npy",
+          "output_relative": "processing/cache/phase_corrected_yxt.npy",
+          "api": "np.lib.format.open_memmap",
+          "line": 53,
+          "exists": false,
+          "match_count": 0
+        }
+      ]
+    },
+    "exact_support_cache": {
+      "script": "03b_build_exact_support_cache.py",
+      "script_sha256": "f35a549ef31e991129d636df753b7fe41d28f8882464bdcab730a149ea23e1b6",
+      "status": "REVIEW",
+      "resolved_file_refs": [],
+      "exact_output_inputs": [],
+      "exact_output_outputs": [],
+      "dynamic_refs": [],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "phase_linking": {
+      "script": "04_run_psds.py",
+      "script_sha256": "bb74496e5c90b6dacbc6a80a166420cdd6a3a75172c28c454b19ed213a532dbf",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/cache/phase_corrected_yxt.npy",
+          "output_relative": "processing/cache/phase_corrected_yxt.npy",
+          "api": "np.load",
+          "line": 920,
+          "exists": false,
+          "match_count": 0
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/cache/phase_geometry_valid.npy",
+          "output_relative": "processing/cache/phase_geometry_valid.npy",
+          "api": "np.load",
+          "line": 956,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/cache/phase_source_checkpoint_token.json",
+          "output_relative": "processing/cache/phase_source_checkpoint_token.json",
+          "api": "Path.read_text",
+          "line": 405,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/ds_statistics/ps_mask.npy",
+          "output_relative": "processing/ds_statistics/ps_mask.npy",
+          "api": "np.load",
+          "line": 719,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/ds_statistics/raw_valid.npy",
+          "output_relative": "processing/ds_statistics/raw_valid.npy",
+          "api": "np.load",
+          "line": 707,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/ds_statistics/rayleigh_scale2.npy",
+          "output_relative": "processing/ds_statistics/rayleigh_scale2.npy",
+          "api": "np.load",
+          "line": 713,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/center_cols.npy",
+          "output_relative": "processing/center_cols.npy",
+          "api": "np.save",
+          "line": 1020,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/center_prior.npy",
+          "output_relative": "processing/center_prior.npy",
+          "api": "np.save",
+          "line": 1108,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/center_rows.npy",
+          "output_relative": "processing/center_rows.npy",
+          "api": "np.save",
+          "line": 1019,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/emi_eigenvalue.npy",
+          "output_relative": "processing/emi_eigenvalue.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 1093,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/estimator_code.npy",
+          "output_relative": "processing/estimator_code.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 1092,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/evd_eigenvalue.npy",
+          "output_relative": "processing/evd_eigenvalue.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 1094,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/gamma_min_eigenvalue.npy",
+          "output_relative": "processing/gamma_min_eigenvalue.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 1095,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/linked_phase.npy",
+          "output_relative": "processing/linked_phase.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 1098,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/median_pair_coherence.npy",
+          "output_relative": "processing/median_pair_coherence.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 1091,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/pl_valid.npy",
+          "output_relative": "processing/pl_valid.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 1096,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/processed_centers.npy",
+          "output_relative": "processing/processed_centers.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 1097,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/ps_mask.npy",
+          "output_relative": "processing/ps_mask.npy",
+          "api": "np.save",
+          "line": 1107,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/shp_count.npy",
+          "output_relative": "processing/shp_count.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 1089,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_coherence.npy",
+          "output_relative": "processing/temporal_coherence.npy",
+          "api": "helper:open_or_create_npy:path",
+          "line": 1090,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/cache/phase_corrected_yxt.npy",
+        "processing/cache/phase_geometry_valid.npy",
+        "processing/cache/phase_source_checkpoint_token.json",
+        "processing/ds_statistics/ps_mask.npy",
+        "processing/ds_statistics/raw_valid.npy",
+        "processing/ds_statistics/rayleigh_scale2.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/center_cols.npy",
+        "processing/center_prior.npy",
+        "processing/center_rows.npy",
+        "processing/emi_eigenvalue.npy",
+        "processing/estimator_code.npy",
+        "processing/evd_eigenvalue.npy",
+        "processing/gamma_min_eigenvalue.npy",
+        "processing/linked_phase.npy",
+        "processing/median_pair_coherence.npy",
+        "processing/pl_valid.npy",
+        "processing/processed_centers.npy",
+        "processing/ps_mask.npy",
+        "processing/shp_count.npy",
+        "processing/temporal_coherence.npy"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [
+        {
+          "kind": "output",
+          "api": "Path.write_text",
+          "line": 426
+        },
+        {
+          "kind": "input",
+          "api": "helper:_p8g1_sha256_file:path",
+          "line": 304
+        },
+        {
+          "kind": "input",
+          "api": "np.load",
+          "line": 992
+        }
+      ],
+      "missing_exact": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/cache/phase_corrected_yxt.npy",
+          "output_relative": "processing/cache/phase_corrected_yxt.npy",
+          "api": "np.load",
+          "line": 920,
+          "exists": false,
+          "match_count": 0
+        }
+      ]
+    },
+    "ds_selection": {
+      "script": "05_select_ds.py",
+      "script_sha256": "d8dcc09b0c5362313a3231807c3c752318492de17d535c51e7b2e769101715b2",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/estimator_code.npy",
+          "output_relative": "processing/estimator_code.npy",
+          "api": "np.load",
+          "line": 31,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/median_pair_coherence.npy",
+          "output_relative": "processing/median_pair_coherence.npy",
+          "api": "np.load",
+          "line": 30,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/pl_valid.npy",
+          "output_relative": "processing/pl_valid.npy",
+          "api": "np.load",
+          "line": 28,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/ps_mask.npy",
+          "output_relative": "processing/ps_mask.npy",
+          "api": "np.load",
+          "line": 27,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_coherence.npy",
+          "output_relative": "processing/temporal_coherence.npy",
+          "api": "np.load",
+          "line": 29,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/final_ds_*.npy",
+          "output_relative": "processing/final_ds_*.npy",
+          "api": "np.save",
+          "line": 44,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/estimator_code.npy",
+        "processing/median_pair_coherence.npy",
+        "processing/pl_valid.npy",
+        "processing/ps_mask.npy",
+        "processing/temporal_coherence.npy"
+      ],
+      "exact_output_outputs": [],
+      "dynamic_refs": [
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/final_ds_*.npy",
+          "output_relative": "processing/final_ds_*.npy",
+          "api": "np.save",
+          "line": 44,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "ps_finalize": {
+      "script": "06b_finalize_ps_geometry.py",
+      "script_sha256": "48fc2f7a10db1156a13ad9d55bcdc7096492e50d9dfbab30415241cf73d80cbf",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/linked_phase.npy",
+          "output_relative": "processing/linked_phase.npy",
+          "api": "np.load",
+          "line": 100,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/ps_mask.npy",
+          "output_relative": "processing/ps_mask.npy",
+          "api": "np.load",
+          "line": 92,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/final_ps_mask.npy",
+          "output_relative": "processing/final_ps_mask.npy",
+          "api": "np.save",
+          "line": 346,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/step06_ps_finalize/rejected_ps.csv",
+          "output_relative": "processing/step06_ps_finalize/rejected_ps.csv",
+          "api": "open",
+          "line": 264,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/step06_ps_finalize/rejected_ps_mask.npy",
+          "output_relative": "processing/step06_ps_finalize/rejected_ps_mask.npy",
+          "api": "np.save",
+          "line": 352,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/linked_phase.npy",
+        "processing/ps_mask.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/final_ps_mask.npy",
+        "processing/step06_ps_finalize/rejected_ps.csv",
+        "processing/step06_ps_finalize/rejected_ps_mask.npy"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [
+        {
+          "kind": "input",
+          "api": "np.load",
+          "line": 176
+        }
+      ],
+      "missing_exact": []
+    },
+    "point_stack": {
+      "script": "06_build_point_phase_stack.py",
+      "script_sha256": "9f2cddfcd427e8282ab07f8000593cd136b813d5a4b29852957d542ea119abd5",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/emi_eigenvalue.npy",
+          "output_relative": "processing/emi_eigenvalue.npy",
+          "api": "helper:optional_load:path",
+          "line": 503,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/estimator_code.npy",
+          "output_relative": "processing/estimator_code.npy",
+          "api": "helper:optional_load:path",
+          "line": 498,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/evd_eigenvalue.npy",
+          "output_relative": "processing/evd_eigenvalue.npy",
+          "api": "helper:optional_load:path",
+          "line": 508,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/gamma_min_eigenvalue.npy",
+          "output_relative": "processing/gamma_min_eigenvalue.npy",
+          "api": "helper:optional_load:path",
+          "line": 513,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/linked_phase.npy",
+          "output_relative": "processing/linked_phase.npy",
+          "api": "np.load",
+          "line": 196,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/median_pair_coherence.npy",
+          "output_relative": "processing/median_pair_coherence.npy",
+          "api": "helper:optional_load:path",
+          "line": 488,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/shp_count.npy",
+          "output_relative": "processing/shp_count.npy",
+          "api": "helper:optional_load:path",
+          "line": 493,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_coherence.npy",
+          "output_relative": "processing/temporal_coherence.npy",
+          "api": "helper:optional_load:path",
+          "line": 483,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.save",
+          "line": 454,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/dates.txt",
+          "output_relative": "processing/point_phase_stack/dates.txt",
+          "api": "open",
+          "line": 690,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/emi_eigenvalue.npy",
+          "output_relative": "processing/point_phase_stack/emi_eigenvalue.npy",
+          "api": "np.save",
+          "line": 658,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/estimator_code.npy",
+          "output_relative": "processing/point_phase_stack/estimator_code.npy",
+          "api": "np.save",
+          "line": 652,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/evd_eigenvalue.npy",
+          "output_relative": "processing/point_phase_stack/evd_eigenvalue.npy",
+          "api": "np.save",
+          "line": 664,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/gamma_min_eigenvalue.npy",
+          "output_relative": "processing/point_phase_stack/gamma_min_eigenvalue.npy",
+          "api": "np.save",
+          "line": 670,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/glrt_support_K.npy",
+          "output_relative": "processing/point_phase_stack/glrt_support_K.npy",
+          "api": "np.save",
+          "line": 646,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/manifest.json",
+          "output_relative": "processing/point_phase_stack/manifest.json",
+          "api": "open",
+          "line": 841,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/median_pair_coherence.npy",
+          "output_relative": "processing/point_phase_stack/median_pair_coherence.npy",
+          "api": "np.save",
+          "line": 640,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/phase_rad.npy",
+          "output_relative": "processing/point_phase_stack/phase_rad.npy",
+          "api": "np.lib.format.open_memmap",
+          "line": 329,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/point_id.npy",
+          "output_relative": "processing/point_phase_stack/point_id.npy",
+          "api": "np.save",
+          "line": 469,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/point_type.npy",
+          "output_relative": "processing/point_phase_stack/point_type.npy",
+          "api": "np.save",
+          "line": 459,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/points.csv",
+          "output_relative": "processing/point_phase_stack/points.csv",
+          "api": "open",
+          "line": 704,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.save",
+          "line": 449,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/temporal_coherence.npy",
+          "output_relative": "processing/point_phase_stack/temporal_coherence.npy",
+          "api": "np.save",
+          "line": 634,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/emi_eigenvalue.npy",
+        "processing/estimator_code.npy",
+        "processing/evd_eigenvalue.npy",
+        "processing/gamma_min_eigenvalue.npy",
+        "processing/linked_phase.npy",
+        "processing/median_pair_coherence.npy",
+        "processing/shp_count.npy",
+        "processing/temporal_coherence.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/dates.txt",
+        "processing/point_phase_stack/emi_eigenvalue.npy",
+        "processing/point_phase_stack/estimator_code.npy",
+        "processing/point_phase_stack/evd_eigenvalue.npy",
+        "processing/point_phase_stack/gamma_min_eigenvalue.npy",
+        "processing/point_phase_stack/glrt_support_K.npy",
+        "processing/point_phase_stack/manifest.json",
+        "processing/point_phase_stack/median_pair_coherence.npy",
+        "processing/point_phase_stack/phase_rad.npy",
+        "processing/point_phase_stack/point_id.npy",
+        "processing/point_phase_stack/point_type.npy",
+        "processing/point_phase_stack/points.csv",
+        "processing/point_phase_stack/rows.npy",
+        "processing/point_phase_stack/temporal_coherence.npy"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [
+        {
+          "kind": "input",
+          "api": "np.load",
+          "line": 168
+        },
+        {
+          "kind": "input",
+          "api": "np.load",
+          "line": 176
+        }
+      ],
+      "missing_exact": []
+    },
+    "network_prepare": {
+      "script": "07_build_network.py",
+      "script_sha256": "7b2a9e5a8cfc2a727a9f1486ea71e469d222ac3f7968fb78efb44984effbf261",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/acquisition_bperp_m.npy",
+          "output_relative": "processing/network/acquisition_bperp_m.npy",
+          "api": "np.save",
+          "line": 1611,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/acquisitions.csv",
+          "output_relative": "processing/network/acquisitions.csv",
+          "api": "Path.open",
+          "line": 1635,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/degree.npy",
+          "output_relative": "processing/network/degree.npy",
+          "api": "np.save",
+          "line": 1619,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/manifest.json",
+          "output_relative": "processing/network/manifest.json",
+          "api": "Path.write_text",
+          "line": 2049,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/network.itab",
+          "output_relative": "processing/network/network.itab",
+          "api": "helper:write_itab:path",
+          "line": 1625,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/pairs.csv",
+          "output_relative": "processing/network/pairs.csv",
+          "api": "Path.open",
+          "line": 1678,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [],
+      "exact_output_outputs": [
+        "processing/network/acquisition_bperp_m.npy",
+        "processing/network/acquisitions.csv",
+        "processing/network/degree.npy",
+        "processing/network/manifest.json",
+        "processing/network/network.itab",
+        "processing/network/pairs.csv"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [
+        {
+          "kind": "input",
+          "api": "Path.read_text",
+          "line": 376
+        }
+      ],
+      "missing_exact": []
+    },
+    "network_build": {
+      "script": "07b_build_directional_network.py",
+      "script_sha256": "c472cae05f1dec4920622ed9917299fccc7954fefaf3cdd0b192e80e72c9f863",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/acquisition_bperp_m.npy",
+          "output_relative": "processing/network/acquisition_bperp_m.npy",
+          "api": "np.load",
+          "line": 199,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/directional_degree.npy",
+          "output_relative": "processing/network/directional_degree.npy",
+          "api": "np.save",
+          "line": 630,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/directional_left_count.npy",
+          "output_relative": "processing/network/directional_left_count.npy",
+          "api": "np.save",
+          "line": 618,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/directional_right_count.npy",
+          "output_relative": "processing/network/directional_right_count.npy",
+          "api": "np.save",
+          "line": 624,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/network_directional.itab",
+          "output_relative": "processing/network/network_directional.itab",
+          "api": "Path.open",
+          "line": 603,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/pairs_directional.csv",
+          "output_relative": "processing/network/pairs_directional.csv",
+          "api": "Path.open",
+          "line": 640,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/network/acquisition_bperp_m.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/network/directional_degree.npy",
+        "processing/network/directional_left_count.npy",
+        "processing/network/directional_right_count.npy",
+        "processing/network/network_directional.itab",
+        "processing/network/pairs_directional.csv"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "network_cycle_quality": {
+      "script": "07c_quality_cycle_coverage_directional.py",
+      "script_sha256": "563b495f7f43614063f962514491b9a5e6697a6e1e645a60e8aefad1dda3d749",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/acquisition_bperp_m.npy",
+          "output_relative": "processing/network/acquisition_bperp_m.npy",
+          "api": "np.load",
+          "line": 252,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/network_directional.itab",
+          "output_relative": "processing/network/network_directional.itab",
+          "api": "helper:load_network:path",
+          "line": 241,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/cycle_quality_directional/cycles_*.csv",
+          "output_relative": "processing/network/cycle_quality_directional/cycles_*.csv",
+          "api": "Path.open",
+          "line": 622,
+          "exists": true,
+          "match_count": 3
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/cycle_quality_directional/edge_cycle_coverage.csv",
+          "output_relative": "processing/network/cycle_quality_directional/edge_cycle_coverage.csv",
+          "api": "Path.open",
+          "line": 561,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/cycle_quality_directional/summary.txt",
+          "output_relative": "processing/network/cycle_quality_directional/summary.txt",
+          "api": "Path.open",
+          "line": 835,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/network/acquisition_bperp_m.npy",
+        "processing/network/network_directional.itab"
+      ],
+      "exact_output_outputs": [
+        "processing/network/cycle_quality_directional/edge_cycle_coverage.csv",
+        "processing/network/cycle_quality_directional/summary.txt"
+      ],
+      "dynamic_refs": [
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/cycle_quality_directional/cycles_*.csv",
+          "output_relative": "processing/network/cycle_quality_directional/cycles_*.csv",
+          "api": "Path.open",
+          "line": 622,
+          "exists": true,
+          "match_count": 3
+        }
+      ],
+      "unresolved_io": [
+        {
+          "kind": "input",
+          "api": "Path.read_text",
+          "line": 28
+        }
+      ],
+      "missing_exact": []
+    },
+    "network_finalize": {
+      "script": "07d_finalize_network.py",
+      "script_sha256": "0242e5fb1d5ff580380421df67500be6622438a4b7b9fe1e314d379f29ad86f1",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/acquisition_bperp_m.npy",
+          "output_relative": "processing/network/acquisition_bperp_m.npy",
+          "api": "np.load",
+          "line": 249,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/cycle_quality_directional/summary.txt",
+          "output_relative": "processing/network/cycle_quality_directional/summary.txt",
+          "api": "helper:read_summary:path",
+          "line": 403,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/network_directional.itab",
+          "output_relative": "processing/network/network_directional.itab",
+          "api": "helper:load_itab:path",
+          "line": 258,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/pairs_directional.csv",
+          "output_relative": "processing/network/pairs_directional.csv",
+          "api": "shutil.copy2",
+          "line": 528,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/NETWORK_FROZEN.txt",
+          "output_relative": "processing/network/NETWORK_FROZEN.txt",
+          "api": "Path.write_text",
+          "line": 693,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/degree.npy",
+          "output_relative": "processing/network/degree.npy",
+          "api": "np.save",
+          "line": 533,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/left_connection_count.npy",
+          "output_relative": "processing/network/left_connection_count.npy",
+          "api": "np.save",
+          "line": 538,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/network.itab",
+          "output_relative": "processing/network/network.itab",
+          "api": "shutil.copy2",
+          "line": 523,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/network_manifest.json",
+          "output_relative": "processing/network/network_manifest.json",
+          "api": "Path.write_text",
+          "line": 675,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/pairs.csv",
+          "output_relative": "processing/network/pairs.csv",
+          "api": "shutil.copy2",
+          "line": 528,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network/right_connection_count.npy",
+          "output_relative": "processing/network/right_connection_count.npy",
+          "api": "np.save",
+          "line": 544,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/network/acquisition_bperp_m.npy",
+        "processing/network/cycle_quality_directional/summary.txt",
+        "processing/network/network_directional.itab",
+        "processing/network/pairs_directional.csv"
+      ],
+      "exact_output_outputs": [
+        "processing/network/NETWORK_FROZEN.txt",
+        "processing/network/degree.npy",
+        "processing/network/left_connection_count.npy",
+        "processing/network/network.itab",
+        "processing/network/network_manifest.json",
+        "processing/network/pairs.csv",
+        "processing/network/right_connection_count.npy"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [
+        {
+          "kind": "input",
+          "api": "shutil.copy2",
+          "line": 173
+        },
+        {
+          "kind": "output",
+          "api": "shutil.copy2",
+          "line": 173
+        },
+        {
+          "kind": "input",
+          "api": "Path.read_text",
+          "line": 36
+        },
+        {
+          "kind": "input",
+          "api": "Path.read_text",
+          "line": 144
+        }
+      ],
+      "missing_exact": []
+    },
+    "virtual_ifg_quality": {
+      "script": "08a_quality_virtual_ifg.py",
+      "script_sha256": "67822bba5d29d195a9d33cb456a2d0d929165b58d2cf145d3219a5e7578ce7ae",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/network.itab",
+          "output_relative": "processing/network/network.itab",
+          "api": "helper:load_itab:path",
+          "line": 242,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/network_manifest.json",
+          "output_relative": "processing/network/network_manifest.json",
+          "api": "Path.read_text",
+          "line": 250,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/dates.txt",
+          "output_relative": "processing/point_phase_stack/dates.txt",
+          "api": "helper:read_dates:path",
+          "line": 226,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/phase_rad.npy",
+          "output_relative": "processing/point_phase_stack/phase_rad.npy",
+          "api": "np.load",
+          "line": 284,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/virtual_ifg_quality/triangle_closure_qa.csv",
+          "output_relative": "processing/virtual_ifg_quality/triangle_closure_qa.csv",
+          "api": "Path.open",
+          "line": 751,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/virtual_ifg_quality/virtual_ifg_pairs.csv",
+          "output_relative": "processing/virtual_ifg_quality/virtual_ifg_pairs.csv",
+          "api": "Path.open",
+          "line": 820,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/virtual_ifg_quality/virtual_ifg_quality_manifest.json",
+          "output_relative": "processing/virtual_ifg_quality/virtual_ifg_quality_manifest.json",
+          "api": "Path.write_text",
+          "line": 970,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/network/network.itab",
+        "processing/network/network_manifest.json",
+        "processing/point_phase_stack/dates.txt",
+        "processing/point_phase_stack/phase_rad.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/virtual_ifg_quality/triangle_closure_qa.csv",
+        "processing/virtual_ifg_quality/virtual_ifg_pairs.csv",
+        "processing/virtual_ifg_quality/virtual_ifg_quality_manifest.json"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [
+        {
+          "kind": "input",
+          "api": "Path.read_text",
+          "line": 45
+        },
+        {
+          "kind": "input",
+          "api": "Path.read_text",
+          "line": 29
+        }
+      ],
+      "missing_exact": []
+    },
+    "spatial_graph_quality": {
+      "script": "08b_quality_spatial_point_graph.py",
+      "script_sha256": "905d25a3a3f4151b4232aae3a9f450f767f70aa6f4e15797bfde89f6047054d0",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 252,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/phase_rad.npy",
+          "output_relative": "processing/point_phase_stack/phase_rad.npy",
+          "api": "np.load",
+          "line": 257,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 247,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_quality/component8.npy",
+          "output_relative": "processing/spatial_graph_quality/component8.npy",
+          "api": "np.save",
+          "line": 604,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_quality/degree4.npy",
+          "output_relative": "processing/spatial_graph_quality/degree4.npy",
+          "api": "np.save",
+          "line": 588,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_quality/degree8.npy",
+          "output_relative": "processing/spatial_graph_quality/degree8.npy",
+          "api": "np.save",
+          "line": 596,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_quality/occupancy_mask.npy",
+          "output_relative": "processing/spatial_graph_quality/occupancy_mask.npy",
+          "api": "np.save",
+          "line": 610,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_quality/spatial_graph_quality.json",
+          "output_relative": "processing/spatial_graph_quality/spatial_graph_quality.json",
+          "api": "Path.write_text",
+          "line": 704,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/phase_rad.npy",
+        "processing/point_phase_stack/rows.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/spatial_graph_quality/component8.npy",
+        "processing/spatial_graph_quality/degree4.npy",
+        "processing/spatial_graph_quality/degree8.npy",
+        "processing/spatial_graph_quality/occupancy_mask.npy",
+        "processing/spatial_graph_quality/spatial_graph_quality.json"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "spatial_bridge_quality": {
+      "script": "08c_quality_spatial_bridge_radius.py",
+      "script_sha256": "a6caaa8bd4b59b9299cf72e97e9c5f411651bff8f89e1c866c2515e2ab74b7fe",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 271,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 264,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_radius_quality/spatial_radius_quality.csv",
+          "output_relative": "processing/spatial_graph_radius_quality/spatial_radius_quality.csv",
+          "api": "Path.open",
+          "line": 541,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_radius_quality/spatial_radius_quality.json",
+          "output_relative": "processing/spatial_graph_radius_quality/spatial_radius_quality.json",
+          "api": "Path.write_text",
+          "line": 524,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/rows.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/spatial_graph_radius_quality/spatial_radius_quality.csv",
+        "processing/spatial_graph_radius_quality/spatial_radius_quality.json"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "spatial_component_quality": {
+      "script": "08d_quality_residual_spatial_components.py",
+      "script_sha256": "1e055ac4b018551ab4715ed7594fdbd923dda1c39ba71a54fef32b8f03e4d964",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 172,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 165,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_residual_quality/component_label_r4.npy",
+          "output_relative": "processing/spatial_graph_residual_quality/component_label_r4.npy",
+          "api": "np.save",
+          "line": 644,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_residual_quality/residual_components_to_main.csv",
+          "output_relative": "processing/spatial_graph_residual_quality/residual_components_to_main.csv",
+          "api": "Path.open",
+          "line": 617,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_residual_quality/residual_spatial_quality.json",
+          "output_relative": "processing/spatial_graph_residual_quality/residual_spatial_quality.json",
+          "api": "Path.write_text",
+          "line": 709,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/rows.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/spatial_graph_residual_quality/component_label_r4.npy",
+        "processing/spatial_graph_residual_quality/residual_components_to_main.csv",
+        "processing/spatial_graph_residual_quality/residual_spatial_quality.json"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "spatial_anchor_quality": {
+      "script": "08e_quality_residual_two_anchor.py",
+      "script_sha256": "c0ce5c492fd6d2eca82223922150446e4739eacfe4264d76168f1511e06bb3a3",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 70,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 66,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_residual_quality/component_label_r4.npy",
+          "output_relative": "processing/spatial_graph_residual_quality/component_label_r4.npy",
+          "api": "np.load",
+          "line": 74,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.csv",
+          "output_relative": "processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.csv",
+          "api": "Path.open",
+          "line": 675,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.json",
+          "output_relative": "processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.json",
+          "api": "Path.write_text",
+          "line": 761,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/rows.npy",
+        "processing/spatial_graph_residual_quality/component_label_r4.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.csv",
+        "processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.json"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "spatial_anchor_summary": {
+      "script": "08f_summarize_residual_anchor_radius.py",
+      "script_sha256": "4d265284f0d38c54ced8ea1db7aa8d1dc14beaf9d42bb829fb60f1beeafc5f81",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.csv",
+          "output_relative": "processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.csv",
+          "api": "Path.open",
+          "line": 44,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.csv"
+      ],
+      "exact_output_outputs": [],
+      "dynamic_refs": [],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "spatial_local_graph_quality": {
+      "script": "08g_quality_sparse_local_graph.py",
+      "script_sha256": "ed5fd964682f401d563c4e7d054ed9e1c8224c617e0ade70350c59944d4ca0a6",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 538,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 531,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_sparse_graph_quality/sparse_local_graph_sweep.csv",
+          "output_relative": "processing/spatial_sparse_graph_quality/sparse_local_graph_sweep.csv",
+          "api": "Path.open",
+          "line": 827,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_sparse_graph_quality/sparse_local_graph_sweep.json",
+          "output_relative": "processing/spatial_sparse_graph_quality/sparse_local_graph_sweep.json",
+          "api": "Path.write_text",
+          "line": 875,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/rows.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/spatial_sparse_graph_quality/sparse_local_graph_sweep.csv",
+        "processing/spatial_sparse_graph_quality/sparse_local_graph_sweep.json"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [
+        {
+          "kind": "input",
+          "api": "Path.read_text",
+          "line": 21
+        },
+        {
+          "kind": "input",
+          "api": "helper:read_gamma_value:path",
+          "line": 591
+        },
+        {
+          "kind": "input",
+          "api": "helper:read_gamma_value:path",
+          "line": 596
+        }
+      ],
+      "missing_exact": []
+    },
+    "spatial_graph": {
+      "script": "08h_build_production_spatial_graph.py",
+      "script_sha256": "b4a713ef8c5e94fe337506e7b3c05cb69317429230aa6ae63ad5d8bd1725ce8b",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 231,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 227,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_residual_quality/component_label_r4.npy",
+          "output_relative": "processing/spatial_graph_residual_quality/component_label_r4.npy",
+          "api": "np.load",
+          "line": 377,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.csv",
+          "output_relative": "processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.csv",
+          "api": "Path.open",
+          "line": 470,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_class.npy",
+          "output_relative": "processing/spatial_graph/anchor_class.npy",
+          "api": "np.save",
+          "line": 629,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_distance_m.npy",
+          "output_relative": "processing/spatial_graph/anchor_distance_m.npy",
+          "api": "np.save",
+          "line": 624,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_radius.npy",
+          "output_relative": "processing/spatial_graph/anchor_radius.npy",
+          "api": "np.save",
+          "line": 619,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_u.npy",
+          "output_relative": "processing/spatial_graph/anchor_u.npy",
+          "api": "np.save",
+          "line": 609,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_v.npy",
+          "output_relative": "processing/spatial_graph/anchor_v.npy",
+          "api": "np.save",
+          "line": 614,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_component.npy",
+          "output_relative": "processing/spatial_graph/local_component.npy",
+          "api": "np.save",
+          "line": 599,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_distance_m.npy",
+          "output_relative": "processing/spatial_graph/local_distance_m.npy",
+          "api": "np.save",
+          "line": 594,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_u.npy",
+          "output_relative": "processing/spatial_graph/local_u.npy",
+          "api": "np.save",
+          "line": 584,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_v.npy",
+          "output_relative": "processing/spatial_graph/local_v.npy",
+          "api": "np.save",
+          "line": 589,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/main_component_mask.npy",
+          "output_relative": "processing/spatial_graph/main_component_mask.npy",
+          "api": "np.save",
+          "line": 604,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/spatial_graph_manifest.json",
+          "output_relative": "processing/spatial_graph/spatial_graph_manifest.json",
+          "api": "Path.write_text",
+          "line": 830,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/rows.npy",
+        "processing/spatial_graph_residual_quality/component_label_r4.npy",
+        "processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.csv"
+      ],
+      "exact_output_outputs": [
+        "processing/spatial_graph/anchor_class.npy",
+        "processing/spatial_graph/anchor_distance_m.npy",
+        "processing/spatial_graph/anchor_radius.npy",
+        "processing/spatial_graph/anchor_u.npy",
+        "processing/spatial_graph/anchor_v.npy",
+        "processing/spatial_graph/local_component.npy",
+        "processing/spatial_graph/local_distance_m.npy",
+        "processing/spatial_graph/local_u.npy",
+        "processing/spatial_graph/local_v.npy",
+        "processing/spatial_graph/main_component_mask.npy",
+        "processing/spatial_graph/spatial_graph_manifest.json"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [
+        {
+          "kind": "input",
+          "api": "helper:read_gamma_value:path",
+          "line": 262
+        },
+        {
+          "kind": "input",
+          "api": "helper:read_gamma_value:path",
+          "line": 267
+        },
+        {
+          "kind": "input",
+          "api": "Path.read_text",
+          "line": 20
+        }
+      ],
+      "missing_exact": []
+    },
+    "spatial_gradient_quality": {
+      "script": "08i_quality_spatial_phase_gradient.py",
+      "script_sha256": "b7f4825a934a472a8bba2fb9836cae327b32c857514651f06fdd90e1d45ef318",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/network.itab",
+          "output_relative": "processing/network/network.itab",
+          "api": "helper:load_itab:path",
+          "line": 201,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/phase_rad.npy",
+          "output_relative": "processing/point_phase_stack/phase_rad.npy",
+          "api": "np.load",
+          "line": 194,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_class.npy",
+          "output_relative": "processing/spatial_graph/anchor_class.npy",
+          "api": "np.load",
+          "line": 233,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_distance_m.npy",
+          "output_relative": "processing/spatial_graph/anchor_distance_m.npy",
+          "api": "np.load",
+          "line": 241,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_radius.npy",
+          "output_relative": "processing/spatial_graph/anchor_radius.npy",
+          "api": "np.load",
+          "line": 237,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_u.npy",
+          "output_relative": "processing/spatial_graph/anchor_u.npy",
+          "api": "np.load",
+          "line": 225,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_v.npy",
+          "output_relative": "processing/spatial_graph/anchor_v.npy",
+          "api": "np.load",
+          "line": 229,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_distance_m.npy",
+          "output_relative": "processing/spatial_graph/local_distance_m.npy",
+          "api": "np.load",
+          "line": 220,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_u.npy",
+          "output_relative": "processing/spatial_graph/local_u.npy",
+          "api": "np.load",
+          "line": 210,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_v.npy",
+          "output_relative": "processing/spatial_graph/local_v.npy",
+          "api": "np.load",
+          "line": 215,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_phase_gradient_quality/per_ifg_spatial_gradient_qa.csv",
+          "output_relative": "processing/spatial_phase_gradient_quality/per_ifg_spatial_gradient_qa.csv",
+          "api": "Path.open",
+          "line": 713,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/spatial_phase_gradient_quality/spatial_gradient_quality.json",
+          "output_relative": "processing/spatial_phase_gradient_quality/spatial_gradient_quality.json",
+          "api": "Path.write_text",
+          "line": 807,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/network/network.itab",
+        "processing/point_phase_stack/phase_rad.npy",
+        "processing/spatial_graph/anchor_class.npy",
+        "processing/spatial_graph/anchor_distance_m.npy",
+        "processing/spatial_graph/anchor_radius.npy",
+        "processing/spatial_graph/anchor_u.npy",
+        "processing/spatial_graph/anchor_v.npy",
+        "processing/spatial_graph/local_distance_m.npy",
+        "processing/spatial_graph/local_u.npy",
+        "processing/spatial_graph/local_v.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/spatial_phase_gradient_quality/per_ifg_spatial_gradient_qa.csv",
+        "processing/spatial_phase_gradient_quality/spatial_gradient_quality.json"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [
+        {
+          "kind": "input",
+          "api": "Path.read_text",
+          "line": 27
+        }
+      ],
+      "missing_exact": []
+    },
+    "unwrap_policy": {
+      "script": "08j_finalize_unwrap_component_policy.py",
+      "script_sha256": "b4b3036c1fb4491c0781943fb5edc43c8f471d419fa1c2ac1e437728faa9216d",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 62,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 55,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_class.npy",
+          "output_relative": "processing/spatial_graph/anchor_class.npy",
+          "api": "np.load",
+          "line": 93,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_distance_m.npy",
+          "output_relative": "processing/spatial_graph/anchor_distance_m.npy",
+          "api": "np.load",
+          "line": 109,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_radius.npy",
+          "output_relative": "processing/spatial_graph/anchor_radius.npy",
+          "api": "np.load",
+          "line": 101,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_u.npy",
+          "output_relative": "processing/spatial_graph/anchor_u.npy",
+          "api": "np.load",
+          "line": 77,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/anchor_v.npy",
+          "output_relative": "processing/spatial_graph/anchor_v.npy",
+          "api": "np.load",
+          "line": 85,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_component.npy",
+          "output_relative": "processing/spatial_graph/local_component.npy",
+          "api": "np.load",
+          "line": 69,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/unwrap_component_policy/anchor_component.npy",
+          "output_relative": "processing/unwrap_component_policy/anchor_component.npy",
+          "api": "np.save",
+          "line": 544,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/unwrap_component_policy/local_component.npy",
+          "output_relative": "processing/unwrap_component_policy/local_component.npy",
+          "api": "np.save",
+          "line": 526,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/unwrap_component_policy/main_component_mask.npy",
+          "output_relative": "processing/unwrap_component_policy/main_component_mask.npy",
+          "api": "np.save",
+          "line": 538,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/unwrap_component_policy/point_unwrap_tier.npy",
+          "output_relative": "processing/unwrap_component_policy/point_unwrap_tier.npy",
+          "api": "np.save",
+          "line": 532,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/unwrap_component_policy/residual_component_policy.csv",
+          "output_relative": "processing/unwrap_component_policy/residual_component_policy.csv",
+          "api": "Path.open",
+          "line": 555,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/unwrap_component_policy/unwrap_component_policy.json",
+          "output_relative": "processing/unwrap_component_policy/unwrap_component_policy.json",
+          "api": "Path.write_text",
+          "line": 673,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/rows.npy",
+        "processing/spatial_graph/anchor_class.npy",
+        "processing/spatial_graph/anchor_distance_m.npy",
+        "processing/spatial_graph/anchor_radius.npy",
+        "processing/spatial_graph/anchor_u.npy",
+        "processing/spatial_graph/anchor_v.npy",
+        "processing/spatial_graph/local_component.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/unwrap_component_policy/anchor_component.npy",
+        "processing/unwrap_component_policy/local_component.npy",
+        "processing/unwrap_component_policy/main_component_mask.npy",
+        "processing/unwrap_component_policy/point_unwrap_tier.npy",
+        "processing/unwrap_component_policy/residual_component_policy.csv",
+        "processing/unwrap_component_policy/unwrap_component_policy.json"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "unwrap": {
+      "script": "08p_batch_unwrap_all_ifgs.py",
+      "script_sha256": "e4e7715c0ef8236a85a72ca508c574decf026eea2559c6833e1441f272a22924",
+      "status": "REVIEW",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/*_fragment_pair_consensus.csv",
+          "output_relative": "processing/safe_fragment_integer_quality/*_fragment_pair_consensus.csv",
+          "api": "helper:quality_selected_superforest:group_csv",
+          "line": 726,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/*_manifest.json",
+          "output_relative": "processing/safe_fragment_integer_quality/*_manifest.json",
+          "api": "helper:read_json:path",
+          "line": 702,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/*_fragment_constraint_status.csv",
+          "output_relative": "processing/single_ifg_robust_solution/*_fragment_constraint_status.csv",
+          "api": "helper:rejected_constraint_stats:path",
+          "line": 732,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/*_manifest.json",
+          "output_relative": "processing/single_ifg_robust_solution/*_manifest.json",
+          "api": "helper:read_json:path",
+          "line": 706,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_phase_gradient_quality/per_ifg_spatial_gradient_qa.csv",
+          "output_relative": "processing/spatial_phase_gradient_quality/per_ifg_spatial_gradient_qa.csv",
+          "api": "helper:load_08i:path",
+          "line": 560,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv",
+          "output_relative": "processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv",
+          "api": "Path.open",
+          "line": 1210,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/batch_unwrap_validation/all_ifg_unwrap_qa.json",
+          "output_relative": "processing/batch_unwrap_validation/all_ifg_unwrap_qa.json",
+          "api": "Path.write_text",
+          "line": 1357,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/batch_unwrap_validation/logs/*_08n.log",
+          "output_relative": "processing/batch_unwrap_validation/logs/*_08n.log",
+          "api": "helper:run_script:log_path",
+          "line": 655,
+          "exists": true,
+          "match_count": 108
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/spatial_phase_gradient_quality/per_ifg_spatial_gradient_qa.csv"
+      ],
+      "exact_output_outputs": [
+        "processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv",
+        "processing/batch_unwrap_validation/all_ifg_unwrap_qa.json"
+      ],
+      "dynamic_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/*_fragment_pair_consensus.csv",
+          "output_relative": "processing/safe_fragment_integer_quality/*_fragment_pair_consensus.csv",
+          "api": "helper:quality_selected_superforest:group_csv",
+          "line": 726,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/*_manifest.json",
+          "output_relative": "processing/safe_fragment_integer_quality/*_manifest.json",
+          "api": "helper:read_json:path",
+          "line": 702,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/*_fragment_constraint_status.csv",
+          "output_relative": "processing/single_ifg_robust_solution/*_fragment_constraint_status.csv",
+          "api": "helper:rejected_constraint_stats:path",
+          "line": 732,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/*_manifest.json",
+          "output_relative": "processing/single_ifg_robust_solution/*_manifest.json",
+          "api": "helper:read_json:path",
+          "line": 706,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/batch_unwrap_validation/logs/*_08n.log",
+          "output_relative": "processing/batch_unwrap_validation/logs/*_08n.log",
+          "api": "helper:run_script:log_path",
+          "line": 655,
+          "exists": true,
+          "match_count": 108
+        }
+      ],
+      "unresolved_io": [
+        {
+          "kind": "input",
+          "api": "Path.read_text",
+          "line": 80
+        }
+      ],
+      "missing_exact": []
+    },
+    "unwrap_severity_quality": {
+      "script": "08q_quality_full_batch_severity.py",
+      "script_sha256": "336211f0069dd2598c327e82c92725115029218ce7c966cd7aa688e26027abbd",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/network.itab",
+          "output_relative": "processing/network/network.itab",
+          "api": "Path.open",
+          "line": 421,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 372,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/phase_rad.npy",
+          "output_relative": "processing/point_phase_stack/phase_rad.npy",
+          "api": "np.load",
+          "line": 360,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 366,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/*_bad_edge_ids.npy",
+          "output_relative": "processing/safe_fragment_integer_quality/*_bad_edge_ids.npy",
+          "api": "np.load",
+          "line": 696,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/*_fragment_pair_consensus.csv",
+          "output_relative": "processing/safe_fragment_integer_quality/*_fragment_pair_consensus.csv",
+          "api": "helper:read_groups:path",
+          "line": 528,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/*_manifest.json",
+          "output_relative": "processing/safe_fragment_integer_quality/*_manifest.json",
+          "api": "Path.read_text",
+          "line": 493,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/*_safe_fragment.npy",
+          "output_relative": "processing/safe_fragment_integer_quality/*_safe_fragment.npy",
+          "api": "np.load",
+          "line": 500,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/*_manifest.json",
+          "output_relative": "processing/single_ifg_robust_solution/*_manifest.json",
+          "api": "Path.read_text",
+          "line": 497,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_u.npy",
+          "output_relative": "processing/spatial_graph/local_u.npy",
+          "api": "np.load",
+          "line": 378,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_v.npy",
+          "output_relative": "processing/spatial_graph/local_v.npy",
+          "api": "np.load",
+          "line": 384,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_phase_gradient_quality/per_ifg_spatial_gradient_qa.csv",
+          "output_relative": "processing/spatial_phase_gradient_quality/per_ifg_spatial_gradient_qa.csv",
+          "api": "helper:load_08i:path",
+          "line": 392,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/batch_unwrap_severity_quality/all_ifg_forest_severity.csv",
+          "output_relative": "processing/batch_unwrap_severity_quality/all_ifg_forest_severity.csv",
+          "api": "Path.open",
+          "line": 1094,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/batch_unwrap_severity_quality/safe_conflict_detail.csv",
+          "output_relative": "processing/batch_unwrap_severity_quality/safe_conflict_detail.csv",
+          "api": "Path.open",
+          "line": 1118,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/batch_unwrap_severity_quality/severity_quality.json",
+          "output_relative": "processing/batch_unwrap_severity_quality/severity_quality.json",
+          "api": "Path.write_text",
+          "line": 1186,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/network/network.itab",
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/phase_rad.npy",
+        "processing/point_phase_stack/rows.npy",
+        "processing/spatial_graph/local_u.npy",
+        "processing/spatial_graph/local_v.npy",
+        "processing/spatial_phase_gradient_quality/per_ifg_spatial_gradient_qa.csv"
+      ],
+      "exact_output_outputs": [
+        "processing/batch_unwrap_severity_quality/all_ifg_forest_severity.csv",
+        "processing/batch_unwrap_severity_quality/safe_conflict_detail.csv",
+        "processing/batch_unwrap_severity_quality/severity_quality.json"
+      ],
+      "dynamic_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/*_bad_edge_ids.npy",
+          "output_relative": "processing/safe_fragment_integer_quality/*_bad_edge_ids.npy",
+          "api": "np.load",
+          "line": 696,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/*_fragment_pair_consensus.csv",
+          "output_relative": "processing/safe_fragment_integer_quality/*_fragment_pair_consensus.csv",
+          "api": "helper:read_groups:path",
+          "line": 528,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/*_manifest.json",
+          "output_relative": "processing/safe_fragment_integer_quality/*_manifest.json",
+          "api": "Path.read_text",
+          "line": 493,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/*_safe_fragment.npy",
+          "output_relative": "processing/safe_fragment_integer_quality/*_safe_fragment.npy",
+          "api": "np.load",
+          "line": 500,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/*_manifest.json",
+          "output_relative": "processing/single_ifg_robust_solution/*_manifest.json",
+          "api": "Path.read_text",
+          "line": 497,
+          "exists": true,
+          "match_count": 108
+        }
+      ],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "unwrap_conflict_quality": {
+      "script": "08r_quality_safe_conflict_acquisition_attribution.py",
+      "script_sha256": "e2c0171e66a00e1f1bccddb9b09f0f0c088b5491e2e6b5cf4c18a8df8674583c",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv",
+          "output_relative": "processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv",
+          "api": "helper:load_qa:path",
+          "line": 172,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/network.itab",
+          "output_relative": "processing/network/network.itab",
+          "api": "helper:load_network:path",
+          "line": 168,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 148,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/phase_rad.npy",
+          "output_relative": "processing/point_phase_stack/phase_rad.npy",
+          "api": "np.load",
+          "line": 136,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 142,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/pair*_*_*_bad_edge_ids.npy",
+          "output_relative": "processing/safe_fragment_integer_quality/pair*_*_*_bad_edge_ids.npy",
+          "api": "np.load",
+          "line": 252,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_u.npy",
+          "output_relative": "processing/spatial_graph/local_u.npy",
+          "api": "np.load",
+          "line": 154,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_v.npy",
+          "output_relative": "processing/spatial_graph/local_v.npy",
+          "api": "np.load",
+          "line": 160,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/safe_conflict_acquisition_quality/acquisition_attribution.csv",
+          "output_relative": "processing/safe_conflict_acquisition_quality/acquisition_attribution.csv",
+          "api": "Path.open",
+          "line": 984,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/safe_conflict_acquisition_quality/acquisition_attribution.json",
+          "output_relative": "processing/safe_conflict_acquisition_quality/acquisition_attribution.json",
+          "api": "Path.write_text",
+          "line": 1080,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/safe_conflict_acquisition_quality/recurrent_safe_conflict_edges.csv",
+          "output_relative": "processing/safe_conflict_acquisition_quality/recurrent_safe_conflict_edges.csv",
+          "api": "Path.open",
+          "line": 1008,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/safe_conflict_acquisition_quality/safe_conflict_occurrences.csv",
+          "output_relative": "processing/safe_conflict_acquisition_quality/safe_conflict_occurrences.csv",
+          "api": "Path.open",
+          "line": 960,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/safe_conflict_acquisition_quality/suspicious_edge_acquisition_gradient.npy",
+          "output_relative": "processing/safe_conflict_acquisition_quality/suspicious_edge_acquisition_gradient.npy",
+          "api": "np.save",
+          "line": 1033,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/safe_conflict_acquisition_quality/suspicious_edge_ids.npy",
+          "output_relative": "processing/safe_conflict_acquisition_quality/suspicious_edge_ids.npy",
+          "api": "np.save",
+          "line": 1027,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv",
+        "processing/network/network.itab",
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/phase_rad.npy",
+        "processing/point_phase_stack/rows.npy",
+        "processing/spatial_graph/local_u.npy",
+        "processing/spatial_graph/local_v.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/safe_conflict_acquisition_quality/acquisition_attribution.csv",
+        "processing/safe_conflict_acquisition_quality/acquisition_attribution.json",
+        "processing/safe_conflict_acquisition_quality/recurrent_safe_conflict_edges.csv",
+        "processing/safe_conflict_acquisition_quality/safe_conflict_occurrences.csv",
+        "processing/safe_conflict_acquisition_quality/suspicious_edge_acquisition_gradient.npy",
+        "processing/safe_conflict_acquisition_quality/suspicious_edge_ids.npy"
+      ],
+      "dynamic_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/pair*_*_*_bad_edge_ids.npy",
+          "output_relative": "processing/safe_fragment_integer_quality/pair*_*_*_bad_edge_ids.npy",
+          "api": "np.load",
+          "line": 252,
+          "exists": true,
+          "match_count": 108
+        }
+      ],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "unwrap_acquisition_quality": {
+      "script": "08s_quality_acquisition_safe_fragments.py",
+      "script_sha256": "30d81e2d7dfc4401a66b8f81baaa125a8e53f02269dc8aa7da370a1b4f12a036",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/phase_rad.npy",
+          "output_relative": "processing/point_phase_stack/phase_rad.npy",
+          "api": "np.load",
+          "line": 324,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_u.npy",
+          "output_relative": "processing/spatial_graph/local_u.npy",
+          "api": "np.load",
+          "line": 330,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_v.npy",
+          "output_relative": "processing/spatial_graph/local_v.npy",
+          "api": "np.load",
+          "line": 336,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/unwrap_component_policy/local_component.npy",
+          "output_relative": "processing/unwrap_component_policy/local_component.npy",
+          "api": "np.load",
+          "line": 342,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/acquisition_safe_fragment_quality/*_safe_bad_edge_ids.npy",
+          "output_relative": "processing/acquisition_safe_fragment_quality/*_safe_bad_edge_ids.npy",
+          "api": "np.save",
+          "line": 631,
+          "exists": true,
+          "match_count": 6
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/acquisition_safe_fragment_quality/acquisition_safe_fragment_quality.csv",
+          "output_relative": "processing/acquisition_safe_fragment_quality/acquisition_safe_fragment_quality.csv",
+          "api": "Path.open",
+          "line": 865,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/acquisition_safe_fragment_quality/acquisition_safe_fragment_quality.json",
+          "output_relative": "processing/acquisition_safe_fragment_quality/acquisition_safe_fragment_quality.json",
+          "api": "Path.write_text",
+          "line": 931,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/point_phase_stack/phase_rad.npy",
+        "processing/spatial_graph/local_u.npy",
+        "processing/spatial_graph/local_v.npy",
+        "processing/unwrap_component_policy/local_component.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/acquisition_safe_fragment_quality/acquisition_safe_fragment_quality.csv",
+        "processing/acquisition_safe_fragment_quality/acquisition_safe_fragment_quality.json"
+      ],
+      "dynamic_refs": [
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/acquisition_safe_fragment_quality/*_safe_bad_edge_ids.npy",
+          "output_relative": "processing/acquisition_safe_fragment_quality/*_safe_bad_edge_ids.npy",
+          "api": "np.save",
+          "line": 631,
+          "exists": true,
+          "match_count": 6
+        }
+      ],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "temporal_closure": {
+      "script": "08t_quality_temporal_integer_closure.py",
+      "script_sha256": "b5b4518773d6df5239d58a594851f69b8167f1b3b0df11708159be23bb837dac",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/network.itab",
+          "output_relative": "processing/network/network.itab",
+          "api": "helper:load_itab:path",
+          "line": 399,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 387,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 381,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_conflict_acquisition_quality/suspicious_edge_ids.npy",
+          "output_relative": "processing/safe_conflict_acquisition_quality/suspicious_edge_ids.npy",
+          "api": "np.load",
+          "line": 1134,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "output_relative": "processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "api": "np.load",
+          "line": 505,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_u.npy",
+          "output_relative": "processing/spatial_graph/local_u.npy",
+          "api": "np.load",
+          "line": 1146,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_v.npy",
+          "output_relative": "processing/spatial_graph/local_v.npy",
+          "api": "np.load",
+          "line": 1152,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/unwrap_component_policy/main_component_mask.npy",
+          "output_relative": "processing/unwrap_component_policy/main_component_mask.npy",
+          "api": "np.load",
+          "line": 449,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/cycle_matrix.npy",
+          "output_relative": "processing/temporal_integer_closure_quality/cycle_matrix.npy",
+          "api": "np.save",
+          "line": 1349,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/cycle_modal_integer.npy",
+          "output_relative": "processing/temporal_integer_closure_quality/cycle_modal_integer.npy",
+          "api": "np.save",
+          "line": 1343,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy",
+          "output_relative": "processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy",
+          "api": "np.save",
+          "line": 1337,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/temporal_bad_points.csv",
+          "output_relative": "processing/temporal_integer_closure_quality/temporal_bad_points.csv",
+          "api": "Path.open",
+          "line": 1318,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/temporal_cycle_qa.csv",
+          "output_relative": "processing/temporal_integer_closure_quality/temporal_cycle_qa.csv",
+          "api": "Path.open",
+          "line": 1292,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/temporal_integer_closure_quality.json",
+          "output_relative": "processing/temporal_integer_closure_quality/temporal_integer_closure_quality.json",
+          "api": "Path.write_text",
+          "line": 1418,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/network/network.itab",
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/rows.npy",
+        "processing/safe_conflict_acquisition_quality/suspicious_edge_ids.npy",
+        "processing/spatial_graph/local_u.npy",
+        "processing/spatial_graph/local_v.npy",
+        "processing/unwrap_component_policy/main_component_mask.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/temporal_integer_closure_quality/cycle_matrix.npy",
+        "processing/temporal_integer_closure_quality/cycle_modal_integer.npy",
+        "processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy",
+        "processing/temporal_integer_closure_quality/temporal_bad_points.csv",
+        "processing/temporal_integer_closure_quality/temporal_cycle_qa.csv",
+        "processing/temporal_integer_closure_quality/temporal_integer_closure_quality.json"
+      ],
+      "dynamic_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "output_relative": "processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "api": "np.load",
+          "line": 505,
+          "exists": true,
+          "match_count": 108
+        }
+      ],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "temporal_integer_candidate": {
+      "script": "08u_temporal_sparse_integer_candidate.py",
+      "script_sha256": "e301dbef99da1a272ab460a82652be0549c6d32fbcb32a044bd5dad5140011de",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv",
+          "output_relative": "processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv",
+          "api": "helper:read_batch_qa:path",
+          "line": 871,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/network.itab",
+          "output_relative": "processing/network/network.itab",
+          "api": "helper:load_itab:path",
+          "line": 429,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 417,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 411,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "output_relative": "processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "api": "np.load",
+          "line": 538,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/cycle_matrix.npy",
+          "output_relative": "processing/temporal_integer_closure_quality/cycle_matrix.npy",
+          "api": "np.load",
+          "line": 439,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/cycle_modal_integer.npy",
+          "output_relative": "processing/temporal_integer_closure_quality/cycle_modal_integer.npy",
+          "api": "np.load",
+          "line": 447,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy",
+          "output_relative": "processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy",
+          "api": "np.load",
+          "line": 455,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_sparse_integer_candidate/bad_point_ids.npy",
+          "output_relative": "processing/temporal_sparse_integer_candidate/bad_point_ids.npy",
+          "api": "np.save",
+          "line": 1354,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_sparse_integer_candidate/candidate_corrections_by_ifg.csv",
+          "output_relative": "processing/temporal_sparse_integer_candidate/candidate_corrections_by_ifg.csv",
+          "api": "Path.open",
+          "line": 1335,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_sparse_integer_candidate/candidate_sparse_integer_corrections.csv",
+          "output_relative": "processing/temporal_sparse_integer_candidate/candidate_sparse_integer_corrections.csv",
+          "api": "Path.open",
+          "line": 1311,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_sparse_integer_candidate/pattern_integer_solutions.npy",
+          "output_relative": "processing/temporal_sparse_integer_candidate/pattern_integer_solutions.npy",
+          "api": "np.save",
+          "line": 1376,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_sparse_integer_candidate/point_integer_correction_matrix.npy",
+          "output_relative": "processing/temporal_sparse_integer_candidate/point_integer_correction_matrix.npy",
+          "api": "np.save",
+          "line": 1360,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_sparse_integer_candidate/temporal_error_patterns.csv",
+          "output_relative": "processing/temporal_sparse_integer_candidate/temporal_error_patterns.csv",
+          "api": "Path.open",
+          "line": 1287,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_sparse_integer_candidate/temporal_sparse_integer_candidate.json",
+          "output_relative": "processing/temporal_sparse_integer_candidate/temporal_sparse_integer_candidate.json",
+          "api": "Path.write_text",
+          "line": 1476,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_sparse_integer_candidate/unique_error_patterns.npy",
+          "output_relative": "processing/temporal_sparse_integer_candidate/unique_error_patterns.npy",
+          "api": "np.save",
+          "line": 1368,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv",
+        "processing/network/network.itab",
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/rows.npy",
+        "processing/temporal_integer_closure_quality/cycle_matrix.npy",
+        "processing/temporal_integer_closure_quality/cycle_modal_integer.npy",
+        "processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/temporal_sparse_integer_candidate/bad_point_ids.npy",
+        "processing/temporal_sparse_integer_candidate/candidate_corrections_by_ifg.csv",
+        "processing/temporal_sparse_integer_candidate/candidate_sparse_integer_corrections.csv",
+        "processing/temporal_sparse_integer_candidate/pattern_integer_solutions.npy",
+        "processing/temporal_sparse_integer_candidate/point_integer_correction_matrix.npy",
+        "processing/temporal_sparse_integer_candidate/temporal_error_patterns.csv",
+        "processing/temporal_sparse_integer_candidate/temporal_sparse_integer_candidate.json",
+        "processing/temporal_sparse_integer_candidate/unique_error_patterns.npy"
+      ],
+      "dynamic_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "output_relative": "processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "api": "np.load",
+          "line": 538,
+          "exists": true,
+          "match_count": 108
+        }
+      ],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "temporal_candidate_spatial_quality": {
+      "script": "08v_spatial_validate_temporal_candidates.py",
+      "script_sha256": "f1d5e7d9649a6b533aa177c6f9a64b4e3aada42e219f18ea0b5fc94aed1fba71",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv",
+          "output_relative": "processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv",
+          "api": "helper:read_batch_qa:path",
+          "line": 249,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/network.itab",
+          "output_relative": "processing/network/network.itab",
+          "api": "helper:load_itab:path",
+          "line": 228,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 192,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/phase_rad.npy",
+          "output_relative": "processing/point_phase_stack/phase_rad.npy",
+          "api": "np.load",
+          "line": 180,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 186,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/pair*_*_*_safe_fragment.npy",
+          "output_relative": "processing/safe_fragment_integer_quality/pair*_*_*_safe_fragment.npy",
+          "api": "np.load",
+          "line": 472,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "output_relative": "processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "api": "np.load",
+          "line": 477,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_u.npy",
+          "output_relative": "processing/spatial_graph/local_u.npy",
+          "api": "np.load",
+          "line": 198,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_v.npy",
+          "output_relative": "processing/spatial_graph/local_v.npy",
+          "api": "np.load",
+          "line": 204,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_sparse_integer_candidate/bad_point_ids.npy",
+          "output_relative": "processing/temporal_sparse_integer_candidate/bad_point_ids.npy",
+          "api": "np.load",
+          "line": 210,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_sparse_integer_candidate/point_integer_correction_matrix.npy",
+          "output_relative": "processing/temporal_sparse_integer_candidate/point_integer_correction_matrix.npy",
+          "api": "np.load",
+          "line": 218,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_candidate_spatial_validation/candidate_safe_fragment_coherence.csv",
+          "output_relative": "processing/temporal_candidate_spatial_validation/candidate_safe_fragment_coherence.csv",
+          "api": "Path.open",
+          "line": 1442,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_candidate_spatial_validation/candidate_spatial_validation.json",
+          "output_relative": "processing/temporal_candidate_spatial_validation/candidate_spatial_validation.json",
+          "api": "Path.write_text",
+          "line": 1593,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/temporal_candidate_spatial_validation/candidate_spatial_validation_by_ifg.csv",
+          "output_relative": "processing/temporal_candidate_spatial_validation/candidate_spatial_validation_by_ifg.csv",
+          "api": "Path.open",
+          "line": 1420,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv",
+        "processing/network/network.itab",
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/phase_rad.npy",
+        "processing/point_phase_stack/rows.npy",
+        "processing/spatial_graph/local_u.npy",
+        "processing/spatial_graph/local_v.npy",
+        "processing/temporal_sparse_integer_candidate/bad_point_ids.npy",
+        "processing/temporal_sparse_integer_candidate/point_integer_correction_matrix.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/temporal_candidate_spatial_validation/candidate_safe_fragment_coherence.csv",
+        "processing/temporal_candidate_spatial_validation/candidate_spatial_validation.json",
+        "processing/temporal_candidate_spatial_validation/candidate_spatial_validation_by_ifg.csv"
+      ],
+      "dynamic_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/pair*_*_*_safe_fragment.npy",
+          "output_relative": "processing/safe_fragment_integer_quality/pair*_*_*_safe_fragment.npy",
+          "api": "np.load",
+          "line": 472,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "output_relative": "processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "api": "np.load",
+          "line": 477,
+          "exists": true,
+          "match_count": 108
+        }
+      ],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "unwrap_signature_quality": {
+      "script": "08w_quality_fragment_signature_feasibility.py",
+      "script_sha256": "1f372fee42d18a3342104543b03cffd05ff2337f2ca0a21fb4f4f652caed0bc5",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/network.itab",
+          "output_relative": "processing/network/network.itab",
+          "api": "helper:load_itab:path",
+          "line": 243,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 231,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 225,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/pair*_*_*_safe_fragment.npy",
+          "output_relative": "processing/safe_fragment_integer_quality/pair*_*_*_safe_fragment.npy",
+          "api": "np.load",
+          "line": 393,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy",
+          "output_relative": "processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy",
+          "api": "np.load",
+          "line": 280,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_sparse_integer_candidate/bad_point_ids.npy",
+          "output_relative": "processing/temporal_sparse_integer_candidate/bad_point_ids.npy",
+          "api": "np.load",
+          "line": 270,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_sparse_integer_candidate/candidate_sparse_integer_corrections.csv",
+          "output_relative": "processing/temporal_sparse_integer_candidate/candidate_sparse_integer_corrections.csv",
+          "api": "helper:read_bad_point_patterns:sparse_csv",
+          "line": 310,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/unwrap_component_policy/main_component_mask.npy",
+          "output_relative": "processing/unwrap_component_policy/main_component_mask.npy",
+          "api": "np.load",
+          "line": 253,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/fragment_signature_feasibility/bad_signature_groups.csv",
+          "output_relative": "processing/fragment_signature_feasibility/bad_signature_groups.csv",
+          "api": "Path.open",
+          "line": 1053,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/fragment_signature_feasibility/fragment_signature_feasibility.json",
+          "output_relative": "processing/fragment_signature_feasibility/fragment_signature_feasibility.json",
+          "api": "Path.write_text",
+          "line": 1206,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/fragment_signature_feasibility/main_signature_group.npy",
+          "output_relative": "processing/fragment_signature_feasibility/main_signature_group.npy",
+          "api": "np.save",
+          "line": 1108,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/fragment_signature_feasibility/main_signature_hash1.npy",
+          "output_relative": "processing/fragment_signature_feasibility/main_signature_hash1.npy",
+          "api": "np.save",
+          "line": 1096,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/fragment_signature_feasibility/main_signature_hash2.npy",
+          "output_relative": "processing/fragment_signature_feasibility/main_signature_hash2.npy",
+          "api": "np.save",
+          "line": 1102,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/fragment_signature_feasibility/temporal_bad_point_signature_status.csv",
+          "output_relative": "processing/fragment_signature_feasibility/temporal_bad_point_signature_status.csv",
+          "api": "Path.open",
+          "line": 1077,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/network/network.itab",
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/rows.npy",
+        "processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy",
+        "processing/temporal_sparse_integer_candidate/bad_point_ids.npy",
+        "processing/temporal_sparse_integer_candidate/candidate_sparse_integer_corrections.csv",
+        "processing/unwrap_component_policy/main_component_mask.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/fragment_signature_feasibility/bad_signature_groups.csv",
+        "processing/fragment_signature_feasibility/fragment_signature_feasibility.json",
+        "processing/fragment_signature_feasibility/main_signature_group.npy",
+        "processing/fragment_signature_feasibility/main_signature_hash1.npy",
+        "processing/fragment_signature_feasibility/main_signature_hash2.npy",
+        "processing/fragment_signature_feasibility/temporal_bad_point_signature_status.csv"
+      ],
+      "dynamic_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_fragment_integer_quality/pair*_*_*_safe_fragment.npy",
+          "output_relative": "processing/safe_fragment_integer_quality/pair*_*_*_safe_fragment.npy",
+          "api": "np.load",
+          "line": 393,
+          "exists": true,
+          "match_count": 108
+        }
+      ],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "unwrap_finalize": {
+      "script": "08x_finalize_unwrap_quality_and_gauge.py",
+      "script_sha256": "57826147aa289bda556f334d8ac6909e88a0916a13a9b2514ef5146eb687225d",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/fragment_signature_feasibility/temporal_bad_point_signature_status.csv",
+          "output_relative": "processing/fragment_signature_feasibility/temporal_bad_point_signature_status.csv",
+          "api": "Path.open",
+          "line": 545,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/network.itab",
+          "output_relative": "processing/network/network.itab",
+          "api": "helper:load_itab:path",
+          "line": 143,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 135,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 130,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/safe_conflict_acquisition_quality/suspicious_edge_ids.npy",
+          "output_relative": "processing/safe_conflict_acquisition_quality/suspicious_edge_ids.npy",
+          "api": "np.load",
+          "line": 485,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_registered_mask.npy",
+          "output_relative": "processing/single_ifg_robust_solution/pair*_*_*_registered_mask.npy",
+          "api": "np.load",
+          "line": 238,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "output_relative": "processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "api": "np.load",
+          "line": 233,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_u.npy",
+          "output_relative": "processing/spatial_graph/local_u.npy",
+          "api": "np.load",
+          "line": 492,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/spatial_graph/local_v.npy",
+          "output_relative": "processing/spatial_graph/local_v.npy",
+          "api": "np.load",
+          "line": 497,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/cycle_matrix.npy",
+          "output_relative": "processing/temporal_integer_closure_quality/cycle_matrix.npy",
+          "api": "np.load",
+          "line": 155,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/cycle_modal_integer.npy",
+          "output_relative": "processing/temporal_integer_closure_quality/cycle_modal_integer.npy",
+          "api": "np.load",
+          "line": 162,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy",
+          "output_relative": "processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy",
+          "api": "np.load",
+          "line": 177,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/temporal_integer_closure_quality/temporal_cycle_qa.csv",
+          "output_relative": "processing/temporal_integer_closure_quality/temporal_cycle_qa.csv",
+          "api": "Path.open",
+          "line": 293,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/unwrap_component_policy/main_component_mask.npy",
+          "output_relative": "processing/unwrap_component_policy/main_component_mask.npy",
+          "api": "np.load",
+          "line": 169,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/final_unwrap/all_ifg_registered_mask.npy",
+          "output_relative": "processing/final_unwrap/all_ifg_registered_mask.npy",
+          "api": "np.save",
+          "line": 848,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/final_unwrap/excluded_or_flagged_points.csv",
+          "output_relative": "processing/final_unwrap/excluded_or_flagged_points.csv",
+          "api": "Path.open",
+          "line": 1028,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/final_unwrap/final_unwrap_candidate_manifest.json",
+          "output_relative": "processing/final_unwrap/final_unwrap_candidate_manifest.json",
+          "api": "Path.write_text",
+          "line": 1194,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/final_unwrap/global_ifg_integer_delta.npy",
+          "output_relative": "processing/final_unwrap/global_ifg_integer_delta.npy",
+          "api": "np.save",
+          "line": 840,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/final_unwrap/global_ifg_integer_gauge.csv",
+          "output_relative": "processing/final_unwrap/global_ifg_integer_gauge.csv",
+          "api": "Path.open",
+          "line": 922,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/final_unwrap/spatial_safe_conflict_point_mask.npy",
+          "output_relative": "processing/final_unwrap/spatial_safe_conflict_point_mask.npy",
+          "api": "np.save",
+          "line": 866,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/final_unwrap/strict_unwrap_valid_mask.npy",
+          "output_relative": "processing/final_unwrap/strict_unwrap_valid_mask.npy",
+          "api": "np.save",
+          "line": 878,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/final_unwrap/structural_incompatible_mask.npy",
+          "output_relative": "processing/final_unwrap/structural_incompatible_mask.npy",
+          "api": "np.save",
+          "line": 872,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/final_unwrap/temporal_integer_bad_mask.npy",
+          "output_relative": "processing/final_unwrap/temporal_integer_bad_mask.npy",
+          "api": "np.save",
+          "line": 854,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/final_unwrap/temporal_valid_mask.npy",
+          "output_relative": "processing/final_unwrap/temporal_valid_mask.npy",
+          "api": "np.save",
+          "line": 860,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/fragment_signature_feasibility/temporal_bad_point_signature_status.csv",
+        "processing/network/network.itab",
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/rows.npy",
+        "processing/safe_conflict_acquisition_quality/suspicious_edge_ids.npy",
+        "processing/spatial_graph/local_u.npy",
+        "processing/spatial_graph/local_v.npy",
+        "processing/temporal_integer_closure_quality/cycle_matrix.npy",
+        "processing/temporal_integer_closure_quality/cycle_modal_integer.npy",
+        "processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy",
+        "processing/temporal_integer_closure_quality/temporal_cycle_qa.csv",
+        "processing/unwrap_component_policy/main_component_mask.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/final_unwrap/all_ifg_registered_mask.npy",
+        "processing/final_unwrap/excluded_or_flagged_points.csv",
+        "processing/final_unwrap/final_unwrap_candidate_manifest.json",
+        "processing/final_unwrap/global_ifg_integer_delta.npy",
+        "processing/final_unwrap/global_ifg_integer_gauge.csv",
+        "processing/final_unwrap/spatial_safe_conflict_point_mask.npy",
+        "processing/final_unwrap/strict_unwrap_valid_mask.npy",
+        "processing/final_unwrap/structural_incompatible_mask.npy",
+        "processing/final_unwrap/temporal_integer_bad_mask.npy",
+        "processing/final_unwrap/temporal_valid_mask.npy"
+      ],
+      "dynamic_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_registered_mask.npy",
+          "output_relative": "processing/single_ifg_robust_solution/pair*_*_*_registered_mask.npy",
+          "api": "np.load",
+          "line": 238,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "output_relative": "processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "api": "np.load",
+          "line": 233,
+          "exists": true,
+          "match_count": 108
+        }
+      ],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "timeseries_inversion": {
+      "script": "09a_network_inversion_tree_l2_parity.py",
+      "script_sha256": "852b5011f00738053212c8e405094f96fa5ad5bf7a073e6aedfc7e6635784a09",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/final_unwrap/global_ifg_integer_delta.npy",
+          "output_relative": "processing/final_unwrap/global_ifg_integer_delta.npy",
+          "api": "np.load",
+          "line": 255,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/final_unwrap/strict_unwrap_valid_mask.npy",
+          "output_relative": "processing/final_unwrap/strict_unwrap_valid_mask.npy",
+          "api": "np.load",
+          "line": 247,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network/network.itab",
+          "output_relative": "processing/network/network.itab",
+          "api": "helper:load_itab:path",
+          "line": 264,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 240,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/phase_rad.npy",
+          "output_relative": "processing/point_phase_stack/phase_rad.npy",
+          "api": "np.load",
+          "line": 228,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 234,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "output_relative": "processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "api": "np.load",
+          "line": 390,
+          "exists": true,
+          "match_count": 108
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network_inversion/acquisition_phase_l2_candidate_rad.npy",
+          "output_relative": "processing/network_inversion/acquisition_phase_l2_candidate_rad.npy",
+          "api": "np.lib.format.open_memmap",
+          "line": 416,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network_inversion/dates.txt",
+          "output_relative": "processing/network_inversion/dates.txt",
+          "api": "Path.write_text",
+          "line": 1032,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network_inversion/design_matrix.npy",
+          "output_relative": "processing/network_inversion/design_matrix.npy",
+          "api": "np.save",
+          "line": 1019,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network_inversion/l2_network_residual_max_rad.npy",
+          "output_relative": "processing/network_inversion/l2_network_residual_max_rad.npy",
+          "api": "np.lib.format.open_memmap",
+          "line": 442,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network_inversion/l2_network_residual_rms_rad.npy",
+          "output_relative": "processing/network_inversion/l2_network_residual_rms_rad.npy",
+          "api": "np.lib.format.open_memmap",
+          "line": 434,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network_inversion/network_inversion_parity_manifest.json",
+          "output_relative": "processing/network_inversion/network_inversion_parity_manifest.json",
+          "api": "Path.write_text",
+          "line": 1150,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network_inversion/strict_point_ids.npy",
+          "output_relative": "processing/network_inversion/strict_point_ids.npy",
+          "api": "np.save",
+          "line": 1007,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network_inversion/temporal_tree_edge_ids.npy",
+          "output_relative": "processing/network_inversion/temporal_tree_edge_ids.npy",
+          "api": "np.save",
+          "line": 1013,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/network_inversion/tree_l2_max_abs_diff_rad.npy",
+          "output_relative": "processing/network_inversion/tree_l2_max_abs_diff_rad.npy",
+          "api": "np.lib.format.open_memmap",
+          "line": 426,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/final_unwrap/global_ifg_integer_delta.npy",
+        "processing/final_unwrap/strict_unwrap_valid_mask.npy",
+        "processing/network/network.itab",
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/phase_rad.npy",
+        "processing/point_phase_stack/rows.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/network_inversion/acquisition_phase_l2_candidate_rad.npy",
+        "processing/network_inversion/dates.txt",
+        "processing/network_inversion/design_matrix.npy",
+        "processing/network_inversion/l2_network_residual_max_rad.npy",
+        "processing/network_inversion/l2_network_residual_rms_rad.npy",
+        "processing/network_inversion/network_inversion_parity_manifest.json",
+        "processing/network_inversion/strict_point_ids.npy",
+        "processing/network_inversion/temporal_tree_edge_ids.npy",
+        "processing/network_inversion/tree_l2_max_abs_diff_rad.npy"
+      ],
+      "dynamic_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "output_relative": "processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "api": "np.load",
+          "line": 390,
+          "exists": true,
+          "match_count": 108
+        }
+      ],
+      "unresolved_io": [],
+      "missing_exact": []
+    },
+    "reference": {
+      "script": "09c_apply_reference_region.py",
+      "script_sha256": "1bed9432502a4448e5d96805d420061e2a7da606dca57401bd7e012c63d3ae83",
+      "status": "AUTO_READY",
+      "resolved_file_refs": [
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network_inversion/acquisition_phase_l2_candidate_rad.npy",
+          "output_relative": "processing/network_inversion/acquisition_phase_l2_candidate_rad.npy",
+          "api": "np.load",
+          "line": 119,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/network_inversion/strict_point_ids.npy",
+          "output_relative": "processing/network_inversion/strict_point_ids.npy",
+          "api": "np.load",
+          "line": 111,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/cols.npy",
+          "output_relative": "processing/point_phase_stack/cols.npy",
+          "api": "np.load",
+          "line": 134,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "input",
+          "symbolic_path": "$OUTPUT/processing/point_phase_stack/rows.npy",
+          "output_relative": "processing/point_phase_stack/rows.npy",
+          "api": "np.load",
+          "line": 126,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/referenced_timeseries/acquisition_phase_referenced_rad.npy",
+          "output_relative": "processing/referenced_timeseries/acquisition_phase_referenced_rad.npy",
+          "api": "np.lib.format.open_memmap",
+          "line": 220,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/referenced_timeseries/preliminary_linear_residual_rms_rad.npy",
+          "output_relative": "processing/referenced_timeseries/preliminary_linear_residual_rms_rad.npy",
+          "api": "np.lib.format.open_memmap",
+          "line": 377,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/referenced_timeseries/preliminary_phase_rate_rad_per_year.npy",
+          "output_relative": "processing/referenced_timeseries/preliminary_phase_rate_rad_per_year.npy",
+          "api": "np.lib.format.open_memmap",
+          "line": 363,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/referenced_timeseries/reference_epoch_qa.csv",
+          "output_relative": "processing/referenced_timeseries/reference_epoch_qa.csv",
+          "api": "Path.open",
+          "line": 619,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/referenced_timeseries/reference_phase_mad_sigma_rad.npy",
+          "output_relative": "processing/referenced_timeseries/reference_phase_mad_sigma_rad.npy",
+          "api": "np.save",
+          "line": 556,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/referenced_timeseries/reference_phase_median_rad.npy",
+          "output_relative": "processing/referenced_timeseries/reference_phase_median_rad.npy",
+          "api": "np.save",
+          "line": 548,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/referenced_timeseries/reference_point_ids.npy",
+          "output_relative": "processing/referenced_timeseries/reference_point_ids.npy",
+          "api": "np.save",
+          "line": 538,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/referenced_timeseries/reference_region_mask.npy",
+          "output_relative": "processing/referenced_timeseries/reference_region_mask.npy",
+          "api": "np.save",
+          "line": 524,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/referenced_timeseries/reference_strict_indices.npy",
+          "output_relative": "processing/referenced_timeseries/reference_strict_indices.npy",
+          "api": "np.save",
+          "line": 530,
+          "exists": true,
+          "match_count": 1
+        },
+        {
+          "kind": "output",
+          "symbolic_path": "$OUTPUT/processing/referenced_timeseries/referenced_timeseries_manifest.json",
+          "output_relative": "processing/referenced_timeseries/referenced_timeseries_manifest.json",
+          "api": "Path.write_text",
+          "line": 884,
+          "exists": true,
+          "match_count": 1
+        }
+      ],
+      "exact_output_inputs": [
+        "processing/network_inversion/acquisition_phase_l2_candidate_rad.npy",
+        "processing/network_inversion/strict_point_ids.npy",
+        "processing/point_phase_stack/cols.npy",
+        "processing/point_phase_stack/rows.npy"
+      ],
+      "exact_output_outputs": [
+        "processing/referenced_timeseries/acquisition_phase_referenced_rad.npy",
+        "processing/referenced_timeseries/preliminary_linear_residual_rms_rad.npy",
+        "processing/referenced_timeseries/preliminary_phase_rate_rad_per_year.npy",
+        "processing/referenced_timeseries/reference_epoch_qa.csv",
+        "processing/referenced_timeseries/reference_phase_mad_sigma_rad.npy",
+        "processing/referenced_timeseries/reference_phase_median_rad.npy",
+        "processing/referenced_timeseries/reference_point_ids.npy",
+        "processing/referenced_timeseries/reference_region_mask.npy",
+        "processing/referenced_timeseries/reference_strict_indices.npy",
+        "processing/referenced_timeseries/referenced_timeseries_manifest.json"
+      ],
+      "dynamic_refs": [],
+      "unresolved_io": [],
+      "missing_exact": []
+    }
+  },
+  "summary": {
+    "total": 32,
+    "auto_ready": 17,
+    "review": 15
+  }
+}

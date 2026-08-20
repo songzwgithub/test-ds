@@ -1,0 +1,194 @@
+from pathlib import Path
+
+from pypsds.config import (
+    cfg_get,
+    load_config,
+)
+from pypsds.pipeline import (
+    STAGES,
+    _stage_args,
+)
+from pypsds.project import (
+    resolve_project_paths,
+)
+from pypsds.runtime import (
+    build_runtime_plan,
+)
+
+
+CONFIG = Path(
+    "config/pypsds.yaml"
+)
+
+
+def _value(argv, flag):
+    i = argv.index(flag)
+    return argv[i + 1]
+
+
+def _stage(name):
+    for s in STAGES:
+        if s.name == name:
+            return s
+    raise KeyError(name)
+
+
+def test_p6b_sequential_pipeline_dispatch():
+
+    cfg, config_path = load_config(
+        CONFIG
+    )
+
+    paths = resolve_project_paths(
+        cfg,
+        config_path,
+    )
+
+    runtime = build_runtime_plan(
+        ndate=38,
+        memory_fraction=float(
+            cfg_get(
+                cfg,
+                "runtime.memory_fraction",
+                0.85,
+            )
+        ),
+    )
+
+    names = [
+        s.name
+        for s in STAGES
+    ]
+
+    # Moraine KS is not a mandatory production stage.
+    assert names[0] == "ds_statistics"
+
+    i0 = names.index(
+        "phase_linking"
+    )
+
+    i1 = names.index(
+        "point_stack"
+    )
+
+    assert names[i0:i1 + 1] == [
+        "phase_linking",
+        "ds_selection",
+        "ps_finalize",
+        "point_stack",
+    ]
+
+    phase_args = _stage_args(
+        _stage("phase_linking"),
+        cfg=cfg,
+        config_path=config_path,
+        paths=paths,
+        runtime=runtime,
+        force=False,
+    )
+
+    # Frozen sequential production semantics.
+    assert float(
+        _value(
+            phase_args,
+            "--beta",
+        )
+    ) == 0.0
+
+    assert float(
+        _value(
+            phase_args,
+            "--emi-mu",
+        )
+    ) == 0.99
+
+    assert int(
+        _value(
+            phase_args,
+            "--min-shp",
+        )
+    ) == 48
+
+    assert (
+        _value(
+            phase_args,
+            "--center-mode",
+        )
+        ==
+        "all"
+    )
+
+    # Critical P5d contract:
+    # sequential Step04 must not inherit the
+    # legacy full-SCM --resume flag.
+    assert "--resume" not in phase_args
+
+    ds_args = _stage_args(
+        _stage("ds_selection"),
+        cfg=cfg,
+        config_path=config_path,
+        paths=paths,
+        runtime=runtime,
+        force=False,
+    )
+
+    assert float(
+        _value(
+            ds_args,
+            "--tc-min",
+        )
+    ) == 0.80
+
+    assert float(
+        _value(
+            ds_args,
+            "--pair-min",
+        )
+    ) == 0.0
+
+    assert (
+        "--accept-evd"
+        in ds_args
+    )
+
+    ps_args = _stage_args(
+        _stage("ps_finalize"),
+        cfg=cfg,
+        config_path=config_path,
+        paths=paths,
+        runtime=runtime,
+        force=False,
+    )
+
+    assert (
+        "--config"
+        in ps_args
+    )
+
+    point_args = _stage_args(
+        _stage("point_stack"),
+        cfg=cfg,
+        config_path=config_path,
+        paths=paths,
+        runtime=runtime,
+        force=False,
+    )
+
+    ds_mask = Path(
+        _value(
+            point_args,
+            "--ds-mask",
+        )
+    )
+
+    assert (
+        ds_mask.name
+        ==
+        "final_ds_tc0.800_pc0.000_evd.npy"
+    )
+
+    assert (
+        ds_mask.parent.name
+        ==
+        "processing"
+    )

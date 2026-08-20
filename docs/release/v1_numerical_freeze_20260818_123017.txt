@@ -1,0 +1,20 @@
+pyPSDS-GAMMA v1.0 numerical freeze
+date: 2026-08-18T12:30:17+08:00
+
+PARITY
+PASS comparisons: 854
+FAIL comparisons: 0
+not mapped: 119
+result: V1 NUMERICAL PARITY PASS
+
+REFERENCE
+center_row: 539
+center_col: 337
+window: 21 x 31
+strict reference points: 600
+
+FILES
+542391814bf5661f04473ebb3675c8c092892cee3179d4fb96846be1c7067d91  config/pypsds.yaml
+1eb3d77a8b47063f81de22f1c1dc73990da64ddfeb839ecb5daf4ec72dd9e4a1  /home/ubuntu/Downloads/psds/output/quality/v1_parity_report.json
+
+GIT

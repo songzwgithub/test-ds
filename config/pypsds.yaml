@@ -1,0 +1,135 @@
+schema_version: 1
+
+paths:
+  data_dir: /home/ubuntu/Downloads
+  rslc_dir: /home/ubuntu/Downloads/RSLC
+  rslc_tab: /home/ubuntu/Downloads/RSLC_tab
+  output_dir: /home/ubuntu/Downloads/psds/output
+
+gamma:
+  rslc_dtype: auto
+  byte_order: big
+
+processing:
+  roi:
+    row0: 0
+    col0: 0
+    rows: null
+    cols: null
+
+runtime:
+  cpu: auto
+  memory_fraction: 0.85
+  io_workers: auto
+  planning_ndate: 38
+
+
+  # Frozen settings for the first v1.0 numerical-parity run.
+  # Auto-tuning is enabled only after parity is established.
+  phase_cache_workers: 8
+  phase_link_workers: 8
+  phase_link_chunk_size: 1024
+  phase_link_batch_size: 96000
+selection:
+
+  ps:
+    amplitude_dispersion_max: 0.25
+
+  center_prior:
+    # Diagnostic only; not a formal DS eligibility gate.
+    enabled: false
+    method: moraine_ks
+    half_row: 5
+    half_col: 5
+    p_max: 0.05
+    min_count: 50
+
+  shp:
+    method: rayleigh_glrt
+    alpha: 0.005
+    half_row: 5
+    half_col: 11
+    min_count: 48
+    exclude_ps: true
+
+  ds:
+    # Formal DS starts from all geometry-valid non-PS pixels.
+    center_mode: all
+    temporal_coherence_min: 0.80
+    pair_coherence_min: 0.0
+    accept_evd: true
+
+phase_linking:
+  method: robust_emi
+  beta: 0.0
+  gamma_jitter: 1.0e-6
+  target_eigenvalue: 0.99
+  evd_fallback: true
+  temporal_reference_index: 0
+
+  temporal:
+    strategy: sequential
+    ministack_size: 19
+    max_num_compressed: 5
+    state_min_shp: 24
+    full_scm_fallback: true
+
+    # Full-span TC is streamed from linked_phase.
+    # Larger batches improve throughput while keeping RAM bounded.
+    fullspan_batch_size: 16384
+
+
+    # Sequential M19/M20 EMI numerical backend.
+    #
+    # threshold_cholesky preserves the formal
+    # lambda_min(Gamma) > 1e-7 gate.
+    #
+    # Full-SCM fallback remains current_eigh.
+    emi_backend: threshold_cholesky
+
+    # Frozen exact full-stack Rayleigh-GLRT support.
+    # Generated once and reused by K-state,
+    # sequential ministacks and full-span quality.
+    use_exact_support_cache: true
+
+phase_correction:
+  enabled: true
+  backend: gamma_phase_sim_orb_pt
+  geometric_reference_date: "20151212"
+  apply_sign: 1.0
+  scratch_dir: phase_correction
+
+  commands:
+    SLC2pt: SLC2pt
+    data2pt: data2pt
+    phase_sim_orb_pt: phase_sim_orb_pt
+
+  radar_height:
+    path: /home/ubuntu/Downloads/DEM_prep/20151212.hgt
+    geometry_par: /home/ubuntu/Downloads/DEM_prep/20151212_4_1.vv.mli.par
+    zero_height_is_valid: false
+    zero_height_epsilon_m: 0.001
+
+network:
+  max_temporal_baseline_days: 72
+  max_perpendicular_baseline_m: 200.0
+  target_connections_each_side: 3
+
+reference:
+  method: radar_window
+
+  radar_window:
+    center_row: 539
+    center_col: 337
+    half_row: 10
+    half_col: 15
+
+  statistic: median
+
+corrections:
+
+  scla:
+    mode: disabled
+
+  atmosphere:
+    mode: disabled

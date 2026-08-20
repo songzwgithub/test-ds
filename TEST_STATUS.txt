@@ -1,0 +1,36 @@
+pyPSDS-GAMMA v1.0.0 production release validation
+
+Release architecture:
+  formal DS domain       : geometry-valid non-PS
+  Rayleigh GLRT          : 11 x 23, alpha=0.005
+  formal SHP threshold   : K >= 48
+  sequential state       : K >= 24
+  temporal strategy      : sequential
+  ministack size         : 19
+  EMI beta               : 0.0
+  EMI target mu          : 0.99
+  EMI backend            : threshold_cholesky
+  EVD fallback           : enabled
+  final DS TC            : >= 0.80
+  exact support cache    : enabled
+  phase source           : auto | gamma | cache
+  Gamma canonical grid   : 128 x 256
+  full corrected YXT     : optional for sequential production
+  production stages      : 32
+
+Static compile:
+  PASS
+
+Unit tests:
+  36 passed in 1.77s
+
+Stage output contract:
+  32/32 current production stages represented
+  conditional phase_cache supported
+  optional diagnostic ADI modeled
+  exact support-cache wrapper outputs explicitly modeled
+  PASS
+
+Scientific regression:
+  frozen production counts unchanged
+  Step04 Gamma fast-resume PASS

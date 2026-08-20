@@ -1,0 +1,44 @@
+paths:
+  work_dir: /path/to/project_work
+  data_dir: /path/to/data_root
+  rslc_dir: /path/to/RSLC
+  rslc_tab: /path/to/RSLC_tab
+  output_dir: /path/to/output
+
+gamma:
+  rslc_dtype: auto
+  byte_order: big
+
+runtime:
+  io_workers: 4
+
+prototype:
+  roi:
+    row0: 0
+    col0: 0
+    rows: null
+    cols: null
+
+ps:
+  amplitude_dispersion_threshold: 0.25
+
+phase_correction:
+  enabled: true
+  geometric_reference_date: "YYYYMMDD"
+  apply_sign: 1.0
+  scratch_dir: phase_correction_v09
+  keep_tile_files: false
+  commands:
+    SLC2pt: SLC2pt
+    data2pt: data2pt
+    phase_sim_orb_pt: phase_sim_orb_pt
+  radar_height:
+    path: /path/to/radar_height.hgt
+    geometry_par: /path/to/height_geometry.mli.par
+    zero_height_is_valid: false
+
+phase_linking:
+  reference_idx: 0
+  beta: 0.05
+  gamma_jitter: 1.0e-6
+  emi_mu: 0.99

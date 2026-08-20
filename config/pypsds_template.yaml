@@ -1,0 +1,94 @@
+schema_version: 1
+
+paths:
+  data_dir: /path/to/data
+  rslc_dir: /path/to/RSLC
+  rslc_tab: /path/to/RSLC_tab
+  output_dir: /path/to/output
+
+gamma:
+  rslc_dtype: auto
+  byte_order: big
+
+processing:
+  roi:
+    row0: 0
+    col0: 0
+    rows: null
+    cols: null
+
+runtime:
+  cpu: auto
+  memory_fraction: 0.85
+  io_workers: auto
+  phase_link_batch_size: 96000
+  phase_link_chunk_size: 1024
+  phase_link_workers: 8
+  phase_cache_workers: 8
+
+selection:
+  ps:
+    amplitude_dispersion_max: 0.25
+
+  center_prior:
+    # Diagnostic only; not a formal DS eligibility gate.
+    enabled: false
+    method: moraine_ks
+    half_row: 5
+    half_col: 5
+    p_max: 0.05
+    min_count: 50
+
+  shp:
+    method: rayleigh_glrt
+    alpha: 0.005
+    half_row: 5
+    half_col: 11
+    min_count: 48
+    exclude_ps: true
+
+  ds:
+    # Formal DS starts from all geometry-valid non-PS pixels.
+    center_mode: all
+    temporal_coherence_min: 0.80
+    pair_coherence_min: 0.0
+    accept_evd: true
+
+phase_linking:
+  method: robust_emi
+  beta: 0.0
+  gamma_jitter: 1.0e-6
+  target_eigenvalue: 0.99
+  evd_fallback: true
+  temporal_reference_index: 0
+
+  temporal:
+    strategy: sequential
+    ministack_size: 19
+    max_num_compressed: 5
+    state_min_shp: 24
+    full_scm_fallback: true
+    use_exact_support_cache: true
+    emi_backend: threshold_cholesky
+    fullspan_batch_size: 16384
+
+phase_correction:
+  enabled: true
+  backend: gamma_phase_sim_orb_pt
+  geometric_reference_date: "YYYYMMDD"
+  apply_sign: 1.0
+
+  radar_height:
+    path: /path/to/radar_height.hgt
+    geometry_par: /path/to/height_geometry.mli.par
+
+network:
+  max_temporal_baseline_days: 72
+  max_perpendicular_baseline_m: 200
+  target_connections_each_side: 3
+
+corrections:
+  scla:
+    mode: disabled
+  atmosphere:
+    mode: disabled

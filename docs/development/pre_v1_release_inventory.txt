@@ -1,0 +1,1506 @@
+============================================================
+pyPSDS-GAMMA release inventory
+============================================================
+ROOT: /home/ubuntu/software/pyPSDS-GAMMA-v0.9-full
+
+==== GIT ====
+
+==== FILE TREE ====
+./build/lib/pypsds/config.py
+./build/lib/pypsds/ds/covariance_pc_v09.py
+./build/lib/pypsds/ds/covariance.py
+./build/lib/pypsds/ds/__init__.py
+./build/lib/pypsds/ds/moraine_ks.py
+./build/lib/pypsds/ds/phase_linking.py
+./build/lib/pypsds/ds/phase_link_v09.py
+./build/lib/pypsds/ds/shp_dolphin.py
+./build/lib/pypsds/ds/shp.py
+./build/lib/pypsds/ds/window.py
+./build/lib/pypsds/fusion/dense.py
+./build/lib/pypsds/fusion/__init__.py
+./build/lib/pypsds/fusion/point_stack.py
+./build/lib/pypsds/gamma/binary.py
+./build/lib/pypsds/gamma/geometry.py
+./build/lib/pypsds/gamma/__init__.py
+./build/lib/pypsds/gamma/par.py
+./build/lib/pypsds/gamma/phase_correction.py
+./build/lib/pypsds/gamma/stack.py
+./build/lib/pypsds/__init__.py
+./build/lib/pypsds/io_utils.py
+./build/lib/pypsds/progress.py
+./build/lib/pypsds/project_paths.py
+./build/lib/pypsds/prototype.py
+./build/lib/pypsds/ps/candidates.py
+./build/lib/pypsds/ps/__init__.py
+./build/lib/pypsds/qa/__init__.py
+./build/lib/pypsds/qa/plots.py
+./CHANGELOG.md
+./config/pypsds_v09_template.yaml
+./config/pypsds_v09.yaml
+./dist/pypsds_gamma-0.9.0-py3-none-any.whl
+./install.sh
+./LICENSE
+./pyproject.toml
+./pypsds/config.py
+./pypsds/ds/covariance_pc_v09.py
+./pypsds/ds/covariance.py
+./pypsds/ds/__init__.py
+./pypsds/ds/moraine_ks.py
+./pypsds/ds/phase_linking.py
+./pypsds/ds/phase_link_v09.py
+./pypsds/ds/shp_dolphin.py
+./pypsds/ds/shp.py
+./pypsds/ds/window.py
+./pypsds/fusion/dense.py
+./pypsds/fusion/__init__.py
+./pypsds/fusion/point_stack.py
+./pypsds/gamma/binary.py
+./pypsds/gamma/geometry.py
+./pypsds/gamma/__init__.py
+./pypsds/gamma/par.py
+./pypsds/gamma/phase_correction.py
+./pypsds/gamma/stack.py
+./pypsds/__init__.py
+./pypsds/io_utils.py
+./pypsds/progress.py
+./pypsds/project_paths.py
+./pypsds/prototype.py
+./pypsds/ps/candidates.py
+./pypsds/ps/__init__.py
+./pypsds/qa/__init__.py
+./pypsds/qa/plots.py
+./README.md
+./requirements-qemu.txt
+./scripts/00_check_environment.py
+./scripts/01a_plot_full_amplitude_v09.py
+./scripts/01b_audit_ps_amplitude_normalization_v09.py
+./scripts/01c_audit_acquisition_gain_uniformity_v09.py
+./scripts/01_check_gamma_stack.py
+./scripts/01d_audit_ps_temporal_stability_v09.py
+./scripts/02_build_moraine_center_prior_v09.py
+./scripts/03_build_phase_cache_v09.py
+./scripts/04_run_psds_v09.py
+./scripts/05a_audit_ds_quality_v09.py
+./scripts/05_select_ds_v09.py
+./scripts/06a_audit_point_phase_inputs_v09.py
+./scripts/06b_finalize_ps_geometry_v09.py
+./scripts/06_build_point_phase_stack_v09.py
+./scripts/07a_audit_network_robustness_v09.py
+./scripts/07b_build_2edge_network_v09.py
+./scripts/07b_build_directional_network_v09.py
+./scripts/07_build_network_v09.py
+./scripts/07c_audit_cycle_coverage_directional_v09.py
+./scripts/07c_audit_cycle_coverage_v09.py
+./scripts/07d_audit_directional_connections_v09.py
+./scripts/07d_finalize_network_v09.py
+./scripts/08a_audit_virtual_ifg_v09.py
+./scripts/08b_audit_spatial_point_graph_v09.py
+./scripts/08c_audit_spatial_bridge_radius_v09.py
+./scripts/08d_audit_residual_spatial_components_v09.py
+./scripts/08e_audit_residual_two_anchor_v09.py
+./scripts/08f_summarize_residual_anchor_radius_v09.py
+./scripts/08g_audit_sparse_local_graph_v09.py
+./scripts/08h_build_production_spatial_graph_v09.py
+./scripts/08i_audit_spatial_phase_gradient_v09.py
+./scripts/08j_finalize_unwrap_component_policy_v09.py
+./scripts/08k_unwrap_single_ifg_prototype_v09.py
+./scripts/08l_safe_fragment_integer_audit_v09.py
+./scripts/08m_audit_fragment_conflict_cycles_v09.py
+./scripts/08n_finalize_single_ifg_robust_solution_v09.py
+./scripts/08o_validate_representative_ifgs_v09.py
+./scripts/08p_batch_unwrap_all_ifgs_v09.py
+./scripts/08q_audit_full_batch_severity_v09.py
+./scripts/08r_audit_safe_conflict_acquisition_attribution_v09.py
+./scripts/08s_audit_acquisition_safe_fragments_v09.py
+./scripts/08t_audit_temporal_integer_closure_v09.py
+./scripts/08u_temporal_sparse_integer_candidate_v09.py
+./scripts/08v_spatial_validate_temporal_candidates_v09.py
+./scripts/08w_audit_fragment_signature_feasibility_v09.py
+./scripts/08x_finalize_unwrap_quality_and_gauge_v09.py
+./scripts/08y2_visualize_spatial_ambiguity_branches_v09.py
+./scripts/08y3_summarize_visual_branch_qa_v09.py
+./scripts/08y4_audit_safe_unsafe_integer_edges_v09.py
+./scripts/08y_visualize_wrapped_unwrapped_ifgs_v09.py
+./scripts/09a_network_inversion_tree_l2_parity_v09.py
+./scripts/09b2_robust_reference_region_audit_v09.py
+./scripts/09b3_reference_region_robustness_audit_v09.py
+./scripts/09b_reference_candidate_search_v09.py
+./scripts/09c_apply_reference_region_v09.py
+./scripts/10a2_audit_baseline_geometry_sources_v09.py
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py
+./scripts/10a4_fd_stepsize_audit_v09.py
+./scripts/10a5b_audit_sample_reproducibility_v09.py
+./scripts/10a5_build_production_topographic_sensitivity_v09.py
+./scripts/10a5c_batch_context_repeatability_v09.py
+./scripts/10a_reconstruct_acquisition_bperp_v09.py
+./scripts/10b1_scla_identifiability_audit_v09.py
+./scripts/10b2_scla_candidate_fit_v09.py
+./scripts/10b3_scla_temporal_cv_v09.py
+./scripts/10b4_scla_common_mode_audit_v09.py
+./scripts/10r1_pystamps_stage7_bridge_audit.py
+./scripts/10r2_pystamps_sbas_predictor_audit.py
+./scripts/10r3a_coordinate_grid_identity_audit.py
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py
+./scripts/10r3c0_gamma_base_command_preflight.py
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py
+./scripts/10r3c2_build_pointwise_bperp_v09.py
+./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py
+./scripts/10r4a1_pystamps_master_semantics_audit_v09.py
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py
+./scripts/10r5a0_stage7_delaunay_isolate_audit.py
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py
+./scripts/10r5b_validate_mature_stage7_scla_v09.py
+./scripts/_common.py
+./scripts/run_v09_full.sh
+./setup.py
+./SLC2pt.log
+./TEST_STATUS.txt
+./tests/test_config_fullscene.py
+./tests/test_v09_core.py
+./VERSION
+
+==== PYTHON IMPORTS FROM OTHER PROJECTS ====
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:333:    from pystamps.prep.gamma_sbas import (
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:337:    from pystamps.prep.gamma_geometry import (
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:343:    from pystamps.prep.gamma_lonlat import (
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:347:    from pystamps.prep.gamma_binary import (
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:351:    from pystamps.prep.gamma_observations import (
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:457:    from pystamps.io.mat import (
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:463:    from pystamps.pipeline.stage6_sbas import (
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:467:    from pystamps.pipeline.stage7_sbas import (
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:140:    from pystamps.io.mat import (
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:145:    from pystamps.prep.gamma_binary import (
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:149:    from pystamps.prep.gamma_geometry import (
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:153:    from pystamps.prep.gamma_observations import (
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:157:    from pystamps.pipeline.stage6_sbas import (
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:161:    from pystamps.pipeline.stage7_sbas import (
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:187:    from pystamps.prep.gamma_geometry import (
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:451:    from pystamps.pipeline.stage6_sbas import (
+./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py:364:    from pystamps.prep.gamma_sbas import (
+./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py:368:    from pystamps.prep.gamma_geometry import (
+./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py:373:    from pystamps.prep.gamma_lonlat import (
+./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py:377:    from pystamps.prep.gamma_observations import (
+./scripts/10r3c2_build_pointwise_bperp_v09.py:769:    from pystamps.prep.gamma_geometry import (
+
+==== EXTERNAL SOURCE PATH REFERENCES ====
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:27:        Path("/home/ubuntu/software/pystamps-gamma"),
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:28:        Path("/home/ubuntu/software/pystamps-gamma-main"),
+./scripts/10r2_pystamps_sbas_predictor_audit.py:285:        default="/home/ubuntu/Downloads/pystamps",
+./scripts/10r4a1_pystamps_master_semantics_audit_v09.py:252:        default="/home/ubuntu/Downloads/pystamps",
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:34:            "/home/ubuntu/software/pystamps-gamma"
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:37:            "/home/ubuntu/software/pystamps-gamma-main"
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:255:            "/home/ubuntu/Downloads/pystamps"
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:65:            "/home/ubuntu/software/pystamps-gamma"
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:48:        Path("/home/ubuntu/software/pystamps-gamma"),
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:49:        Path("/home/ubuntu/software/pystamps-gamma-main"),
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:22:        Path("/home/ubuntu/software/pystamps-gamma"),
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:23:        Path("/home/ubuntu/software/pystamps-gamma-main"),
+./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py:23:        Path("/home/ubuntu/software/pystamps-gamma"),
+./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py:24:        Path("/home/ubuntu/software/pystamps-gamma-main"),
+./scripts/10r3c2_build_pointwise_bperp_v09.py:26:        Path("/home/ubuntu/software/pystamps-gamma"),
+./scripts/10r3c2_build_pointwise_bperp_v09.py:27:        Path("/home/ubuntu/software/pystamps-gamma-main"),
+
+==== DEVELOPMENT NAMES ====
+./build/lib/pypsds/gamma/phase_correction.py:113:                "phase_correction.radar_height.path in prototype.yaml."
+./build/lib/pypsds/ds/phase_link_v09.py:56:def robust_emi_batch_v09(
+./build/lib/pypsds/ds/phase_link_v09.py:69:    v0.9 performance change:
+./build/lib/pypsds/ds/phase_link_v09.py:172:def robust_emi_threaded_v09(
+./build/lib/pypsds/ds/phase_link_v09.py:205:        return robust_emi_batch_v09(
+./build/lib/pypsds/ds/phase_link_v09.py:225:        return s, e, robust_emi_batch_v09(
+./build/lib/pypsds/ds/phase_link_v09.py:252:def temporal_coherence_v09(
+./build/lib/pypsds/ds/phase_link_v09.py:279:def median_pair_coherence_v09(coh: np.ndarray) -> np.ndarray:
+./build/lib/pypsds/ds/covariance_pc_v09.py:9:def compressed_coherence_pc_v09(
+./build/lib/pypsds/ds/covariance_pc_v09.py:19:    v0.9 performance changes:
+./build/lib/pypsds/ds/window.py:57:    approximate ground coordinates. Statistical testing still decides which
+./build/lib/pypsds/ds/shp.py:73:    `ks` uses standard hypothesis-test semantics: p >= alpha means we do not
+./build/lib/pypsds/ds/shp_dolphin.py:29:    test = N * [2 log((s1+s2)/2) - log(s1) - log(s2)]
+./build/lib/pypsds/ds/shp_dolphin.py:30:    A neighbor is accepted as SHP when test < chi2.ppf(1-alpha, 1).
+./build/lib/pypsds/project_paths.py:57:    output_dir = _resolve(p.get("output_dir"), work_dir) or (work_dir / "prototype_outputs")
+./build/lib/pypsds/config.py:12:    "prototype.yaml",
+./build/lib/pypsds/config.py:13:    "prototype.yml",
+./build/lib/pypsds/config.py:29:    packaged = Path(__file__).resolve().parents[1] / "config" / "prototype.yaml"
+./build/lib/pypsds/config.py:33:    raise FileNotFoundError("No pypsds/prototype YAML config found")
+./build/lib/pypsds/__init__.py:1:"""pyPSDS-GAMMA CPU-first PS/DS InSAR prototype."""
+./build/lib/pypsds/prototype.py:25:    roi = cfg.get("prototype", {}).get("roi", {}) or {}
+./README.md:1:# pyPSDS-GAMMA v0.9
+./README.md:3:Standalone CPU/RAM-oriented PS/DS InSAR prototype for **GAMMA co-registered RSLC stacks**.
+./README.md:5:This archive is a **complete repository**, not an upgrade overlay. It can be installed into a fresh environment after the previous prototype directory has been deleted.
+./README.md:7:## Validated v0.9 processing design
+./README.md:23:13. Final DS quality threshold is **explicitly user-controlled** in Step05; v0.9 does not silently impose a universal TC threshold.
+./README.md:28:Spatial structure, coverage, DS density and TC maps should be judged on the full radar scene. Small ROIs are suitable for scalar parity/unit tests and profiling only.
+./README.md:47:The tested QEMU/KVM VM exposes only SSE/SSE2/SSE3. Newer NumPy wheels using an x86-64-v2 baseline may fail to import there. The known-good environment is:
+./README.md:63:cd pyPSDS-GAMMA-v0.9-full
+./README.md:98:config/pypsds_v09.yaml
+./README.md:107:  output_dir: /home/ubuntu/Downloads/psds/prototype_outputs
+./README.md:121:config/pypsds_v09_template.yaml
+./README.md:132:  --config config/pypsds_v09.yaml
+./README.md:140:python scripts/02_build_moraine_center_prior_v09.py \
+./README.md:141:  --config config/pypsds_v09.yaml
+./README.md:147:<output>/v09/moraine_center_prior.npz
+./README.md:155:python scripts/03_build_phase_cache_v09.py \
+./README.md:156:  --config config/pypsds_v09.yaml \
+./README.md:165:<output>/v09/cache/phase_corrected_yxt.npy
+./README.md:166:<output>/v09/cache/phase_geometry_valid.npy
+./README.md:167:<output>/v09/cache/phase_cache_manifest.json
+./README.md:178:### Step 04 — full v0.9 PS/DS processing
+./README.md:192:python scripts/04_run_psds_v09.py \
+./README.md:193:  --config config/pypsds_v09.yaml \
+./README.md:215:python scripts/04_run_psds_v09.py \
+./README.md:216:  --config config/pypsds_v09.yaml \
+./README.md:234:Main outputs under `<output>/v09/`:
+./README.md:260:v0.9 does not silently define a universal final DS mask. Choose thresholds after inspecting the full-scene QA layers.
+./README.md:265:python scripts/05_select_ds_v09.py \
+./README.md:266:  --config config/pypsds_v09.yaml \
+./README.md:281:python scripts/06_build_point_phase_stack_v09.py \
+./README.md:282:  --config config/pypsds_v09.yaml \
+./README.md:283:  --ds-mask /path/to/prototype_outputs/v09/final_ds_tc0.750_pc0.200_evd.npy
+./README.md:289:<output>/v09/point_phase_stack/
+./README.md:298:This is the intended contract for subsequent point-network construction, unwrapping and time-series inversion. Those downstream algorithms are not silently hard-coded into v0.9 because they have not yet been validated in the current development sequence.
+./README.md:307:bash scripts/run_v09_full.sh config/pypsds_v09.yaml
+./README.md:310:This runs environment audit, stack validation, center-prior generation, phase-cache generation and full v0.9 phase linking. It deliberately stops before final DS thresholding.
+./README.md:319:- If PL dominates runtime, test 8/16/24/32 workers with the same 32k benchmark.
+./README.md:323:Frozen/validated for v0.9:
+./tests/test_config_fullscene.py:5:def test_example_config_is_fullscene():
+./tests/test_config_fullscene.py:6:    p = Path(__file__).resolve().parents[1] / "config" / "pypsds_v09.yaml"
+./tests/test_config_fullscene.py:8:    assert cfg["prototype"]["roi"]["rows"] is None
+./tests/test_config_fullscene.py:9:    assert cfg["prototype"]["roi"]["cols"] is None
+./tests/test_v09_core.py:7:from pypsds.ds.covariance_pc_v09 import compressed_coherence_pc_v09
+./tests/test_v09_core.py:8:from pypsds.ds.phase_link_v09 import (
+./tests/test_v09_core.py:10:    robust_emi_batch_v09,
+./tests/test_v09_core.py:11:    temporal_coherence_v09,
+./tests/test_v09_core.py:15:def test_glrt_equal_scale_zero():
+./tests/test_v09_core.py:21:def test_moraine_ks_basic():
+./tests/test_v09_core.py:29:def test_candidate_coherence_kernel_perfect_support():
+./tests/test_v09_core.py:40:    coh = compressed_coherence_pc_v09(x, rows, cols, support, pairs[:, 0], pairs[:, 1])
+./tests/test_v09_core.py:45:def test_phase_link_temporal_coherence_perfect():
+./tests/test_v09_core.py:50:    phase, est, emi, evd, gmin = robust_emi_batch_v09(
+./tests/test_v09_core.py:59:    tc = temporal_coherence_v09(coh, phase, pairs)
+./CHANGELOG.md:3:## v0.9.0
+./CHANGELOG.md:5:- Rebuilt as a standalone repository; no prior prototype checkout is required.
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:12:from pypsds.prototype import open_from_config
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:236:        "v09"
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:242:        "network_inversion_v09"
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:260:        "scla_v09"
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:264:        "r3b_grid_adapter"
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:958:        "and current-network baseline coverage audit"
+./scripts/10r3b_raw_grid_geometry_base_coverage_audit.py:1163:            "pyPSDS-GAMMA-mixed-grid-stage7-adapter-audit-v09",
+./scripts/10a4_fd_stepsize_audit_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/10a4_fd_stepsize_audit_v09.py:292:    root = output_base / "v09"
+./scripts/10a4_fd_stepsize_audit_v09.py:303:        "network_inversion_v09"
+./scripts/10a4_fd_stepsize_audit_v09.py:309:        "phase_correction_v09"
+./scripts/10a4_fd_stepsize_audit_v09.py:315:        "scla_v09"
+./scripts/10a4_fd_stepsize_audit_v09.py:317:        "fd_stepsize_audit"
+./scripts/10a4_fd_stepsize_audit_v09.py:527:        "step-size stability audit"
+./scripts/10a4_fd_stepsize_audit_v09.py:562:        "tested steps               : "
+./scripts/10a4_fd_stepsize_audit_v09.py:1055:            "pyPSDS-GAMMA-fd-stepsize-audit-v09",
+./scripts/10a4_fd_stepsize_audit_v09.py:1076:        "tested_delta_height_m": [
+./scripts/10a4_fd_stepsize_audit_v09.py:1110:        "fd_stepsize_audit_manifest.json"
+./scripts/08p_batch_unwrap_all_ifgs_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/08p_batch_unwrap_all_ifgs_v09.py:122:# and audit whether non-exact constraints were required.
+./scripts/08p_batch_unwrap_all_ifgs_v09.py:178:def audit_selected_superforest(
+./scripts/08p_batch_unwrap_all_ifgs_v09.py:510:        / "08l_safe_fragment_integer_audit_v09.py"
+./scripts/08p_batch_unwrap_all_ifgs_v09.py:516:        / "08n_finalize_single_ifg_robust_solution_v09.py"
+./scripts/08p_batch_unwrap_all_ifgs_v09.py:521:        / "v09"
+./scripts/08p_batch_unwrap_all_ifgs_v09.py:524:    audit08i = (
+./scripts/08p_batch_unwrap_all_ifgs_v09.py:526:        / "spatial_phase_gradient_audit"
+./scripts/08p_batch_unwrap_all_ifgs_v09.py:532:        / "safe_fragment_integer_audit"
+./scripts/08p_batch_unwrap_all_ifgs_v09.py:561:        audit08i
+./scripts/08p_batch_unwrap_all_ifgs_v09.py:726:        forest = audit_selected_superforest(
+./scripts/08p_batch_unwrap_all_ifgs_v09.py:1229:            "pyPSDS-GAMMA-full-ifg-unwrapping-validation-v0.9",
+./scripts/08q_audit_full_batch_severity_v09.py:12:from pypsds.prototype import open_from_config
+./scripts/08q_audit_full_batch_severity_v09.py:172:    test_gid,
+./scripts/08q_audit_full_batch_severity_v09.py:187:        if gid == test_gid:
+./scripts/08q_audit_full_batch_severity_v09.py:233:    # need the original tree containing test edge.
+./scripts/08q_audit_full_batch_severity_v09.py:321:        / "v09"
+./scripts/08q_audit_full_batch_severity_v09.py:334:    audit08i = (
+./scripts/08q_audit_full_batch_severity_v09.py:336:        / "spatial_phase_gradient_audit"
+./scripts/08q_audit_full_batch_severity_v09.py:342:        / "safe_fragment_integer_audit"
+./scripts/08q_audit_full_batch_severity_v09.py:352:        / "batch_unwrap_severity_audit"
+./scripts/08q_audit_full_batch_severity_v09.py:393:        audit08i
+./scripts/08q_audit_full_batch_severity_v09.py:402:        "Step 08q - Full-batch severity audit"
+./scripts/08q_audit_full_batch_severity_v09.py:1139:            "pyPSDS-GAMMA-full-batch-severity-audit-v0.9",
+./scripts/08q_audit_full_batch_severity_v09.py:1183:        / "severity_audit.json"
+./scripts/08k_unwrap_single_ifg_prototype_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/08k_unwrap_single_ifg_prototype_v09.py:63:    audit_csv: Path,
+./scripts/08k_unwrap_single_ifg_prototype_v09.py:68:    with audit_csv.open() as f:
+./scripts/08k_unwrap_single_ifg_prototype_v09.py:417:        / "v09"
+./scripts/08k_unwrap_single_ifg_prototype_v09.py:440:    audit08i = (
+./scripts/08k_unwrap_single_ifg_prototype_v09.py:442:        / "spatial_phase_gradient_audit"
+./scripts/08k_unwrap_single_ifg_prototype_v09.py:448:        / "single_ifg_unwrap_prototype"
+./scripts/08k_unwrap_single_ifg_prototype_v09.py:475:        audit08i,
+./scripts/08k_unwrap_single_ifg_prototype_v09.py:624:        "Step 08k - Single-IFG spatial unwrapping prototype"
+./scripts/08k_unwrap_single_ifg_prototype_v09.py:1590:    # Save prototype products
+./scripts/08k_unwrap_single_ifg_prototype_v09.py:1649:            "pyPSDS-GAMMA-single-ifg-unwrapping-prototype-v0.9",
+./scripts/06b_finalize_ps_geometry_v09.py:10:from pypsds.prototype import open_from_config
+./scripts/06b_finalize_ps_geometry_v09.py:13:def find_geometry_mask(v09_dir: Path):
+./scripts/06b_finalize_ps_geometry_v09.py:15:        v09_dir / "cache" / "phase_geometry_valid.npy",
+./scripts/06b_finalize_ps_geometry_v09.py:16:        v09_dir / "phase_geometry_valid.npy",
+./scripts/06b_finalize_ps_geometry_v09.py:17:        v09_dir / "cache" / "geometry_valid.npy",
+./scripts/06b_finalize_ps_geometry_v09.py:18:        v09_dir / "geometry_valid.npy",
+./scripts/06b_finalize_ps_geometry_v09.py:54:    v09 = (
+./scripts/06b_finalize_ps_geometry_v09.py:56:        / "v09"
+./scripts/06b_finalize_ps_geometry_v09.py:60:        v09
+./scripts/06b_finalize_ps_geometry_v09.py:65:        v09
+./scripts/06b_finalize_ps_geometry_v09.py:71:        "Step 06b - Final PS geometry/phase audit"
+./scripts/06b_finalize_ps_geometry_v09.py:163:        v09
+./scripts/06b_finalize_ps_geometry_v09.py:169:            "under v09 or v09/cache."
+./scripts/06b_finalize_ps_geometry_v09.py:246:        v09
+./scripts/06b_finalize_ps_geometry_v09.py:347:        v09
+./scripts/06b_finalize_ps_geometry_v09.py:387:        f"{v09/'final_ps_mask.npy'}"
+./scripts/07c_audit_cycle_coverage_v09.py:15:from pypsds.prototype import open_from_config
+./scripts/07c_audit_cycle_coverage_v09.py:149:def shortest_cycle_for_edge(
+./scripts/07c_audit_cycle_coverage_v09.py:155:    Remove edge (u,v), find shortest remaining
+./scripts/07c_audit_cycle_coverage_v09.py:158:    shortest cycle length = path length + 1.
+./scripts/07c_audit_cycle_coverage_v09.py:227:        / "v09"
+./scripts/07c_audit_cycle_coverage_v09.py:261:        / "cycle_audit"
+./scripts/07c_audit_cycle_coverage_v09.py:281:        "Step 07c - Short-cycle coverage audit"
+./scripts/07c_audit_cycle_coverage_v09.py:380:    shortest = np.full(
+./scripts/07c_audit_cycle_coverage_v09.py:388:        L = shortest_cycle_for_edge(
+./scripts/07c_audit_cycle_coverage_v09.py:400:        shortest[q] = L
+./scripts/07c_audit_cycle_coverage_v09.py:462:        f"shortest-cycle min/median/max: "
+./scripts/07c_audit_cycle_coverage_v09.py:463:        f"{shortest.min()} / "
+./scripts/07c_audit_cycle_coverage_v09.py:464:        f"{np.median(shortest):.1f} / "
+./scripts/07c_audit_cycle_coverage_v09.py:465:        f"{shortest.max()}"
+./scripts/07c_audit_cycle_coverage_v09.py:469:        shortest,
+./scripts/07c_audit_cycle_coverage_v09.py:475:        "Shortest cycle length distribution:"
+./scripts/07c_audit_cycle_coverage_v09.py:540:                f"shortest_cycle={shortest[q]}"
+./scripts/07c_audit_cycle_coverage_v09.py:577:            "shortest_cycle_length",
+./scripts/07c_audit_cycle_coverage_v09.py:603:                    shortest[q-1]
+./scripts/07c_audit_cycle_coverage_v09.py:665:    # Shortest cycle histogram
+./scripts/07c_audit_cycle_coverage_v09.py:673:        shortest.min() - 0.5,
+./scripts/07c_audit_cycle_coverage_v09.py:674:        shortest.max() + 1.5,
+./scripts/07c_audit_cycle_coverage_v09.py:679:        shortest,
+./scripts/07c_audit_cycle_coverage_v09.py:685:        "Shortest cycle length containing edge"
+./scripts/07c_audit_cycle_coverage_v09.py:693:        "Step 07c - Shortest closure-loop length"
+./scripts/07c_audit_cycle_coverage_v09.py:705:        / "07c_shortest_cycle_histogram.png",
+./scripts/07c_audit_cycle_coverage_v09.py:713:    # Time-Bperp graph colored by shortest cycle length
+./scripts/07c_audit_cycle_coverage_v09.py:730:        shortest.min()
+./scripts/07c_audit_cycle_coverage_v09.py:734:        shortest.max()
+./scripts/07c_audit_cycle_coverage_v09.py:748:            shortest[q]
+./scripts/07c_audit_cycle_coverage_v09.py:800:        "Shortest cycle length"
+./scripts/07c_audit_cycle_coverage_v09.py:824:        / "07c_network_shortest_cycle.png",
+./scripts/07c_audit_cycle_coverage_v09.py:879:            f"shortest_cycle_min={shortest.min()}\n"
+./scripts/07c_audit_cycle_coverage_v09.py:883:            f"shortest_cycle_median={np.median(shortest):.6f}\n"
+./scripts/07c_audit_cycle_coverage_v09.py:887:            f"shortest_cycle_max={shortest.max()}\n"
+./scripts/08j_finalize_unwrap_component_policy_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/08j_finalize_unwrap_component_policy_v09.py:37:        / "v09"
+./scripts/08j_finalize_unwrap_component_policy_v09.py:574:            "pyPSDS-GAMMA-unwrapping-component-policy-v0.9",
+./scripts/02_build_moraine_center_prior_v09.py:12:from pypsds.prototype import open_from_config
+./scripts/02_build_moraine_center_prior_v09.py:38:    outdir = Path(paths.output_dir) / "v09"
+./scripts/02_build_moraine_center_prior_v09.py:44:    print("v0.9 - exact Moraine KS center prior")
+./scripts/02_build_moraine_center_prior_v09.py:87:        figdir / "v09_moraine_shp_count.png",
+./scripts/02_build_moraine_center_prior_v09.py:88:        f"v0.9 - exact Moraine selected-neighbor count\n{2*args.half_row+1}x{2*args.half_col+1}, p<{args.p_max}",
+./scripts/02_build_moraine_center_prior_v09.py:98:        f"v0.9 - Moraine DS center prior; N={candidate.sum():,}, density={100*candidate.mean():.2f}%"
+./scripts/02_build_moraine_center_prior_v09.py:103:    fig.savefig(figdir / "v09_moraine_center_prior.png", dpi=160)
+./scripts/08l_safe_fragment_integer_audit_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/08l_safe_fragment_integer_audit_v09.py:52:def choose_pair(audit_csv: Path, pair_id: int):
+./scripts/08l_safe_fragment_integer_audit_v09.py:55:    with audit_csv.open() as f:
+./scripts/08l_safe_fragment_integer_audit_v09.py:308:def audit_edge_jumps(
+./scripts/08l_safe_fragment_integer_audit_v09.py:399:        / "v09"
+./scripts/08l_safe_fragment_integer_audit_v09.py:422:    audit08i = (
+./scripts/08l_safe_fragment_integer_audit_v09.py:424:        / "spatial_phase_gradient_audit"
+./scripts/08l_safe_fragment_integer_audit_v09.py:430:        / "safe_fragment_integer_audit"
+./scripts/08l_safe_fragment_integer_audit_v09.py:451:        audit08i,
+./scripts/08l_safe_fragment_integer_audit_v09.py:550:        "Step 08l - Safe-fragment integer consistency audit"
+./scripts/08l_safe_fragment_integer_audit_v09.py:752:        audit_edge_jumps(
+./scripts/08l_safe_fragment_integer_audit_v09.py:1290:        audit_edge_jumps(
+./scripts/08l_safe_fragment_integer_audit_v09.py:1407:    # Super-edge constraint audit
+./scripts/08l_safe_fragment_integer_audit_v09.py:1551:            "pyPSDS-GAMMA-safe-fragment-integer-audit-v0.9",
+./scripts/07d_audit_directional_connections_v09.py:10:from pypsds.prototype import open_from_config
+./scripts/07d_audit_directional_connections_v09.py:90:        / "v09"
+./scripts/07d_audit_directional_connections_v09.py:107:        "Step 07d - Directional connection feasibility audit"
+./scripts/07d_audit_directional_connections_v09.py:259:            "No feasible solution in tested range."
+./scripts/10r2_pystamps_sbas_predictor_audit.py:11:from pypsds.prototype import open_from_config
+./scripts/10r2_pystamps_sbas_predictor_audit.py:309:        "v09"
+./scripts/10r2_pystamps_sbas_predictor_audit.py:315:        "network_inversion_v09"
+./scripts/10r2_pystamps_sbas_predictor_audit.py:327:        "scla_v09"
+./scripts/10r2_pystamps_sbas_predictor_audit.py:335:        "scla_v09"
+./scripts/10r2_pystamps_sbas_predictor_audit.py:339:        "r2_predictor_audit"
+./scripts/10r2_pystamps_sbas_predictor_audit.py:592:    # Main parity tests
+./scripts/10r2_pystamps_sbas_predictor_audit.py:600:        "topographic-predictor compatibility audit"
+./scripts/10r2_pystamps_sbas_predictor_audit.py:911:            "pyPSDS-GAMMA-pySTAMPS-SBAS-predictor-audit-v09",
+./scripts/10r2_pystamps_sbas_predictor_audit.py:992:        "pystamps_sbas_predictor_audit_manifest.json"
+./scripts/01c_audit_acquisition_gain_uniformity_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/01c_audit_acquisition_gain_uniformity_v09.py:73:    print("Step 01c - Acquisition gain spatial-uniformity audit")
+./scripts/01c_audit_acquisition_gain_uniformity_v09.py:602:        / "v09"
+./scripts/_common.py:14:    p.add_argument("--config", default=None, help="pypsds/prototype YAML")
+./scripts/10r4a1_pystamps_master_semantics_audit_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/10r4a1_pystamps_master_semantics_audit_v09.py:270:        "v09"
+./scripts/10r4a1_pystamps_master_semantics_audit_v09.py:282:        "scla_v09"
+./scripts/10r4a1_pystamps_master_semantics_audit_v09.py:286:        "r3c2_pointwise_bperp"
+./scripts/10r4a1_pystamps_master_semantics_audit_v09.py:475:        "master semantics audit"
+./scripts/10r4a1_pystamps_master_semantics_audit_v09.py:719:            "  inside pystamps_bridge_v09, "
+./scripts/08e_audit_residual_two_anchor_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/08e_audit_residual_two_anchor_v09.py:43:        / "v09"
+./scripts/08e_audit_residual_two_anchor_v09.py:51:    audit_dir = (
+./scripts/08e_audit_residual_two_anchor_v09.py:53:        / "spatial_graph_residual_audit"
+./scripts/08e_audit_residual_two_anchor_v09.py:58:        / "spatial_graph_two_anchor_audit"
+./scripts/08e_audit_residual_two_anchor_v09.py:75:        audit_dir
+./scripts/08e_audit_residual_two_anchor_v09.py:159:        "Step 08e - Residual component two-anchor audit"
+./scripts/08e_audit_residual_two_anchor_v09.py:361:                # Pick two shortest edges using
+./scripts/08e_audit_residual_two_anchor_v09.py:668:        / "residual_two_anchor_audit.csv"
+./scripts/08e_audit_residual_two_anchor_v09.py:692:            "pyPSDS-GAMMA-residual-two-anchor-audit-v0.9",
+./scripts/08e_audit_residual_two_anchor_v09.py:758:        / "residual_two_anchor_audit.json"
+./scripts/08h_build_production_spatial_graph_v09.py:14:from pypsds.prototype import open_from_config
+./scripts/08h_build_production_spatial_graph_v09.py:203:    outroot = Path(paths.output_dir) / "v09"
+./scripts/08h_build_production_spatial_graph_v09.py:207:    old_audit = (
+./scripts/08h_build_production_spatial_graph_v09.py:209:        / "spatial_graph_residual_audit"
+./scripts/08h_build_production_spatial_graph_v09.py:214:        / "spatial_graph_two_anchor_audit"
+./scripts/08h_build_production_spatial_graph_v09.py:378:        old_audit
+./scripts/08h_build_production_spatial_graph_v09.py:463:        / "residual_two_anchor_audit.csv"
+./scripts/08h_build_production_spatial_graph_v09.py:745:            "pyPSDS-GAMMA-production-spatial-graph-v0.9",
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:16:from pypsds.prototype import open_from_config
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:289:        "v09"
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:295:        "network_inversion_v09"
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:310:    r3b = (
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:313:        "scla_v09"
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:317:        "r3b_grid_adapter"
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:320:    r3c2 = (
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:323:        "scla_v09"
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:327:        "r3c2_pointwise_bperp"
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:330:    r4a = (
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:333:        "scla_v09"
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:337:        "r4a_stage7_contract"
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:343:        "pystamps_bridge_v09"
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:351:        r3c2
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:373:        r4a
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:416:                "pystamps_bridge_v09_backup_"
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:522:            r3b
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:532:            r3b
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:542:            r3b
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:552:            r3b
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:560:        r3b
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:567:        r3b
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:575:            r4a
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:584:            r3c2
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:593:            r3c2
+./scripts/10r4b_build_pystamps_stage7_bridge_v09.py:1778:                "pystamps-stage7-bridge-v09"
+./scripts/10a5_build_production_topographic_sensitivity_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/10a5_build_production_topographic_sensitivity_v09.py:164:        "v09"
+./scripts/10a5_build_production_topographic_sensitivity_v09.py:176:        "network_inversion_v09"
+./scripts/10a5_build_production_topographic_sensitivity_v09.py:182:        "phase_correction_v09"
+./scripts/10a5_build_production_topographic_sensitivity_v09.py:188:        "scla_v09"
+./scripts/10a5_build_production_topographic_sensitivity_v09.py:196:        "scla_v09"
+./scripts/10a5_build_production_topographic_sensitivity_v09.py:198:        "fd_stepsize_audit"
+./scripts/10a5_build_production_topographic_sensitivity_v09.py:204:        "scla_v09"
+./scripts/10a5_build_production_topographic_sensitivity_v09.py:417:        "fd_stepsize_audit_manifest.json"
+./scripts/10a5_build_production_topographic_sensitivity_v09.py:1315:            "pyPSDS-GAMMA-production-topographic-sensitivity-v09",
+./scripts/10b1_scla_identifiability_audit_v09.py:10:from pypsds.prototype import open_from_config
+./scripts/10b1_scla_identifiability_audit_v09.py:91:        "v09"
+./scripts/10b1_scla_identifiability_audit_v09.py:97:        "scla_v09"
+./scripts/10b1_scla_identifiability_audit_v09.py:105:        "scla_v09"
+./scripts/10b1_scla_identifiability_audit_v09.py:122:        "batch_context_audit"
+./scripts/10b1_scla_identifiability_audit_v09.py:314:        "identifiability audit"
+./scripts/10b1_scla_identifiability_audit_v09.py:948:            "pyPSDS-GAMMA-scla-identifiability-audit-v09",
+./scripts/10b1_scla_identifiability_audit_v09.py:968:        "model_being_tested":
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:16:    "prototype_outputs/v09"
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:21:    / "scla_v09"
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:23:    / "r3b_grid_adapter"
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:28:    / "scla_v09"
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:30:    / "r4a_stage7_contract"
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:35:    / "pystamps_bridge_v09"
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:273:        "stage7_run_v09.log",
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:274:        "stage7_delaunay_isolate_audit_v09.json",
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:310:        "_pre_r5a1_clipped_geometry"
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:620:    # Duplicate audit BEFORE touching ps2
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:864:    # Exact mature Triangle path pre-audit
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:872:        "Mature Triangle topology pre-audit"
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:939:    # Remove pre-audit work.
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:987:        "ps2.r5a1_tmp.mat"
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:1047:            "pyPSDS-GAMMA-stage7-boundary-coordinate-repair-v09",
+./scripts/10r5a1_fix_stage7_boundary_xy_v09.py:1145:        "stage7_coordinate_repair_v09.json"
+./scripts/08r_audit_safe_conflict_acquisition_attribution_v09.py:12:from pypsds.prototype import open_from_config
+./scripts/08r_audit_safe_conflict_acquisition_attribution_v09.py:96:        / "v09"
+./scripts/08r_audit_safe_conflict_acquisition_attribution_v09.py:111:        / "safe_fragment_integer_audit"
+./scripts/08r_audit_safe_conflict_acquisition_attribution_v09.py:128:        / "safe_conflict_acquisition_audit"
+./scripts/08r_audit_safe_conflict_acquisition_attribution_v09.py:192:        "Step 08r - SAFE-conflict acquisition attribution audit"
+./scripts/08r_audit_safe_conflict_acquisition_attribution_v09.py:853:        "20150110 targeted audit"
+./scripts/08r_audit_safe_conflict_acquisition_attribution_v09.py:1041:            "pyPSDS-GAMMA-safe-conflict-acquisition-attribution-v0.9",
+./scripts/08m_audit_fragment_conflict_cycles_v09.py:12:from pypsds.prototype import open_from_config
+./scripts/08m_audit_fragment_conflict_cycles_v09.py:327:        / "v09"
+./scripts/08m_audit_fragment_conflict_cycles_v09.py:345:    auditdir = (
+./scripts/08m_audit_fragment_conflict_cycles_v09.py:347:        / "safe_fragment_integer_audit"
+./scripts/08m_audit_fragment_conflict_cycles_v09.py:352:        / "fragment_conflict_cycle_audit"
+./scripts/08m_audit_fragment_conflict_cycles_v09.py:404:        auditdir
+./scripts/08m_audit_fragment_conflict_cycles_v09.py:412:        auditdir
+./scripts/08m_audit_fragment_conflict_cycles_v09.py:430:        auditdir
+./scripts/08m_audit_fragment_conflict_cycles_v09.py:579:        "Step 08m - Fragment conflict-cycle audit"
+./scripts/08m_audit_fragment_conflict_cycles_v09.py:774:    # Fundamental cycle audit
+./scripts/08m_audit_fragment_conflict_cycles_v09.py:1079:            "pyPSDS-GAMMA-fragment-conflict-cycle-audit-v0.9",
+./scripts/10r3a_coordinate_grid_identity_audit.py:14:    / "prototype_outputs"
+./scripts/10r3a_coordinate_grid_identity_audit.py:15:    / "v09"
+./scripts/10r3a_coordinate_grid_identity_audit.py:20:    / "network_inversion_v09"
+./scripts/10r3a_coordinate_grid_identity_audit.py:187:print("Step 10R3a - pyPSDS coordinate-grid identity audit")
+./scripts/08i_audit_spatial_phase_gradient_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/08i_audit_spatial_phase_gradient_v09.py:166:        / "v09"
+./scripts/08i_audit_spatial_phase_gradient_v09.py:186:        / "spatial_phase_gradient_audit"
+./scripts/08i_audit_spatial_phase_gradient_v09.py:252:        "Step 08i - Spatial wrapped-phase gradient audit"
+./scripts/08i_audit_spatial_phase_gradient_v09.py:732:            "pyPSDS-GAMMA-spatial-phase-gradient-audit-v0.9",
+./scripts/08i_audit_spatial_phase_gradient_v09.py:804:        / "spatial_gradient_audit.json"
+./scripts/01d_audit_ps_temporal_stability_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/01d_audit_ps_temporal_stability_v09.py:195:    test,
+./scripts/01d_audit_ps_temporal_stability_v09.py:197:    inter = reference & test
+./scripts/01d_audit_ps_temporal_stability_v09.py:198:    union = reference | test
+./scripts/01d_audit_ps_temporal_stability_v09.py:201:    nt = int(test.sum())
+./scripts/01d_audit_ps_temporal_stability_v09.py:217:    test_precision = (
+./scripts/01d_audit_ps_temporal_stability_v09.py:225:        "test": nt,
+./scripts/01d_audit_ps_temporal_stability_v09.py:230:        "test_precision": test_precision,
+./scripts/01d_audit_ps_temporal_stability_v09.py:299:        "--random-tests",
+./scripts/01d_audit_ps_temporal_stability_v09.py:333:        "Step 01d - PS temporal-subset stability audit"
+./scripts/01d_audit_ps_temporal_stability_v09.py:342:        f"random tests    : "
+./scripts/01d_audit_ps_temporal_stability_v09.py:343:        f"{args.random_tests}"
+./scripts/01d_audit_ps_temporal_stability_v09.py:509:        args.random_tests
+./scripts/01d_audit_ps_temporal_stability_v09.py:537:        "[01d:4/5] Running temporal stability tests..."
+./scripts/01d_audit_ps_temporal_stability_v09.py:592:                mr["test_precision"]
+./scripts/01d_audit_ps_temporal_stability_v09.py:595:                mg["test_precision"]
+./scripts/01d_audit_ps_temporal_stability_v09.py:682:        f"gain better tests       : "
+./scripts/01d_audit_ps_temporal_stability_v09.py:687:        f"raw better tests        : "
+./scripts/01d_audit_ps_temporal_stability_v09.py:692:        f"equal tests             : "
+./scripts/01d_audit_ps_temporal_stability_v09.py:707:    # Random tests separately
+./scripts/01d_audit_ps_temporal_stability_v09.py:747:        / "v09"
+./scripts/01d_audit_ps_temporal_stability_v09.py:800:    # Figure 1 - per-test Jaccard
+./scripts/01d_audit_ps_temporal_stability_v09.py:1007:            f"gain_better_tests={np.sum(delta_j>0)}\n"
+./scripts/01d_audit_ps_temporal_stability_v09.py:1011:            f"raw_better_tests={np.sum(delta_j<0)}\n"
+./scripts/01d_audit_ps_temporal_stability_v09.py:1015:            f"total_tests={len(delta_j)}\n"
+./scripts/01d_audit_ps_temporal_stability_v09.py:1034:        "Use this test to decide whether the production "
+./scripts/10r1_pystamps_stage7_bridge_audit.py:223:            "prototype_outputs/v09"
+./scripts/10r1_pystamps_stage7_bridge_audit.py:246:        "network_inversion_v09"
+./scripts/10r1_pystamps_stage7_bridge_audit.py:258:        "scla_v09"
+./scripts/10r1_pystamps_stage7_bridge_audit.py:296:        "Stage-7 bridge audit"
+./scripts/10r1_pystamps_stage7_bridge_audit.py:692:            "Use it only to audit schema and to trace "
+./scripts/10r1_pystamps_stage7_bridge_audit.py:716:    # Final audit decision
+./scripts/10r1_pystamps_stage7_bridge_audit.py:721:            "pyPSDS-GAMMA-pySTAMPS-stage7-bridge-audit-v09",
+./scripts/10r1_pystamps_stage7_bridge_audit.py:772:        "scla_v09"
+./scripts/10r1_pystamps_stage7_bridge_audit.py:774:        "pystamps_bridge_audit.json"
+./scripts/10b2_scla_candidate_fit_v09.py:10:from pypsds.prototype import open_from_config
+./scripts/10b2_scla_candidate_fit_v09.py:42:    root = Path(paths.output_dir) / "v09"
+./scripts/10b2_scla_candidate_fit_v09.py:44:    invdir = root / "network_inversion_v09"
+./scripts/10b2_scla_candidate_fit_v09.py:48:        / "scla_v09"
+./scripts/10b2_scla_candidate_fit_v09.py:54:        / "scla_v09"
+./scripts/10b2_scla_candidate_fit_v09.py:60:        / "scla_v09"
+./scripts/10b2_scla_candidate_fit_v09.py:84:            / "batch_context_audit"
+./scripts/10b2_scla_candidate_fit_v09.py:1050:            "pyPSDS-GAMMA-scla-candidate-fit-v09",
+./scripts/01a_plot_full_amplitude_v09.py:12:from pypsds.prototype import open_from_config
+./scripts/01a_plot_full_amplitude_v09.py:108:    outdir = Path(paths.output_dir) / "v09" / "figures"
+./scripts/08d_audit_residual_spatial_components_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/08d_audit_residual_spatial_components_v09.py:147:        / "v09"
+./scripts/08d_audit_residual_spatial_components_v09.py:157:        / "spatial_graph_residual_audit"
+./scripts/08d_audit_residual_spatial_components_v09.py:215:        "Step 08d - R=4 residual spatial-component audit"
+./scripts/08d_audit_residual_spatial_components_v09.py:652:            "pyPSDS-GAMMA-residual-spatial-audit-v0.9",
+./scripts/08d_audit_residual_spatial_components_v09.py:706:        / "residual_spatial_audit.json"
+./scripts/06_build_point_phase_stack_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/06_build_point_phase_stack_v09.py:53:            "Default: <v09>/final_ps_mask.npy"
+./scripts/06_build_point_phase_stack_v09.py:81:    v09 = (
+./scripts/06_build_point_phase_stack_v09.py:83:        / "v09"
+./scripts/06_build_point_phase_stack_v09.py:90:            v09
+./scripts/06_build_point_phase_stack_v09.py:100:        v09
+./scripts/06_build_point_phase_stack_v09.py:105:        v09
+./scripts/06_build_point_phase_stack_v09.py:484:        v09
+./scripts/06_build_point_phase_stack_v09.py:489:        v09
+./scripts/06_build_point_phase_stack_v09.py:494:        v09
+./scripts/06_build_point_phase_stack_v09.py:499:        v09
+./scripts/06_build_point_phase_stack_v09.py:504:        v09
+./scripts/06_build_point_phase_stack_v09.py:509:        v09
+./scripts/06_build_point_phase_stack_v09.py:514:        v09
+./scripts/06_build_point_phase_stack_v09.py:854:    # 7. Final integrity audit
+./scripts/06_build_point_phase_stack_v09.py:859:        "[06:7/7] Final PointPhaseStack audit..."
+./scripts/08u_temporal_sparse_integer_candidate_v09.py:16:from pypsds.prototype import open_from_config
+./scripts/08u_temporal_sparse_integer_candidate_v09.py:372:        / "v09"
+./scripts/08u_temporal_sparse_integer_candidate_v09.py:392:        / "temporal_integer_closure_audit"
+./scripts/08u_temporal_sparse_integer_candidate_v09.py:622:        "candidate audit"
+./scripts/08u_temporal_sparse_integer_candidate_v09.py:1386:            "pyPSDS-GAMMA-temporal-sparse-integer-candidate-v0.9",
+./scripts/09c_apply_reference_region_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/09c_apply_reference_region_v09.py:84:        / "v09"
+./scripts/09c_apply_reference_region_v09.py:94:        / "network_inversion_v09"
+./scripts/09c_apply_reference_region_v09.py:99:        / "referenced_timeseries_v09"
+./scripts/09c_apply_reference_region_v09.py:786:            "pyPSDS-GAMMA-referenced-timeseries-v09",
+./scripts/09c_apply_reference_region_v09.py:875:                "deferred to a dedicated sign-convention audit."
+./scripts/08f_summarize_residual_anchor_radius_v09.py:9:from pypsds.prototype import open_from_config
+./scripts/08f_summarize_residual_anchor_radius_v09.py:33:        / "v09"
+./scripts/08f_summarize_residual_anchor_radius_v09.py:38:        / "spatial_graph_two_anchor_audit"
+./scripts/08f_summarize_residual_anchor_radius_v09.py:39:        / "residual_two_anchor_audit.csv"
+./scripts/09b_reference_candidate_search_v09.py:17:from pypsds.prototype import open_from_config
+./scripts/09b_reference_candidate_search_v09.py:183:        / "v09"
+./scripts/09b_reference_candidate_search_v09.py:193:        / "network_inversion_v09"
+./scripts/09b_reference_candidate_search_v09.py:198:        / "final_unwrap_v09"
+./scripts/09b_reference_candidate_search_v09.py:203:        / "reference_candidate_v09"
+./scripts/09b_reference_candidate_search_v09.py:936:            "pyPSDS-GAMMA-reference-candidate-search-v09",
+./scripts/00_check_environment.py:10:    print("pyPSDS-GAMMA v0.9 environment audit")
+./scripts/00_check_environment.py:35:        raise SystemExit("Environment audit failed; see errors above.")
+./scripts/04_run_psds_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/04_run_psds_v09.py:15:from pypsds.ds.covariance_pc_v09 import compressed_coherence_pc_v09
+./scripts/04_run_psds_v09.py:16:from pypsds.ds.phase_link_v09 import (
+./scripts/04_run_psds_v09.py:20:    robust_emi_threaded_v09,
+./scripts/04_run_psds_v09.py:21:    temporal_coherence_v09,
+./scripts/04_run_psds_v09.py:22:    median_pair_coherence_v09,
+./scripts/04_run_psds_v09.py:127:    outdir = Path(paths.output_dir) / "v09"
+./scripts/04_run_psds_v09.py:133:    print("pyPSDS-GAMMA v0.9 - CPU production (full standalone)")
+./scripts/04_run_psds_v09.py:183:            f"Missing v0.9 YXT cache: {yxt_path}\n"
+./scripts/04_run_psds_v09.py:184:            "Run scripts/07d_prepare_yxt_cache_v09.py first."
+./scripts/04_run_psds_v09.py:193:        geom_path = Path(paths.output_dir) / "v09" / "cache" / "phase_geometry_valid.npy"
+./scripts/04_run_psds_v09.py:201:        prior_path = Path(args.moraine_npz) if args.moraine_npz else Path(paths.output_dir) / "v09" / "moraine_center_prior.npz"
+./scripts/04_run_psds_v09.py:260:        _ = compressed_coherence_pc_v09(rslc_yxt, rr[:1], cc[:1], warm_support, pi, pj)
+./scripts/04_run_psds_v09.py:298:            coh = compressed_coherence_pc_v09(rslc_yxt, gr, gc, gs, pi, pj)
+./scripts/04_run_psds_v09.py:302:            ph, est, emi_eig, evd_eig, gamma_min = robust_emi_threaded_v09(
+./scripts/04_run_psds_v09.py:313:            tc = temporal_coherence_v09(coh, ph, pairs)
+./scripts/04_run_psds_v09.py:314:            pc = median_pair_coherence_v09(coh)
+./scripts/04_run_psds_v09.py:373:    save_map(shp_view, figdir / "v09_glrt_shp_count.png", "v0.9 - GLRT covariance support count", "SHP count")
+./scripts/04_run_psds_v09.py:374:    save_map(tc_view, figdir / "v09_temporal_coherence.png", "v0.9 - DS temporal coherence", "TC", 0, 1)
+./scripts/04_run_psds_v09.py:375:    save_map(pc_view, figdir / "v09_median_pair_coherence.png", "v0.9 - DS median pair coherence", "Median |Cij|", 0, 1)
+./scripts/04_run_psds_v09.py:376:    save_map(est_view, figdir / "v09_estimator.png", "v0.9 - Phase linking estimator (0=EVD, 1=EMI)", "Estimator", 0, 1)
+./scripts/04_run_psds_v09.py:380:    print("v0.9 complete")
+./scripts/08y4_audit_safe_unsafe_integer_edges_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/08y4_audit_safe_unsafe_integer_edges_v09.py:102:        / "v09"
+./scripts/08y4_audit_safe_unsafe_integer_edges_v09.py:183:        "Step 08y4 - Exact SAFE / UNSAFE spatial integer-edge audit"
+./scripts/08y4_audit_safe_unsafe_integer_edges_v09.py:227:    # Full 108 IFG audit
+./scripts/08y4_audit_safe_unsafe_integer_edges_v09.py:987:        / "visual_qa_v4_safe_unsafe_edge_audit.csv"
+./scripts/08y4_audit_safe_unsafe_integer_edges_v09.py:1009:            "pyPSDS-GAMMA-safe-unsafe-integer-edge-audit-v09",
+./scripts/08y4_audit_safe_unsafe_integer_edges_v09.py:1110:        / "visual_qa_v4_safe_unsafe_edge_audit.json"
+./scripts/08y4_audit_safe_unsafe_integer_edges_v09.py:1125:        f"audit table                : "
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:19:    / "prototype_outputs"
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:20:    / "v09"
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:21:    / "scla_v09"
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:23:    / "r3b_grid_adapter"
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:132:    test,
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:136:        test.baseline_tcn,
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:144:        test.baseline_rate_tcn,
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:497:                "pyPSDS-GAMMA-base-orbit-generation-v09",
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:503:                "tested":
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:908:            "pyPSDS-GAMMA-base-orbit-generation-v09",
+./scripts/10r3c1_generate_missing_gamma_bases_v09.py:917:            "tested":
+./scripts/10a2_audit_baseline_geometry_sources_v09.py:10:from pypsds.prototype import open_from_config
+./scripts/10a2_audit_baseline_geometry_sources_v09.py:65:    root = Path(paths.output_dir) / "v09"
+./scripts/10a2_audit_baseline_geometry_sources_v09.py:69:        / "scla_v09"
+./scripts/10a2_audit_baseline_geometry_sources_v09.py:70:        / "baseline_source_audit"
+./scripts/10a2_audit_baseline_geometry_sources_v09.py:80:        "Step 10a2 - Baseline / topographic-geometry source audit"
+./scripts/10a2_audit_baseline_geometry_sources_v09.py:295:            "pyPSDS-GAMMA-baseline-source-audit-v09",
+./scripts/10a2_audit_baseline_geometry_sources_v09.py:342:        / "baseline_source_audit.json"
+./scripts/08y2_visualize_spatial_ambiguity_branches_v09.py:18:from pypsds.prototype import open_from_config
+./scripts/08y2_visualize_spatial_ambiguity_branches_v09.py:390:        / "v09"
+./scripts/08y2_visualize_spatial_ambiguity_branches_v09.py:415:        / "final_unwrap_v09"
+./scripts/10r3c0_gamma_base_command_preflight.py:15:    / "prototype_outputs"
+./scripts/10r3c0_gamma_base_command_preflight.py:16:    / "v09"
+./scripts/10r3c0_gamma_base_command_preflight.py:17:    / "scla_v09"
+./scripts/10r3c0_gamma_base_command_preflight.py:19:    / "r3b_grid_adapter"
+./scripts/10r3c0_gamma_base_command_preflight.py:26:    / "prototype_outputs"
+./scripts/10r3c0_gamma_base_command_preflight.py:27:    / "v09"
+./scripts/10r3c0_gamma_base_command_preflight.py:28:    / "scla_v09"
+./scripts/10r3c0_gamma_base_command_preflight.py:30:    / "r3b_grid_adapter"
+./scripts/10r3c0_gamma_base_command_preflight.py:368:            "pyPSDS-GAMMA-gamma-base-preflight-v09",
+./scripts/08y3_summarize_visual_branch_qa_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/08y3_summarize_visual_branch_qa_v09.py:37:        / "v09"
+./scripts/08y3_summarize_visual_branch_qa_v09.py:282:        f"IFGs audited               : "
+./scripts/08y3_summarize_visual_branch_qa_v09.py:418:    # Conservative audit classification
+./scripts/08y3_summarize_visual_branch_qa_v09.py:445:            "pyPSDS-GAMMA-full-visual-branch-qa-v09",
+./scripts/01_check_gamma_stack.py:8:from pypsds.prototype import open_from_config
+./scripts/01_check_gamma_stack.py:23:    max_dates = cfg_get(cfg, "prototype.max_dates", None)
+./scripts/10a5c_batch_context_repeatability_v09.py:14:from pypsds.prototype import open_from_config
+./scripts/10a5c_batch_context_repeatability_v09.py:461:        "--test-points",
+./scripts/10a5c_batch_context_repeatability_v09.py:487:        "v09"
+./scripts/10a5c_batch_context_repeatability_v09.py:493:        "network_inversion_v09"
+./scripts/10a5c_batch_context_repeatability_v09.py:499:        "scla_v09"
+./scripts/10a5c_batch_context_repeatability_v09.py:501:        "fd_stepsize_audit"
+./scripts/10a5c_batch_context_repeatability_v09.py:507:        "scla_v09"
+./scripts/10a5c_batch_context_repeatability_v09.py:515:        "phase_correction_v09"
+./scripts/10a5c_batch_context_repeatability_v09.py:521:        "batch_context_audit"
+./scripts/10a5c_batch_context_repeatability_v09.py:647:    ntest = min(
+./scripts/10a5c_batch_context_repeatability_v09.py:648:        args.test_points,
+./scripts/10a5c_batch_context_repeatability_v09.py:652:    if affected.size > ntest:
+./scripts/10a5c_batch_context_repeatability_v09.py:654:            "test-points smaller than number "
+./scripts/10a5c_batch_context_repeatability_v09.py:663:        ntest
+./scripts/10a5c_batch_context_repeatability_v09.py:698:    if selected.size < ntest:
+./scripts/10a5c_batch_context_repeatability_v09.py:713:                ntest
+./scripts/10a5c_batch_context_repeatability_v09.py:730:    if selected.size != ntest:
+./scripts/10a5c_batch_context_repeatability_v09.py:733:            f"expected={ntest}"
+./scripts/10a5c_batch_context_repeatability_v09.py:736:    test_ids = sample_ids[
+./scripts/10a5c_batch_context_repeatability_v09.py:740:    test_rows = sample_rows[
+./scripts/10a5c_batch_context_repeatability_v09.py:744:    test_cols = sample_cols[
+./scripts/10a5c_batch_context_repeatability_v09.py:887:        "repeatability audit"
+./scripts/10a5c_batch_context_repeatability_v09.py:907:        f"test points                : "
+./scripts/10a5c_batch_context_repeatability_v09.py:908:        f"{ntest:,}"
+./scripts/10a5c_batch_context_repeatability_v09.py:950:            test_rows,
+./scripts/10a5c_batch_context_repeatability_v09.py:951:            test_cols,
+./scripts/10a5c_batch_context_repeatability_v09.py:965:            npoint=ntest,
+./scripts/10a5c_batch_context_repeatability_v09.py:999:            ntest,
+./scripts/10a5c_batch_context_repeatability_v09.py:1006:        ntest,
+./scripts/10a5c_batch_context_repeatability_v09.py:1012:        ntest,
+./scripts/10a5c_batch_context_repeatability_v09.py:1020:            ntest,
+./scripts/10a5c_batch_context_repeatability_v09.py:1040:                test_rows[
+./scripts/10a5c_batch_context_repeatability_v09.py:1043:                test_cols[
+./scripts/10a5c_batch_context_repeatability_v09.py:1103:    # data2pt context test
+./scripts/10a5c_batch_context_repeatability_v09.py:1150:        f"{ntest:,}"
+./scripts/10a5c_batch_context_repeatability_v09.py:1453:        "test_sample_indices.npy",
+./scripts/10a5c_batch_context_repeatability_v09.py:1462:        "test_point_ids.npy",
+./scripts/10a5c_batch_context_repeatability_v09.py:1463:        test_ids.astype(
+./scripts/10a5c_batch_context_repeatability_v09.py:1554:            "pyPSDS-GAMMA-batch-context-repeatability-v09",
+./scripts/10a5c_batch_context_repeatability_v09.py:1559:        "test_points":
+./scripts/10a5c_batch_context_repeatability_v09.py:1561:                ntest
+./scripts/08g_audit_sparse_local_graph_v09.py:15:from pypsds.prototype import open_from_config
+./scripts/08g_audit_sparse_local_graph_v09.py:513:        / "v09"
+./scripts/08g_audit_sparse_local_graph_v09.py:523:        / "spatial_sparse_graph_audit"
+./scripts/08g_audit_sparse_local_graph_v09.py:626:        "Step 08g - Sparse local spatial-graph audit"
+./scripts/08g_audit_sparse_local_graph_v09.py:846:            "pyPSDS-GAMMA-sparse-local-graph-audit-v0.9",
+./scripts/run_v09_full.sh:4:CONFIG=${1:-config/pypsds_v09.yaml}
+./scripts/run_v09_full.sh:13:python scripts/02_build_moraine_center_prior_v09.py --config "$CONFIG"
+./scripts/run_v09_full.sh:14:python scripts/03_build_phase_cache_v09.py --config "$CONFIG" --workers 8
+./scripts/run_v09_full.sh:15:python scripts/04_run_psds_v09.py \
+./scripts/run_v09_full.sh:25:Core v0.9 processing finished.
+./scripts/run_v09_full.sh:28:  python scripts/05_select_ds_v09.py --config <yaml> --tc-min 0.75 --pair-min 0.20 --accept-evd
+./scripts/03_build_phase_cache_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/03_build_phase_cache_v09.py:26:    cache_dir = Path(paths.output_dir) / "v09" / "cache"
+./scripts/03_build_phase_cache_v09.py:36:            print(f"v0.9 phase cache already valid: {yxt_path}")
+./scripts/03_build_phase_cache_v09.py:41:    print("v0.9 - parallel GAMMA phase correction -> C-contiguous Y-X-Time cache")
+./scripts/03_build_phase_cache_v09.py:71:            tile_label=f"v09cache_{tid:04d}_r{tr0}_{tr1}_c{tc0}_{tc1}",
+./scripts/10b4_scla_common_mode_audit_v09.py:10:from pypsds.prototype import open_from_config
+./scripts/10b4_scla_common_mode_audit_v09.py:152:    s_test,
+./scripts/10b4_scla_common_mode_audit_v09.py:153:    t_test,
+./scripts/10b4_scla_common_mode_audit_v09.py:193:        t_test[None, :]
+./scripts/10b4_scla_common_mode_audit_v09.py:301:        t_test[None, :]
+./scripts/10b4_scla_common_mode_audit_v09.py:305:        s_test
+./scripts/10b4_scla_common_mode_audit_v09.py:344:    root = Path(paths.output_dir) / "v09"
+./scripts/10b4_scla_common_mode_audit_v09.py:348:        / "network_inversion_v09"
+./scripts/10b4_scla_common_mode_audit_v09.py:353:        / "scla_v09"
+./scripts/10b4_scla_common_mode_audit_v09.py:359:        / "scla_v09"
+./scripts/10b4_scla_common_mode_audit_v09.py:365:        / "scla_v09"
+./scripts/10b4_scla_common_mode_audit_v09.py:366:        / "scla_common_mode_audit"
+./scripts/10b4_scla_common_mode_audit_v09.py:453:        "/ reference-consistency audit"
+./scripts/10b4_scla_common_mode_audit_v09.py:665:            test_idx = np.flatnonzero(
+./scripts/10b4_scla_common_mode_audit_v09.py:678:                    s[:, test_idx],
+./scripts/10b4_scla_common_mode_audit_v09.py:679:                    years[test_idx],
+./scripts/10b4_scla_common_mode_audit_v09.py:683:            obs = y[:, test_idx]
+./scripts/10b4_scla_common_mode_audit_v09.py:1070:            "pyPSDS-GAMMA-scla-common-mode-audit-v09",
+./scripts/10b4_scla_common_mode_audit_v09.py:1105:        / "scla_common_mode_audit_manifest.json"
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:12:from pypsds.prototype import open_from_config
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:222:        "v09"
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:228:        "network_inversion_v09"
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:243:    r3b = (
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:246:        "scla_v09"
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:250:        "r3b_grid_adapter"
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:253:    r3c2 = (
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:256:        "scla_v09"
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:260:        "r3c2_pointwise_bperp"
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:266:        "scla_v09"
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:270:        "r4a_stage7_contract"
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:283:        r3c2
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:349:        r3b
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:356:        r3b
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:363:        r3b
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:371:            r3b
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:380:            r3c2
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:900:    # Mean acquisition Bperp is enough to test
+./scripts/10r4a_stage7_bridge_contract_preflight_v09.py:1310:            "pyPSDS-GAMMA-pystamps-stage7-bridge-contract-v09",
+./scripts/08o_validate_representative_ifgs_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/08o_validate_representative_ifgs_v09.py:277:        / "08l_safe_fragment_integer_audit_v09.py"
+./scripts/08o_validate_representative_ifgs_v09.py:283:        / "08n_finalize_single_ifg_robust_solution_v09.py"
+./scripts/08o_validate_representative_ifgs_v09.py:298:        / "v09"
+./scripts/08o_validate_representative_ifgs_v09.py:301:    audit08i = (
+./scripts/08o_validate_representative_ifgs_v09.py:303:        / "spatial_phase_gradient_audit"
+./scripts/08o_validate_representative_ifgs_v09.py:309:        / "safe_fragment_integer_audit"
+./scripts/08o_validate_representative_ifgs_v09.py:338:        audit08i
+./scripts/08o_validate_representative_ifgs_v09.py:697:    ntest = len(
+./scripts/08o_validate_representative_ifgs_v09.py:751:        f"tested IFGs                : "
+./scripts/08o_validate_representative_ifgs_v09.py:752:        f"{ntest}"
+./scripts/08o_validate_representative_ifgs_v09.py:757:        f"{safe_internal_zero}/{ntest}"
+./scripts/08o_validate_representative_ifgs_v09.py:762:        f"{final_safe_zero}/{ntest}"
+./scripts/08o_validate_representative_ifgs_v09.py:817:            "pyPSDS-GAMMA-representative-ifg-validation-v0.9",
+./scripts/08o_validate_representative_ifgs_v09.py:830:            "tested_pair_ids":
+./scripts/08o_validate_representative_ifgs_v09.py:838:            "tested_ifgs":
+./scripts/08o_validate_representative_ifgs_v09.py:839:                ntest,
+./scripts/08b_audit_spatial_point_graph_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/08b_audit_spatial_point_graph_v09.py:206:        / "v09"
+./scripts/08b_audit_spatial_point_graph_v09.py:216:        / "spatial_graph_audit"
+./scripts/08b_audit_spatial_point_graph_v09.py:350:        "Step 08b - Spatial PS/DS point-graph audit"
+./scripts/08b_audit_spatial_point_graph_v09.py:619:            "graph-audit-v0.9"
+./scripts/08b_audit_spatial_point_graph_v09.py:701:        / "spatial_graph_audit.json"
+./scripts/08b_audit_spatial_point_graph_v09.py:725:        f"audit manifest            : "
+./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py:244:        "v09"
+./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py:250:        "network_inversion_v09"
+./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py:268:        "scla_v09"
+./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py:276:        "scla_v09"
+./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py:1421:            "pyPSDS-GAMMA-pystamps-mature-geometry-v09",
+./scripts/01b_audit_ps_amplitude_normalization_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/01b_audit_ps_amplitude_normalization_v09.py:120:        "Step 01b - PS amplitude-normalization stability audit"
+./scripts/01b_audit_ps_amplitude_normalization_v09.py:175:    # Same strict validity rule used by v0.9:
+./scripts/01b_audit_ps_amplitude_normalization_v09.py:538:        / "v09"
+./scripts/01b_audit_ps_amplitude_normalization_v09.py:539:        / "step01b_ps_normalization_audit"
+./scripts/01b_audit_ps_amplitude_normalization_v09.py:931:        "This is an audit only. "
+./scripts/08v_spatial_validate_temporal_candidates_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/08v_spatial_validate_temporal_candidates_v09.py:127:        / "v09"
+./scripts/08v_spatial_validate_temporal_candidates_v09.py:152:        / "safe_fragment_integer_audit"
+./scripts/08v_spatial_validate_temporal_candidates_v09.py:488:        # A. Fragment-coherence audit
+./scripts/08v_spatial_validate_temporal_candidates_v09.py:655:        # B. Counterfactual spatial-edge audit
+./scripts/08v_spatial_validate_temporal_candidates_v09.py:1461:            "pyPSDS-GAMMA-temporal-candidate-spatial-validation-v0.9",
+./scripts/08n_finalize_single_ifg_robust_solution_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/08n_finalize_single_ifg_robust_solution_v09.py:149:        / "v09"
+./scripts/08n_finalize_single_ifg_robust_solution_v09.py:172:    audit08l = (
+./scripts/08n_finalize_single_ifg_robust_solution_v09.py:174:        / "safe_fragment_integer_audit"
+./scripts/08n_finalize_single_ifg_robust_solution_v09.py:227:        audit08l
+./scripts/08n_finalize_single_ifg_robust_solution_v09.py:235:        audit08l
+./scripts/08n_finalize_single_ifg_robust_solution_v09.py:243:        audit08l
+./scripts/08n_finalize_single_ifg_robust_solution_v09.py:251:        audit08l
+./scripts/08n_finalize_single_ifg_robust_solution_v09.py:1015:            "pyPSDS-GAMMA-robust-single-ifg-candidate-v0.9",
+./scripts/07b_build_directional_network_v09.py:16:from pypsds.prototype import open_from_config
+./scripts/07b_build_directional_network_v09.py:188:        / "v09"
+./scripts/07b_build_2edge_network_v09.py:25:from pypsds.prototype import open_from_config
+./scripts/07b_build_2edge_network_v09.py:606:        / "v09"
+./scripts/07b_build_2edge_network_v09.py:821:            "Final network failed topology audit."
+./scripts/07b_build_2edge_network_v09.py:979:        "pyPSDS-GAMMA v0.9 final "
+./scripts/07a_audit_network_robustness_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/07a_audit_network_robustness_v09.py:250:        / "v09"
+./scripts/07a_audit_network_robustness_v09.py:265:    print("Step 07a - Network robustness audit")
+./scripts/07a_audit_network_robustness_v09.py:556:            "Smallest tested robust candidate option:"
+./scripts/07a_audit_network_robustness_v09.py:569:            "No tested threshold pair produced "
+./scripts/08t_audit_temporal_integer_closure_v09.py:12:from pypsds.prototype import open_from_config
+./scripts/08t_audit_temporal_integer_closure_v09.py:343:        / "v09"
+./scripts/08t_audit_temporal_integer_closure_v09.py:366:    audit08r_dir = (
+./scripts/08t_audit_temporal_integer_closure_v09.py:368:        / "safe_conflict_acquisition_audit"
+./scripts/08t_audit_temporal_integer_closure_v09.py:373:        / "temporal_integer_closure_audit"
+./scripts/08t_audit_temporal_integer_closure_v09.py:527:        "Step 08t - Temporal integer-closure audit "
+./scripts/08t_audit_temporal_integer_closure_v09.py:764:        "Pass 2/2: auditing spatially varying "
+./scripts/08t_audit_temporal_integer_closure_v09.py:1128:        audit08r_dir
+./scripts/08t_audit_temporal_integer_closure_v09.py:1357:            "pyPSDS-GAMMA-temporal-integer-closure-audit-v0.9",
+./scripts/08t_audit_temporal_integer_closure_v09.py:1415:        / "temporal_integer_closure_audit.json"
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:344:        "v09"
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:356:        "network_inversion_v09"
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:368:        "phase_correction_v09"
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:374:        "scla_v09"
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:448:            "phase_correction_v09 manifest "
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:752:    test_dh = [
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:770:        for d in test_dh
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:776:        for d in test_dh
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:782:        for d in test_dh
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:812:        "phase-sensitivity finite-difference audit"
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:850:        f"{test_dh} m"
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:1819:            "pyPSDS-GAMMA-topographic-sensitivity-fd-v09",
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:1830:        "tested_delta_heights_m":
+./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py:1831:            test_dh,
+./scripts/08c_audit_spatial_bridge_radius_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/08c_audit_spatial_bridge_radius_v09.py:246:        / "v09"
+./scripts/08c_audit_spatial_bridge_radius_v09.py:256:        / "spatial_graph_radius_audit"
+./scripts/08c_audit_spatial_bridge_radius_v09.py:323:        "Step 08c - Local spatial bridge-radius audit"
+./scripts/08c_audit_spatial_bridge_radius_v09.py:340:        f"maximum tested radius  : {args.max_radius}"
+./scripts/08c_audit_spatial_bridge_radius_v09.py:500:            "pyPSDS-GAMMA-spatial-radius-audit-v0.9",
+./scripts/08c_audit_spatial_bridge_radius_v09.py:509:        "maximum_tested_radius": int(
+./scripts/08c_audit_spatial_bridge_radius_v09.py:521:        / "spatial_radius_audit.json"
+./scripts/08c_audit_spatial_bridge_radius_v09.py:538:        / "spatial_radius_audit.csv"
+./scripts/08w_audit_fragment_signature_feasibility_v09.py:12:from pypsds.prototype import open_from_config
+./scripts/08w_audit_fragment_signature_feasibility_v09.py:178:        / "v09"
+./scripts/08w_audit_fragment_signature_feasibility_v09.py:193:        / "safe_fragment_integer_audit"
+./scripts/08w_audit_fragment_signature_feasibility_v09.py:198:        / "temporal_integer_closure_audit"
+./scripts/08w_audit_fragment_signature_feasibility_v09.py:342:        "signature feasibility audit"
+./scripts/08w_audit_fragment_signature_feasibility_v09.py:1116:            "pyPSDS-GAMMA-fragment-signature-feasibility-v0.9",
+./scripts/08w_audit_fragment_signature_feasibility_v09.py:1195:                "This is a necessary-condition audit only; "
+./scripts/09b2_robust_reference_region_audit_v09.py:17:from pypsds.prototype import open_from_config
+./scripts/09b2_robust_reference_region_audit_v09.py:93:        / "v09"
+./scripts/09b2_robust_reference_region_audit_v09.py:103:        / "network_inversion_v09"
+./scripts/09b2_robust_reference_region_audit_v09.py:108:        / "reference_candidate_v09_robust"
+./scripts/09b2_robust_reference_region_audit_v09.py:275:        "reference-region audit"
+./scripts/09b2_robust_reference_region_audit_v09.py:1158:            "pyPSDS-GAMMA-robust-reference-region-v09",
+./scripts/10a_reconstruct_acquisition_bperp_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/10a_reconstruct_acquisition_bperp_v09.py:286:        / "v09"
+./scripts/10a_reconstruct_acquisition_bperp_v09.py:296:        / "scla_v09"
+./scripts/10a_reconstruct_acquisition_bperp_v09.py:297:        / "baseline_audit"
+./scripts/10a_reconstruct_acquisition_bperp_v09.py:789:            "pyPSDS-GAMMA-acquisition-bperp-audit-v09",
+./scripts/05_select_ds_v09.py:7:from pypsds.prototype import open_from_config
+./scripts/05_select_ds_v09.py:12:        description="Create an explicit final-DS mask from v0.9 quality layers. "
+./scripts/05_select_ds_v09.py:26:    d = Path(paths.output_dir) / "v09"
+./scripts/05_select_ds_v09.py:47:    print("v0.9 final DS selection")
+./scripts/08s_audit_acquisition_safe_fragments_v09.py:12:from pypsds.prototype import open_from_config
+./scripts/08s_audit_acquisition_safe_fragments_v09.py:54:    No quality sorting is needed for this audit.
+./scripts/08s_audit_acquisition_safe_fragments_v09.py:296:        / "v09"
+./scripts/08s_audit_acquisition_safe_fragments_v09.py:316:        / "acquisition_safe_fragment_audit"
+./scripts/08s_audit_acquisition_safe_fragments_v09.py:370:        "Step 08s - Acquisition-domain SAFE-fragment audit"
+./scripts/08s_audit_acquisition_safe_fragments_v09.py:813:        f"acquisitions tested        : "
+./scripts/08s_audit_acquisition_safe_fragments_v09.py:862:        / "acquisition_safe_fragment_audit.csv"
+./scripts/08s_audit_acquisition_safe_fragments_v09.py:884:            "pyPSDS-GAMMA-acquisition-safe-fragment-audit-v0.9",
+./scripts/08s_audit_acquisition_safe_fragments_v09.py:928:        / "acquisition_safe_fragment_audit.json"
+./scripts/06a_audit_point_phase_inputs_v09.py:8:from pypsds.prototype import open_from_config
+./scripts/06a_audit_point_phase_inputs_v09.py:26:    d = Path(paths.output_dir) / "v09"
+./scripts/06a_audit_point_phase_inputs_v09.py:42:    print("Step 06a - PointPhaseStack input integrity audit")
+./scripts/06a_audit_point_phase_inputs_v09.py:102:    # Common reference audit
+./scripts/09b3_reference_region_robustness_audit_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/09b3_reference_region_robustness_audit_v09.py:195:        / "v09"
+./scripts/09b3_reference_region_robustness_audit_v09.py:205:        / "network_inversion_v09"
+./scripts/09b3_reference_region_robustness_audit_v09.py:210:        / "reference_candidate_v09_robust"
+./scripts/09b3_reference_region_robustness_audit_v09.py:215:        / "reference_candidate_v09_robustness"
+./scripts/09b3_reference_region_robustness_audit_v09.py:390:        "Step 09b3 - Reference-region robustness audit"
+./scripts/09b3_reference_region_robustness_audit_v09.py:405:        f"candidates audited         : "
+./scripts/09b3_reference_region_robustness_audit_v09.py:900:            "pyPSDS-GAMMA-reference-region-robustness-v09",
+./scripts/09b3_reference_region_robustness_audit_v09.py:1011:        f"audit table                : "
+./scripts/07_build_network_v09.py:28:from pypsds.prototype import open_from_config
+./scripts/07_build_network_v09.py:1087:# Bridge audit
+./scripts/07_build_network_v09.py:1306:        / "v09"
+./scripts/07_build_network_v09.py:1824:        "pyPSDS-GAMMA v0.9 "
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py:13:    "prototype_outputs/v09/"
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py:14:    "pystamps_bridge_v09"
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py:19:    "prototype_outputs/v09/"
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py:20:    "scla_v09/pystamps_bridge/"
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py:21:    "r3c2_pointwise_bperp"
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py:143:        "Stage7 output audit"
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py:680:    # Mature semantic audit
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py:701:        "Mature Stage7 semantic audit"
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py:794:    audit = {
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py:796:            "pyPSDS-GAMMA-stage7-output-audit-v09",
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py:924:        "stage7_output_audit_v09.json"
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py:929:            audit,
+./scripts/10r5a_audit_mature_pystamps_stage7_v09.py:940:        f"audit                       : "
+./scripts/05a_audit_ds_quality_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/05a_audit_ds_quality_v09.py:146:        / "v09"
+./scripts/05a_audit_ds_quality_v09.py:151:        / "step05a_ds_quality_audit"
+./scripts/05a_audit_ds_quality_v09.py:171:        "Step 05a - Full-scene DS quality audit"
+./scripts/05a_audit_ds_quality_v09.py:184:        f"v09 outputs  : {d}"
+./scripts/05a_audit_ds_quality_v09.py:193:        "[05a:1/6] Loading v0.9 quality layers..."
+./scripts/05a_audit_ds_quality_v09.py:978:        "Do not run 05_select_ds_v09.py yet. "
+./scripts/10r3c2_build_pointwise_bperp_v09.py:13:from pypsds.prototype import open_from_config
+./scripts/10r3c2_build_pointwise_bperp_v09.py:441:        "v09"
+./scripts/10r3c2_build_pointwise_bperp_v09.py:447:        "network_inversion_v09"
+./scripts/10r3c2_build_pointwise_bperp_v09.py:465:        "scla_v09"
+./scripts/10r3c2_build_pointwise_bperp_v09.py:473:        "scla_v09"
+./scripts/10r3c2_build_pointwise_bperp_v09.py:477:        "r3b_grid_adapter"
+./scripts/10r3c2_build_pointwise_bperp_v09.py:497:        "scla_v09"
+./scripts/10r3c2_build_pointwise_bperp_v09.py:501:        "r3c2_pointwise_bperp"
+./scripts/10r3c2_build_pointwise_bperp_v09.py:1784:            "pyPSDS-GAMMA-production-pointwise-bperp-v09",
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:14:    "prototype_outputs/v09/"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:15:    "pystamps_bridge_v09"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:20:    "prototype_outputs/v09/"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:21:    "scla_v09/pystamps_bridge/"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:22:    "r3c2_pointwise_bperp"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:27:    "prototype_outputs/v09/"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:28:    "scla_v09/pystamps_bridge/"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:29:    "r3b_grid_adapter"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:34:    "prototype_outputs/v09/"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:35:    "scla_v09/pystamps_bridge/"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:36:    "r4a_stage7_contract"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:42:    "r5b_scientific_validation"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:150:    for f, test_ix in enumerate(
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:154:        test_ix = np.asarray(
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:155:            test_ix,
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:161:            test_ix,
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:178:        A_test = np.column_stack(
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:181:                    test_ix.size
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:184:                    test_ix
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:187:                    test_ix
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:203:        A0_test = np.column_stack(
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:206:                    test_ix.size
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:209:                    test_ix
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:272:                    test_ix
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:292:                A_test.T
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:298:                A0_test.T
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:340:            f"test={test_ix.size}"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:770:        "scientific validity audit"
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:1083:            "pyPSDS-GAMMA-mature-stage7-scientific-validation-v09",
+./scripts/10r5b_validate_mature_stage7_scla_v09.py:1172:        "r5b_scientific_validation_manifest.json"
+./scripts/07d_finalize_network_v09.py:15:from pypsds.prototype import open_from_config
+./scripts/07d_finalize_network_v09.py:224:        / "v09"
+./scripts/07d_finalize_network_v09.py:367:    # Read already completed 07c audit
+./scripts/07d_finalize_network_v09.py:372:        / "cycle_audit_directional"
+./scripts/07d_finalize_network_v09.py:448:                    "shortest_cycle_max",
+./scripts/07d_finalize_network_v09.py:455:                "Shortest-cycle maximum "
+./scripts/07d_finalize_network_v09.py:538:        "format": "pyPSDS-GAMMA-network-v0.9",
+./scripts/07d_finalize_network_v09.py:607:        "cycle_audit": cycle_summary,
+./scripts/07d_finalize_network_v09.py:627:            "cycle_audit_directory": str(
+./scripts/07d_finalize_network_v09.py:667:        / "NETWORK_FROZEN_v09.txt"
+./scripts/07d_finalize_network_v09.py:672:            "pyPSDS-GAMMA v0.9 production network",
+./scripts/07d_finalize_network_v09.py:799:            f"shortest cycle max         : "
+./scripts/07d_finalize_network_v09.py:800:            f"{cycle_summary.get('shortest_cycle_max')}"
+./scripts/08y_visualize_wrapped_unwrapped_ifgs_v09.py:17:from pypsds.prototype import open_from_config
+./scripts/08y_visualize_wrapped_unwrapped_ifgs_v09.py:206:        / "v09"
+./scripts/08y_visualize_wrapped_unwrapped_ifgs_v09.py:226:        / "final_unwrap_v09"
+./scripts/08y_visualize_wrapped_unwrapped_ifgs_v09.py:1121:            "pyPSDS-GAMMA-ifg-visual-qa-v0.9",
+./scripts/08a_audit_virtual_ifg_v09.py:12:from pypsds.prototype import open_from_config
+./scripts/08a_audit_virtual_ifg_v09.py:170:        / "v09"
+./scripts/08a_audit_virtual_ifg_v09.py:185:        / "virtual_ifg_audit"
+./scripts/08a_audit_virtual_ifg_v09.py:361:        .get("cycle_audit", {})
+./scripts/08a_audit_virtual_ifg_v09.py:378:        "Step 08a - Virtual IFG / closure audit"
+./scripts/08a_audit_virtual_ifg_v09.py:468:    # Full PointPhaseStack audit
+./scripts/08a_audit_virtual_ifg_v09.py:473:        "Running full-scene virtual IFG audit..."
+./scripts/08a_audit_virtual_ifg_v09.py:666:    # Reversal identity audit
+./scripts/08a_audit_virtual_ifg_v09.py:671:        "Running deterministic pair-reversal audit..."
+./scripts/08a_audit_virtual_ifg_v09.py:890:        "format": "pyPSDS-GAMMA-virtual-ifg-audit-v0.9",
+./scripts/08a_audit_virtual_ifg_v09.py:967:        / "virtual_ifg_audit_manifest.json"
+./scripts/08a_audit_virtual_ifg_v09.py:986:        "Virtual IFG audit summary"
+./scripts/08a_audit_virtual_ifg_v09.py:1074:        f"audit manifest             : "
+./scripts/08a_audit_virtual_ifg_v09.py:1103:            "Virtual IFG audit failed. "
+./scripts/10r5a0_stage7_delaunay_isolate_audit.py:14:    "prototype_outputs/v09/"
+./scripts/10r5a0_stage7_delaunay_isolate_audit.py:15:    "pystamps_bridge_v09"
+./scripts/10r5a0_stage7_delaunay_isolate_audit.py:33:    "stage7_delaunay_isolate_audit_v09.json"
+./scripts/10r5a0_stage7_delaunay_isolate_audit.py:237:    # this audit.
+./scripts/10r5a0_stage7_delaunay_isolate_audit.py:308:    # Coordinate-boundary audit
+./scripts/10r5a0_stage7_delaunay_isolate_audit.py:350:        "isolated-point audit"
+./scripts/10r5a0_stage7_delaunay_isolate_audit.py:581:            "pyPSDS-GAMMA-stage7-delaunay-isolate-audit-v09",
+./scripts/10r5a0_stage7_delaunay_isolate_audit.py:677:        f"audit                      : "
+./scripts/10a5b_audit_sample_reproducibility_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/10a5b_audit_sample_reproducibility_v09.py:35:    root = Path(paths.output_dir) / "v09"
+./scripts/10a5b_audit_sample_reproducibility_v09.py:39:        / "network_inversion_v09"
+./scripts/10a5b_audit_sample_reproducibility_v09.py:44:        / "scla_v09"
+./scripts/10a5b_audit_sample_reproducibility_v09.py:45:        / "fd_stepsize_audit"
+./scripts/10a5b_audit_sample_reproducibility_v09.py:50:        / "scla_v09"
+./scripts/10a5b_audit_sample_reproducibility_v09.py:56:        / "scla_v09"
+./scripts/10a5b_audit_sample_reproducibility_v09.py:58:        / "reproducibility_audit"
+./scripts/10a5b_audit_sample_reproducibility_v09.py:157:        "reproducibility mismatch audit"
+./scripts/10a5b_audit_sample_reproducibility_v09.py:531:            "pyPSDS-GAMMA-production-sensitivity-reproducibility-audit-v09",
+./scripts/10a5b_audit_sample_reproducibility_v09.py:580:        "reproducibility_audit_manifest.json"
+./scripts/07c_audit_cycle_coverage_directional_v09.py:15:from pypsds.prototype import open_from_config
+./scripts/07c_audit_cycle_coverage_directional_v09.py:149:def shortest_cycle_for_edge(
+./scripts/07c_audit_cycle_coverage_directional_v09.py:155:    Remove edge (u,v), find shortest remaining
+./scripts/07c_audit_cycle_coverage_directional_v09.py:158:    shortest cycle length = path length + 1.
+./scripts/07c_audit_cycle_coverage_directional_v09.py:227:        / "v09"
+./scripts/07c_audit_cycle_coverage_directional_v09.py:261:        / "cycle_audit_directional"
+./scripts/07c_audit_cycle_coverage_directional_v09.py:281:        "Step 07c - Short-cycle coverage audit"
+./scripts/07c_audit_cycle_coverage_directional_v09.py:380:    shortest = np.full(
+./scripts/07c_audit_cycle_coverage_directional_v09.py:388:        L = shortest_cycle_for_edge(
+./scripts/07c_audit_cycle_coverage_directional_v09.py:400:        shortest[q] = L
+./scripts/07c_audit_cycle_coverage_directional_v09.py:462:        f"shortest-cycle min/median/max: "
+./scripts/07c_audit_cycle_coverage_directional_v09.py:463:        f"{shortest.min()} / "
+./scripts/07c_audit_cycle_coverage_directional_v09.py:464:        f"{np.median(shortest):.1f} / "
+./scripts/07c_audit_cycle_coverage_directional_v09.py:465:        f"{shortest.max()}"
+./scripts/07c_audit_cycle_coverage_directional_v09.py:469:        shortest,
+./scripts/07c_audit_cycle_coverage_directional_v09.py:475:        "Shortest cycle length distribution:"
+./scripts/07c_audit_cycle_coverage_directional_v09.py:540:                f"shortest_cycle={shortest[q]}"
+./scripts/07c_audit_cycle_coverage_directional_v09.py:577:            "shortest_cycle_length",
+./scripts/07c_audit_cycle_coverage_directional_v09.py:603:                    shortest[q-1]
+./scripts/07c_audit_cycle_coverage_directional_v09.py:665:    # Shortest cycle histogram
+./scripts/07c_audit_cycle_coverage_directional_v09.py:673:        shortest.min() - 0.5,
+./scripts/07c_audit_cycle_coverage_directional_v09.py:674:        shortest.max() + 1.5,
+./scripts/07c_audit_cycle_coverage_directional_v09.py:679:        shortest,
+./scripts/07c_audit_cycle_coverage_directional_v09.py:685:        "Shortest cycle length containing edge"
+./scripts/07c_audit_cycle_coverage_directional_v09.py:693:        "Step 07c - Shortest closure-loop length"
+./scripts/07c_audit_cycle_coverage_directional_v09.py:705:        / "07c_shortest_cycle_histogram.png",
+./scripts/07c_audit_cycle_coverage_directional_v09.py:713:    # Time-Bperp graph colored by shortest cycle length
+./scripts/07c_audit_cycle_coverage_directional_v09.py:730:        shortest.min()
+./scripts/07c_audit_cycle_coverage_directional_v09.py:734:        shortest.max()
+./scripts/07c_audit_cycle_coverage_directional_v09.py:748:            shortest[q]
+./scripts/07c_audit_cycle_coverage_directional_v09.py:800:        "Shortest cycle length"
+./scripts/07c_audit_cycle_coverage_directional_v09.py:824:        / "07c_network_shortest_cycle.png",
+./scripts/07c_audit_cycle_coverage_directional_v09.py:879:            f"shortest_cycle_min={shortest.min()}\n"
+./scripts/07c_audit_cycle_coverage_directional_v09.py:883:            f"shortest_cycle_median={np.median(shortest):.6f}\n"
+./scripts/07c_audit_cycle_coverage_directional_v09.py:887:            f"shortest_cycle_max={shortest.max()}\n"
+./scripts/08x_finalize_unwrap_quality_and_gauge_v09.py:11:from pypsds.prototype import open_from_config
+./scripts/08x_finalize_unwrap_quality_and_gauge_v09.py:73:        / "v09"
+./scripts/08x_finalize_unwrap_quality_and_gauge_v09.py:103:        / "temporal_integer_closure_audit"
+./scripts/08x_finalize_unwrap_quality_and_gauge_v09.py:106:    audit08r_dir = (
+./scripts/08x_finalize_unwrap_quality_and_gauge_v09.py:108:        / "safe_conflict_acquisition_audit"
+./scripts/08x_finalize_unwrap_quality_and_gauge_v09.py:111:    audit08w_dir = (
+./scripts/08x_finalize_unwrap_quality_and_gauge_v09.py:118:        / "final_unwrap_v09"
+./scripts/08x_finalize_unwrap_quality_and_gauge_v09.py:349:    # Step08t only audited main component.
+./scripts/08x_finalize_unwrap_quality_and_gauge_v09.py:479:        audit08r_dir
+./scripts/08x_finalize_unwrap_quality_and_gauge_v09.py:539:        audit08w_dir
+./scripts/08x_finalize_unwrap_quality_and_gauge_v09.py:694:        "Final strict-mask temporal closure audit ..."
+./scripts/08x_finalize_unwrap_quality_and_gauge_v09.py:1047:            "pyPSDS-GAMMA-final-unwrap-candidate-v0.9",
+./scripts/10b3_scla_temporal_cv_v09.py:10:from pypsds.prototype import open_from_config
+./scripts/10b3_scla_temporal_cv_v09.py:31:def fit_train_predict(y, s, t_train, t_test, s_test):
+./scripts/10b3_scla_temporal_cv_v09.py:67:        v0[:, None] * t_test[None, :]
+./scripts/10b3_scla_temporal_cv_v09.py:177:        v1[:, None] * t_test[None, :]
+./scripts/10b3_scla_temporal_cv_v09.py:179:        k[:, None] * s_test
+./scripts/10b3_scla_temporal_cv_v09.py:202:    root = Path(paths.output_dir) / "v09"
+./scripts/10b3_scla_temporal_cv_v09.py:204:    invdir = root / "network_inversion_v09"
+./scripts/10b3_scla_temporal_cv_v09.py:208:        / "scla_v09"
+./scripts/10b3_scla_temporal_cv_v09.py:214:        / "scla_v09"
+./scripts/10b3_scla_temporal_cv_v09.py:220:        / "scla_v09"
+./scripts/10b3_scla_temporal_cv_v09.py:323:        "cross-validation / stability audit"
+./scripts/10b3_scla_temporal_cv_v09.py:336:        test = np.flatnonzero(
+./scripts/10b3_scla_temporal_cv_v09.py:347:            f"test={test.size}, "
+./scripts/10b3_scla_temporal_cv_v09.py:348:            f"test dates="
+./scripts/10b3_scla_temporal_cv_v09.py:352:                for i in test
+./scripts/10b3_scla_temporal_cv_v09.py:477:            test_idx = np.flatnonzero(
+./scripts/10b3_scla_temporal_cv_v09.py:490:                    years[test_idx],
+./scripts/10b3_scla_temporal_cv_v09.py:491:                    s[:, test_idx],
+./scripts/10b3_scla_temporal_cv_v09.py:495:            obs = y[:, test_idx]
+./scripts/10b3_scla_temporal_cv_v09.py:977:            "pyPSDS-GAMMA-scla-temporal-cv-v09",
+./scripts/09a_network_inversion_tree_l2_parity_v09.py:10:from pypsds.prototype import open_from_config
+./scripts/09a_network_inversion_tree_l2_parity_v09.py:191:        / "v09"
+./scripts/09a_network_inversion_tree_l2_parity_v09.py:211:        / "final_unwrap_v09"
+./scripts/09a_network_inversion_tree_l2_parity_v09.py:216:        / "network_inversion_v09"
+./scripts/09a_network_inversion_tree_l2_parity_v09.py:1043:            "pyPSDS-GAMMA-network-inversion-parity-v09",
+./config/pypsds_v09.yaml:6:  output_dir: /home/ubuntu/Downloads/psds/prototype_outputs
+./config/pypsds_v09.yaml:12:prototype:
+./config/pypsds_v09.yaml:49:  scratch_dir: phase_correction_v09
+./config/pypsds_v09.yaml:61:v09:
+./config/pypsds_v09_template.yaml:15:prototype:
+./config/pypsds_v09_template.yaml:29:  scratch_dir: phase_correction_v09
+./pypsds/gamma/phase_correction.py:113:                "phase_correction.radar_height.path in prototype.yaml."
+./pypsds/ds/phase_link_v09.py:56:def robust_emi_batch_v09(
+./pypsds/ds/phase_link_v09.py:69:    v0.9 performance change:
+./pypsds/ds/phase_link_v09.py:172:def robust_emi_threaded_v09(
+./pypsds/ds/phase_link_v09.py:205:        return robust_emi_batch_v09(
+./pypsds/ds/phase_link_v09.py:225:        return s, e, robust_emi_batch_v09(
+./pypsds/ds/phase_link_v09.py:252:def temporal_coherence_v09(
+./pypsds/ds/phase_link_v09.py:279:def median_pair_coherence_v09(coh: np.ndarray) -> np.ndarray:
+./pypsds/ds/covariance_pc_v09.py:9:def compressed_coherence_pc_v09(
+./pypsds/ds/covariance_pc_v09.py:19:    v0.9 performance changes:
+./pypsds/ds/window.py:57:    approximate ground coordinates. Statistical testing still decides which
+./pypsds/ds/shp.py:73:    `ks` uses standard hypothesis-test semantics: p >= alpha means we do not
+./pypsds/ds/shp_dolphin.py:29:    test = N * [2 log((s1+s2)/2) - log(s1) - log(s2)]
+./pypsds/ds/shp_dolphin.py:30:    A neighbor is accepted as SHP when test < chi2.ppf(1-alpha, 1).
+./pypsds/project_paths.py:57:    output_dir = _resolve(p.get("output_dir"), work_dir) or (work_dir / "prototype_outputs")
+./pypsds/config.py:12:    "prototype.yaml",
+./pypsds/config.py:13:    "prototype.yml",
+./pypsds/config.py:29:    packaged = Path(__file__).resolve().parents[1] / "config" / "prototype.yaml"
+./pypsds/config.py:33:    raise FileNotFoundError("No pypsds/prototype YAML config found")
+./pypsds/__init__.py:1:"""pyPSDS-GAMMA CPU-first PS/DS InSAR prototype."""
+./pypsds/prototype.py:25:    roi = cfg.get("prototype", {}).get("roi", {}) or {}
+
+==== LARGE FILES IN SOURCE TREE ====
+94170 ./pypsds/ds/__pycache__/covariance_pc_v09.compressed_coherence_pc_v09-8.py312.1.nbc
+72223 ./pypsds/ds/__pycache__/moraine_ks._selected_for_offset-44.py312.1.nbc
+68919 ./scripts/__pycache__/08k_unwrap_single_ifg_prototype_v09.build_tree_csr-225.py312.1.nbc
+66523 ./scripts/__pycache__/08s_audit_acquisition_safe_fragments_v09.build_tree_csr-124.py312.1.nbc
+66270 ./scripts/__pycache__/08s_audit_acquisition_safe_fragments_v09.build_safe_forest-38.py312.1.nbc
+66037 ./scripts/__pycache__/08l_safe_fragment_integer_audit_v09.build_tree_csr-172.py312.1.nbc
+63205 ./scripts/__pycache__/08g_audit_sparse_local_graph_v09.select_directed_neighbors-124.py312.1.nbc
+59629 ./scripts/__pycache__/08s_audit_acquisition_safe_fragments_v09.integrate_forest-191.py312.1.nbc
+59313 ./scripts/__pycache__/08k_unwrap_single_ifg_prototype_v09.unwrap_forest-290.py312.1.nbc
+59108 ./scripts/__pycache__/08l_safe_fragment_integer_audit_v09.integrate_forest-230.py312.1.nbc
+56028 ./scripts/__pycache__/08k_unwrap_single_ifg_prototype_v09.kruskal_select-168.py312.1.nbc
+55677 ./scripts/__pycache__/08l_safe_fragment_integer_audit_v09.kruskal_select-122.py312.1.nbc
+55298 ./scripts/__pycache__/08c_audit_spatial_bridge_radius_v09.add_shell_edges-39.py312.1.nbc
+53967 ./scripts/__pycache__/08d_audit_residual_spatial_components_v09.add_shell_edges-41.py312.1.nbc
+52311 ./scripts/__pycache__/08h_build_production_spatial_graph_v09.choose_neighbors-76.py312.1.nbc
+51618 ./scripts/__pycache__/08k_unwrap_single_ifg_prototype_v09.roots_from_edges-117.py312.1.nbc
+51335 ./scripts/__pycache__/08g_audit_sparse_local_graph_v09.connected_roots-248.py312.1.nbc
+50919 ./scripts/__pycache__/08l_safe_fragment_integer_audit_v09.roots_from_edges-85.py312.1.nbc
+50498 ./scripts/__pycache__/08h_build_production_spatial_graph_v09.get_roots-158.py312.1.nbc
+44468 ./SLC2pt.log
+43686 ./dist/pypsds_gamma-0.9.0-py3-none-any.whl
+41165 ./scripts/10a3_topographic_sensitivity_gamma_fd_v09.py
+37580 ./scripts/__pycache__/07_build_network_v09.cpython-312.pyc
+37168 ./scripts/07_build_network_v09.py
+35537 ./scripts/10r4b_build_pystamps_stage7_bridge_v09.py
+34769 ./scripts/10r3c2_build_pointwise_bperp_v09.py
+33677 ./scripts/08k_unwrap_single_ifg_prototype_v09.py
+33242 ./scripts/08y2_visualize_spatial_ambiguity_branches_v09.py
+33068 ./scripts/__pycache__/10r3c2_build_pointwise_bperp_v09.cpython-312.pyc
+33034 ./scripts/08v_spatial_validate_temporal_candidates_v09.py
+32563 ./scripts/__pycache__/08k_unwrap_single_ifg_prototype_v09.cpython-312.pyc
+31269 ./scripts/__pycache__/10r4b_build_pystamps_stage7_bridge_v09.cpython-312.pyc
+30497 ./scripts/__pycache__/08l_safe_fragment_integer_audit_v09.cpython-312.pyc
+29971 ./scripts/__pycache__/10a3_topographic_sensitivity_gamma_fd_v09.cpython-312.pyc
+29057 ./scripts/08l_safe_fragment_integer_audit_v09.py
+28928 ./scripts/10r3_reuse_pystamps_geometry_bperp_v09.py
+28859 ./scripts/10a5_build_production_topographic_sensitivity_v09.py
+28770 ./scripts/10a5c_batch_context_repeatability_v09.py
+28283 ./scripts/__pycache__/08y2_visualize_spatial_ambiguity_branches_v09.cpython-312.pyc
+28255 ./scripts/__pycache__/08c_audit_spatial_bridge_radius_v09.compress_all-112.py312.1.nbc
+28220 ./scripts/__pycache__/08d_audit_residual_spatial_components_v09.get_roots-100.py312.1.nbc
+27764 ./scripts/__pycache__/10r3_reuse_pystamps_geometry_bperp_v09.cpython-312.pyc
+27397 ./scripts/08u_temporal_sparse_integer_candidate_v09.py
+27355 ./pypsds/gamma/__pycache__/phase_correction.cpython-312.pyc
+27152 ./scripts/08p_batch_unwrap_all_ifgs_v09.py
+26969 ./scripts/08t_audit_temporal_integer_closure_v09.py
+26430 ./scripts/__pycache__/10a5c_batch_context_repeatability_v09.cpython-312.pyc
+26358 ./scripts/__pycache__/10r4a_stage7_bridge_contract_preflight_v09.cpython-312.pyc
+26346 ./scripts/10r4a_stage7_bridge_contract_preflight_v09.py
+25534 ./scripts/__pycache__/08u_temporal_sparse_integer_candidate_v09.cpython-312.pyc
+
+==== CONFIG FILES ====
+
+----- ./config/pypsds_v09_template.yaml -----
+paths:
+  work_dir: /path/to/project_work
+  data_dir: /path/to/data_root
+  rslc_dir: /path/to/RSLC
+  rslc_tab: /path/to/RSLC_tab
+  output_dir: /path/to/output
+
+gamma:
+  rslc_dtype: auto
+  byte_order: big
+
+runtime:
+  io_workers: 4
+
+prototype:
+  roi:
+    row0: 0
+    col0: 0
+    rows: null
+    cols: null
+
+ps:
+  amplitude_dispersion_threshold: 0.25
+
+phase_correction:
+  enabled: true
+  geometric_reference_date: "YYYYMMDD"
+  apply_sign: 1.0
+  scratch_dir: phase_correction_v09
+  keep_tile_files: false
+  commands:
+    SLC2pt: SLC2pt
+    data2pt: data2pt
+    phase_sim_orb_pt: phase_sim_orb_pt
+  radar_height:
+    path: /path/to/radar_height.hgt
+    geometry_par: /path/to/height_geometry.mli.par
+    zero_height_is_valid: false
+
+phase_linking:
+  reference_idx: 0
+  beta: 0.05
+  gamma_jitter: 1.0e-6
+  emi_mu: 0.99
+
+----- config/pypsds_v09_template.yaml -----
+paths:
+  work_dir: /path/to/project_work
+  data_dir: /path/to/data_root
+  rslc_dir: /path/to/RSLC
+  rslc_tab: /path/to/RSLC_tab
+  output_dir: /path/to/output
+
+gamma:
+  rslc_dtype: auto
+  byte_order: big
+
+runtime:
+  io_workers: 4
+
+prototype:
+  roi:
+    row0: 0
+    col0: 0
+    rows: null
+    cols: null
+
+ps:
+  amplitude_dispersion_threshold: 0.25
+
+phase_correction:
+  enabled: true
+  geometric_reference_date: "YYYYMMDD"
+  apply_sign: 1.0
+  scratch_dir: phase_correction_v09
+  keep_tile_files: false
+  commands:
+    SLC2pt: SLC2pt
+    data2pt: data2pt
+    phase_sim_orb_pt: phase_sim_orb_pt
+  radar_height:
+    path: /path/to/radar_height.hgt
+    geometry_par: /path/to/height_geometry.mli.par
+    zero_height_is_valid: false
+
+phase_linking:
+  reference_idx: 0
+  beta: 0.05
+  gamma_jitter: 1.0e-6
+  emi_mu: 0.99
+
+----- ./config/pypsds_v09.yaml -----
+paths:
+  work_dir: /home/ubuntu/Downloads/psds
+  data_dir: /home/ubuntu/Downloads
+  rslc_dir: /home/ubuntu/Downloads/RSLC
+  rslc_tab: /home/ubuntu/Downloads/RSLC_tab
+  output_dir: /home/ubuntu/Downloads/psds/prototype_outputs
+gamma:
+  rslc_dtype: auto
+  byte_order: big
+runtime:
+  io_workers: 4
+prototype:
+  roi:
+    row0: 0
+    col0: 0
+    rows: null
+    cols: null
+  max_dates: null
+qa:
+  enabled: true
+  dpi: 160
+ps:
+  amplitude_dispersion_threshold: 0.25
+moraine_center_prior:
+  half_row: 5
+  half_col: 5
+  p_max: 0.05
+  min_shp: 50
+shp:
+  method: glrt
+  alpha: 0.005
+  half_window_y: 5
+  half_window_x: 11
+ds:
+  min_shp: 48
+  exclude_ps_from_covariance_support: true
+phase_linking:
+  method: robust_emi
+  reference_idx: 0
+  beta: 0.05
+  gamma_jitter: 1.0e-06
+  emi_mu: 0.99
+  evd_fallback: true
+phase_correction:
+  enabled: true
+  backend: gamma_phase_sim_orb_pt
+  geometric_reference_date: '20151212'
+  apply_sign: 1.0
+  scratch_dir: phase_correction_v09
+  keep_tile_files: false
+  force_prepare: false
+  commands:
+    SLC2pt: SLC2pt
+    data2pt: data2pt
+    phase_sim_orb_pt: phase_sim_orb_pt
+  radar_height:
+    path: /home/ubuntu/Downloads/DEM_prep/20151212.hgt
+    geometry_par: /home/ubuntu/Downloads/DEM_prep/20151212_4_1.vv.mli.par
+    zero_height_is_valid: false
+    zero_height_epsilon_m: 0.001
+v09:
+  phase_cache:
+    tile_rows: 128
+    tile_cols: 256
+    workers: 8
+  processing:
+    batch_size: 16000
+    pl_workers: 16
+    pl_chunk_size: 512
+network:
+  max_temporal_baseline_days: 72
+  max_perpendicular_baseline_m: 200.0
+  target_connections_each_side: 3
+
+----- config/pypsds_v09.yaml -----
+paths:
+  work_dir: /home/ubuntu/Downloads/psds
+  data_dir: /home/ubuntu/Downloads
+  rslc_dir: /home/ubuntu/Downloads/RSLC
+  rslc_tab: /home/ubuntu/Downloads/RSLC_tab
+  output_dir: /home/ubuntu/Downloads/psds/prototype_outputs
+gamma:
+  rslc_dtype: auto
+  byte_order: big
+runtime:
+  io_workers: 4
+prototype:
+  roi:
+    row0: 0
+    col0: 0
+    rows: null
+    cols: null
+  max_dates: null
+qa:
+  enabled: true
+  dpi: 160
+ps:
+  amplitude_dispersion_threshold: 0.25
+moraine_center_prior:
+  half_row: 5
+  half_col: 5
+  p_max: 0.05
+  min_shp: 50
+shp:
+  method: glrt
+  alpha: 0.005
+  half_window_y: 5
+  half_window_x: 11
+ds:
+  min_shp: 48
+  exclude_ps_from_covariance_support: true
+phase_linking:
+  method: robust_emi
+  reference_idx: 0
+  beta: 0.05
+  gamma_jitter: 1.0e-06
+  emi_mu: 0.99
+  evd_fallback: true
+phase_correction:
+  enabled: true
+  backend: gamma_phase_sim_orb_pt
+  geometric_reference_date: '20151212'
+  apply_sign: 1.0
+  scratch_dir: phase_correction_v09
+  keep_tile_files: false
+  force_prepare: false
+  commands:
+    SLC2pt: SLC2pt
+    data2pt: data2pt
+    phase_sim_orb_pt: phase_sim_orb_pt
+  radar_height:
+    path: /home/ubuntu/Downloads/DEM_prep/20151212.hgt
+    geometry_par: /home/ubuntu/Downloads/DEM_prep/20151212_4_1.vv.mli.par
+    zero_height_is_valid: false
+    zero_height_epsilon_m: 0.001
+v09:
+  phase_cache:
+    tile_rows: 128
+    tile_cols: 256
+    workers: 8
+  processing:
+    batch_size: 16000
+    pl_workers: 16
+    pl_chunk_size: 512
+network:
+  max_temporal_baseline_days: 72
+  max_perpendicular_baseline_m: 200.0
+  target_connections_each_side: 3
+
+==== PYSTAMPS SOURCE ====
+PATH=/home/ubuntu/software/pystamps-gamma
+664d5eccb131cb6ac46d5a477c0e1308e0fb0d29
+
+Python files:
+/home/ubuntu/software/pystamps-gamma/pystamps/cli.py
+/home/ubuntu/software/pystamps-gamma/pystamps/compat/__init__.py
+/home/ubuntu/software/pystamps-gamma/pystamps/compat/legacy.py
+/home/ubuntu/software/pystamps-gamma/pystamps/config.py
+/home/ubuntu/software/pystamps-gamma/pystamps/data/__init__.py
+/home/ubuntu/software/pystamps-gamma/pystamps/engineering_export.py
+/home/ubuntu/software/pystamps-gamma/pystamps/final_ifg_qc.py
+/home/ubuntu/software/pystamps-gamma/pystamps/grid_ifg_qc.py
+/home/ubuntu/software/pystamps-gamma/pystamps/ifg_selection.py
+/home/ubuntu/software/pystamps-gamma/pystamps/__init__.py
+/home/ubuntu/software/pystamps-gamma/pystamps/input_contracts.py
+/home/ubuntu/software/pystamps-gamma/pystamps/io/dataset.py
+/home/ubuntu/software/pystamps-gamma/pystamps/io/__init__.py
+/home/ubuntu/software/pystamps-gamma/pystamps/io/mat.py
+/home/ubuntu/software/pystamps-gamma/pystamps/kernels/accelerated.py
+/home/ubuntu/software/pystamps-gamma/pystamps/kernels/__init__.py
+/home/ubuntu/software/pystamps-gamma/pystamps/kernels/registry.py
+/home/ubuntu/software/pystamps-gamma/pystamps/native_cli.py
+/home/ubuntu/software/pystamps-gamma/pystamps/native.py
+/home/ubuntu/software/pystamps-gamma/pystamps/notebooks/dataset_inspection.py
+/home/ubuntu/software/pystamps-gamma/pystamps/notebooks/diagnostics.py
+/home/ubuntu/software/pystamps-gamma/pystamps/notebooks/__init__.py
+/home/ubuntu/software/pystamps-gamma/pystamps/notebooks/plots.py
+/home/ubuntu/software/pystamps-gamma/pystamps/notebooks/stage_execution.py
+/home/ubuntu/software/pystamps-gamma/pystamps/parity_contract.py
+/home/ubuntu/software/pystamps-gamma/pystamps/pipeline/gacos_correction.py
+/home/ubuntu/software/pystamps-gamma/pystamps/pipeline/__init__.py
+/home/ubuntu/software/pystamps-gamma/pystamps/pipeline/ported.py
+/home/ubuntu/software/pystamps-gamma/pystamps/pipeline/postprocess_runner.py
+/home/ubuntu/software/pystamps-gamma/pystamps/pipeline/sbas_production.py
+/home/ubuntu/software/pystamps-gamma/pystamps/pipeline/stage6_sbas.py
+/home/ubuntu/software/pystamps-gamma/pystamps/pipeline/stage7_sbas.py
+/home/ubuntu/software/pystamps-gamma/pystamps/pipeline/stage8_sbas.py
+/home/ubuntu/software/pystamps-gamma/pystamps/pipeline/stages.py
+/home/ubuntu/software/pystamps-gamma/pystamps/pipeline/types.py
+/home/ubuntu/software/pystamps-gamma/pystamps/postprocess_core.py
+/home/ubuntu/software/pystamps-gamma/pystamps/prep/gamma_binary.py
+/home/ubuntu/software/pystamps-gamma/pystamps/prep/gamma_candidates_parallel.py
+/home/ubuntu/software/pystamps-gamma/pystamps/prep/gamma_candidates.py
+/home/ubuntu/software/pystamps-gamma/pystamps/prep/gamma_candidates_sbas_pair.py
+/home/ubuntu/software/pystamps-gamma/pystamps/prep/gamma_candidates_sbas_rslc.py
+/home/ubuntu/software/pystamps-gamma/pystamps/prep/gamma_geometry.py
+/home/ubuntu/software/pystamps-gamma/pystamps/prep/gamma_lonlat.py
+/home/ubuntu/software/pystamps-gamma/pystamps/prep/gamma_observations.py
+/home/ubuntu/software/pystamps-gamma/pystamps/prep/gamma_patches.py
+/home/ubuntu/software/pystamps-gamma/pystamps/prep/gamma_ps_optimization.py
+/home/ubuntu/software/pystamps-gamma/pystamps/prep/gamma_sbas.py
+/home/ubuntu/software/pystamps-gamma/pystamps/prep/gamma_stage1.py
+/home/ubuntu/software/pystamps-gamma/pystamps/prep/__init__.py
+/home/ubuntu/software/pystamps-gamma/pystamps/project_paths.py
+/home/ubuntu/software/pystamps-gamma/pystamps/reference.py
+/home/ubuntu/software/pystamps-gamma/pystamps/runtime/executor.py
+/home/ubuntu/software/pystamps-gamma/pystamps/runtime/__init__.py
+/home/ubuntu/software/pystamps-gamma/pystamps/stage6_turbo.py
+/home/ubuntu/software/pystamps-gamma/pystamps/status.py
+/home/ubuntu/software/pystamps-gamma/pystamps/tolerance_manifest.py
+/home/ubuntu/software/pystamps-gamma/pystamps/verify.py
+/home/ubuntu/software/pystamps-gamma/pystamps/_version.py
+/home/ubuntu/software/pystamps-gamma/pystamps/vertical_export.py

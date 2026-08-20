@@ -1,0 +1,1926 @@
+{
+  "format": "pyPSDS-GAMMA-stage-output-contract-snapshot-v1",
+  "stage_count": 32,
+  "network_edge_count": 108,
+  "output_root": "/home/ubuntu/Downloads/psds/output",
+  "stages": {
+    "ds_statistics": {
+      "script": "04_prepare_ds_statistics.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/ds_statistics/amplitude_dispersion_index.npy",
+          "size_bytes": null,
+          "required": false
+        },
+        {
+          "path": "processing/ds_statistics/manifest.json",
+          "size_bytes": 686,
+          "required": true
+        },
+        {
+          "path": "processing/ds_statistics/ps_mask.npy",
+          "size_bytes": 1200128,
+          "required": true
+        },
+        {
+          "path": "processing/ds_statistics/raw_valid.npy",
+          "size_bytes": 1200128,
+          "required": true
+        },
+        {
+          "path": "processing/ds_statistics/rayleigh_scale2.npy",
+          "size_bytes": 4800128,
+          "required": true
+        },
+        {
+          "path": "processing/ds_statistics/tile_done.npy",
+          "size_bytes": 130,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "phase_cache": {
+      "script": "03_build_phase_cache.py",
+      "persistent": true,
+      "optional": true,
+      "outputs": [
+        {
+          "path": "processing/cache/phase_cache_manifest.json",
+          "size_bytes": 958,
+          "required": true
+        },
+        {
+          "path": "processing/cache/phase_corrected_yxt.npy",
+          "size_bytes": null,
+          "required": true
+        },
+        {
+          "path": "processing/cache/phase_geometry_valid.npy",
+          "size_bytes": 1200128,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "exact_support_cache": {
+      "script": "03b_build_exact_support_cache.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/exact_support_cache/manifest.json",
+          "size_bytes": 978,
+          "required": true
+        },
+        {
+          "path": "processing/exact_support_cache/static_shp_count.npy",
+          "size_bytes": 2400128,
+          "required": true
+        },
+        {
+          "path": "processing/exact_support_cache/static_support_bits.npy",
+          "size_bytes": 38400128,
+          "required": true
+        },
+        {
+          "path": "processing/exact_support_cache/tile_done.npy",
+          "size_bytes": 132,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "phase_linking": {
+      "script": "04_run_psds.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/center_cols.npy",
+          "size_bytes": 4441008,
+          "required": true
+        },
+        {
+          "path": "processing/center_prior.npy",
+          "size_bytes": 1200128,
+          "required": true
+        },
+        {
+          "path": "processing/center_rows.npy",
+          "size_bytes": 4441008,
+          "required": true
+        },
+        {
+          "path": "processing/emi_eigenvalue.npy",
+          "size_bytes": 4800128,
+          "required": true
+        },
+        {
+          "path": "processing/estimator_code.npy",
+          "size_bytes": 1200128,
+          "required": true
+        },
+        {
+          "path": "processing/evd_eigenvalue.npy",
+          "size_bytes": 4800128,
+          "required": true
+        },
+        {
+          "path": "processing/gamma_min_eigenvalue.npy",
+          "size_bytes": 4800128,
+          "required": true
+        },
+        {
+          "path": "processing/linked_phase.npy",
+          "size_bytes": 364800128,
+          "required": true
+        },
+        {
+          "path": "processing/median_pair_coherence.npy",
+          "size_bytes": 4800128,
+          "required": true
+        },
+        {
+          "path": "processing/pl_valid.npy",
+          "size_bytes": 1200128,
+          "required": true
+        },
+        {
+          "path": "processing/processed_centers.npy",
+          "size_bytes": 1110348,
+          "required": true
+        },
+        {
+          "path": "processing/ps_mask.npy",
+          "size_bytes": 1200128,
+          "required": true
+        },
+        {
+          "path": "processing/shp_count.npy",
+          "size_bytes": 2400128,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_coherence.npy",
+          "size_bytes": 4800128,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "ds_selection": {
+      "script": "05_select_ds.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/final_ds_tc0.800_pc0.000_evd.npy",
+          "size_bytes": 1200128,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [
+        {
+          "pattern": "processing/final_ds_*.npy",
+          "frozen_count": 1,
+          "files": [
+            "processing/final_ds_tc0.800_pc0.000_evd.npy"
+          ]
+        }
+      ],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "ps_finalize": {
+      "script": "06b_finalize_ps_geometry.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/final_ps_mask.npy",
+          "size_bytes": 1200128,
+          "required": true
+        },
+        {
+          "path": "processing/step06_ps_finalize/rejected_ps.csv",
+          "size_bytes": 750,
+          "required": true
+        },
+        {
+          "path": "processing/step06_ps_finalize/rejected_ps_mask.npy",
+          "size_bytes": 1200128,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "point_stack": {
+      "script": "06_build_point_phase_stack.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/point_phase_stack/cols.npy",
+          "size_bytes": 3526192,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/dates.txt",
+          "size_bytes": 342,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/emi_eigenvalue.npy",
+          "size_bytes": 3526192,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/estimator_code.npy",
+          "size_bytes": 1763160,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/evd_eigenvalue.npy",
+          "size_bytes": 3526192,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/gamma_min_eigenvalue.npy",
+          "size_bytes": 3526192,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/glrt_support_K.npy",
+          "size_bytes": 1763160,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/manifest.json",
+          "size_bytes": 979,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/median_pair_coherence.npy",
+          "size_bytes": 3526192,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/phase_rad.npy",
+          "size_bytes": 133990560,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/point_id.npy",
+          "size_bytes": 7052256,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/point_type.npy",
+          "size_bytes": 881644,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/points.csv",
+          "size_bytes": 45532190,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/rows.npy",
+          "size_bytes": 3526192,
+          "required": true
+        },
+        {
+          "path": "processing/point_phase_stack/temporal_coherence.npy",
+          "size_bytes": 3526192,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "network_prepare": {
+      "script": "07_build_network.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/network/acquisition_bperp_m.npy",
+          "size_bytes": 280,
+          "required": true
+        },
+        {
+          "path": "processing/network/acquisitions.csv",
+          "size_bytes": 1140,
+          "required": true
+        },
+        {
+          "path": "processing/network/degree.npy",
+          "size_bytes": 280,
+          "required": true
+        },
+        {
+          "path": "processing/network/manifest.json",
+          "size_bytes": 439,
+          "required": true
+        },
+        {
+          "path": "processing/network/network.itab",
+          "size_bytes": 1944,
+          "required": true
+        },
+        {
+          "path": "processing/network/pairs.csv",
+          "size_bytes": 7615,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "network_build": {
+      "script": "07b_build_directional_network.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/network/directional_degree.npy",
+          "size_bytes": 280,
+          "required": true
+        },
+        {
+          "path": "processing/network/directional_left_count.npy",
+          "size_bytes": 280,
+          "required": true
+        },
+        {
+          "path": "processing/network/directional_right_count.npy",
+          "size_bytes": 280,
+          "required": true
+        },
+        {
+          "path": "processing/network/network_directional.itab",
+          "size_bytes": 1944,
+          "required": true
+        },
+        {
+          "path": "processing/network/pairs_directional.csv",
+          "size_bytes": 7615,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "network_cycle_quality": {
+      "script": "07c_quality_cycle_coverage_directional.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/network/cycle_quality_directional/cycles_3.csv",
+          "size_bytes": 4029,
+          "required": true
+        },
+        {
+          "path": "processing/network/cycle_quality_directional/cycles_4.csv",
+          "size_bytes": 13227,
+          "required": true
+        },
+        {
+          "path": "processing/network/cycle_quality_directional/cycles_5.csv",
+          "size_bytes": 38973,
+          "required": true
+        },
+        {
+          "path": "processing/network/cycle_quality_directional/edge_cycle_coverage.csv",
+          "size_bytes": 4083,
+          "required": true
+        },
+        {
+          "path": "processing/network/cycle_quality_directional/summary.txt",
+          "size_bytes": 220,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [
+        {
+          "pattern": "processing/network/cycle_quality_directional/cycles_*.csv",
+          "frozen_count": 3,
+          "files": [
+            "processing/network/cycle_quality_directional/cycles_3.csv",
+            "processing/network/cycle_quality_directional/cycles_4.csv",
+            "processing/network/cycle_quality_directional/cycles_5.csv"
+          ]
+        }
+      ],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "network_finalize": {
+      "script": "07d_finalize_network.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/network/NETWORK_FROZEN.txt",
+          "size_bytes": 854,
+          "required": true
+        },
+        {
+          "path": "processing/network/degree.npy",
+          "size_bytes": 280,
+          "required": true
+        },
+        {
+          "path": "processing/network/left_connection_count.npy",
+          "size_bytes": 280,
+          "required": true
+        },
+        {
+          "path": "processing/network/network.itab",
+          "size_bytes": 1944,
+          "required": true
+        },
+        {
+          "path": "processing/network/network_manifest.json",
+          "size_bytes": 2948,
+          "required": true
+        },
+        {
+          "path": "processing/network/pairs.csv",
+          "size_bytes": 7615,
+          "required": true
+        },
+        {
+          "path": "processing/network/right_connection_count.npy",
+          "size_bytes": 280,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "virtual_ifg_quality": {
+      "script": "08a_quality_virtual_ifg.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/virtual_ifg_quality/triangle_closure_qa.csv",
+          "size_bytes": 8889,
+          "required": true
+        },
+        {
+          "path": "processing/virtual_ifg_quality/virtual_ifg_pairs.csv",
+          "size_bytes": 3585,
+          "required": true
+        },
+        {
+          "path": "processing/virtual_ifg_quality/virtual_ifg_quality_manifest.json",
+          "size_bytes": 829,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "spatial_graph_quality": {
+      "script": "08b_quality_spatial_point_graph.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/spatial_graph_quality/component8.npy",
+          "size_bytes": 2097368,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph_quality/degree4.npy",
+          "size_bytes": 524438,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph_quality/degree8.npy",
+          "size_bytes": 524438,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph_quality/occupancy_mask.npy",
+          "size_bytes": 1198928,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph_quality/spatial_graph_quality.json",
+          "size_bytes": 889,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "spatial_bridge_quality": {
+      "script": "08c_quality_spatial_bridge_radius.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/spatial_graph_radius_quality/spatial_radius_quality.csv",
+          "size_bytes": 740,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph_radius_quality/spatial_radius_quality.json",
+          "size_bytes": 2968,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "spatial_component_quality": {
+      "script": "08d_quality_residual_spatial_components.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/spatial_graph_residual_quality/component_label_r4.npy",
+          "size_bytes": 2097368,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph_residual_quality/residual_components_to_main.csv",
+          "size_bytes": 3991,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph_residual_quality/residual_spatial_quality.json",
+          "size_bytes": 331,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "spatial_anchor_quality": {
+      "script": "08e_quality_residual_two_anchor.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.csv",
+          "size_bytes": 9092,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.json",
+          "size_bytes": 447,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "spatial_anchor_summary": {
+      "script": "08f_summarize_residual_anchor_radius.py",
+      "persistent": false,
+      "optional": false,
+      "outputs": [],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": [
+        "processing/spatial_graph_two_anchor_quality/residual_two_anchor_quality.csv"
+      ]
+    },
+    "spatial_local_graph_quality": {
+      "script": "08g_quality_sparse_local_graph.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/spatial_sparse_graph_quality/sparse_local_graph_sweep.csv",
+          "size_bytes": 918,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_sparse_graph_quality/sparse_local_graph_sweep.json",
+          "size_bytes": 3399,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "spatial_graph": {
+      "script": "08h_build_production_spatial_graph.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/spatial_graph/anchor_class.npy",
+          "size_bytes": 332,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph/anchor_distance_m.npy",
+          "size_bytes": 944,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph/anchor_radius.npy",
+          "size_bytes": 332,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph/anchor_u.npy",
+          "size_bytes": 944,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph/anchor_v.npy",
+          "size_bytes": 944,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph/local_component.npy",
+          "size_bytes": 2097368,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph/local_distance_m.npy",
+          "size_bytes": 9344468,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph/local_u.npy",
+          "size_bytes": 9344468,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph/local_v.npy",
+          "size_bytes": 9344468,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph/main_component_mask.npy",
+          "size_bytes": 524438,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_graph/spatial_graph_manifest.json",
+          "size_bytes": 780,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "spatial_gradient_quality": {
+      "script": "08i_quality_spatial_phase_gradient.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/spatial_phase_gradient_quality/per_ifg_spatial_gradient_qa.csv",
+          "size_bytes": 38669,
+          "required": true
+        },
+        {
+          "path": "processing/spatial_phase_gradient_quality/spatial_gradient_quality.json",
+          "size_bytes": 2140,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "unwrap_policy": {
+      "script": "08j_finalize_unwrap_component_policy.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/unwrap_component_policy/anchor_component.npy",
+          "size_bytes": 944,
+          "required": true
+        },
+        {
+          "path": "processing/unwrap_component_policy/local_component.npy",
+          "size_bytes": 2097368,
+          "required": true
+        },
+        {
+          "path": "processing/unwrap_component_policy/main_component_mask.npy",
+          "size_bytes": 524438,
+          "required": true
+        },
+        {
+          "path": "processing/unwrap_component_policy/point_unwrap_tier.npy",
+          "size_bytes": 524438,
+          "required": true
+        },
+        {
+          "path": "processing/unwrap_component_policy/residual_component_policy.csv",
+          "size_bytes": 9083,
+          "required": true
+        },
+        {
+          "path": "processing/unwrap_component_policy/unwrap_component_policy.json",
+          "size_bytes": 735,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "unwrap": {
+      "script": "08p_batch_unwrap_all_ifgs.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/batch_unwrap_validation/all_ifg_unwrap_qa.csv",
+          "size_bytes": 25693,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/all_ifg_unwrap_qa.json",
+          "size_bytes": 1433,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair001_20141006_20141018_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair002_20141006_20141030_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair003_20141006_20141111_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair004_20141006_20141123_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair005_20141018_20141030_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair006_20141018_20141111_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair007_20141018_20141123_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair008_20141018_20141205_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair009_20141030_20141111_08n.log",
+          "size_bytes": 2155,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair010_20141030_20141205_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair011_20141030_20141217_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair012_20141111_20141123_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair013_20141111_20141205_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair014_20141111_20141217_08n.log",
+          "size_bytes": 2155,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair015_20141111_20141229_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair016_20141123_20141205_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair017_20141123_20141217_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair018_20141123_20150110_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair019_20141123_20150203_08n.log",
+          "size_bytes": 2296,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair020_20141205_20141217_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair021_20141205_20141229_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair022_20141205_20150110_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair023_20141217_20141229_08n.log",
+          "size_bytes": 2155,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair024_20141217_20150110_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair025_20141217_20150122_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair026_20141229_20150110_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair027_20141229_20150122_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair028_20141229_20150215_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair029_20141229_20150227_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair030_20150110_20150122_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair031_20150110_20150215_08n.log",
+          "size_bytes": 2158,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair032_20150110_20150227_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair033_20150110_20150311_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair034_20150122_20150203_08n.log",
+          "size_bytes": 2158,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair035_20150122_20150215_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair036_20150122_20150323_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair037_20150215_20150227_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair038_20150215_20150311_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair039_20150215_20150323_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair040_20150215_20150404_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair041_20150227_20150311_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair042_20150227_20150323_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair043_20150227_20150416_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair044_20150311_20150323_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair045_20150311_20150404_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair046_20150311_20150416_08n.log",
+          "size_bytes": 2155,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair047_20150323_20150404_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair048_20150323_20150416_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair049_20150323_20150428_08n.log",
+          "size_bytes": 2227,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair050_20150404_20150416_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair051_20150404_20150428_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair052_20150416_20150428_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair053_20150416_20150627_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair054_20150428_20150627_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair055_20150428_20150709_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair056_20150627_20150721_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair057_20150627_20150802_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair058_20150627_20150814_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair059_20150709_20150721_08n.log",
+          "size_bytes": 2158,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair060_20150709_20150814_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair061_20150709_20150907_08n.log",
+          "size_bytes": 2158,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair062_20150721_20150802_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair063_20150721_20150814_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair064_20150721_20150826_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair065_20150802_20150814_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair066_20150802_20150826_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair067_20150802_20150907_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair068_20150814_20150826_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair069_20150814_20150907_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair070_20150814_20150919_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair071_20150826_20150907_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair072_20150826_20150919_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair073_20150826_20151001_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair074_20150907_20150919_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair075_20150907_20151001_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair076_20150907_20151025_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair077_20150919_20151001_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair078_20150919_20151025_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair079_20151001_20151025_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair080_20151001_20151212_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair081_20151025_20151212_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair082_20151025_20151224_08n.log",
+          "size_bytes": 2155,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair083_20151025_20160105_08n.log",
+          "size_bytes": 2155,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair084_20151212_20151224_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair085_20151212_20160105_08n.log",
+          "size_bytes": 2297,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair086_20151212_20160117_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair087_20151212_20160210_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair088_20151224_20160105_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair089_20151224_20160117_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair090_20151224_20160129_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair091_20160105_20160117_08n.log",
+          "size_bytes": 2158,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair092_20160105_20160129_08n.log",
+          "size_bytes": 2226,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair093_20160105_20160210_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair094_20160117_20160129_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair095_20160117_20160210_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair096_20160117_20160305_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair097_20160129_20160210_08n.log",
+          "size_bytes": 2297,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair098_20160129_20160305_08n.log",
+          "size_bytes": 2156,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair099_20160129_20160317_08n.log",
+          "size_bytes": 2155,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair100_20160210_20160305_08n.log",
+          "size_bytes": 2158,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair101_20160210_20160317_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair102_20160210_20160329_08n.log",
+          "size_bytes": 2159,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair103_20160305_20160317_08n.log",
+          "size_bytes": 2157,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair104_20160305_20160329_08n.log",
+          "size_bytes": 2158,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair105_20160305_20160410_08n.log",
+          "size_bytes": 2158,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair106_20160317_20160329_08n.log",
+          "size_bytes": 2229,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair107_20160317_20160410_08n.log",
+          "size_bytes": 2227,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_validation/logs/pair108_20160329_20160410_08n.log",
+          "size_bytes": 2158,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [
+        {
+          "pattern": "processing/batch_unwrap_validation/logs/*_08n.log",
+          "frozen_count": 108,
+          "files": [
+            "processing/batch_unwrap_validation/logs/pair001_20141006_20141018_08n.log",
+            "processing/batch_unwrap_validation/logs/pair002_20141006_20141030_08n.log",
+            "processing/batch_unwrap_validation/logs/pair003_20141006_20141111_08n.log",
+            "processing/batch_unwrap_validation/logs/pair004_20141006_20141123_08n.log",
+            "processing/batch_unwrap_validation/logs/pair005_20141018_20141030_08n.log",
+            "processing/batch_unwrap_validation/logs/pair006_20141018_20141111_08n.log",
+            "processing/batch_unwrap_validation/logs/pair007_20141018_20141123_08n.log",
+            "processing/batch_unwrap_validation/logs/pair008_20141018_20141205_08n.log",
+            "processing/batch_unwrap_validation/logs/pair009_20141030_20141111_08n.log",
+            "processing/batch_unwrap_validation/logs/pair010_20141030_20141205_08n.log",
+            "processing/batch_unwrap_validation/logs/pair011_20141030_20141217_08n.log",
+            "processing/batch_unwrap_validation/logs/pair012_20141111_20141123_08n.log",
+            "processing/batch_unwrap_validation/logs/pair013_20141111_20141205_08n.log",
+            "processing/batch_unwrap_validation/logs/pair014_20141111_20141217_08n.log",
+            "processing/batch_unwrap_validation/logs/pair015_20141111_20141229_08n.log",
+            "processing/batch_unwrap_validation/logs/pair016_20141123_20141205_08n.log",
+            "processing/batch_unwrap_validation/logs/pair017_20141123_20141217_08n.log",
+            "processing/batch_unwrap_validation/logs/pair018_20141123_20150110_08n.log",
+            "processing/batch_unwrap_validation/logs/pair019_20141123_20150203_08n.log",
+            "processing/batch_unwrap_validation/logs/pair020_20141205_20141217_08n.log",
+            "processing/batch_unwrap_validation/logs/pair021_20141205_20141229_08n.log",
+            "processing/batch_unwrap_validation/logs/pair022_20141205_20150110_08n.log",
+            "processing/batch_unwrap_validation/logs/pair023_20141217_20141229_08n.log",
+            "processing/batch_unwrap_validation/logs/pair024_20141217_20150110_08n.log",
+            "processing/batch_unwrap_validation/logs/pair025_20141217_20150122_08n.log",
+            "processing/batch_unwrap_validation/logs/pair026_20141229_20150110_08n.log",
+            "processing/batch_unwrap_validation/logs/pair027_20141229_20150122_08n.log",
+            "processing/batch_unwrap_validation/logs/pair028_20141229_20150215_08n.log",
+            "processing/batch_unwrap_validation/logs/pair029_20141229_20150227_08n.log",
+            "processing/batch_unwrap_validation/logs/pair030_20150110_20150122_08n.log",
+            "processing/batch_unwrap_validation/logs/pair031_20150110_20150215_08n.log",
+            "processing/batch_unwrap_validation/logs/pair032_20150110_20150227_08n.log",
+            "processing/batch_unwrap_validation/logs/pair033_20150110_20150311_08n.log",
+            "processing/batch_unwrap_validation/logs/pair034_20150122_20150203_08n.log",
+            "processing/batch_unwrap_validation/logs/pair035_20150122_20150215_08n.log",
+            "processing/batch_unwrap_validation/logs/pair036_20150122_20150323_08n.log",
+            "processing/batch_unwrap_validation/logs/pair037_20150215_20150227_08n.log",
+            "processing/batch_unwrap_validation/logs/pair038_20150215_20150311_08n.log",
+            "processing/batch_unwrap_validation/logs/pair039_20150215_20150323_08n.log",
+            "processing/batch_unwrap_validation/logs/pair040_20150215_20150404_08n.log",
+            "processing/batch_unwrap_validation/logs/pair041_20150227_20150311_08n.log",
+            "processing/batch_unwrap_validation/logs/pair042_20150227_20150323_08n.log",
+            "processing/batch_unwrap_validation/logs/pair043_20150227_20150416_08n.log",
+            "processing/batch_unwrap_validation/logs/pair044_20150311_20150323_08n.log",
+            "processing/batch_unwrap_validation/logs/pair045_20150311_20150404_08n.log",
+            "processing/batch_unwrap_validation/logs/pair046_20150311_20150416_08n.log",
+            "processing/batch_unwrap_validation/logs/pair047_20150323_20150404_08n.log",
+            "processing/batch_unwrap_validation/logs/pair048_20150323_20150416_08n.log",
+            "processing/batch_unwrap_validation/logs/pair049_20150323_20150428_08n.log",
+            "processing/batch_unwrap_validation/logs/pair050_20150404_20150416_08n.log",
+            "processing/batch_unwrap_validation/logs/pair051_20150404_20150428_08n.log",
+            "processing/batch_unwrap_validation/logs/pair052_20150416_20150428_08n.log",
+            "processing/batch_unwrap_validation/logs/pair053_20150416_20150627_08n.log",
+            "processing/batch_unwrap_validation/logs/pair054_20150428_20150627_08n.log",
+            "processing/batch_unwrap_validation/logs/pair055_20150428_20150709_08n.log",
+            "processing/batch_unwrap_validation/logs/pair056_20150627_20150721_08n.log",
+            "processing/batch_unwrap_validation/logs/pair057_20150627_20150802_08n.log",
+            "processing/batch_unwrap_validation/logs/pair058_20150627_20150814_08n.log",
+            "processing/batch_unwrap_validation/logs/pair059_20150709_20150721_08n.log",
+            "processing/batch_unwrap_validation/logs/pair060_20150709_20150814_08n.log",
+            "processing/batch_unwrap_validation/logs/pair061_20150709_20150907_08n.log",
+            "processing/batch_unwrap_validation/logs/pair062_20150721_20150802_08n.log",
+            "processing/batch_unwrap_validation/logs/pair063_20150721_20150814_08n.log",
+            "processing/batch_unwrap_validation/logs/pair064_20150721_20150826_08n.log",
+            "processing/batch_unwrap_validation/logs/pair065_20150802_20150814_08n.log",
+            "processing/batch_unwrap_validation/logs/pair066_20150802_20150826_08n.log",
+            "processing/batch_unwrap_validation/logs/pair067_20150802_20150907_08n.log",
+            "processing/batch_unwrap_validation/logs/pair068_20150814_20150826_08n.log",
+            "processing/batch_unwrap_validation/logs/pair069_20150814_20150907_08n.log",
+            "processing/batch_unwrap_validation/logs/pair070_20150814_20150919_08n.log",
+            "processing/batch_unwrap_validation/logs/pair071_20150826_20150907_08n.log",
+            "processing/batch_unwrap_validation/logs/pair072_20150826_20150919_08n.log",
+            "processing/batch_unwrap_validation/logs/pair073_20150826_20151001_08n.log",
+            "processing/batch_unwrap_validation/logs/pair074_20150907_20150919_08n.log",
+            "processing/batch_unwrap_validation/logs/pair075_20150907_20151001_08n.log",
+            "processing/batch_unwrap_validation/logs/pair076_20150907_20151025_08n.log",
+            "processing/batch_unwrap_validation/logs/pair077_20150919_20151001_08n.log",
+            "processing/batch_unwrap_validation/logs/pair078_20150919_20151025_08n.log",
+            "processing/batch_unwrap_validation/logs/pair079_20151001_20151025_08n.log",
+            "processing/batch_unwrap_validation/logs/pair080_20151001_20151212_08n.log",
+            "processing/batch_unwrap_validation/logs/pair081_20151025_20151212_08n.log",
+            "processing/batch_unwrap_validation/logs/pair082_20151025_20151224_08n.log",
+            "processing/batch_unwrap_validation/logs/pair083_20151025_20160105_08n.log",
+            "processing/batch_unwrap_validation/logs/pair084_20151212_20151224_08n.log",
+            "processing/batch_unwrap_validation/logs/pair085_20151212_20160105_08n.log",
+            "processing/batch_unwrap_validation/logs/pair086_20151212_20160117_08n.log",
+            "processing/batch_unwrap_validation/logs/pair087_20151212_20160210_08n.log",
+            "processing/batch_unwrap_validation/logs/pair088_20151224_20160105_08n.log",
+            "processing/batch_unwrap_validation/logs/pair089_20151224_20160117_08n.log",
+            "processing/batch_unwrap_validation/logs/pair090_20151224_20160129_08n.log",
+            "processing/batch_unwrap_validation/logs/pair091_20160105_20160117_08n.log",
+            "processing/batch_unwrap_validation/logs/pair092_20160105_20160129_08n.log",
+            "processing/batch_unwrap_validation/logs/pair093_20160105_20160210_08n.log",
+            "processing/batch_unwrap_validation/logs/pair094_20160117_20160129_08n.log",
+            "processing/batch_unwrap_validation/logs/pair095_20160117_20160210_08n.log",
+            "processing/batch_unwrap_validation/logs/pair096_20160117_20160305_08n.log",
+            "processing/batch_unwrap_validation/logs/pair097_20160129_20160210_08n.log",
+            "processing/batch_unwrap_validation/logs/pair098_20160129_20160305_08n.log",
+            "processing/batch_unwrap_validation/logs/pair099_20160129_20160317_08n.log",
+            "processing/batch_unwrap_validation/logs/pair100_20160210_20160305_08n.log",
+            "processing/batch_unwrap_validation/logs/pair101_20160210_20160317_08n.log",
+            "processing/batch_unwrap_validation/logs/pair102_20160210_20160329_08n.log",
+            "processing/batch_unwrap_validation/logs/pair103_20160305_20160317_08n.log",
+            "processing/batch_unwrap_validation/logs/pair104_20160305_20160329_08n.log",
+            "processing/batch_unwrap_validation/logs/pair105_20160305_20160410_08n.log",
+            "processing/batch_unwrap_validation/logs/pair106_20160317_20160329_08n.log",
+            "processing/batch_unwrap_validation/logs/pair107_20160317_20160410_08n.log",
+            "processing/batch_unwrap_validation/logs/pair108_20160329_20160410_08n.log"
+          ]
+        }
+      ],
+      "required_filesets": [
+        {
+          "label": "unwrapped_phase",
+          "pattern": "processing/single_ifg_robust_solution/pair*_*_*_unwrapped_phase_rad.npy",
+          "expected_count": 108,
+          "frozen_count": 108
+        },
+        {
+          "label": "registered_mask",
+          "pattern": "processing/single_ifg_robust_solution/pair*_*_*_registered_mask.npy",
+          "expected_count": 108,
+          "frozen_count": 108
+        },
+        {
+          "label": "single_ifg_manifest",
+          "pattern": "processing/single_ifg_robust_solution/pair*_*_*_manifest.json",
+          "expected_count": 108,
+          "frozen_count": 108
+        },
+        {
+          "label": "safe_fragment",
+          "pattern": "processing/safe_fragment_integer_quality/pair*_*_*_safe_fragment.npy",
+          "expected_count": 108,
+          "frozen_count": 108
+        },
+        {
+          "label": "safe_fragment_manifest",
+          "pattern": "processing/safe_fragment_integer_quality/pair*_*_*_manifest.json",
+          "expected_count": 108,
+          "frozen_count": 108
+        }
+      ],
+      "witness_inputs": []
+    },
+    "unwrap_severity_quality": {
+      "script": "08q_quality_full_batch_severity.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/batch_unwrap_severity_quality/all_ifg_forest_severity.csv",
+          "size_bytes": 9781,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_severity_quality/safe_conflict_detail.csv",
+          "size_bytes": 1264,
+          "required": true
+        },
+        {
+          "path": "processing/batch_unwrap_severity_quality/severity_quality.json",
+          "size_bytes": 252,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "unwrap_conflict_quality": {
+      "script": "08r_quality_safe_conflict_acquisition_attribution.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/safe_conflict_acquisition_quality/acquisition_attribution.csv",
+          "size_bytes": 2109,
+          "required": true
+        },
+        {
+          "path": "processing/safe_conflict_acquisition_quality/acquisition_attribution.json",
+          "size_bytes": 4526,
+          "required": true
+        },
+        {
+          "path": "processing/safe_conflict_acquisition_quality/recurrent_safe_conflict_edges.csv",
+          "size_bytes": 1215,
+          "required": true
+        },
+        {
+          "path": "processing/safe_conflict_acquisition_quality/safe_conflict_occurrences.csv",
+          "size_bytes": 9188,
+          "required": true
+        },
+        {
+          "path": "processing/safe_conflict_acquisition_quality/suspicious_edge_acquisition_gradient.npy",
+          "size_bytes": 3928,
+          "required": true
+        },
+        {
+          "path": "processing/safe_conflict_acquisition_quality/suspicious_edge_ids.npy",
+          "size_bytes": 328,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "unwrap_acquisition_quality": {
+      "script": "08s_quality_acquisition_safe_fragments.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/acquisition_safe_fragment_quality/20141018_safe_bad_edge_ids.npy",
+          "size_bytes": 144,
+          "required": true
+        },
+        {
+          "path": "processing/acquisition_safe_fragment_quality/20141217_safe_bad_edge_ids.npy",
+          "size_bytes": 144,
+          "required": true
+        },
+        {
+          "path": "processing/acquisition_safe_fragment_quality/20150110_safe_bad_edge_ids.npy",
+          "size_bytes": 2840,
+          "required": true
+        },
+        {
+          "path": "processing/acquisition_safe_fragment_quality/20150203_safe_bad_edge_ids.npy",
+          "size_bytes": 1072,
+          "required": true
+        },
+        {
+          "path": "processing/acquisition_safe_fragment_quality/20151212_safe_bad_edge_ids.npy",
+          "size_bytes": 136,
+          "required": true
+        },
+        {
+          "path": "processing/acquisition_safe_fragment_quality/20160117_safe_bad_edge_ids.npy",
+          "size_bytes": 144,
+          "required": true
+        },
+        {
+          "path": "processing/acquisition_safe_fragment_quality/acquisition_safe_fragment_quality.csv",
+          "size_bytes": 5003,
+          "required": true
+        },
+        {
+          "path": "processing/acquisition_safe_fragment_quality/acquisition_safe_fragment_quality.json",
+          "size_bytes": 390,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [
+        {
+          "pattern": "processing/acquisition_safe_fragment_quality/*_safe_bad_edge_ids.npy",
+          "frozen_count": 6,
+          "files": [
+            "processing/acquisition_safe_fragment_quality/20141018_safe_bad_edge_ids.npy",
+            "processing/acquisition_safe_fragment_quality/20141217_safe_bad_edge_ids.npy",
+            "processing/acquisition_safe_fragment_quality/20150110_safe_bad_edge_ids.npy",
+            "processing/acquisition_safe_fragment_quality/20150203_safe_bad_edge_ids.npy",
+            "processing/acquisition_safe_fragment_quality/20151212_safe_bad_edge_ids.npy",
+            "processing/acquisition_safe_fragment_quality/20160117_safe_bad_edge_ids.npy"
+          ]
+        }
+      ],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "temporal_closure": {
+      "script": "08t_quality_temporal_integer_closure.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/temporal_integer_closure_quality/cycle_matrix.npy",
+          "size_bytes": 7796,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_integer_closure_quality/cycle_modal_integer.npy",
+          "size_bytes": 412,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_integer_closure_quality/point_temporal_bad_cycle_count.npy",
+          "size_bytes": 1048748,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_integer_closure_quality/temporal_bad_points.csv",
+          "size_bytes": 3044,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_integer_closure_quality/temporal_cycle_qa.csv",
+          "size_bytes": 8841,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_integer_closure_quality/temporal_integer_closure_quality.json",
+          "size_bytes": 729,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "temporal_integer_candidate": {
+      "script": "08u_temporal_sparse_integer_candidate.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/temporal_sparse_integer_candidate/bad_point_ids.npy",
+          "size_bytes": 764,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_sparse_integer_candidate/candidate_corrections_by_ifg.csv",
+          "size_bytes": 4636,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_sparse_integer_candidate/candidate_sparse_integer_corrections.csv",
+          "size_bytes": 46180,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_sparse_integer_candidate/pattern_integer_solutions.npy",
+          "size_bytes": 21296,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_sparse_integer_candidate/point_integer_correction_matrix.npy",
+          "size_bytes": 34472,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_sparse_integer_candidate/temporal_error_patterns.csv",
+          "size_bytes": 2143,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_sparse_integer_candidate/temporal_sparse_integer_candidate.json",
+          "size_bytes": 723,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_sparse_integer_candidate/unique_error_patterns.npy",
+          "size_bytes": 14044,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "temporal_candidate_spatial_quality": {
+      "script": "08v_spatial_validate_temporal_candidates.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/temporal_candidate_spatial_validation/candidate_safe_fragment_coherence.csv",
+          "size_bytes": 15278,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_candidate_spatial_validation/candidate_spatial_validation.json",
+          "size_bytes": 895,
+          "required": true
+        },
+        {
+          "path": "processing/temporal_candidate_spatial_validation/candidate_spatial_validation_by_ifg.csv",
+          "size_bytes": 10852,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "unwrap_signature_quality": {
+      "script": "08w_quality_fragment_signature_feasibility.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/fragment_signature_feasibility/bad_signature_groups.csv",
+          "size_bytes": 7446,
+          "required": true
+        },
+        {
+          "path": "processing/fragment_signature_feasibility/fragment_signature_feasibility.json",
+          "size_bytes": 823,
+          "required": true
+        },
+        {
+          "path": "processing/fragment_signature_feasibility/main_signature_group.npy",
+          "size_bytes": 2095620,
+          "required": true
+        },
+        {
+          "path": "processing/fragment_signature_feasibility/main_signature_hash1.npy",
+          "size_bytes": 4191112,
+          "required": true
+        },
+        {
+          "path": "processing/fragment_signature_feasibility/main_signature_hash2.npy",
+          "size_bytes": 4191112,
+          "required": true
+        },
+        {
+          "path": "processing/fragment_signature_feasibility/temporal_bad_point_signature_status.csv",
+          "size_bytes": 9133,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "unwrap_finalize": {
+      "script": "08x_finalize_unwrap_quality_and_gauge.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/final_unwrap/all_ifg_registered_mask.npy",
+          "size_bytes": 524438,
+          "required": true
+        },
+        {
+          "path": "processing/final_unwrap/excluded_or_flagged_points.csv",
+          "size_bytes": 12867,
+          "required": true
+        },
+        {
+          "path": "processing/final_unwrap/final_unwrap_candidate_manifest.json",
+          "size_bytes": 964,
+          "required": true
+        },
+        {
+          "path": "processing/final_unwrap/global_ifg_integer_delta.npy",
+          "size_bytes": 344,
+          "required": true
+        },
+        {
+          "path": "processing/final_unwrap/global_ifg_integer_gauge.csv",
+          "size_bytes": 3491,
+          "required": true
+        },
+        {
+          "path": "processing/final_unwrap/spatial_safe_conflict_point_mask.npy",
+          "size_bytes": 524438,
+          "required": true
+        },
+        {
+          "path": "processing/final_unwrap/strict_unwrap_valid_mask.npy",
+          "size_bytes": 524438,
+          "required": true
+        },
+        {
+          "path": "processing/final_unwrap/structural_incompatible_mask.npy",
+          "size_bytes": 524438,
+          "required": true
+        },
+        {
+          "path": "processing/final_unwrap/temporal_integer_bad_mask.npy",
+          "size_bytes": 524438,
+          "required": true
+        },
+        {
+          "path": "processing/final_unwrap/temporal_valid_mask.npy",
+          "size_bytes": 524438,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "timeseries_inversion": {
+      "script": "09a_network_inversion_tree_l2_parity.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/network_inversion/acquisition_phase_l2_candidate_rad.npy",
+          "size_bytes": 79662720,
+          "required": true
+        },
+        {
+          "path": "processing/network_inversion/dates.txt",
+          "size_bytes": 342,
+          "required": true
+        },
+        {
+          "path": "processing/network_inversion/design_matrix.npy",
+          "size_bytes": 16112,
+          "required": true
+        },
+        {
+          "path": "processing/network_inversion/l2_network_residual_max_rad.npy",
+          "size_bytes": 2096512,
+          "required": true
+        },
+        {
+          "path": "processing/network_inversion/l2_network_residual_rms_rad.npy",
+          "size_bytes": 2096512,
+          "required": true
+        },
+        {
+          "path": "processing/network_inversion/network_inversion_parity_manifest.json",
+          "size_bytes": 869,
+          "required": true
+        },
+        {
+          "path": "processing/network_inversion/strict_point_ids.npy",
+          "size_bytes": 2096512,
+          "required": true
+        },
+        {
+          "path": "processing/network_inversion/temporal_tree_edge_ids.npy",
+          "size_bytes": 276,
+          "required": true
+        },
+        {
+          "path": "processing/network_inversion/tree_l2_max_abs_diff_rad.npy",
+          "size_bytes": 2096512,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    },
+    "reference": {
+      "script": "09c_apply_reference_region.py",
+      "persistent": true,
+      "optional": false,
+      "outputs": [
+        {
+          "path": "processing/referenced_timeseries/acquisition_phase_referenced_rad.npy",
+          "size_bytes": 79662720,
+          "required": true
+        },
+        {
+          "path": "processing/referenced_timeseries/preliminary_linear_residual_rms_rad.npy",
+          "size_bytes": 2096512,
+          "required": true
+        },
+        {
+          "path": "processing/referenced_timeseries/preliminary_phase_rate_rad_per_year.npy",
+          "size_bytes": 2096512,
+          "required": true
+        },
+        {
+          "path": "processing/referenced_timeseries/reference_epoch_qa.csv",
+          "size_bytes": 2962,
+          "required": true
+        },
+        {
+          "path": "processing/referenced_timeseries/reference_phase_mad_sigma_rad.npy",
+          "size_bytes": 280,
+          "required": true
+        },
+        {
+          "path": "processing/referenced_timeseries/reference_phase_median_rad.npy",
+          "size_bytes": 280,
+          "required": true
+        },
+        {
+          "path": "processing/referenced_timeseries/reference_point_ids.npy",
+          "size_bytes": 2528,
+          "required": true
+        },
+        {
+          "path": "processing/referenced_timeseries/reference_region_mask.npy",
+          "size_bytes": 524438,
+          "required": true
+        },
+        {
+          "path": "processing/referenced_timeseries/reference_strict_indices.npy",
+          "size_bytes": 2528,
+          "required": true
+        },
+        {
+          "path": "processing/referenced_timeseries/referenced_timeseries_manifest.json",
+          "size_bytes": 1213,
+          "required": true
+        }
+      ],
+      "dynamic_output_sets": [],
+      "required_filesets": [],
+      "witness_inputs": []
+    }
+  }
+}
