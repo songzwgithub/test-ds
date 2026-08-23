@@ -155,7 +155,7 @@ def _new_memmap(
 
 
 # ============================================================================
-# P8E1 stage-major tile checkpointing
+# production stage-major tile checkpointing
 # ============================================================================
 
 _CHECKPOINT_FORMAT = (
@@ -1337,7 +1337,7 @@ def run_sequential_stage(
 
 
     # ------------------------------------------------------------------
-    # P8E1 checkpoint setup.
+    # production checkpoint setup.
     #
     # Numerical algorithms are unchanged.  This only determines whether
     # persistent stage maps may be reopened and which completed tile
@@ -1485,7 +1485,7 @@ def run_sequential_stage(
 
 
     # ------------------------------------------------------------------
-    # P8E1.1 grouped durable checkpoint.
+    # production grouped durable checkpoint.
     #
     # Flushing every individual tile is prohibitively expensive because
     # numpy.memmap.flush() synchronizes large mapped files.
@@ -2561,7 +2561,7 @@ def run_sequential_stage(
         )
 
         # --------------------------------------------------------------
-        # P8E1.1 GROUPED CHECKPOINT COMMIT
+        # production GROUPED CHECKPOINT COMMIT
         #
         # Add this completed tile to the in-memory pending group.
         # No durability marker is published before the backing maps

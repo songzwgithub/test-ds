@@ -22,3 +22,7 @@
 - Made the full corrected-YXT cache optional for sequential production through `PYPSDS_PHASE_SOURCE=auto|gamma|cache`.
 - Preserved the corrected-YXT cache path for explicit cache mode and legacy `full_scm`.
 - Replaced experiment-step script prefixes with semantic production command names.
+- Packaged all production stages inside `pypsds` for normal wheel installs.
+- Removed machine/study-area paths, fixed acquisition counts and reference coordinates from distributed configuration.
+- Added `pypsds init`, hardware/acquisition-aware planning, portable release gates and installed-wheel smoke tests.
+- Removed current-branch historical development trees; Git history remains the provenance archive.

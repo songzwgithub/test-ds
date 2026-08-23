@@ -175,7 +175,7 @@ def main():
     )
 
     print(
-        "pyPSDS-GAMMA U3.1 temporal/ministack planner audit"
+        "pyPSDS-GAMMA production planner temporal/ministack planner audit"
     )
 
     print(
@@ -375,12 +375,12 @@ def main():
     if not collapse_pass:
 
         raise SystemExit(
-            "U3.1 EXACT COLLAPSE FAILED"
+            "production planner EXACT COLLAPSE FAILED"
         )
 
     print()
     print(
-        "U3.1 TEMPORAL PLANNER: PASS"
+        "production planner TEMPORAL PLANNER: PASS"
     )
 
 

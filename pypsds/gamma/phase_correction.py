@@ -232,8 +232,18 @@ class GammaPointPhaseCorrectionProvider:
         self.assets: PhaseCorrectionAssets | None = None
 
     def _resolve_reference(self) -> tuple[int, str]:
-        raw = cfg_get(self.cfg, "phase_correction.geometric_reference_date", "auto")
-        if raw in (None, "", "auto"):
+        raw = cfg_get(
+            self.cfg,
+            "phase_correction.geometric_reference_date",
+            None,
+        )
+        if raw in (None, ""):
+            raise PhaseCorrectionError(
+                "phase_correction.geometric_reference_date is required. "
+                "Set the actual GAMMA co-registration reference date (YYYYMMDD), "
+                "or explicitly set 'auto' to opt in to temporal-reference fallback."
+            )
+        if str(raw).lower() == "auto":
             idx = int(
                 cfg_get(
                     self.cfg,
@@ -252,7 +262,7 @@ class GammaPointPhaseCorrectionProvider:
             log(
                 "phase_correction.geometric_reference_date=auto: using the date at "
                 f"phase_linking.reference_idx={idx} ({self.stack.dates[idx]}). "
-                "For production, set the actual GAMMA co-registration reference date explicitly."
+                "Verify that this fallback matches the GAMMA co-registration reference."
             )
             return idx, self.stack.dates[idx]
         date = str(raw)
@@ -288,7 +298,7 @@ class GammaPointPhaseCorrectionProvider:
 
         # GAMMA scripts resolve relative entries in RSLC_tab against the current
         # shell working directory. Python already resolved all records safely, so
-        # v0.5 always emits an internal absolute-path tab for GAMMA commands.
+        # production always emits an internal absolute-path tab for GAMMA commands.
         gamma_rslc_tab.write_text(
             "".join(f"{r.rslc.resolve()} {r.par.resolve()}\n" for r in self.stack.records),
             encoding="utf-8",

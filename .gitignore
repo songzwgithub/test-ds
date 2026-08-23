@@ -108,3 +108,4 @@ __pycache__/
 *.rej
 *~
 *_before_*
+docs/release/generated/

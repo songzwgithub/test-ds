@@ -9,7 +9,7 @@ from pypsds.pipeline import (
     _stage_args,
 )
 from pypsds.project import (
-    resolve_project_paths,
+    ProjectPaths,
 )
 from pypsds.runtime import (
     build_runtime_plan,
@@ -33,15 +33,46 @@ def _stage(name):
     raise KeyError(name)
 
 
-def test_p6b_sequential_pipeline_dispatch():
+def test_production_sequential_pipeline_dispatch(tmp_path):
 
     cfg, config_path = load_config(
         CONFIG
     )
 
-    paths = resolve_project_paths(
-        cfg,
-        config_path,
+    # Pure pipeline-dispatch unit test: no real RSLC dataset is required.
+    # ProjectPaths is only used here to verify generated stage arguments and
+    # output-product paths. Real path discovery is covered by project/doctor
+    # integration checks using an actual project configuration.
+    work_dir = tmp_path / "project"
+    data_dir = work_dir / "data"
+    rslc_dir = data_dir / "RSLC"
+    output_dir = work_dir / "output"
+
+    work_dir.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+    rslc_dir.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+    output_dir.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    rslc_tab = data_dir / "RSLC_tab"
+    rslc_tab.write_text(
+        "",
+        encoding="utf-8",
+    )
+
+    paths = ProjectPaths(
+        work_dir=work_dir,
+        data_dir=data_dir,
+        rslc_dir=rslc_dir,
+        rslc_tab=rslc_tab,
+        output_dir=output_dir,
     )
 
     runtime = build_runtime_plan(
@@ -118,8 +149,8 @@ def test_p6b_sequential_pipeline_dispatch():
         "all"
     )
 
-    # Critical P5d contract:
-    # sequential Step04 must not inherit the
+    # Critical production contract:
+    # sequential Phase linking must not inherit the
     # legacy full-SCM --resume flag.
     assert "--resume" not in phase_args
 

@@ -1,43 +1,16 @@
-pyPSDS-GAMMA v1.0.0 production release validation
+pyPSDS-GAMMA 1.0.0 production validation
 
-Release architecture:
-  formal DS domain       : geometry-valid non-PS
-  Rayleigh GLRT          : 11 x 23, alpha=0.005
-  formal SHP threshold   : K >= 48
-  sequential state       : K >= 24
-  temporal strategy      : sequential
-  ministack size         : 19
-  EMI beta               : 0.0
-  EMI target mu          : 0.99
-  EMI backend            : threshold_cholesky
-  EVD fallback           : enabled
-  final DS TC            : >= 0.80
-  exact support cache    : enabled
-  phase source           : auto | gamma | cache
-  Gamma canonical grid   : 128 x 256
-  full corrected YXT     : optional for sequential production
-  production stages      : 32
+Source tests: PASS
+Installed wheel smoke: PASS
+Production stages: 32 package-contained semantic stages, PASS
+Portability: no machine paths, fixed acquisition count, or fixed study-area reference coordinates, PASS
+Reference-case scientific regression:
+  formal DS           : 1077566
+  sequential          : 1075120
+  full-SCM fallback   : 2446
+  phase-linking valid : 1077566
+  final DS TC >= 0.80 : 863969
+  portability-refactor phase-linking arrays: EXACT, PASS
+Dynamic 32-stage output contract: PASS
 
-Static compile:
-  PASS
-
-Unit tests:
-  36 passed in 1.77s
-
-Stage output contract:
-  32/32 current production stages represented
-  conditional phase_cache supported
-  optional diagnostic ADI modeled
-  exact support-cache wrapper outputs explicitly modeled
-  PASS
-
-Scientific regression:
-  frozen production counts unchanged
-  Step04 Gamma fast-resume PASS
-
-Production naming:
-  numbered production script prefixes removed
-  active scripts use semantic filenames
-  historical u33/u34/u35 experiment tools archived under development/
-  production stage names unchanged
-  PASS
+Bitwise identity across arbitrary CPU/BLAS implementations is not claimed; reproducibility is enforced by explicit project configuration, frozen scientific defaults, source/wheel tests and numerical regression gates.

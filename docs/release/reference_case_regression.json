@@ -1,0 +1,27 @@
+{
+  "format": "pyPSDS-GAMMA-reference-case-regression-v1",
+  "version": "1.0.0",
+  "scientific_parameters": {
+    "glrt_window": [
+      11,
+      23
+    ],
+    "glrt_alpha": 0.005,
+    "formal_min_shp": 48,
+    "state_min_shp": 24,
+    "ministack_size": 19,
+    "emi_beta": 0.0,
+    "emi_target_eigenvalue": 0.99,
+    "emi_backend": "threshold_cholesky",
+    "final_temporal_coherence_min": 0.8
+  },
+  "counts": {
+    "formal_ds": 1077566,
+    "sequential": 1075120,
+    "full_scm_fallback": 2446,
+    "phase_linking_valid": 1077566,
+    "final_ds_tc_ge_0_80": 863969
+  },
+  "portability_refactor_phase_linking_exact_parity": true,
+  "machine_specific_paths_recorded": false
+}

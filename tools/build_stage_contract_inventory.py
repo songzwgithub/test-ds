@@ -1470,7 +1470,7 @@ def main():
     ap.add_argument(
         "--json",
         default=(
-            "docs/release/"
+            "docs/release/generated/"
             "stage_contract_inventory.json"
         ),
     )
@@ -1478,7 +1478,7 @@ def main():
     ap.add_argument(
         "--text",
         default=(
-            "docs/release/"
+            "docs/release/generated/"
             "stage_contract_inventory.txt"
         ),
     )
@@ -1563,9 +1563,7 @@ def main():
     ):
 
         script = (
-            root
-            / "scripts"
-            / stage.script
+            root / "pypsds" / "stages" / stage.script
         )
 
         if not script.is_file():

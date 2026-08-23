@@ -380,7 +380,7 @@ def main():
 
     print("=" * 100)
     print(
-        "pyPSDS-GAMMA P8D1 exact support-cache benchmark"
+        "pyPSDS-GAMMA production exact support-cache benchmark"
     )
     print("=" * 100)
 
@@ -1176,7 +1176,7 @@ def main():
 
     report = {
         "format":
-            "pyPSDS-GAMMA-P8D1-support-cache-benchmark-v1",
+            "pyPSDS-GAMMA-production-support-cache-benchmark-v1",
 
         "ndate":
             ndate,
@@ -1223,7 +1223,7 @@ def main():
 
     print()
     print("=" * 100)
-    print("P8D1 DECISION")
+    print("production DECISION")
     print("=" * 100)
 
     print(
@@ -1298,7 +1298,7 @@ def main():
 
     print()
     print(
-        "P8D1 EXACT SUPPORT CACHE AUDIT: PASS"
+        "production EXACT SUPPORT CACHE AUDIT: PASS"
     )
 
 

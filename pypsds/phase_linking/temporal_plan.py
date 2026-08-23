@@ -35,7 +35,7 @@ class CompressedReference:
     bookkeeping used by Dolphin, but implemented independently
     for pyPSDS-GAMMA.
 
-    No compressed complex data are produced at U3.1.
+    No compressed complex data are produced at production planner.
     """
 
     ref_id: str
@@ -496,7 +496,7 @@ def build_temporal_plan(
             execution_ready=False,
 
             decision_reason=(
-                "AUTO is intentionally unresolved in U3.1; "
+                "AUTO is intentionally unresolved in production planner; "
                 "the switching rule will be calibrated from "
                 "full-scene full-SCM/sequential benchmarks."
             ),
@@ -570,7 +570,7 @@ def build_temporal_plan(
         )
 
     # --------------------------------------------------------
-    # U3.1 sequential metadata currently assumes the first
+    # production planner sequential metadata currently assumes the first
     # acquisition is the globally preserved reference.
     #
     # Current validated pyPSDS stack uses reference_index=0.

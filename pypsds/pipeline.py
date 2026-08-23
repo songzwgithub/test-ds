@@ -23,8 +23,10 @@ ROOT = (
 )
 
 SCRIPT_DIR = (
-    ROOT
-    / "scripts"
+    Path(__file__)
+    .resolve()
+    .parent
+    / "stages"
 )
 
 
@@ -545,6 +547,13 @@ def list_stage_names():
 def _fmt(x):
     return str(x)
 
+def _required_cfg_value(cfg, key):
+    value = cfg_get(cfg, key, None)
+    if value in (None, ""):
+        raise ValueError(f"Required project setting is missing: {key}")
+    return value
+
+
 
 def _stage_args(
     stage: Stage,
@@ -795,7 +804,7 @@ def _stage_args(
                 cfg_get(
                     cfg,
                     "runtime.phase_link_batch_size",
-                    16000,
+                    runtime.phase_link_batch_size,
                 )
             ),
 
@@ -804,7 +813,7 @@ def _stage_args(
                 cfg_get(
                     cfg,
                     "runtime.phase_link_workers",
-                    16,
+                    runtime.phase_link_workers,
                 )
             ),
 
@@ -813,7 +822,7 @@ def _stage_args(
                 cfg_get(
                     cfg,
                     "runtime.phase_link_chunk_size",
-                    512,
+                    runtime.phase_link_chunk_size,
                 )
             ),
         ]
@@ -924,43 +933,118 @@ def _stage_args(
 
     elif stage.name == "reference":
 
-        args += [
-            "--center-row",
-            _fmt(
-                cfg_get(
-                    cfg,
-                    "reference.radar_window.center_row",
-                    538,
-                )
-            ),
+        method = str(
+            cfg_get(
+                cfg,
+                "reference.method",
+                "radar_window",
+            )
+        ).strip().lower()
 
-            "--center-col",
-            _fmt(
-                cfg_get(
-                    cfg,
-                    "reference.radar_window.center_col",
-                    337,
-                )
-            ),
+        min_points = int(
+            cfg_get(
+                cfg,
+                "reference.min_points",
+                100,
+            )
+        )
 
-            "--half-row",
-            _fmt(
-                cfg_get(
-                    cfg,
-                    "reference.radar_window.half_row",
-                    10,
-                )
-            ),
+        if method == "point_ids":
+            value = cfg_get(
+                cfg,
+                "reference.point_ids_path",
+                None,
+            )
 
-            "--half-col",
-            _fmt(
-                cfg_get(
-                    cfg,
-                    "reference.radar_window.half_col",
-                    15,
+            if value in (
+                None,
+                "",
+            ):
+                raise ValueError(
+                    "reference.method=point_ids requires "
+                    "reference.point_ids_path"
                 )
-            ),
-        ]
+
+            point_ids_path = Path(
+                value
+            ).expanduser()
+
+            if not point_ids_path.is_absolute():
+                point_ids_path = (
+                    Path(paths.work_dir)
+                    /
+                    point_ids_path
+                ).resolve()
+
+            args += [
+                "--point-ids-file",
+                str(
+                    point_ids_path
+                ),
+                "--min-points",
+                _fmt(
+                    min_points
+                ),
+            ]
+
+        elif method == "radar_window":
+            center_row = cfg_get(
+                cfg,
+                "reference.radar_window.center_row",
+                None,
+            )
+
+            center_col = cfg_get(
+                cfg,
+                "reference.radar_window.center_col",
+                None,
+            )
+
+            if (
+                center_row is None
+                or
+                center_col is None
+            ):
+                raise ValueError(
+                    "reference.method=radar_window requires "
+                    "reference.radar_window.center_row and center_col"
+                )
+
+            args += [
+                "--center-row",
+                _fmt(
+                    center_row
+                ),
+                "--center-col",
+                _fmt(
+                    center_col
+                ),
+                "--half-row",
+                _fmt(
+                    cfg_get(
+                        cfg,
+                        "reference.radar_window.half_row",
+                        10,
+                    )
+                ),
+                "--half-col",
+                _fmt(
+                    cfg_get(
+                        cfg,
+                        "reference.radar_window.half_col",
+                        15,
+                    )
+                ),
+                "--min-points",
+                _fmt(
+                    min_points
+                ),
+            ]
+
+        else:
+            raise ValueError(
+                f"Unsupported reference.method: {method!r}"
+            )
 
     return args
 
@@ -978,7 +1062,7 @@ def _run_stage(
 
 
     # ------------------------------------------------------------------
-    # P8G2 PIPELINE PHASE-CACHE POLICY
+    # production PIPELINE PHASE-CACHE POLICY
     #
     # The full corrected-YXT cache is no longer mandatory for validated
     # sequential production.
@@ -993,7 +1077,7 @@ def _run_stage(
     #
     #   auto
     #       -> use an already existing standard corrected-YXT cache;
-    #          otherwise skip its construction and let Step04 use the
+    #          otherwise skip its construction and let Phase linking use the
     #          validated canonical GAMMA streaming source.
     #
     # full_scm remains unchanged because that legacy production path
@@ -1335,6 +1419,13 @@ def run_pipeline(
         io_workers=1,
     )
 
+    requested_cpu_raw = cfg_get(cfg, "runtime.cpu", None)
+    requested_cpu = (
+        None
+        if requested_cpu_raw in (None, "", "auto")
+        else int(requested_cpu_raw)
+    )
+
     runtime = build_runtime_plan(
         ndate=len(
             stack.dates
@@ -1346,6 +1437,7 @@ def run_pipeline(
                 0.85,
             )
         ),
+        requested_cpu=requested_cpu,
     )
 
     # --------------------------------------------------------

@@ -94,9 +94,6 @@ network:
 
 reference:
   method: radar_window
-  # Alternative: point_ids with an explicit project-local .npy point-ID array.
-  point_ids_path: null
-  min_points: 100
   radar_window:
     center_row: null
     center_col: null

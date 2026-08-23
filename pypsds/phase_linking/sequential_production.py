@@ -50,11 +50,11 @@ from .temporal_plan import (
 
 
 # ============================================================================
-# P8E2 completed-Step04 fast resume
+# production completed-Phase linking fast resume
 # ============================================================================
 
-_STEP04_COMPLETE_FORMAT = (
-    "pyPSDS-GAMMA-step04-complete-v1"
+_PHASE_LINKING_COMPLETE_FORMAT = (
+    "pyPSDS-GAMMA-phase_linking-complete-v1"
 )
 
 
@@ -178,7 +178,7 @@ def _file_identity(
 
 def _source_file_hashes():
     """
-    Hash only modules that materially define Step04 numerical
+    Hash only modules that materially define Phase linking numerical
     behaviour or its production routing.
 
     Any future change to these files invalidates fast resume.
@@ -228,7 +228,7 @@ def _source_file_hashes():
     return out
 
 
-def _step04_completion_fingerprint(
+def _phase_linking_completion_fingerprint(
     *,
     cfg,
     config_path,
@@ -339,7 +339,7 @@ def _step04_completion_fingerprint(
 
     return {
         "format":
-            _STEP04_COMPLETE_FORMAT,
+            _PHASE_LINKING_COMPLETE_FORMAT,
 
         "scene":
             [
@@ -699,7 +699,7 @@ def _atomic_write_json(
     )
 
 
-def _try_reuse_completed_step04(
+def _try_reuse_completed_phase_linking(
     *,
     cfg,
     config_path,
@@ -730,7 +730,7 @@ def _try_reuse_completed_step04(
         /
         "sequential"
         /
-        "step04_complete.json"
+        "phase_linking_complete.json"
     )
 
 
@@ -768,7 +768,7 @@ def _try_reuse_completed_step04(
 
 
     fingerprint = (
-        _step04_completion_fingerprint(
+        _phase_linking_completion_fingerprint(
             cfg=cfg,
             config_path=config_path,
 
@@ -808,7 +808,7 @@ def _try_reuse_completed_step04(
     except Exception as exc:
 
         print(
-            "Step04 completion manifest invalid:",
+            "Phase linking completion manifest invalid:",
             exc,
         )
 
@@ -820,7 +820,7 @@ def _try_reuse_completed_step04(
             "format"
         )
         !=
-        _STEP04_COMPLETE_FORMAT
+        _PHASE_LINKING_COMPLETE_FORMAT
     ):
 
         return False
@@ -845,7 +845,7 @@ def _try_reuse_completed_step04(
     ):
 
         print(
-            "Step04 completion cache : INVALIDATED "
+            "Phase linking completion cache : INVALIDATED "
             "(fingerprint changed)"
         )
 
@@ -866,7 +866,7 @@ def _try_reuse_completed_step04(
     if not ok:
 
         print(
-            "Step04 completion cache : INVALIDATED "
+            "Phase linking completion cache : INVALIDATED "
             f"({reason})"
         )
 
@@ -879,7 +879,7 @@ def _try_reuse_completed_step04(
     )
 
     print(
-        "Step04 completion cache"
+        "Phase linking completion cache"
     )
 
     print(
@@ -902,13 +902,13 @@ def _try_reuse_completed_step04(
     )
 
     print(
-        "STEP04 FAST RESUME : PASS"
+        "PHASE LINKING FAST RESUME : PASS"
     )
 
     return True
 
 
-def _write_completed_step04_manifest(
+def _write_completed_phase_linking_manifest(
     *,
     cfg,
     config_path,
@@ -950,13 +950,13 @@ def _write_completed_step04_manifest(
     if not ok:
 
         raise RuntimeError(
-            "cannot commit Step04 completion manifest: "
+            "cannot commit Phase linking completion manifest: "
             f"{reason}"
         )
 
 
     fingerprint = (
-        _step04_completion_fingerprint(
+        _phase_linking_completion_fingerprint(
             cfg=cfg,
             config_path=config_path,
 
@@ -980,7 +980,7 @@ def _write_completed_step04_manifest(
 
     payload = {
         "format":
-            _STEP04_COMPLETE_FORMAT,
+            _PHASE_LINKING_COMPLETE_FORMAT,
 
         "complete":
             True,
@@ -1003,7 +1003,7 @@ def _write_completed_step04_manifest(
         /
         "sequential"
         /
-        "step04_complete.json"
+        "phase_linking_complete.json"
     )
 
 
@@ -1260,7 +1260,7 @@ def run_sequential_production(
     args,
 ):
     """
-    Production sequential phase-linking branch for Step04.
+    Production sequential phase-linking branch for Phase linking.
 
     Output contract intentionally remains compatible with the
     existing downstream Step05/06b/06 implementation.
@@ -1385,7 +1385,7 @@ def run_sequential_production(
     )
 
 
-    if _try_reuse_completed_step04(
+    if _try_reuse_completed_phase_linking(
         cfg=cfg,
         config_path=config_path,
 
@@ -1576,7 +1576,7 @@ def run_sequential_production(
     )
 
     # --------------------------------------------------------
-    # Existing Step04 output contract
+    # Existing Phase linking output contract
     # --------------------------------------------------------
 
     shp_count = _new_map(
@@ -1674,7 +1674,7 @@ def run_sequential_production(
         dtype=np.int16,
     )
 
-    # Preserve normal Step04 center-list artifacts.
+    # Preserve normal Phase linking center-list artifacts.
     cr, cc0 = np.where(
         center_prior
     )
@@ -1783,7 +1783,7 @@ def run_sequential_production(
     )
 
     # --------------------------------------------------------
-    # P8E1 linked-phase resume contract.
+    # production linked-phase resume contract.
     #
     # Stage0's checkpoint manifest is the authoritative signal
     # that linked_phase.npy belongs to an interrupted/resumable
@@ -1923,7 +1923,7 @@ def run_sequential_production(
 
     # --------------------------------------------------------
     # --------------------------------------------------------
-    # P8F1 ROW-BAND STREAMING FULL-SPAN quality.
+    # production ROW-BAND STREAMING FULL-SPAN quality.
     #
     # Scientific operation is unchanged:
     #
@@ -2475,7 +2475,7 @@ def run_sequential_production(
     ):
 
         raise RuntimeError(
-            "P8F1 fullspan row-band point-count mismatch: "
+            "production fullspan row-band point-count mismatch: "
             f"{sequential_offset} != "
             f"{sequential_total}"
         )
@@ -2785,12 +2785,12 @@ def run_sequential_production(
 
         if fallback_estimator_parts:
 
-            class _P8G1FallbackSummary:
+            class _production:
                 pass
 
 
             fallback_result = (
-                _P8G1FallbackSummary()
+                _production()
             )
 
 
@@ -2926,7 +2926,7 @@ def run_sequential_production(
     writer.close()
 
     # --------------------------------------------------------
-    # PS phase fill -- preserve existing Step04 semantics.
+    # PS phase fill -- preserve existing Phase linking semantics.
     # --------------------------------------------------------
 
     linked_phase = np.load(
@@ -3201,7 +3201,7 @@ def run_sequential_production(
     print()
     print("=" * 88)
     print(
-        "Sequential Step04 production complete"
+        "Sequential Phase linking production complete"
     )
     print("=" * 88)
 
@@ -3283,7 +3283,7 @@ def run_sequential_production(
     )
 
     complete_manifest = (
-        _write_completed_step04_manifest(
+        _write_completed_phase_linking_manifest(
             cfg=cfg,
             config_path=config_path,
 
@@ -3343,5 +3343,5 @@ def run_sequential_production(
 
 
     print(
-        "P5d SEQUENTIAL PRODUCTION: PASS"
+        "production SEQUENTIAL PRODUCTION: PASS"
     )

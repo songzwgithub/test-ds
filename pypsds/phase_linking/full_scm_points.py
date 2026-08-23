@@ -524,7 +524,7 @@ def run_full_scm_points(
         # Optional production linked_phase writer.
         #
         # Only valid PL outputs are written, matching the
-        # existing Step04 linked_phase semantics.
+        # existing Phase linking linked_phase semantics.
         # ----------------------------------------------------
 
         progress.update(

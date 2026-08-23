@@ -302,7 +302,7 @@ class StepTimer:
 
 
 # ============================================================================
-# P8A high-volume production reporter
+# production high-volume production reporter
 # ============================================================================
 
 @dataclass(slots=True)
@@ -661,7 +661,7 @@ __all__ = [
     "StepTimer",
     "log",
 
-    # P8A additions.
+    # production additions.
     "ProgressReporter",
     "current_rss_bytes",
 ]

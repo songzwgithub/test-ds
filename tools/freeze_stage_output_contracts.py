@@ -285,7 +285,7 @@ def freeze(
 
         # ----------------------------------------------------
         # unwrap is an orchestrator. Its important outputs are
-        # created by subprocesses, so AST of 08p alone cannot
+        # created by subprocesses, so AST of the unwrap orchestrator alone cannot
         # see them.
         #
         # Require one canonical product per temporal-network IFG.
@@ -738,7 +738,7 @@ def main():
     ap.add_argument(
         "--inventory",
         default=(
-            "docs/release/"
+            "docs/release/generated/"
             "stage_contract_inventory.json"
         ),
     )
@@ -746,7 +746,7 @@ def main():
     ap.add_argument(
         "--snapshot",
         default=(
-            "docs/release/"
+            "docs/release/generated/"
             "stage_output_contract_snapshot.json"
         ),
     )
