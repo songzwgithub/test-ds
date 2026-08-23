@@ -28,6 +28,11 @@ from pypsds.phase_linking.support_cache import (
     support_geometry,
 )
 
+from pypsds.phase_linking.shp_policy import (
+    resolve_shp_policy,
+    write_shp_policy_json,
+)
+
 
 FORMAT = (
     "pyPSDS-GAMMA-exact-static-support-cache-v1"
@@ -180,6 +185,15 @@ def main():
         stack.dates
     )
 
+    shp_policy = resolve_shp_policy(
+        cfg,
+        stack.dates,
+        base_half_row=args.half_row,
+        base_half_col=args.half_col,
+    )
+    args.half_row = int(shp_policy.half_row)
+    args.half_col = int(shp_policy.half_col)
+
     processing = (
         Path(
             paths.output_dir
@@ -205,6 +219,10 @@ def main():
         exist_ok=True,
     )
 
+    write_shp_policy_json(
+        outdir / "shp_policy.json",
+        shp_policy,
+    )
 
     scale_path = (
         stats

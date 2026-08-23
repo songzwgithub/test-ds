@@ -47,7 +47,7 @@ def check_wheel():
         wheel = wheels[0]
         with zipfile.ZipFile(wheel) as zf:
             names = set(zf.namelist())
-        required = {"pypsds/resources/default_config.yaml", "pypsds/stages/run_phase_linking.py", "pypsds/stages/build_exact_support_cache.py", "pypsds/stages/apply_reference.py"}
+        required = {"pypsds/resources/default_config.yaml", "pypsds/resources/ds_production_policy_v1.json", "pypsds/stages/run_phase_linking.py", "pypsds/stages/build_exact_support_cache.py", "pypsds/stages/apply_reference.py"}
         missing = sorted(required - names)
         if missing:
             raise RuntimeError("wheel missing production resources: " + ", ".join(missing))

@@ -34,6 +34,11 @@ from .sequential_routing import (
 from .shp_vectorized_exact import (
     prepare_glrt_window_context,
 )
+from .shp_policy import (
+    resolve_shp_policy,
+    split_fallback_by_rank,
+    write_shp_policy_json,
+)
 from .support_cache import (
     load_exact_support_cache,
 )
@@ -196,6 +201,7 @@ def _source_file_hashes():
         "full_scm_points.py",
         "state_domain.py",
         "support_cache.py",
+        "shp_policy.py",
         "coherence.py",
         "compression.py",
         "emi.py",
@@ -1318,18 +1324,32 @@ def run_sequential_production(
         )
     )
 
-    state_min_shp = int(
-        temporal_cfg.get(
-            "state_min_shp",
-            24,
-        )
-    )
-
     full_scm_fallback = bool(
         temporal_cfg.get(
             "full_scm_fallback",
             True,
         )
+    )
+
+    shp_policy = resolve_shp_policy(
+        cfg,
+        stack.dates,
+        base_half_row=args.half_row,
+        base_half_col=args.half_col,
+        base_formal_min_shp=args.min_shp,
+    )
+
+    if (
+        int(args.half_row) != int(shp_policy.half_row)
+        or int(args.half_col) != int(shp_policy.half_col)
+        or int(args.min_shp) != int(shp_policy.formal_min_shp)
+    ):
+        raise RuntimeError(
+            "run_phase_linking / sequential SHP-policy mismatch"
+        )
+
+    state_min_shp = int(
+        shp_policy.state_min_shp
     )
 
 
@@ -1534,6 +1554,47 @@ def run_sequential_production(
         f"{routing.fallback_count:,}",
     )
 
+    (
+        fallback_exec_mask,
+        fallback_under_supported_mask,
+    ) = split_fallback_by_rank(
+        routing.fallback,
+        original_k,
+        full_scm_min_shp=(
+            shp_policy.full_scm_rank_min_shp
+        ),
+        rank_guard=(
+            shp_policy.rank_guard
+        ),
+    )
+
+    fallback_exec_count = int(
+        np.count_nonzero(
+            fallback_exec_mask
+        )
+    )
+    fallback_under_count = int(
+        np.count_nonzero(
+            fallback_under_supported_mask
+        )
+    )
+
+    print(
+        "fallback rank-supported:",
+        f"{fallback_exec_count:,}",
+    )
+    print(
+        "fallback under-supported:",
+        f"{fallback_under_count:,}",
+    )
+
+    write_shp_policy_json(
+        seqdir
+        /
+        "shp_policy.json",
+        shp_policy,
+    )
+
     if (
         routing.fallback_count > 0
         and
@@ -1563,6 +1624,20 @@ def run_sequential_production(
         /
         "production_full_scm_fallback_mask.npy",
         routing.fallback,
+    )
+
+    np.save(
+        seqdir
+        /
+        "production_full_scm_rank_supported_mask.npy",
+        fallback_exec_mask,
+    )
+
+    np.save(
+        seqdir
+        /
+        "production_full_scm_under_supported_mask.npy",
+        fallback_under_supported_mask,
     )
 
     np.save(
@@ -2530,7 +2605,7 @@ def run_sequential_production(
 
 
             flr, flc = np.where(
-                routing.fallback[
+                fallback_exec_mask[
                     fallback_r0:
                     fallback_r1,
                     :
@@ -2648,7 +2723,7 @@ def run_sequential_production(
                 half_col=args.half_col,
                 alpha=args.alpha,
 
-                min_shp=args.min_shp,
+                min_shp=shp_policy.full_scm_rank_min_shp,
 
                 beta=args.beta,
 
@@ -2808,7 +2883,7 @@ def run_sequential_production(
     else:
 
         fr, fc = np.where(
-            routing.fallback
+            fallback_exec_mask
         )
 
         fr = fr.astype(
@@ -2846,7 +2921,7 @@ def run_sequential_production(
                     half_col=args.half_col,
                     alpha=args.alpha,
 
-                    min_shp=args.min_shp,
+                    min_shp=shp_policy.full_scm_rank_min_shp,
 
                     beta=args.beta,
 

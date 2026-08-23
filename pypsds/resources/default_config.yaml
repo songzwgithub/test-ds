@@ -1,32 +1,26 @@
 schema_version: 1
-
 paths:
   work_dir: .
   data_dir: .
   rslc_dir: RSLC
   rslc_tab: RSLC_tab
   output_dir: output
-
 gamma:
   rslc_dtype: auto
   byte_order: big
-
 processing:
   roi:
     row0: 0
     col0: 0
     rows: null
     cols: null
-
 runtime:
   cpu: auto
   memory_fraction: 0.85
   io_workers: auto
-
 selection:
   ps:
     amplitude_dispersion_max: 0.25
-
   center_prior:
     enabled: false
     method: moraine_ks
@@ -34,7 +28,6 @@ selection:
     half_col: 5
     p_max: 0.05
     min_count: 50
-
   shp:
     method: rayleigh_glrt
     alpha: 0.005
@@ -42,21 +35,22 @@ selection:
     half_col: 11
     min_count: 48
     exclude_ps: true
-
+    policy: solver_aware
+    rank_guard: true
+    adaptive_window:
+      enabled: true
   ds:
     center_mode: all
-    temporal_coherence_min: 0.80
+    temporal_coherence_min: 0.8
     pair_coherence_min: 0.0
     accept_evd: true
-
 phase_linking:
   method: robust_emi
   beta: 0.0
-  gamma_jitter: 1.0e-6
+  gamma_jitter: 1.0e-06
   target_eigenvalue: 0.99
   evd_fallback: true
   temporal_reference_index: 0
-
   temporal:
     strategy: sequential
     ministack_size: 19
@@ -66,32 +60,25 @@ phase_linking:
     fullspan_batch_size: 16384
     emi_backend: threshold_cholesky
     use_exact_support_cache: true
-
 phase_correction:
   enabled: true
   backend: gamma_phase_sim_orb_pt
-  # REQUIRED per project: actual GAMMA co-registration reference date YYYYMMDD.
-  # The literal string "auto" is an explicit opt-in fallback only.
   geometric_reference_date: null
   apply_sign: 1.0
   scratch_dir: phase_correction
-
   commands:
     SLC2pt: SLC2pt
     data2pt: data2pt
     phase_sim_orb_pt: phase_sim_orb_pt
-
   radar_height:
     path: null
     geometry_par: null
     zero_height_is_valid: false
     zero_height_epsilon_m: 0.001
-
 network:
   max_temporal_baseline_days: 72
   max_perpendicular_baseline_m: 200.0
   target_connections_each_side: 3
-
 reference:
   method: radar_window
   radar_window:
@@ -101,9 +88,21 @@ reference:
     half_col: 15
     min_points: 100
   statistic: median
-
 corrections:
   scla:
     mode: disabled
   atmosphere:
     mode: disabled
+adaptive_filter:
+  enabled: false
+  domain: wrapped_virtual_interferogram
+  method: goldstein_werner_adaptive
+  alpha: null
+  planned_position: after_unwrap_policy_before_unwrap
+  preserve_unfiltered: true
+  benchmark_required: true
+  patch_size: 32
+  use_for_integer_estimation_only: true
+  remove_filter_after_unwrap: true
+  status: experimental_rejected_as_default_after_P10B
+  production_mode: raw_unfiltered_point_graph_unwrap

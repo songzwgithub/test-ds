@@ -24,6 +24,6 @@ pypsds = "pypsds.cli:main"
 [tool.setuptools.packages.find]
 include = ["pypsds*"]
 [tool.setuptools.package-data]
-pypsds = ["resources/*.yaml"]
+pypsds = ["resources/*.yaml", "resources/*.json"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -45,3 +45,23 @@ Study-area paths, co-registration dates, acquisition counts and reference coordi
 See `docs/REPRODUCIBILITY.md`.
 
 A normal wheel contains all 32 production stages. Bitwise identity across every CPU/BLAS implementation is not claimed; numerical reproducibility is validated by explicit configuration and regression gates.
+
+
+## DS production policy after P9
+
+The validated default remains Rayleigh-GLRT + solver-aware SHP support +
+sequential robust EMI (ministack 19, max compressed 5) + full-SCM fallback +
+full-span TC >= 0.80.
+
+Connected-SHP, phase similarity, phase-linking closure and CRLB are retained as
+quality/uncertainty diagnostics rather than hard default DS gates.
+
+The planned adaptive interferogram filter is disabled by default and belongs
+after temporal-network finalization but before virtual-interferogram quality
+assessment and spatial unwrapping. See `docs/DS_PRODUCTION_FREEZE_P9.md`.
+
+Adaptive wrapped-IFG filtering was benchmarked in P10 and remains disabled by
+default. The Dolphin-style Goldstein raster filter was not compatible with the
+current irregular point-graph safe-fragment unwrap on the representative test
+set. Production therefore continues to unwrap the original unfiltered
+PointPhaseStack virtual IFGs.

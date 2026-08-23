@@ -15,6 +15,10 @@ import numpy as np
 from pypsds.context import open_from_config
 from pypsds.selection.shp import glrt_statistic, glrt_threshold
 from pypsds.phase_linking.coherence import compressed_coherence
+from pypsds.phase_linking.shp_policy import (
+    resolve_shp_policy,
+    write_shp_policy_json,
+)
 from pypsds.phase_linking.sequential_production import run_sequential_production
 import pypsds.phase_linking.phase_source as phase_source_module
 from pypsds.phase_linking.phase_source import (
@@ -629,6 +633,18 @@ def main():
 
     cfg, config_path, paths, stack, (row0, col0, H, W) = open_from_config(args.config)
     ndate = len(stack.dates)
+
+    shp_policy = resolve_shp_policy(
+        cfg,
+        stack.dates,
+        base_half_row=args.half_row,
+        base_half_col=args.half_col,
+        base_formal_min_shp=args.min_shp,
+    )
+    args.half_row = int(shp_policy.half_row)
+    args.half_col = int(shp_policy.half_col)
+    args.min_shp = int(shp_policy.formal_min_shp)
+
     pairs = image_pairs(ndate)
     pi, pj = pairs[:, 0], pairs[:, 1]
 
@@ -636,6 +652,11 @@ def main():
     figdir = outdir / "figures"
     outdir.mkdir(parents=True, exist_ok=True)
     figdir.mkdir(parents=True, exist_ok=True)
+
+    write_shp_policy_json(
+        outdir / "shp_policy.json",
+        shp_policy,
+    )
 
     print("=" * 80)
     print("pyPSDS-GAMMA v1.0 - CPU production dispatcher")
@@ -646,6 +667,12 @@ def main():
     print(f"center mode     : {args.center_mode}")
     print(f"GLRT            : {2*args.half_row+1} x {2*args.half_col+1}, alpha={args.alpha}")
     print(f"Kmin            : {args.min_shp}")
+    print(f"SHP policy      : {shp_policy.mode}")
+    print(f"solver max dim  : {shp_policy.max_solver_size}")
+    print(f"state Kmin      : {shp_policy.state_min_shp}")
+    print(f"full-SCM Kmin   : {shp_policy.full_scm_rank_min_shp}")
+    print(f"window adapted  : {shp_policy.window_adapted}")
+    print(f"rank guard      : {shp_policy.rank_guard}")
     print(f"batch size      : {args.batch_size}")
     print(f"PL workers      : {args.pl_workers}")
     print(f"PL chunk        : {args.pl_chunk_size}")
