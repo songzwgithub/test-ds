@@ -299,7 +299,23 @@ def main():
     )
 
     # =========================================================
-    # Sparse K=8 local graph
+    # Adaptive sparse local graph
+    #
+    # Start from the requested K and increase only when needed.
+    #
+    # Production invariant:
+    #
+    #   sparse K-neighbor graph partition
+    #       ==
+    #   complete R<=radius graph partition
+    #
+    # This invariant is required before residual anchors derived
+    # from the complete R<=radius topology may be reused.
+    #
+    # Every candidate sparse edge belongs to the complete
+    # R<=radius graph, so increasing K only adds valid local
+    # R<=radius edges.  We retain the first K that satisfies the
+    # formal bidirectional partition-parity test.
     # =========================================================
 
     drs, dcs = build_offsets(
@@ -308,52 +324,295 @@ def main():
         col_spacing,
     )
 
-    du, dv = choose_neighbors(
-        index_grid,
-        rows,
-        cols,
-        drs,
-        dcs,
-        args.neighbors,
+    full_labels = np.load(
+        old_quality
+        / "component_label_r4.npy"
+    ).astype(np.int32)
+
+    if full_labels.size != npoint:
+        raise RuntimeError(
+            "R4 component-label length mismatch."
+        )
+
+    full_component_count = int(
+        np.unique(
+            full_labels
+        ).size
     )
 
-    core_u, core_v = unique_undirected(
-        du,
-        dv,
+    requested_neighbors = max(
+        1,
+        int(
+            args.neighbors
+        ),
     )
 
-    del du, dv
-
-    roots = get_roots(
-        npoint,
-        core_u,
-        core_v,
+    maximum_neighbors = int(
+        drs.size
     )
 
-    _, sparse_labels = np.unique(
-        roots,
-        return_inverse=True,
-    )
+    if requested_neighbors > maximum_neighbors:
+        raise RuntimeError(
+            "Requested local-neighbor count "
+            f"K={requested_neighbors} exceeds the "
+            f"{maximum_neighbors} available offsets "
+            f"inside R<={args.radius}."
+        )
 
-    sparse_labels = sparse_labels.astype(
-        np.int32
-    )
 
-    sparse_counts = np.bincount(
-        sparse_labels
-    )
+    def partition_parity(
+        sparse_labels,
+    ):
 
-    sparse_main_label = int(
-        np.argmax(sparse_counts)
-    )
+        ns = (
+            int(
+                sparse_labels.max()
+            )
+            + 1
+        )
 
-    sparse_main = (
-        sparse_labels
-        ==
-        sparse_main_label
-    )
+        nf = (
+            int(
+                full_labels.max()
+            )
+            + 1
+        )
+
+        s_min = np.full(
+            ns,
+            np.iinfo(
+                np.int32
+            ).max,
+            dtype=np.int32,
+        )
+
+        s_max = np.full(
+            ns,
+            -1,
+            dtype=np.int32,
+        )
+
+        np.minimum.at(
+            s_min,
+            sparse_labels,
+            full_labels,
+        )
+
+        np.maximum.at(
+            s_max,
+            sparse_labels,
+            full_labels,
+        )
+
+        f_min = np.full(
+            nf,
+            np.iinfo(
+                np.int32
+            ).max,
+            dtype=np.int32,
+        )
+
+        f_max = np.full(
+            nf,
+            -1,
+            dtype=np.int32,
+        )
+
+        np.minimum.at(
+            f_min,
+            full_labels,
+            sparse_labels,
+        )
+
+        np.maximum.at(
+            f_max,
+            full_labels,
+            sparse_labels,
+        )
+
+        return bool(
+            np.all(
+                s_min == s_max
+            )
+            and
+            np.all(
+                f_min == f_max
+            )
+        )
+
+
+    selected_neighbors = None
+
+    core_u = None
+    core_v = None
+
+    sparse_labels = None
+    sparse_counts = None
+    sparse_main_label = None
+    sparse_main = None
+
+    partition_equal = False
 
     print()
+    print(
+        "Searching minimum local K "
+        "with exact R4 partition..."
+    )
+
+    print(
+        f"requested K            : "
+        f"{requested_neighbors}"
+    )
+
+    print(
+        f"maximum R4 neighbors   : "
+        f"{maximum_neighbors}"
+    )
+
+    print(
+        f"full R4 components     : "
+        f"{full_component_count}"
+    )
+
+
+    for candidate_K in range(
+        requested_neighbors,
+        maximum_neighbors + 1,
+    ):
+
+        du, dv = choose_neighbors(
+            index_grid,
+            rows,
+            cols,
+            drs,
+            dcs,
+            candidate_K,
+        )
+
+        candidate_u, candidate_v = (
+            unique_undirected(
+                du,
+                dv,
+            )
+        )
+
+        del du, dv
+
+        candidate_roots = get_roots(
+            npoint,
+            candidate_u,
+            candidate_v,
+        )
+
+        (
+            _,
+            candidate_labels,
+        ) = np.unique(
+            candidate_roots,
+            return_inverse=True,
+        )
+
+        del candidate_roots
+
+        candidate_labels = (
+            candidate_labels.astype(
+                np.int32
+            )
+        )
+
+        candidate_counts = (
+            np.bincount(
+                candidate_labels
+            )
+        )
+
+        candidate_main_label = int(
+            np.argmax(
+                candidate_counts
+            )
+        )
+
+        candidate_main = (
+            candidate_labels
+            ==
+            candidate_main_label
+        )
+
+        candidate_parity = (
+            partition_parity(
+                candidate_labels
+            )
+        )
+
+        print(
+            f"  K={candidate_K:2d}: "
+            f"edges={candidate_u.size:,}, "
+            f"components={candidate_counts.size}, "
+            f"largest={candidate_main.sum():,}, "
+            f"exact={candidate_parity}"
+        )
+
+        if candidate_parity:
+
+            selected_neighbors = int(
+                candidate_K
+            )
+
+            core_u = candidate_u
+            core_v = candidate_v
+
+            sparse_labels = (
+                candidate_labels
+            )
+
+            sparse_counts = (
+                candidate_counts
+            )
+
+            sparse_main_label = (
+                candidate_main_label
+            )
+
+            sparse_main = (
+                candidate_main
+            )
+
+            partition_equal = True
+
+            break
+
+        del (
+            candidate_u,
+            candidate_v,
+            candidate_labels,
+            candidate_counts,
+            candidate_main,
+        )
+
+
+    if selected_neighbors is None:
+
+        raise RuntimeError(
+            "No sparse K-neighbor graph up to the "
+            f"complete R<={args.radius} neighborhood "
+            "reproduces the full component partition. "
+            "This indicates a deeper graph/index inconsistency."
+        )
+
+
+    # Downstream output and manifest must record the ACTUAL
+    # production K, not merely the requested starting K.
+    args.neighbors = int(
+        selected_neighbors
+    )
+
+
+    print()
+    print(
+        f"selected local K        : "
+        f"{selected_neighbors}"
+    )
+
     print(
         f"local graph edges       : "
         f"{core_u.size:,}"
@@ -370,78 +629,8 @@ def main():
         f"({100*sparse_main.mean():.4f}%)"
     )
 
-    # =========================================================
-    # Exact parity with full R<=4 topology
-    # =========================================================
-
-    full_labels = np.load(
-        old_quality
-        / "component_label_r4.npy"
-    ).astype(np.int32)
-
-    if full_labels.size != npoint:
-        raise RuntimeError(
-            "R4 component-label length mismatch."
-        )
-
-    ns = int(sparse_labels.max()) + 1
-    nf = int(full_labels.max()) + 1
-
-    s_min = np.full(
-        ns,
-        np.iinfo(np.int32).max,
-        dtype=np.int32,
-    )
-
-    s_max = np.full(
-        ns,
-        -1,
-        dtype=np.int32,
-    )
-
-    np.minimum.at(
-        s_min,
-        sparse_labels,
-        full_labels,
-    )
-
-    np.maximum.at(
-        s_max,
-        sparse_labels,
-        full_labels,
-    )
-
-    f_min = np.full(
-        nf,
-        np.iinfo(np.int32).max,
-        dtype=np.int32,
-    )
-
-    f_max = np.full(
-        nf,
-        -1,
-        dtype=np.int32,
-    )
-
-    np.minimum.at(
-        f_min,
-        full_labels,
-        sparse_labels,
-    )
-
-    np.maximum.at(
-        f_max,
-        full_labels,
-        sparse_labels,
-    )
-
-    partition_equal = bool(
-        np.all(s_min == s_max)
-        and
-        np.all(f_min == f_max)
-    )
-
     print()
+
     print(
         f"exact R4 partition parity: "
         f"{partition_equal}"
@@ -449,9 +638,8 @@ def main():
 
     if not partition_equal:
         raise RuntimeError(
-            "K=8 sparse graph does not exactly reproduce "
-            "the full R<=4 component partition. "
-            "Do not reuse residual anchors."
+            "Adaptive local graph failed exact "
+            "R4 partition parity."
         )
 
     # =========================================================

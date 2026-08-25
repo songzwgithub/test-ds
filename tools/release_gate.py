@@ -28,7 +28,7 @@ def check_contract(config):
         run([sys.executable, str(ROOT / "tools" / "freeze_stage_output_contracts.py"), "--config", str(config), "--inventory", str(inventory), "--snapshot", str(snapshot)], cwd=ROOT)
         run([sys.executable, str(ROOT / "tools" / "freeze_stage_output_contracts.py"), "--config", str(config), "--inventory", str(inventory), "--snapshot", str(snapshot), "--audit-only"], cwd=ROOT)
         data = json.loads(snapshot.read_text(encoding="utf-8"))
-        if data["stage_count"] != 32:
+        if data["stage_count"] != 33:
             raise RuntimeError(f"unexpected production stage count: {data['stage_count']}")
     print("DYNAMIC OUTPUT CONTRACT GATE: PASS")
 
@@ -47,7 +47,7 @@ def check_wheel():
         wheel = wheels[0]
         with zipfile.ZipFile(wheel) as zf:
             names = set(zf.namelist())
-        required = {"pypsds/resources/default_config.yaml", "pypsds/resources/ds_production_policy_v1.json", "pypsds/stages/run_phase_linking.py", "pypsds/stages/build_exact_support_cache.py", "pypsds/stages/apply_reference.py"}
+        required = {"pypsds/resources/default_config.yaml", "pypsds/resources/ds_production_policy_v1.json", "pypsds/stages/run_phase_linking.py", "pypsds/stages/build_exact_support_cache.py", "pypsds/stages/apply_reference.py", "pypsds/stages/build_point_geometry.py"}
         missing = sorted(required - names)
         if missing:
             raise RuntimeError("wheel missing production resources: " + ", ".join(missing))
@@ -61,7 +61,7 @@ def check_wheel():
 import importlib, pypsds
 from pypsds.pipeline import STAGES
 assert pypsds.__version__ == "1.0.0"
-assert len(STAGES) == 32
+assert len(STAGES) == 33
 for stage in STAGES:
     importlib.import_module("pypsds.stages." + Path(stage.script).stem)
 print("installed stage imports: PASS")

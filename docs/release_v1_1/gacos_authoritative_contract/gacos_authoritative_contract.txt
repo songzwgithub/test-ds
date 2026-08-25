@@ -1,0 +1,280 @@
+
+====================================================================================================
+A. AUTHORITATIVE SOURCE
+====================================================================================================
+path   : /home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/gacos.py
+SHA256 : 785a545075895859ad4a7a8cc0274a94e3dabf5102800cb9c9c04a5813382e43
+functions: par_scalar, read_rsc, normalize_dates, discover_phase_dates, sample_dlos_block, apply_phase_block
+
+====================================================================================================
+B. AUTHORITATIVE SOURCE I/O / SCIENCE CONTRACT LINES
+====================================================================================================
+   2: import csv
+  17: PROC = (
+  19:     / "output/processing"
+  23:     PROC
+  24:     / "referenced_timeseries"
+  29:     / "acquisition_phase_referenced_rad.npy"
+  32: GACOS = Path(
+  33:     "/home/ubuntu/Downloads/GACOS"
+  37:     PROC
+  38:     / "gacos_geometry"
+  42:     PROC
+  43:     / "gacos_fast_smoke"
+  52:     PROC
+  53:     / "gacos_corrected_phase"
+  64:     / "acquisition_phase_gacos_corrected_rad.npy"
+  69:     / ".acquisition_phase_gacos_corrected_rad.tmp.npy"
+  74:     / "gacos_correction_epoch_stats.csv"
+  77: MANIFEST = (
+  79:     / "gacos_correction_manifest.json"
+  89: # ~262k points × 38 dates × 4 bytes
+ 191: # Never assume that sorted GACOS dates equal phase-column order.
+ 194: def normalize_dates(
+ 257: def discover_phase_dates(
+ 258:     expected_dates,
+ 262:         expected_dates
+ 270:     # NPY candidates
+ 273:     candidates = (
+ 275:             PROC.rglob(
+ 281:             PROC.rglob(
+ 282:                 "*dates*.npy"
+ 291:     for p in candidates:
+ 303:             vals = normalize_dates(
+ 304:                 np.load(
+ 320:             len(expected_dates)
+ 336:     # JSON candidates
+ 367:                     vals = normalize_dates(
+ 377:                         len(expected_dates)
+ 421:         PROC.rglob(
+ 456:             "No date sequence matching the GACOS set was found."
+ 547: src = np.load(
+ 571: # GACOS date/grid contract
+ 575:     GACOS.glob(
+ 581: gacos_dates = [
+ 588:     len(gacos_dates) != 38
+ 592:             gacos_dates
+ 600:             "expected 38 unique GACOS dates; "
+ 601:             f"got {len(gacos_dates)}"
+ 606: if REF_DATE not in gacos_dates:
+ 609:         f"reference date missing: {REF_DATE}"
+ 617: phase_dates, date_sources = (
+ 618:     discover_phase_dates(
+ 619:         gacos_dates
+ 625:     phase_dates[0]
+ 633:             f"{REF_DATE}: {phase_dates[0]}"
+ 646:     for d in phase_dates
+ 748:             f"GACOS grid mismatch: {p}"
+ 759:             f"GACOS byte-size mismatch: {p}"
+ 764:     phase_dates
+ 799:             f"incompatible with {ndate} dates"
+ 808: base = np.load(
+ 813: fx = np.load(
+ 818: fy = np.load(
+ 823: sec_inc = np.load(
+ 828: ref_idx = np.load(
+ 846:         "GACOS interpolation-cache size mismatch"
+ 858:             "reference-index contract failed: "
+ 865: # Load SMALL GACOS stack:
+ 915:             f"invalid GACOS ZTD: {p}"
+ 930: gacos_read_seconds = (
+ 938: # Fast fused GACOS sampler
+1100: # Then one final same-region phase reference is applied so the
+1101: # reference-region PHASE median remains exactly zero.
+1223: # Exact atmospheric reference using the same 607 points
+1274: # Original reference-phase invariants
+1347:             "source reference median "
+1367: radar_frequency = par_scalar(
+1372:     "radar_frequency",
+1376: wavelength = (
+1379:     radar_frequency
+1388:     wavelength
+1393: # Exact final PHASE reference offsets
+1458:         "corrected reference median invariant failed"
+1469:         "reference-date atmospheric delay is not zero"
+1480:         "reference-date final phase offset is not zero"
+1494: dst = np.lib.format.open_memmap(
+1639: corr = np.load(
+1709:             "corrected reference median failed: "
+1788:     phase_dates
+1854:     w = csv.DictWriter(
+1869: # Manifest
+1872: manifest = {
+1875:         "PASS_GACOS_CORRECTED_REFERENCED_PHASE",
+1879:             "atmosphere-corrected referenced phase; "
+1909:     "acquisition_dates":
+1910:         phase_dates,
+1915:     "reference_date":
+1918:     "reference_points":
+1923:     "gacos_grid":
+1944:     "incidence":
+1950:                     "incidence_gamma_compatible_fast_rad.npy"
+1967:                     "phase re-reference"
+1970:             "wavelength_m":
+1971:                 wavelength,
+1982:             "gacos_read_seconds":
+1983:                 gacos_read_seconds,
+2012:             "reference_dlos_epoch0_m":
+2031: MANIFEST.write_text(
+2033:         manifest,
+2050:     "P15-5A FAST PRODUCTION GACOS CORRECTION"
+2098:     "GACOS read seconds        :",
+2099:     f"{gacos_read_seconds:.6f}",
+2146:     "manifest                  :",
+2147:     MANIFEST,
+2162:     "PASS_GACOS_CORRECTED_REFERENCED_PHASE"
+
+====================================================================================================
+C. HISTORICAL GACOS OUTPUT
+====================================================================================================
+path              : /home/ubuntu/Downloads/psds/output/processing/gacos_corrected_phase/acquisition_phase_gacos_corrected_rad.npy
+shape             : [881315, 38]
+dtype             : float32
+file_sha256       : 0c250a21e987ad8b7eca07a760b3af7125c4b0e87534c7560365c7995d0fc372
+array_sha256      : b5b697e8769f8a0a8cad4f89ef315a49834471af6c221b95986e8f2b82028d14
+finite            : 33489970
+total             : 33489970
+min_rad           : -12.755175590515137
+median_rad        : -0.34412452578544617
+max_rad           : 9.292969703674316
+
+====================================================================================================
+D. gacos_geometry -> point_geometry SUBSTITUTION
+====================================================================================================
+longitude_deg     : shape=True dtype=True exact=True
+latitude_deg      : shape=True dtype=True exact=True
+radar_row         : shape=True dtype=True exact=True
+radar_col         : shape=True dtype=True exact=True
+incidence_rad     : shape=True dtype=True exact=True
+height_m          : shape=True dtype=True exact=True
+
+ALL EXACT: True
+
+====================================================================================================
+E. STRICT POINT LINEAGE
+====================================================================================================
+{
+  "current_count": 881315,
+  "historical_present": true,
+  "exact": true
+}
+
+====================================================================================================
+F. GACOS DATE COVERAGE
+====================================================================================================
+{
+  "gacos_dir": "/home/ubuntu/Downloads/GACOS",
+  "discovered_dates": 38,
+  "coverage": {
+    "date_source": "/home/ubuntu/Downloads/psds/output/processing/gacos_corrected_phase/gacos_correction_manifest.json",
+    "required_count": 38,
+    "available_required_count": 38,
+    "missing": [],
+    "extra_count": 0
+  }
+}
+
+====================================================================================================
+G. HISTORICAL GACOS MANIFEST
+====================================================================================================
+{
+  "status": "PASS_GACOS_CORRECTED_REFERENCED_PHASE",
+  "product_role": "atmosphere-corrected referenced phase; NOT final geodetic LOS",
+  "source_phase": "/home/ubuntu/Downloads/psds/output/processing/referenced_timeseries/acquisition_phase_referenced_rad.npy",
+  "source_phase_immutable": true,
+  "output_phase": "/home/ubuntu/Downloads/psds/output/processing/gacos_corrected_phase/acquisition_phase_gacos_corrected_rad.npy",
+  "output_dtype": "float32",
+  "output_shape": [
+    881315,
+    38
+  ],
+  "acquisition_dates": [
+    "20141006",
+    "20141018",
+    "20141030",
+    "20141111",
+    "20141123",
+    "20141205",
+    "20141217",
+    "20141229",
+    "20150110",
+    "20150122",
+    "20150203",
+    "20150215",
+    "20150227",
+    "20150311",
+    "20150323",
+    "20150404",
+    "20150416",
+    "20150428",
+    "20150627",
+    "20150709",
+    "20150721",
+    "20150802",
+    "20150814",
+    "20150826",
+    "20150907",
+    "20150919",
+    "20151001",
+    "20151025",
+    "20151212",
+    "20151224",
+    "20160105",
+    "20160117",
+    "20160129",
+    "20160210",
+    "20160305",
+    "20160317",
+    "20160329",
+    "20160410"
+  ],
+  "date_order_sources": [
+    "/home/ubuntu/Downloads/psds/output/processing/cache/phase_source_checkpoint_token.json:dates",
+    "/home/ubuntu/Downloads/psds/output/processing/network/network_manifest.json:dates"
+  ],
+  "reference_date": "20141006",
+  "reference_points": 607,
+  "gacos_grid": {
+    "width": 241,
+    "length": 241,
+    "x_first": 23.6,
+    "y_first": 38.2,
+    "x_step": 0.00083333333,
+    "y_step": -0.00083333333
+  },
+  "incidence": {
+    "source": "/home/ubuntu/Downloads/psds/output/processing/gacos_geometry/incidence_gamma_compatible_fast_rad.npy",
+    "mapping": "ZTD / cos(theta)"
+  },
+  "phase_convention": {
+    "correction_sign": "PLUS",
+    "formula": "phi_corr = phi_obs + (4*pi/lambda)*dL_ref, followed by exact same-region phase re-reference",
+    "wavelength_m": 0.055465759531382094,
+    "phase_factor_rad_per_m": 226.56086783142703
+  },
+  "performance": {
+    "chunk_points": 262144,
+    "gacos_read_seconds": 0.031032630940899253,
+    "production_seconds": 4.479417636059225,
+    "point_epochs_per_second": 7476411.605474425
+  },
+  "qa": {
+    "source_ref_median_max_abs_rad": 0.0,
+    "source_first_epoch_max_abs_rad": 0.0,
+    "corrected_ref_median_max_abs_rad": 2.1218929391331187e-10,
+    "corrected_first_epoch_max_abs_rad": 0.0,
+    "reference_dlos_epoch0_m": 0.0,
+    "final_reref_offset_epoch0_rad": 0.0
+  },
+  "intermediate_atmospheric_matrix_persisted": false,
+  "next": "P15-5B_RESIDUAL_DEM_SCLA_ESTIMATION"
+}
+
+====================================================================================================
+H. CONTRACT DECISION
+====================================================================================================
+authoritative GACOS source : PASS
+frozen corrected phase     : PASS
+point_geometry substitution: EXACT
+Geometry modification      : NOT REQUIRED
+GACOS algorithm migration  : READY

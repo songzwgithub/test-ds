@@ -1,0 +1,594 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-authoritative-migration-baseline",
+  "source_snapshot": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037",
+  "production_source_count": 14,
+  "validation_evidence_count": 6,
+  "production_sources": [
+    {
+      "component": "point_geometry",
+      "source": "files/gacos/p15_3a_v4b_finalize__1a252a48fb.py",
+      "target": "production/geometry/point_geolocation.py",
+      "role": "Full-resolution strict-point longitude/latitude geometry",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/gacos/p15_3a_v4b_finalize__1a252a48fb.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/geometry/point_geolocation.py",
+      "sha256": "1a252a48fbdfc005a1126ae630b1014c30a217a7b50b8b1e96efc29cd6ed3673",
+      "size_bytes": 6606
+    },
+    {
+      "component": "incidence_geometry",
+      "source": "files/geometry/p15_3h_fast_incidence_final__14d749c8b9.py",
+      "target": "production/geometry/incidence.py",
+      "role": "GAMMA-compatible point incidence angle computation",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/geometry/p15_3h_fast_incidence_final__14d749c8b9.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/geometry/incidence.py",
+      "sha256": "14d749c8b9f744f8b256ecf81908ba21cf26e697a7dbc28507d612880b543034",
+      "size_bytes": 12775
+    },
+    {
+      "component": "gacos",
+      "source": "files/gacos/p15_5a_fast_gacos_production__785a545075.py",
+      "target": "production/corrections/gacos.py",
+      "role": "Validated full-scene acquisition-domain GACOS correction",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/gacos/p15_5a_fast_gacos_production__785a545075.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/gacos.py",
+      "sha256": "785a545075895859ad4a7a8cc0274a94e3dabf5102800cb9c9c04a5813382e43",
+      "size_bytes": 32149
+    },
+    {
+      "component": "scla_baseline",
+      "source": "files/scla/p15_5b3b_regenerate_missing_bases__c943160b85.py",
+      "target": "production/corrections/scla_baseline.py",
+      "role": "Regeneration of missing GAMMA baseline information",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scla/p15_5b3b_regenerate_missing_bases__c943160b85.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/scla_baseline.py",
+      "sha256": "c943160b85444c0cbc99482c9d0a8d01c39dbb6749c676f2b1d0275f4389bb97",
+      "size_bytes": 19099
+    },
+    {
+      "component": "scla_k",
+      "source": "files/gacos/p15_5b4_stamps_final_pass_k__435ca04ba3.py",
+      "target": "production/corrections/scla_k.py",
+      "role": "StaMPS-compatible final-pass K estimation",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/gacos/p15_5b4_stamps_final_pass_k__435ca04ba3.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/scla_k.py",
+      "sha256": "435ca04ba3dd11f153465935af7c2424d6465983f24f567c62852c64dad731f4",
+      "size_bytes": 41206
+    },
+    {
+      "component": "scla_c",
+      "source": "files/scla/p15_5b5_stamps_final_pass_c__967d439c53.py",
+      "target": "production/corrections/scla_c.py",
+      "role": "StaMPS-compatible C and sm_cov estimation",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scla/p15_5b5_stamps_final_pass_c__967d439c53.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/scla_c.py",
+      "sha256": "967d439c53de5ea5ac14f82ad58a4da338ff97cbe3520b38d4b14878aba00eb2",
+      "size_bytes": 26236
+    },
+    {
+      "component": "pre_scn",
+      "source": "files/scla/p15_5b6_materialize_pre_scn__685f3ce84b.py",
+      "target": "production/corrections/pre_scn.py",
+      "role": "Materialize corrected acquisition phase before SCN",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scla/p15_5b6_materialize_pre_scn__685f3ce84b.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/pre_scn.py",
+      "sha256": "685f3ce84b87fe25aaf219b8eb38bf3693712a51f39767105cf459c12a311e1b",
+      "size_bytes": 27663
+    },
+    {
+      "component": "scn",
+      "source": "files/scn/p15_6b2_stage8_scn_production__df55f1ac3a.py",
+      "target": "production/corrections/scn.py",
+      "role": "Exact StaMPS Stage-8 temporal/spatial SCN implementation",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b2_stage8_scn_production__df55f1ac3a.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/scn.py",
+      "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+      "size_bytes": 31703
+    },
+    {
+      "component": "los_timeseries",
+      "source": "files/los_timeseries/p15_6c_finalize_los_timeseries__42b48c5df8.py",
+      "target": "production/inversion/los_timeseries.py",
+      "role": "Reference and convert final phase to toward-satellite LOS",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/los_timeseries/p15_6c_finalize_los_timeseries__42b48c5df8.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/inversion/los_timeseries.py",
+      "sha256": "42b48c5df8926a624b1e2d8851b2015156e0924af84697cd8c4edaac8308fcdb",
+      "size_bytes": 23566
+    },
+    {
+      "component": "point_metrics",
+      "source": "files/point_products/p15_7a_final_point_products__d865468fdf.py",
+      "target": "production/products/point_metrics.py",
+      "role": "Velocity, cumulative displacement and trend QA metrics",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/point_products/p15_7a_final_point_products__d865468fdf.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/products/point_metrics.py",
+      "sha256": "d865468fdf65a334345be43985606dbe94d196fcc71749db5d02401293a22a07",
+      "size_bytes": 19565
+    },
+    {
+      "component": "point_geocoding",
+      "source": "files/geocoding/p15_7b2_point_geocoding__f7222964ac.py",
+      "target": "production/products/point_geocoding.py",
+      "role": "Attach full-resolution geographic coordinates to points",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/geocoding/p15_7b2_point_geocoding__f7222964ac.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/products/point_geocoding.py",
+      "sha256": "f7222964ac9095ffc89dbd828d3a1f38705961b226187d7987f29797d8f468d8",
+      "size_bytes": 4309
+    },
+    {
+      "component": "point_packaging",
+      "source": "files/geocoding/p15_7c_point_packaging__73b9b4ca1e.py",
+      "target": "production/products/point_packaging.py",
+      "role": "Portable point-product export",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/geocoding/p15_7c_point_packaging__73b9b4ca1e.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/products/point_packaging.py",
+      "sha256": "73b9b4ca1e9ded33e2c84fb02ed8ea473035ab7f07cfd76c4e51f01b830d9b3d",
+      "size_bytes": 3434
+    },
+    {
+      "component": "point_attributes",
+      "source": "files/geocoding/p15_8_point_attribute_enrichment__62e595bd33.py",
+      "target": "production/products/point_attributes.py",
+      "role": "Final scientific point attribute enrichment",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/geocoding/p15_8_point_attribute_enrichment__62e595bd33.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/products/point_attributes.py",
+      "sha256": "62e595bd33b19bf6a63dc61933dcdeb220d4090c94103a8cf5959e37ecf57b7f",
+      "size_bytes": 5167
+    },
+    {
+      "component": "delivery_qc",
+      "source": "files/delivery/p15_9_delivery_qc__6147c99c2d.py",
+      "target": "production/quality/delivery_qc.py",
+      "role": "Final product integrity and delivery QC",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/delivery/p15_9_delivery_qc__6147c99c2d.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/quality/delivery_qc.py",
+      "sha256": "6147c99c2dc345815971e9bf274bb318dc8a6e484639c88f84073e35f02e5bd1",
+      "size_bytes": 2945
+    }
+  ],
+  "validation_evidence": [
+    {
+      "source": "files/los_timeseries/p15_1_los_sign_convention_audit__e58c20b81f.sh",
+      "target": "validation_evidence/los_sign_convention_audit.sh",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/los_timeseries/p15_1_los_sign_convention_audit__e58c20b81f.sh",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/validation_evidence/los_sign_convention_audit.sh",
+      "sha256": "e58c20b81f921a0e87b19c3614e77b7a2d80f8ea0549530b7e012387bdadf194",
+      "size_bytes": 16948
+    },
+    {
+      "source": "files/scla/p15_5b5a_sm_cov_gauge_audit__5619002f64.py",
+      "target": "validation_evidence/scla_sm_cov_gauge_audit.py",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scla/p15_5b5a_sm_cov_gauge_audit__5619002f64.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/validation_evidence/scla_sm_cov_gauge_audit.py",
+      "sha256": "5619002f64a04ac1dc2ef5b3dde7d52005164635617cf7ad005315428701c5e7",
+      "size_bytes": 13196
+    },
+    {
+      "source": "files/geometry/p15_6a_stamps_xy_grid_audit__ee51f32f9b.py",
+      "target": "validation_evidence/stamps_xy_geometry_audit.py",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/geometry/p15_6a_stamps_xy_grid_audit__ee51f32f9b.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/validation_evidence/stamps_xy_geometry_audit.py",
+      "sha256": "ee51f32f9b14a458f278e18df4f659d0a5540433f32eedd53de4db64af1f1e5f",
+      "size_bytes": 18126
+    },
+    {
+      "source": "files/scn/p15_6b0_exact_xy_neighbor_census__d6529e8b88.py",
+      "target": "validation_evidence/scn_neighbor_census.py",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b0_exact_xy_neighbor_census__d6529e8b88.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/validation_evidence/scn_neighbor_census.py",
+      "sha256": "d6529e8b88e09a2d92f00e916707b97562d3748d9a353ecd54eb97b7d6a7b029",
+      "size_bytes": 19390
+    },
+    {
+      "source": "files/scn/p15_6b1_exact_engine_benchmark__49806f2cf1.py",
+      "target": "validation_evidence/scn_exact_engine_benchmark.py",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b1_exact_engine_benchmark__49806f2cf1.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/validation_evidence/scn_exact_engine_benchmark.py",
+      "sha256": "49806f2cf15a95d3ecda62609c4c2d33a61a44e4f6fe2c803a04958148f38f2e",
+      "size_bytes": 24887
+    },
+    {
+      "source": "files/geometry/p15_7b0_geocoding_contract_audit__6b9b655473.py",
+      "target": "validation_evidence/geocoding_contract_audit.py",
+      "source_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/geometry/p15_7b0_geocoding_contract_audit__6b9b655473.py",
+      "target_absolute": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/validation_evidence/geocoding_contract_audit.py",
+      "sha256": "6b9b65547398d741bd900bcb94935ec1ba80ecd5fa50b13b62bbd33998f74a39",
+      "size_bytes": 16023
+    }
+  ],
+  "rejected_source_rules": [
+    {
+      "pattern": "pystamps_stale_sitepackages",
+      "reason": "Stale external/site-packages reference implementation; not the final validated pyPSDS production source."
+    },
+    {
+      "pattern": "benchmark_",
+      "reason": "Benchmark only; never a production pipeline implementation."
+    },
+    {
+      "pattern": "smoke",
+      "reason": "Development/smoke validation only."
+    },
+    {
+      "pattern": "p15_7b2_radar_rasterize",
+      "reason": "Rejected science-product route because it forces full-resolution PS/DS points into multilooked radar geometry."
+    },
+    {
+      "pattern": "cog_rasterizer",
+      "reason": "Optional visualization route only; not primary scientific output."
+    }
+  ],
+  "portability_audit": [
+    {
+      "component": "point_geometry",
+      "file": "production/geometry/point_geolocation.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 2
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 4
+        },
+        {
+          "token": "PASS_",
+          "count": 2
+        },
+        {
+          "token": "smoke",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "component": "incidence_geometry",
+      "file": "production/geometry/incidence.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 2
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 3
+        },
+        {
+          "token": "PASS_",
+          "count": 3
+        },
+        {
+          "token": "benchmark",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "component": "gacos",
+      "file": "production/corrections/gacos.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 3
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 7
+        },
+        {
+          "token": "p15_",
+          "count": 3
+        },
+        {
+          "token": "PASS_",
+          "count": 2
+        },
+        {
+          "token": "smoke",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "component": "scla_baseline",
+      "file": "production/corrections/scla_baseline.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 2
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 8
+        },
+        {
+          "token": "p15_",
+          "count": 3
+        },
+        {
+          "token": "PASS_",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "component": "scla_k",
+      "file": "production/corrections/scla_k.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 1
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 9
+        },
+        {
+          "token": "p15_",
+          "count": 4
+        },
+        {
+          "token": "PASS_",
+          "count": 6
+        },
+        {
+          "token": "smoke",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "component": "scla_c",
+      "file": "production/corrections/scla_c.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 1
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 5
+        },
+        {
+          "token": "p15_",
+          "count": 1
+        },
+        {
+          "token": "PASS_",
+          "count": 5
+        },
+        {
+          "token": "smoke",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "component": "pre_scn",
+      "file": "production/corrections/pre_scn.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 1
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 5
+        },
+        {
+          "token": "p15_",
+          "count": 1
+        },
+        {
+          "token": "PASS_",
+          "count": 2
+        },
+        {
+          "token": "smoke",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "component": "scn",
+      "file": "production/corrections/scn.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 1
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 6
+        },
+        {
+          "token": "p15_",
+          "count": 2
+        },
+        {
+          "token": "PASS_",
+          "count": 3
+        },
+        {
+          "token": "audit",
+          "count": 1
+        },
+        {
+          "token": "benchmark",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "component": "los_timeseries",
+      "file": "production/inversion/los_timeseries.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 1
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 7
+        },
+        {
+          "token": "p15_",
+          "count": 2
+        },
+        {
+          "token": "PASS_",
+          "count": 3
+        },
+        {
+          "token": "smoke",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "component": "point_metrics",
+      "file": "production/products/point_metrics.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 1
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 6
+        },
+        {
+          "token": "p15_",
+          "count": 2
+        },
+        {
+          "token": "PASS_",
+          "count": 3
+        },
+        {
+          "token": "smoke",
+          "count": 1
+        },
+        {
+          "token": "audit",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "component": "point_geocoding",
+      "file": "production/products/point_geocoding.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 1
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 4
+        },
+        {
+          "token": "p15_",
+          "count": 1
+        },
+        {
+          "token": "PASS_",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "component": "point_packaging",
+      "file": "production/products/point_packaging.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 1
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 3
+        },
+        {
+          "token": "p15_",
+          "count": 1
+        },
+        {
+          "token": "PASS_",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "component": "point_attributes",
+      "file": "production/products/point_attributes.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 1
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 3
+        },
+        {
+          "token": "p15_",
+          "count": 1
+        },
+        {
+          "token": "PASS_",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "component": "delivery_qc",
+      "file": "production/quality/delivery_qc.py",
+      "absolute_path_hits": [
+        {
+          "token": "/home/ubuntu/",
+          "count": 1
+        }
+      ],
+      "development_name_hits": [
+        {
+          "token": "P15",
+          "count": 3
+        },
+        {
+          "token": "p15_",
+          "count": 1
+        },
+        {
+          "token": "PASS_",
+          "count": 3
+        }
+      ]
+    }
+  ]
+}

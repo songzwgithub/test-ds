@@ -1,0 +1,34 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-point-geometry-pipeline",
+  "status": "PASS",
+  "production_stage_count": 33,
+  "stage_position_one_based": 32,
+  "stage_order_tail": [
+    "timeseries_inversion",
+    "point_geometry",
+    "reference"
+  ],
+  "point_count": 881315,
+  "stage_contract": {
+    "validated": true,
+    "cacheable": false,
+    "required_inputs": [
+      "processing/network_inversion/strict_point_ids.npy",
+      "processing/point_phase_stack/rows.npy",
+      "processing/point_phase_stack/cols.npy"
+    ],
+    "required_outputs": [
+      "processing/point_geometry/radar_row.npy",
+      "processing/point_geometry/radar_col.npy",
+      "processing/point_geometry/longitude_deg.npy",
+      "processing/point_geometry/latitude_deg.npy",
+      "processing/point_geometry/height_m.npy",
+      "processing/point_geometry/incidence_rad.npy",
+      "processing/point_geometry/point_geometry_manifest.json"
+    ]
+  },
+  "pipeline_sha256": "f4dd2fac5f9b9e56bdb42245417d6fe71e0932b882be293c11cf5a1a5cd2ef79",
+  "stage_sha256": "e0b9ab0d0a9bf9f1ae78aea367b57ff51e07253704a64492b00b143270a5775f",
+  "geometry_core_changed": false,
+  "scientific_parity": "full-scene exact"
+}

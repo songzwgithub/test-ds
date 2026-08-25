@@ -5,9 +5,31 @@ paths:
   rslc_dir: RSLC
   rslc_tab: RSLC_tab
   output_dir: output
+  dem_dir: DEM_prep
+  gacos_dir: GACOS
+  scratch_dir: output/.scratch
+  products_dir: output/products
 gamma:
   rslc_dtype: auto
   byte_order: big
+geometry:
+  # Optional GAMMA Geometry reference date (YYYYMMDD).
+  #
+  # null -> backward-compatible fallback to
+  # phase_correction.geometric_reference_date.
+  reference_date: null
+
+  # Optional explicit Geometry input overrides.
+  #
+  # null -> semantic discovery inside paths.dem_dir.
+  # No fixed multilook ratio, polarization suffix,
+  # reference date, or machine-specific absolute path
+  # is assumed.
+  geometry_par: null
+  longitude_raster: null
+  latitude_raster: null
+  height_raster: null
+
 processing:
   roi:
     row0: 0
@@ -93,8 +115,17 @@ reference:
 corrections:
   scla:
     mode: disabled
+    backend: stamps
   atmosphere:
     mode: disabled
+    backend: gacos
+    strict_dates: true
+  scn:
+    mode: disabled
+    backend: stamps
+    temporal_window_days: 365.0
+    wavelength_m: 100.0
+    radius_factor: 4.0
 adaptive_filter:
   enabled: false
   domain: wrapped_virtual_interferogram
@@ -108,3 +139,14 @@ adaptive_filter:
   remove_filter_after_unwrap: true
   status: experimental_rejected_as_default_after_P10B
   production_mode: raw_unfiltered_point_graph_unwrap
+products:
+  point:
+    enabled: true
+    formats:
+    - parquet
+    - geopackage
+    - csv
+    crs: EPSG:4326
+  quicklook:
+    enabled: false
+    scientific_product: false

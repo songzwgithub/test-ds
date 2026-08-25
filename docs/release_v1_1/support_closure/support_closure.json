@@ -1,0 +1,1730 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-support-closure",
+  "status": "PASS_EVIDENCE_COLLECTION",
+  "reference": {
+    "public_owner": "referenced_timeseries/reference_strict_indices.npy",
+    "historical": "gacos_fast_smoke/project_local_interp/ref_idx.npy",
+    "shape": [
+      607
+    ],
+    "dtype": "int32",
+    "array_exact": true,
+    "public_sha256": "5c54de2432346982767f4b58458dffba471f7f73beba6e2186b7b085fb6a985f",
+    "historical_sha256": "5c54de2432346982767f4b58458dffba471f7f73beba6e2186b7b085fb6a985f"
+  },
+  "scn_generator_sources": {
+    "docs/release_v1_1/authoritative_sources/validation_evidence/scn_neighbor_census.py": {
+      "sha256": "d6529e8b88e09a2d92f00e916707b97562d3748d9a353ecd54eb97b7d6a7b029",
+      "assignments": [
+        {
+          "line": 48,
+          "names": [
+            "XY_OUT"
+          ],
+          "source": "XY_OUT = (\n    OUTDIR\n    / \"stamps_xy_exact_float32_m.npy\"\n)"
+        },
+        {
+          "line": 53,
+          "names": [
+            "SORT_OUT"
+          ],
+          "source": "SORT_OUT = (\n    OUTDIR\n    / \"stamps_sort_index.npy\"\n)"
+        },
+        {
+          "line": 58,
+          "names": [
+            "COUNT_OUT"
+          ],
+          "source": "COUNT_OUT = (\n    OUTDIR\n    / \"stage8_neighbor_count_r400m.npy\"\n)"
+        },
+        {
+          "line": 432,
+          "names": [
+            "t_xy"
+          ],
+          "source": "t_xy = time.perf_counter()"
+        },
+        {
+          "line": 435,
+          "names": [
+            "xy_raw"
+          ],
+          "source": "xy_raw = llh2local_exact_m(\n    lon,\n    lat,\n    lon0,\n    lat0,\n)"
+        },
+        {
+          "line": 490,
+          "names": [
+            "xynew"
+          ],
+          "source": "xynew = (\n    rotm\n    @\n    xy_raw.T\n).T"
+        },
+        {
+          "line": 524,
+          "names": [
+            "xy_selected"
+          ],
+          "source": "xy_selected = (\n    xynew\n    if rotation_accepted\n    else xy_raw\n)"
+        },
+        {
+          "line": 540,
+          "names": [
+            "xy32"
+          ],
+          "source": "xy32 = xy_selected.astype(\n    np.float32\n)"
+        },
+        {
+          "line": 545,
+          "names": [
+            "xy32"
+          ],
+          "source": "xy32 = (\n    np.round(\n        xy32\n        *\n        np.float32(\n            1000.0\n        )\n    )\n    /\n    np.float32(\n        1000.0\n    )\n).astype(\n    np.float32\n)"
+        },
+        {
+          "line": 562,
+          "names": [
+            "xy_seconds"
+          ],
+          "source": "xy_seconds = (\n    time.perf_counter()\n    -\n    t_xy\n)"
+        },
+        {
+          "line": 597,
+          "names": [
+            "sort_ix"
+          ],
+          "source": "sort_ix = np.lexsort(\n    (\n        xy32[:, 0],\n        xy32[:, 1],\n    )\n).astype(\n    np.int32\n)"
+        },
+        {
+          "line": 622,
+          "names": [
+            "coords"
+          ],
+          "source": "coords = xy32.astype(\n    np.float64\n)"
+        },
+        {
+          "line": 651,
+          "names": [
+            "counts"
+          ],
+          "source": "counts = np.lib.format.open_memmap(\n    COUNT_OUT,\n    mode=\"w+\",\n    dtype=np.int32,\n    shape=(\n        n,\n    ),\n)"
+        },
+        {
+          "line": 739,
+          "names": [
+            "count64"
+          ],
+          "source": "count64 = np.asarray(\n    counts,\n    dtype=np.int64,\n)"
+        },
+        {
+          "line": 745,
+          "names": [
+            "count_q"
+          ],
+          "source": "count_q = np.percentile(\n    count64,\n    [\n        1,\n        5,\n        50,\n        90,\n        95,\n        99,\n        99.9,\n    ],\n)"
+        },
+        {
+          "line": 759,
+          "names": [
+            "mean_count"
+          ],
+          "source": "mean_count = float(\n    np.mean(\n        count64\n    )\n)"
+        },
+        {
+          "line": 766,
+          "names": [
+            "max_count"
+          ],
+          "source": "max_count = int(\n    count64.max()\n)"
+        },
+        {
+          "line": 875,
+          "names": [
+            "neighbour_cell_population"
+          ],
+          "source": "neighbour_cell_population = np.zeros_like(\n    occupancy,\n    dtype=np.int64,\n)"
+        },
+        {
+          "line": 903,
+          "names": [
+            "cell_candidate_directed"
+          ],
+          "source": "cell_candidate_directed = int(\n    np.sum(\n        occupancy\n        *\n        neighbour_cell_population,\n        dtype=np.int64,\n    )\n)"
+        },
+        {
+          "line": 247,
+          "names": [
+            "xy"
+          ],
+          "source": "xy = np.empty(\n        (\n            lon.size,\n            2,\n        ),\n        dtype=np.float64,\n    )"
+        }
+      ],
+      "write_calls": [
+        {
+          "line": 580,
+          "call": "np.save",
+          "source": "np.save(\n    XY_OUT,\n    xy32\n)"
+        },
+        {
+          "line": 607,
+          "call": "np.save",
+          "source": "np.save(\n    SORT_OUT,\n    sort_ix\n)"
+        },
+        {
+          "line": 651,
+          "call": "np.lib.format.open_memmap",
+          "source": "np.lib.format.open_memmap(\n    COUNT_OUT,\n    mode=\"w+\",\n    dtype=np.int32,\n    shape=(\n        n,\n    ),\n)"
+        },
+        {
+          "line": 1194,
+          "call": "MANIFEST.write_text",
+          "source": "MANIFEST.write_text(\n    json.dumps(\n        manifest,\n        indent=2,\n    )\n    +\n    \"\\n\"\n)"
+        }
+      ],
+      "constants": [
+        {
+          "line": 50,
+          "value": "stamps_xy_exact_float32_m.npy"
+        },
+        {
+          "line": 55,
+          "value": "stamps_sort_index.npy"
+        },
+        {
+          "line": 60,
+          "value": "stage8_neighbor_count_r400m.npy"
+        },
+        {
+          "line": 65,
+          "value": "p15_6b0_exact_neighbor_census.json"
+        },
+        {
+          "line": 996,
+          "value": "BENCHMARK_CKDTREE_STREAMING_EXACT"
+        },
+        {
+          "line": 1030,
+          "value": "coordinate_contract"
+        },
+        {
+          "line": 1083,
+          "value": "exact_neighbour_census"
+        },
+        {
+          "line": 1122,
+          "value": "cell_list_upper_bound"
+        },
+        {
+          "line": 1023,
+          "value": "PASS_EXACT_STAMPS_XY_NEIGHBOUR_CENSUS"
+        },
+        {
+          "line": 1209,
+          "value": "P15-6B0 EXACT STAMPS XY + 400 m NEIGHBOUR CENSUS"
+        },
+        {
+          "line": 1233,
+          "value": "raw xy span                    :"
+        },
+        {
+          "line": 1238,
+          "value": "rotated xy span                :"
+        },
+        {
+          "line": 1250,
+          "value": "KDTree build seconds           :"
+        },
+        {
+          "line": 1255,
+          "value": "neighbour census seconds       :"
+        },
+        {
+          "line": 1262,
+          "value": "neighbours mean                :"
+        },
+        {
+          "line": 1267,
+          "value": "neighbours max                 :"
+        },
+        {
+          "line": 1296,
+          "value": "400m cell grid                 :"
+        },
+        {
+          "line": 1301,
+          "value": "occupied cells                 :"
+        },
+        {
+          "line": 1306,
+          "value": "cell occupancy p50/90/95/99    :"
+        },
+        {
+          "line": 1311,
+          "value": "cell candidate interactions    :"
+        },
+        {
+          "line": 1345,
+          "value": "exact XY                       :"
+        },
+        {
+          "line": 1350,
+          "value": "neighbor count                 :"
+        },
+        {
+          "line": 1362,
+          "value": "P15-6B0 FINAL RESULT: PASS_EXACT_STAMPS_XY_NEIGHBOUR_CENSUS"
+        },
+        {
+          "line": 576,
+          "value": "non-finite StaMPS XY"
+        },
+        {
+          "line": 1006,
+          "value": "BENCHMARK_NUMBA_CELL_LIST_EXACT_FIRST"
+        },
+        {
+          "line": 1012,
+          "value": "BENCHMARK_CELL_LIST_VS_CKDTREE_EXACT"
+        },
+        {
+          "line": 1051,
+          "value": "raw_span_xy_m"
+        },
+        {
+          "line": 1057,
+          "value": "rotated_span_xy_m"
+        },
+        {
+          "line": 1072,
+          "value": "xy_file"
+        },
+        {
+          "line": 1077,
+          "value": "sort_index_file"
+        },
+        {
+          "line": 1116,
+          "value": "count_file"
+        },
+        {
+          "line": 1124,
+          "value": "cell_size_m"
+        },
+        {
+          "line": 1133,
+          "value": "occupied_cells"
+        },
+        {
+          "line": 1176,
+          "value": "xy_seconds"
+        },
+        {
+          "line": 1182,
+          "value": "count_query_seconds"
+        },
+        {
+          "line": 701,
+          "value": "KDTree count size mismatch"
+        },
+        {
+          "line": 710,
+          "value": "point without self neighbour"
+        },
+        {
+          "line": 722,
+          "value": "[NEIGHBOUR COUNT] "
+        }
+      ]
+    },
+    "docs/release_v1_1/authoritative_sources/validation_evidence/scn_exact_engine_benchmark.py": {
+      "sha256": "49806f2cf15a95d3ecda62609c4c2d33a61a44e4f6fe2c803a04958148f38f2e",
+      "assignments": [
+        {
+          "line": 34,
+          "names": [
+            "XY"
+          ],
+          "source": "XY = (\n    PROC\n    / \"stamps_stage8\"\n    / \"stamps_xy_exact_float32_m.npy\"\n)"
+        },
+        {
+          "line": 40,
+          "names": [
+            "SORT_IX"
+          ],
+          "source": "SORT_IX = (\n    PROC\n    / \"stamps_stage8\"\n    / \"stamps_sort_index.npy\"\n)"
+        },
+        {
+          "line": 46,
+          "names": [
+            "COUNTS"
+          ],
+          "source": "COUNTS = (\n    PROC\n    / \"stamps_stage8\"\n    / \"stage8_neighbor_count_r400m.npy\"\n)"
+        },
+        {
+          "line": 71,
+          "names": [
+            "CELL_SIZES"
+          ],
+          "source": "CELL_SIZES = (\n    400.0,\n    200.0,\n    100.0,\n    50.0,\n)"
+        },
+        {
+          "line": 531,
+          "names": [
+            "coords"
+          ],
+          "source": "coords = np.load(\n    XY,\n    mmap_mode=\"r\",\n).astype(\n    np.float64\n)"
+        },
+        {
+          "line": 538,
+          "names": [
+            "sort_ix"
+          ],
+          "source": "sort_ix = np.load(\n    SORT_IX\n).astype(\n    np.int64\n)"
+        },
+        {
+          "line": 544,
+          "names": [
+            "global_counts"
+          ],
+          "source": "global_counts = np.load(\n    COUNTS,\n    mmap_mode=\"r\",\n)"
+        },
+        {
+          "line": 786,
+          "names": [
+            "sample_global_counts"
+          ],
+          "source": "sample_global_counts = np.asarray(\n    global_counts[\n        targets\n    ],\n    dtype=np.int64,\n)"
+        },
+        {
+          "line": 808,
+          "names": [
+            "neighbour_lists"
+          ],
+          "source": "neighbour_lists = (\n    tree.query_ball_point(\n        coords[\n            targets\n        ],\n        r=RADIUS_M,\n        workers=-1,\n    )\n)"
+        },
+        {
+          "line": 828,
+          "names": [
+            "oracle_counts"
+          ],
+          "source": "oracle_counts = np.empty(\n    SAMPLE_N,\n    dtype=np.int64,\n)"
+        },
+        {
+          "line": 918,
+          "names": [
+            "kdtree_seconds"
+          ],
+          "source": "kdtree_seconds = (\n    time.perf_counter()\n    -\n    t0\n)"
+        },
+        {
+          "line": 930,
+          "names": [
+            "global_vs_strict_count_diff"
+          ],
+          "source": "global_vs_strict_count_diff = (\n    sample_global_counts\n    -\n    oracle_counts\n)"
+        },
+        {
+          "line": 958,
+          "names": [
+            "cx0",
+            "cy0",
+            "nx0",
+            "ny0",
+            "order0",
+            "starts0"
+          ],
+          "source": "cx0, cy0, nx0, ny0, order0, starts0 = (\n    build_cell_index(\n        coords,\n        100.0,\n    )\n)"
+        },
+        {
+          "line": 1302,
+          "names": [
+            "kdtree_estimated_full_seconds"
+          ],
+          "source": "kdtree_estimated_full_seconds = float(\n    kdtree_seconds\n    *\n    full_directed\n    /\n    oracle_true_interactions\n)"
+        },
+        {
+          "line": 1311,
+          "names": [
+            "speedup_vs_kdtree"
+          ],
+          "source": "speedup_vs_kdtree = float(\n    kdtree_estimated_full_seconds\n    /\n    best[\n        \"estimated_full_spatial_seconds\"\n    ]\n)"
+        },
+        {
+          "line": 185,
+          "names": [
+            "cell_id"
+          ],
+          "source": "cell_id = (\n        cy.astype(\n            np.int64\n        )\n        *\n        nx\n        +\n        cx\n    )"
+        },
+        {
+          "line": 195,
+          "names": [
+            "order"
+          ],
+          "source": "order = np.argsort(\n        cell_id,\n        kind=\"stable\",\n    ).astype(\n        np.int32\n    )"
+        },
+        {
+          "line": 202,
+          "names": [
+            "ncell"
+          ],
+          "source": "ncell = (\n        nx\n        *\n        ny\n    )"
+        },
+        {
+          "line": 354,
+          "names": [
+            "true_count"
+          ],
+          "source": "true_count = np.zeros(\n        nt,\n        dtype=np.int64,\n    )"
+        },
+        {
+          "line": 359,
+          "names": [
+            "candidate_count"
+          ],
+          "source": "candidate_count = np.zeros(\n        nt,\n        dtype=np.int64,\n    )"
+        },
+        {
+          "line": 848,
+          "names": [
+            "dxy"
+          ],
+          "source": "dxy = (\n        coords[q, :]\n        -\n        coords[\n            p,\n            :\n        ]\n    )"
+        },
+        {
+          "line": 1023,
+          "names": [
+            "cx",
+            "cy",
+            "nx",
+            "ny",
+            "order",
+            "starts"
+          ],
+          "source": "(\n        cx,\n        cy,\n        nx,\n        ny,\n        order,\n        starts,\n    ) = build_cell_index(\n        coords,\n        cell_size,\n    )"
+        },
+        {
+          "line": 1052,
+          "names": [
+            "got",
+            "true_count",
+            "candidate_count"
+          ],
+          "source": "(\n        got,\n        true_count,\n        candidate_count,\n    ) = cell_gaussian_exact(\n        coords,\n        ph_hpt,\n        targets,\n        cx,\n        cy,\n        nx,\n        ny,\n        order,\n        starts,\n        offsets,\n        RADIUS_M\n        *\n        RADIUS_M,\n        2.0\n        *\n        SIGMA_M\n        *\n        SIGMA_M,\n    )"
+        },
+        {
+          "line": 1089,
+          "names": [
+            "count_diff"
+          ],
+          "source": "count_diff = (\n        true_count\n        -\n        oracle_counts\n    )"
+        },
+        {
+          "line": 1096,
+          "names": [
+            "count_max_abs"
+          ],
+          "source": "count_max_abs = int(\n        np.max(\n            np.abs(\n                count_diff\n            )\n        )\n    )"
+        }
+      ],
+      "write_calls": [
+        {
+          "line": 1480,
+          "call": "OUT.write_text",
+          "source": "OUT.write_text(\n    json.dumps(\n        manifest,\n        indent=2,\n    )\n    +\n    \"\\n\"\n)"
+        }
+      ],
+      "constants": [
+        {
+          "line": 37,
+          "value": "stamps_xy_exact_float32_m.npy"
+        },
+        {
+          "line": 43,
+          "value": "stamps_sort_index.npy"
+        },
+        {
+          "line": 49,
+          "value": "stage8_neighbor_count_r400m.npy"
+        },
+        {
+          "line": 55,
+          "value": "p15_6b0_exact_neighbor_census.json"
+        },
+        {
+          "line": 241,
+          "value": "\n    Include every cell offset whose two cell rectangles can\n    contain at least one pair with distance < radius.\n\n    For offset k:\n      minimum axis separation =\n          max(|k|-1, 0) * cell_size\n    "
+        },
+        {
+          "line": 333,
+          "value": "\n    Exact Stage-8 spatial Gaussian for selected target points.\n\n    - true physical coordinates\n    - strict distance < 400 m\n    - no KNN truncation\n    - no approximate distance\n    - float64 Gaussian accumulation\n    "
+        },
+        {
+          "line": 1339,
+          "value": "USE_NUMBA_EXACT_CELL_LIST"
+        },
+        {
+          "line": 1345,
+          "value": "USE_CKDTREE_STREAMING_ORACLE"
+        },
+        {
+          "line": 1418,
+          "value": "kdtree_oracle"
+        },
+        {
+          "line": 1506,
+          "value": "sample neighbours p50/p95/p99   :"
+        },
+        {
+          "line": 1532,
+          "value": "KDTree oracle sample seconds    :"
+        },
+        {
+          "line": 1537,
+          "value": "KDTree extrapolated full        :"
+        },
+        {
+          "line": 1561,
+          "value": "BEST cell size                 :"
+        },
+        {
+          "line": 1576,
+          "value": "BEST neighbour count diff      :"
+        },
+        {
+          "line": 1591,
+          "value": "speedup vs KDTree oracle       :"
+        },
+        {
+          "line": 1355,
+          "value": "coordinates"
+        },
+        {
+          "line": 1356,
+          "value": "exact StaMPS float32+1mm XY"
+        },
+        {
+          "line": 1385,
+          "value": "neighbor_p50_p95_p99"
+        },
+        {
+          "line": 1398,
+          "value": "census_minus_strict_min"
+        },
+        {
+          "line": 1403,
+          "value": "census_minus_strict_max"
+        },
+        {
+          "line": 1446,
+          "value": "cell_size_sweep"
+        },
+        {
+          "line": 1454,
+          "value": "estimated_speedup_vs_kdtree"
+        },
+        {
+          "line": 1578,
+          "value": "neighbor_count_max_abs_diff"
+        },
+        {
+          "line": 599,
+          "value": "coordinate_contract"
+        },
+        {
+          "line": 1012,
+          "value": "exact_neighbour_census"
+        },
+        {
+          "line": 1219,
+          "value": "cell_size_m"
+        },
+        {
+          "line": 1228,
+          "value": "offset_cells"
+        },
+        {
+          "line": 1265,
+          "value": "neighbor_count_max_abs_diff"
+        },
+        {
+          "line": 1278,
+          "value": "[CELL "
+        },
+        {
+          "line": 1332,
+          "value": "neighbor_count_max_abs_diff"
+        },
+        {
+          "line": 1549,
+          "value": "cell "
+        },
+        {
+          "line": 1109,
+          "value": "cell="
+        },
+        {
+          "line": 1109,
+          "value": ": exact neighbour count parity FAILED; max diff="
+        },
+        {
+          "line": 1155,
+          "value": "cell="
+        },
+        {
+          "line": 1562,
+          "value": "cell_size_m"
+        },
+        {
+          "line": 1550,
+          "value": "cell_size_m"
+        },
+        {
+          "line": 1551,
+          "value": "offset_cells"
+        }
+      ]
+    },
+    "docs/release_v1_1/authoritative_sources/validation_evidence/stamps_xy_geometry_audit.py": {
+      "sha256": "ee51f32f9b14a458f278e18df4f659d0a5540433f32eedd53de4db64af1f1e5f",
+      "assignments": [
+        {
+          "line": 40,
+          "names": [
+            "XY_OUT"
+          ],
+          "source": "XY_OUT = (\n    OUTDIR\n    / \"stamps_xy_unrotated_m.npy\"\n)"
+        },
+        {
+          "line": 388,
+          "names": [
+            "xy64"
+          ],
+          "source": "xy64 = stamps_llh2local_m(\n    lon,\n    lat,\n    lon0,\n    lat0,\n)"
+        },
+        {
+          "line": 402,
+          "names": [
+            "xy"
+          ],
+          "source": "xy = (\n    np.round(\n        xy64.astype(\n            np.float32\n        ).astype(\n            np.float64\n        )\n        *\n        1000.0\n    )\n    /\n    1000.0\n)"
+        },
+        {
+          "line": 417,
+          "names": [
+            "xy_seconds"
+          ],
+          "source": "xy_seconds = (\n    time.perf_counter()\n    -\n    t0\n)"
+        },
+        {
+          "line": 491,
+          "names": [
+            "count"
+          ],
+          "source": "count = 0"
+        },
+        {
+          "line": 175,
+          "names": [
+            "xy"
+          ],
+          "source": "xy = np.empty(\n        (\n            lon.size,\n            2,\n        ),\n        dtype=np.float64,\n    )"
+        }
+      ],
+      "write_calls": [
+        {
+          "line": 424,
+          "call": "np.save",
+          "source": "np.save(\n    XY_OUT,\n    xy\n)"
+        },
+        {
+          "line": 1119,
+          "call": "np.savez",
+          "source": "np.savez(\n    AFFINE_OUT,\n\n    origin_lonlat_deg=\n        np.asarray(\n            [\n                lon0,\n                lat0,\n            ],\n            dtype=np.float64,\n        ),\n\n    affine_coeff=\n        Mcoef,\n\n    J_row_col_to_xy_m=\n        J,\n\n    metric_Q=\n        Q,\n)"
+        },
+        {
+          "line": 1276,
+          "call": "MANIFEST.write_text",
+          "source": "MANIFEST.write_text(\n    json.dumps(\n        manifest,\n        indent=2,\n    )\n    +\n    \"\\n\"\n)"
+        }
+      ],
+      "constants": [
+        {
+          "line": 42,
+          "value": "stamps_xy_unrotated_m.npy"
+        },
+        {
+          "line": 47,
+          "value": "stamps_xy_affine_transform.npz"
+        },
+        {
+          "line": 52,
+          "value": "p15_6a_stamps_xy_grid_audit.json"
+        },
+        {
+          "line": 1109,
+          "value": "RASTER_GAUSSIAN_CANDIDATE_VALIDATE_AGAINST_KDTREE"
+        },
+        {
+          "line": 1115,
+          "value": "USE_EXACT_COORDINATE_NEIGHBOUR_ENGINE"
+        },
+        {
+          "line": 1164,
+          "value": "xy_seconds"
+        },
+        {
+          "line": 1167,
+          "value": "xy_extent_m"
+        },
+        {
+          "line": 1145,
+          "value": "PASS_STAMPS_XY_AUDIT"
+        },
+        {
+          "line": 1287,
+          "value": "P15-6A STAMPS XY / STAGE-8 GRID ACCELERATION AUDIT"
+        },
+        {
+          "line": 1301,
+          "value": "xy generation seconds          :"
+        },
+        {
+          "line": 1379,
+          "value": "xy output                      :"
+        },
+        {
+          "line": 1390,
+          "value": "P15-6A FINAL RESULT: PASS_STAMPS_XY_AUDIT"
+        },
+        {
+          "line": 1263,
+          "value": "xy"
+        }
+      ]
+    },
+    "docs/release_v1_1/authoritative_sources/production/corrections/scn.py": {
+      "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+      "assignments": [
+        {
+          "line": 39,
+          "names": [
+            "XY"
+          ],
+          "source": "XY = (\n    PROC\n    / \"stamps_stage8\"\n    / \"stamps_xy_exact_float32_m.npy\"\n)"
+        },
+        {
+          "line": 45,
+          "names": [
+            "SORT_IX"
+          ],
+          "source": "SORT_IX = (\n    PROC\n    / \"stamps_stage8\"\n    / \"stamps_sort_index.npy\"\n)"
+        },
+        {
+          "line": 51,
+          "names": [
+            "COUNTS"
+          ],
+          "source": "COUNTS = (\n    PROC\n    / \"stamps_stage8\"\n    / \"stage8_neighbor_count_r400m.npy\"\n)"
+        },
+        {
+          "line": 110,
+          "names": [
+            "CELL_SIZE_M"
+          ],
+          "source": "CELL_SIZE_M = 200.0"
+        },
+        {
+          "line": 599,
+          "names": [
+            "coords"
+          ],
+          "source": "coords = np.load(\n    XY,\n    mmap_mode=\"r\",\n).astype(\n    np.float64\n)"
+        },
+        {
+          "line": 607,
+          "names": [
+            "sort_ix"
+          ],
+          "source": "sort_ix = np.load(\n    SORT_IX\n).astype(\n    np.int64\n)"
+        },
+        {
+          "line": 614,
+          "names": [
+            "census_count"
+          ],
+          "source": "census_count = np.load(\n    COUNTS,\n    mmap_mode=\"r\",\n)"
+        },
+        {
+          "line": 677,
+          "names": [
+            "best_cell"
+          ],
+          "source": "best_cell = float(\n    bench[\n        \"best\"\n    ][\n        \"cell_size_m\"\n    ]\n)"
+        },
+        {
+          "line": 1103,
+          "names": [
+            "cx",
+            "cy",
+            "nx",
+            "ny",
+            "order",
+            "starts"
+          ],
+          "source": "(\n    cx,\n    cy,\n    nx,\n    ny,\n    order,\n    starts,\n) = build_cell_index(\n    coords,\n    CELL_SIZE_M,\n)"
+        },
+        {
+          "line": 1177,
+          "names": [
+            "oracle_fast",
+            "oracle_fast_count",
+            "oracle_candidate_count"
+          ],
+          "source": "(\n    oracle_fast,\n    oracle_fast_count,\n    oracle_candidate_count,\n) = spatial_gaussian_exact(\n    coords,\n    ph_hpt,\n    oracle_targets,\n    cx,\n    cy,\n    nx,\n    ny,\n    order,\n    starts,\n    offsets,\n    RADIUS_M**2,\n    2.0\n    *\n    SCN_WAVELENGTH_M**2,\n)"
+        },
+        {
+          "line": 1199,
+          "names": [
+            "neighbor_lists"
+          ],
+          "source": "neighbor_lists = (\n    tree.query_ball_point(\n        coords[\n            oracle_targets\n        ],\n        r=RADIUS_M,\n        workers=-1,\n    )\n)"
+        },
+        {
+          "line": 1210,
+          "names": [
+            "oracle_kdtree"
+          ],
+          "source": "oracle_kdtree = np.empty(\n    (\n        ORACLE_N,\n        nepoch,\n    ),\n    dtype=np.float64,\n)"
+        },
+        {
+          "line": 1219,
+          "names": [
+            "oracle_kdtree_count"
+          ],
+          "source": "oracle_kdtree_count = np.empty(\n    ORACLE_N,\n    dtype=np.int64,\n)"
+        },
+        {
+          "line": 1311,
+          "names": [
+            "oracle_count_diff"
+          ],
+          "source": "oracle_count_diff = int(\n    np.max(\n        np.abs(\n            oracle_fast_count\n            -\n            oracle_kdtree_count\n        )\n    )\n)"
+        },
+        {
+          "line": 1401,
+          "names": [
+            "census_count_diff_max"
+          ],
+          "source": "census_count_diff_max = 0"
+        },
+        {
+          "line": 232,
+          "names": [
+            "cell_id"
+          ],
+          "source": "cell_id = (\n        cy.astype(\n            np.int64\n        )\n        *\n        nx\n        +\n        cx\n    )"
+        },
+        {
+          "line": 242,
+          "names": [
+            "order"
+          ],
+          "source": "order = np.argsort(\n        cell_id,\n        kind=\"stable\",\n    ).astype(\n        np.int32\n    )"
+        },
+        {
+          "line": 249,
+          "names": [
+            "ncell"
+          ],
+          "source": "ncell = (\n        nx\n        *\n        ny\n    )"
+        },
+        {
+          "line": 394,
+          "names": [
+            "true_count"
+          ],
+          "source": "true_count = np.zeros(\n        ntarget,\n        dtype=np.int64,\n    )"
+        },
+        {
+          "line": 399,
+          "names": [
+            "candidate_count"
+          ],
+          "source": "candidate_count = np.zeros(\n        ntarget,\n        dtype=np.int64,\n    )"
+        },
+        {
+          "line": 1238,
+          "names": [
+            "dxy"
+          ],
+          "source": "dxy = (\n        coords[\n            q,\n            :\n        ]\n        -\n        coords[\n            p,\n            :\n        ]\n    )"
+        },
+        {
+          "line": 1430,
+          "names": [
+            "smooth",
+            "true_count",
+            "candidate_count"
+          ],
+          "source": "(\n        smooth,\n        true_count,\n        candidate_count,\n    ) = spatial_gaussian_exact(\n        coords,\n        ph_hpt,\n        targets,\n        cx,\n        cy,\n        nx,\n        ny,\n        order,\n        starts,\n        offsets,\n        RADIUS_M**2,\n        2.0\n        *\n        SCN_WAVELENGTH_M**2,\n    )"
+        },
+        {
+          "line": 1488,
+          "names": [
+            "census_diff"
+          ],
+          "source": "census_diff = np.asarray(\n        census_count[\n            start:stop\n        ],\n        dtype=np.int64,\n    ) - true_count"
+        },
+        {
+          "line": 1496,
+          "names": [
+            "census_count_diff_max"
+          ],
+          "source": "census_count_diff_max = max(\n        census_count_diff_max,\n        int(\n            np.max(\n                np.abs(\n                    census_diff\n                )\n            )\n        ),\n    )"
+        },
+        {
+          "line": 454,
+          "names": [
+            "cell"
+          ],
+          "source": "cell = (\n                qy\n                *\n                nx\n                +\n                qx\n            )"
+        }
+      ],
+      "write_calls": [
+        {
+          "line": 812,
+          "call": "np.lib.format.open_memmap",
+          "source": "np.lib.format.open_memmap(\n        HPT_TMP,\n        mode=\"w+\",\n        dtype=np.float32,\n        shape=(\n            npoint,\n            nepoch,\n        ),\n    )"
+        },
+        {
+          "line": 1385,
+          "call": "np.lib.format.open_memmap",
+          "source": "np.lib.format.open_memmap(\n        SCN_TMP,\n        mode=\"w+\",\n        dtype=np.float64,\n        shape=(\n            npoint,\n            nepoch,\n        ),\n    )"
+        },
+        {
+          "line": 1959,
+          "call": "MANIFEST.write_text",
+          "source": "MANIFEST.write_text(\n    json.dumps(\n        manifest,\n        indent=2,\n    )\n    +\n    \"\\n\"\n)"
+        }
+      ],
+      "constants": [
+        {
+          "line": 42,
+          "value": "stamps_xy_exact_float32_m.npy"
+        },
+        {
+          "line": 48,
+          "value": "stamps_sort_index.npy"
+        },
+        {
+          "line": 54,
+          "value": "stage8_neighbor_count_r400m.npy"
+        },
+        {
+          "line": 1753,
+          "value": "StaMPS ps_scn_filt parity; exact 200m Numba cell-list spatial engine"
+        },
+        {
+          "line": 2011,
+          "value": "oracle neighbour count diff     :"
+        },
+        {
+          "line": 2016,
+          "value": "cell vs KDTree max diff         :"
+        },
+        {
+          "line": 2021,
+          "value": "cell vs KDTree RMS              :"
+        },
+        {
+          "line": 2028,
+          "value": "cell size                       :"
+        },
+        {
+          "line": 2033,
+          "value": "cell offsets                    :"
+        },
+        {
+          "line": 2053,
+          "value": "census / strict max count diff  :"
+        },
+        {
+          "line": 681,
+          "value": "cell_size_m"
+        },
+        {
+          "line": 1778,
+          "value": "all_neighbors"
+        },
+        {
+          "line": 1781,
+          "value": "coordinate_source"
+        },
+        {
+          "line": 1798,
+          "value": "cell_size_m"
+        },
+        {
+          "line": 1801,
+          "value": "offset_cells"
+        },
+        {
+          "line": 1824,
+          "value": "census_vs_strict_max_count_diff"
+        },
+        {
+          "line": 1848,
+          "value": "spatial_neighbor_count_max_diff"
+        },
+        {
+          "line": 1851,
+          "value": "spatial_cell_vs_kdtree_max_abs_rad"
+        },
+        {
+          "line": 1854,
+          "value": "spatial_cell_vs_kdtree_rms_rad"
+        },
+        {
+          "line": 1901,
+          "value": "point_epoch_neighbor_accumulations_per_second"
+        },
+        {
+          "line": 694,
+          "value": "frozen production cell size mismatch: "
+        },
+        {
+          "line": 1126,
+          "value": "200m cell offset contract changed: "
+        },
+        {
+          "line": 1326,
+          "value": "pre-production neighbour parity failed: "
+        }
+      ]
+    }
+  },
+  "scn_consumer_context": {
+    "stamps_xy_exact_float32_m.npy": [
+      {
+        "line": 42,
+        "context": [
+          {
+            "line": 31,
+            "text": ")"
+          },
+          {
+            "line": 32,
+            "text": ""
+          },
+          {
+            "line": 33,
+            "text": "GMAN = ("
+          },
+          {
+            "line": 34,
+            "text": "    PROC"
+          },
+          {
+            "line": 35,
+            "text": "    / \"gacos_corrected_phase\""
+          },
+          {
+            "line": 36,
+            "text": "    / \"gacos_correction_manifest.json\""
+          },
+          {
+            "line": 37,
+            "text": ")"
+          },
+          {
+            "line": 38,
+            "text": ""
+          },
+          {
+            "line": 39,
+            "text": "XY = ("
+          },
+          {
+            "line": 40,
+            "text": "    PROC"
+          },
+          {
+            "line": 41,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 42,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 43,
+            "text": ")"
+          },
+          {
+            "line": 44,
+            "text": ""
+          },
+          {
+            "line": 45,
+            "text": "SORT_IX = ("
+          },
+          {
+            "line": 46,
+            "text": "    PROC"
+          },
+          {
+            "line": 47,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 48,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 49,
+            "text": ")"
+          },
+          {
+            "line": 50,
+            "text": ""
+          },
+          {
+            "line": 51,
+            "text": "COUNTS = ("
+          },
+          {
+            "line": 52,
+            "text": "    PROC"
+          },
+          {
+            "line": 53,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 54,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 55,
+            "text": ")"
+          },
+          {
+            "line": 56,
+            "text": ""
+          }
+        ]
+      }
+    ],
+    "stamps_sort_index.npy": [
+      {
+        "line": 48,
+        "context": [
+          {
+            "line": 37,
+            "text": ")"
+          },
+          {
+            "line": 38,
+            "text": ""
+          },
+          {
+            "line": 39,
+            "text": "XY = ("
+          },
+          {
+            "line": 40,
+            "text": "    PROC"
+          },
+          {
+            "line": 41,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 42,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 43,
+            "text": ")"
+          },
+          {
+            "line": 44,
+            "text": ""
+          },
+          {
+            "line": 45,
+            "text": "SORT_IX = ("
+          },
+          {
+            "line": 46,
+            "text": "    PROC"
+          },
+          {
+            "line": 47,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 48,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 49,
+            "text": ")"
+          },
+          {
+            "line": 50,
+            "text": ""
+          },
+          {
+            "line": 51,
+            "text": "COUNTS = ("
+          },
+          {
+            "line": 52,
+            "text": "    PROC"
+          },
+          {
+            "line": 53,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 54,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 55,
+            "text": ")"
+          },
+          {
+            "line": 56,
+            "text": ""
+          },
+          {
+            "line": 57,
+            "text": "BENCH = ("
+          },
+          {
+            "line": 58,
+            "text": "    PROC"
+          },
+          {
+            "line": 59,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 60,
+            "text": "    / \"p15_6b1_exact_engine_benchmark.json\""
+          },
+          {
+            "line": 61,
+            "text": ")"
+          },
+          {
+            "line": 62,
+            "text": ""
+          }
+        ]
+      }
+    ],
+    "stage8_neighbor_count_r400m.npy": [
+      {
+        "line": 54,
+        "context": [
+          {
+            "line": 43,
+            "text": ")"
+          },
+          {
+            "line": 44,
+            "text": ""
+          },
+          {
+            "line": 45,
+            "text": "SORT_IX = ("
+          },
+          {
+            "line": 46,
+            "text": "    PROC"
+          },
+          {
+            "line": 47,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 48,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 49,
+            "text": ")"
+          },
+          {
+            "line": 50,
+            "text": ""
+          },
+          {
+            "line": 51,
+            "text": "COUNTS = ("
+          },
+          {
+            "line": 52,
+            "text": "    PROC"
+          },
+          {
+            "line": 53,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 54,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 55,
+            "text": ")"
+          },
+          {
+            "line": 56,
+            "text": ""
+          },
+          {
+            "line": 57,
+            "text": "BENCH = ("
+          },
+          {
+            "line": 58,
+            "text": "    PROC"
+          },
+          {
+            "line": 59,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 60,
+            "text": "    / \"p15_6b1_exact_engine_benchmark.json\""
+          },
+          {
+            "line": 61,
+            "text": ")"
+          },
+          {
+            "line": 62,
+            "text": ""
+          },
+          {
+            "line": 63,
+            "text": "OUTDIR = ("
+          },
+          {
+            "line": 64,
+            "text": "    PROC"
+          },
+          {
+            "line": 65,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 66,
+            "text": ")"
+          },
+          {
+            "line": 67,
+            "text": ""
+          },
+          {
+            "line": 68,
+            "text": "HPT_FINAL = ("
+          }
+        ]
+      }
+    ],
+    "p15_6b1_exact_engine_benchmark.json": [
+      {
+        "line": 60,
+        "context": [
+          {
+            "line": 49,
+            "text": ")"
+          },
+          {
+            "line": 50,
+            "text": ""
+          },
+          {
+            "line": 51,
+            "text": "COUNTS = ("
+          },
+          {
+            "line": 52,
+            "text": "    PROC"
+          },
+          {
+            "line": 53,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 54,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 55,
+            "text": ")"
+          },
+          {
+            "line": 56,
+            "text": ""
+          },
+          {
+            "line": 57,
+            "text": "BENCH = ("
+          },
+          {
+            "line": 58,
+            "text": "    PROC"
+          },
+          {
+            "line": 59,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 60,
+            "text": "    / \"p15_6b1_exact_engine_benchmark.json\""
+          },
+          {
+            "line": 61,
+            "text": ")"
+          },
+          {
+            "line": 62,
+            "text": ""
+          },
+          {
+            "line": 63,
+            "text": "OUTDIR = ("
+          },
+          {
+            "line": 64,
+            "text": "    PROC"
+          },
+          {
+            "line": 65,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 66,
+            "text": ")"
+          },
+          {
+            "line": 67,
+            "text": ""
+          },
+          {
+            "line": 68,
+            "text": "HPT_FINAL = ("
+          },
+          {
+            "line": 69,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 70,
+            "text": "    / \"ph_hpt_rad.npy\""
+          },
+          {
+            "line": 71,
+            "text": ")"
+          },
+          {
+            "line": 72,
+            "text": ""
+          },
+          {
+            "line": 73,
+            "text": "SCN_FINAL = ("
+          },
+          {
+            "line": 74,
+            "text": "    OUTDIR"
+          }
+        ]
+      }
+    ]
+  },
+  "scn_support_products": {
+    "stamps_xy_exact_float32_m.npy": {
+      "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/stamps_xy_exact_float32_m.npy",
+      "shape": [
+        881315,
+        2
+      ],
+      "dtype": "float32",
+      "sha256": "ed7ed3919b5df6a25b221e513d881c5ab59ba396ef6851bf97f1e97cab778068"
+    },
+    "stamps_sort_index.npy": {
+      "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/stamps_sort_index.npy",
+      "shape": [
+        881315
+      ],
+      "dtype": "int32",
+      "sha256": "ba4aedc46210e48d6b3318b94db22c69cbff705f93e01c86cfca535f8edf673e"
+    },
+    "stage8_neighbor_count_r400m.npy": {
+      "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/stage8_neighbor_count_r400m.npy",
+      "shape": [
+        881315
+      ],
+      "dtype": "int32",
+      "sha256": "8efc41205581c6b814b74684356e8e7062dff8b08819e350fd9c43a7a8662cd7"
+    }
+  },
+  "scn_benchmark_manifest": {
+    "status": "PASS_EXACT_ENGINE_BENCHMARK",
+    "scientific_contract": {
+      "coordinates": "exact StaMPS float32+1mm XY",
+      "temporal_time_window_days": 365.0,
+      "spatial_sigma_m": 100.0,
+      "strict_radius_m": 400.0,
+      "epochs": 38,
+      "official_first_ps_current_index": 881292,
+      "temporal_first_ps_max_abs_rad": 2.220446049250313e-16
+    },
+    "sample": {
+      "points": 512,
+      "strict_true_interactions": 3495129,
+      "neighbor_p50_p95_p99": [
+        7106.5,
+        8970.75,
+        9548.92
+      ],
+      "census_minus_strict_min": 0,
+      "census_minus_strict_max": 0
+    },
+    "temporal": {
+      "seconds": 0.9875546111725271,
+      "first_ps_max_abs_rad": 2.220446049250313e-16
+    },
+    "kdtree_oracle": {
+      "sample_seconds": 1.2035060429479927,
+      "true_interactions": 3495129,
+      "estimated_full_spatial_seconds": 2064.3294446520526,
+      "estimated_full_spatial_minutes": 34.405490744200875
+    },
+    "numba": {
+      "threads": 32,
+      "available_threads": 32,
+      "parity_tolerance_rad": 1e-09,
+      "cell_size_sweep": [
+        {
+          "cell_size_m": 200.0,
+          "grid_nx": 44,
+          "grid_ny": 42,
+          "offset_cells": 25,
+          "build_seconds": 0.06591636198572814,
+          "kernel_seconds": 0.013415477937087417,
+          "true_interactions": 3495129,
+          "candidate_interactions": 6682404,
+          "candidate_to_true_ratio": 1.9119191308818644,
+          "true_interactions_per_second": 260529592.48940587,
+          "candidate_evaluations_per_second": 498111512.0413512,
+          "phase_accumulations_per_second": 9900124514.597424,
+          "estimated_full_spatial_seconds": 23.011073589437952,
+          "estimated_full_spatial_minutes": 0.38351789315729923,
+          "neighbor_count_max_abs_diff": 0,
+          "phase_max_abs_diff_rad": 8.348877145181177e-14,
+          "phase_rms_diff_rad": 8.35457810076671e-15
+        },
+        {
+          "cell_size_m": 100.0,
+          "grid_nx": 88,
+          "grid_ny": 84,
+          "offset_cells": 77,
+          "build_seconds": 0.07104188995435834,
+          "kernel_seconds": 0.014204942854121327,
+          "true_interactions": 3495129,
+          "candidate_interactions": 5240694,
+          "candidate_to_true_ratio": 1.499427918111177,
+          "true_interactions_per_second": 246050197.87080288,
+          "candidate_evaluations_per_second": 368934535.94426113,
+          "phase_accumulations_per_second": 9349907519.09051,
+          "estimated_full_spatial_seconds": 24.365213590065533,
+          "estimated_full_spatial_minutes": 0.40608689316775887,
+          "neighbor_count_max_abs_diff": 0,
+          "phase_max_abs_diff_rad": 9.592326932761353e-14,
+          "phase_rms_diff_rad": 8.70207810194147e-15
+        },
+        {
+          "cell_size_m": 400.0,
+          "grid_nx": 22,
+          "grid_ny": 21,
+          "offset_cells": 9,
+          "build_seconds": 0.05016840994358063,
+          "kernel_seconds": 0.021904787980020046,
+          "true_interactions": 3495129,
+          "candidate_interactions": 9408392,
+          "candidate_to_true_ratio": 2.691858297647955,
+          "true_interactions_per_second": 159560047.01748323,
+          "candidate_evaluations_per_second": 429513036.5371101,
+          "phase_accumulations_per_second": 6063281786.664363,
+          "estimated_full_spatial_seconds": 37.57247341712748,
+          "estimated_full_spatial_minutes": 0.6262078902854581,
+          "neighbor_count_max_abs_diff": 0,
+          "phase_max_abs_diff_rad": 8.348877145181177e-14,
+          "phase_rms_diff_rad": 7.985318298281261e-15
+        },
+        {
+          "cell_size_m": 50.0,
+          "grid_nx": 176,
+          "grid_ny": 168,
+          "offset_cells": 257,
+          "build_seconds": 0.072800557827577,
+          "kernel_seconds": 0.022871279157698154,
+          "true_interactions": 3495129,
+          "candidate_interactions": 4412456,
+          "candidate_to_true_ratio": 1.2624586960881845,
+          "true_interactions_per_second": 152817381.83076605,
+          "candidate_evaluations_per_second": 192925632.6056791,
+          "phase_accumulations_per_second": 5807060509.56911,
+          "estimated_full_spatial_seconds": 39.23026002133116,
+          "estimated_full_spatial_minutes": 0.653837667022186,
+          "neighbor_count_max_abs_diff": 0,
+          "phase_max_abs_diff_rad": 9.237055564881302e-14,
+          "phase_rms_diff_rad": 8.884427650536042e-15
+        }
+      ]
+    },
+    "best": {
+      "cell_size_m": 200.0,
+      "grid_nx": 44,
+      "grid_ny": 42,
+      "offset_cells": 25,
+      "build_seconds": 0.06591636198572814,
+      "kernel_seconds": 0.013415477937087417,
+      "true_interactions": 3495129,
+      "candidate_interactions": 6682404,
+      "candidate_to_true_ratio": 1.9119191308818644,
+      "true_interactions_per_second": 260529592.48940587,
+      "candidate_evaluations_per_second": 498111512.0413512,
+      "phase_accumulations_per_second": 9900124514.597424,
+      "estimated_full_spatial_seconds": 23.011073589437952,
+      "estimated_full_spatial_minutes": 0.38351789315729923,
+      "neighbor_count_max_abs_diff": 0,
+      "phase_max_abs_diff_rad": 8.348877145181177e-14,
+      "phase_rms_diff_rad": 8.35457810076671e-15,
+      "estimated_speedup_vs_kdtree": 89.71026217566731
+    },
+    "full_problem": {
+      "points": 881315,
+      "directed_interactions": 5995065625,
+      "point_epoch_interactions": 227812493750
+    },
+    "recommendation": "USE_NUMBA_EXACT_CELL_LIST",
+    "phase_modified": false
+  },
+  "generator_evidence_scores": {
+    "docs/release_v1_1/authoritative_sources/validation_evidence/scn_neighbor_census.py": 6,
+    "docs/release_v1_1/authoritative_sources/validation_evidence/scn_exact_engine_benchmark.py": 5,
+    "docs/release_v1_1/authoritative_sources/validation_evidence/stamps_xy_geometry_audit.py": 3,
+    "docs/release_v1_1/authoritative_sources/production/corrections/scn.py": 5
+  },
+  "scientific_numeric_chain_frozen": true,
+  "pipeline_modified": false,
+  "current_pipeline_stage_count": 33
+}

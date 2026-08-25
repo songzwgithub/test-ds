@@ -1,0 +1,159 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-scla-deterministic-parity",
+  "products": {
+    "K_ps_uw_rad_per_m_bperp.npy": {
+      "authoritative_vs_v11": {
+        "shape_exact": true,
+        "dtype_exact": true,
+        "different_elements": 0,
+        "total_elements": 881315,
+        "different_fraction": 0.0,
+        "old_sha256": "d2001de5e74148fad1968b3dfd8b15e1fdcd983e2174b2c47f3690f4a25451d3",
+        "new_sha256": "d2001de5e74148fad1968b3dfd8b15e1fdcd983e2174b2c47f3690f4a25451d3",
+        "file_bytes_exact": true,
+        "max_abs_difference": 0.0,
+        "max_ulp_difference": 0
+      },
+      "historical_vs_current_authoritative": {
+        "shape_exact": true,
+        "dtype_exact": true,
+        "different_elements": 1,
+        "total_elements": 881315,
+        "different_fraction": 1.1346680812195413e-06,
+        "old_sha256": "e9572bdd051397ce16b9e5a287837704920352d15f26c8013a799333cfcc971c",
+        "new_sha256": "d2001de5e74148fad1968b3dfd8b15e1fdcd983e2174b2c47f3690f4a25451d3",
+        "file_bytes_exact": false,
+        "max_abs_difference": 2.3283064365386963e-10,
+        "rms_difference": 2.3283064365386963e-10,
+        "max_ulp_difference": 1,
+        "ulp_histogram_first": {
+          "1": 1
+        },
+        "first_differences": [
+          {
+            "flat_index": 364827,
+            "old": -0.003261736361309886,
+            "new": -0.0032617361284792423
+          }
+        ]
+      }
+    },
+    "C_ps_uw_rad.npy": {
+      "authoritative_vs_v11": {
+        "shape_exact": true,
+        "dtype_exact": true,
+        "different_elements": 0,
+        "total_elements": 881315,
+        "different_fraction": 0.0,
+        "old_sha256": "9c04a7ef4f6818c75535ba881567e7bbd453a49611f21f4b86a0b2ba4dea706f",
+        "new_sha256": "9c04a7ef4f6818c75535ba881567e7bbd453a49611f21f4b86a0b2ba4dea706f",
+        "file_bytes_exact": true,
+        "max_abs_difference": 0.0,
+        "max_ulp_difference": 0
+      },
+      "historical_vs_current_authoritative": {
+        "shape_exact": true,
+        "dtype_exact": true,
+        "different_elements": 1,
+        "total_elements": 881315,
+        "different_fraction": 1.1346680812195413e-06,
+        "old_sha256": "76400efd136db036933b43b4db05275970378f6bebe7c6dd16a42022c8fc5c89",
+        "new_sha256": "9c04a7ef4f6818c75535ba881567e7bbd453a49611f21f4b86a0b2ba4dea706f",
+        "file_bytes_exact": false,
+        "max_abs_difference": 2.9802322387695312e-08,
+        "rms_difference": 2.9802322387695312e-08,
+        "max_ulp_difference": 1,
+        "ulp_histogram_first": {
+          "1": 1
+        },
+        "first_differences": [
+          {
+            "flat_index": 364827,
+            "old": -0.41835686564445496,
+            "new": -0.41835683584213257
+          }
+        ]
+      }
+    },
+    "sm_cov_unit_ifg_geom_master.npy": {
+      "authoritative_vs_v11": {
+        "shape_exact": true,
+        "dtype_exact": true,
+        "different_elements": 0,
+        "total_elements": 1444,
+        "different_fraction": 0.0,
+        "old_sha256": "71ebaf63c8e11b5148c89e91c1f2e499e77382e9207176870c5524f17941906e",
+        "new_sha256": "71ebaf63c8e11b5148c89e91c1f2e499e77382e9207176870c5524f17941906e",
+        "file_bytes_exact": true,
+        "max_abs_difference": 0.0,
+        "max_ulp_difference": 0
+      },
+      "historical_vs_current_authoritative": {
+        "shape_exact": true,
+        "dtype_exact": true,
+        "different_elements": 1292,
+        "total_elements": 1444,
+        "different_fraction": 0.8947368421052632,
+        "old_sha256": "45caf5e722350093d932549020b8e699bb44a63f40eba354ebfeeb964c520653",
+        "new_sha256": "71ebaf63c8e11b5148c89e91c1f2e499e77382e9207176870c5524f17941906e",
+        "file_bytes_exact": false,
+        "max_abs_difference": 1.021405182655144e-14,
+        "rms_difference": 4.6435632688501574e-15,
+        "first_differences": [
+          {
+            "flat_index": 0,
+            "old": 2.0828894262228204,
+            "new": 2.0828894262228292
+          },
+          {
+            "flat_index": 1,
+            "old": 1.8627911849759031,
+            "new": 1.8627911849759125
+          },
+          {
+            "flat_index": 2,
+            "old": 1.8515207574263917,
+            "new": 1.8515207574264019
+          },
+          {
+            "flat_index": 3,
+            "old": 1.8195425551631386,
+            "new": 1.8195425551631474
+          },
+          {
+            "flat_index": 4,
+            "old": 1.7977032073258494,
+            "new": 1.7977032073258588
+          },
+          {
+            "flat_index": 5,
+            "old": 1.762299978741315,
+            "new": 1.7622999787413243
+          },
+          {
+            "flat_index": 6,
+            "old": 1.7300806420287833,
+            "new": 1.7300806420287922
+          },
+          {
+            "flat_index": 7,
+            "old": 1.6495126894209027,
+            "new": 1.649512689420912
+          },
+          {
+            "flat_index": 8,
+            "old": 1.6249488148482363,
+            "new": 1.6249488148482452
+          },
+          {
+            "flat_index": 9,
+            "old": 1.6050364912756483,
+            "new": 1.6050364912756572
+          }
+        ]
+      }
+    }
+  },
+  "authoritative_vs_migrated_byte_exact": true,
+  "status": "PASS"
+}

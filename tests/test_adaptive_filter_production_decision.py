@@ -29,7 +29,7 @@ def test_adaptive_filter_remains_disabled_in_default_config():
 def test_no_adaptive_filter_stage_is_registered_in_production_pipeline():
     scripts = [str(stage.script) for stage in STAGES]
 
-    assert len(STAGES) == 32
+    assert len(STAGES) == 33
 
     assert not any(
         "benchmark_adaptive_ifg_filter" in s

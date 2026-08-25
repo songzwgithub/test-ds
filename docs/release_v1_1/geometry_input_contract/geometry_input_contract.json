@@ -1,0 +1,27 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-geometry-input-contract",
+  "authoritative_lineage": {
+    "producer": "p15_3a_v4",
+    "finalizer": "p15_3a_v4b",
+    "incidence": "p15_3h_fast_incidence_final"
+  },
+  "reference_date": "20151212",
+  "current_project": {
+    "rslc_dir": "/home/ubuntu/Downloads/RSLC",
+    "dem_dir": "/home/ubuntu/Downloads/DEM_prep",
+    "reference_rslc_par": "/home/ubuntu/Downloads/RSLC/20151212.rslc.par",
+    "geometry_par": "/home/ubuntu/Downloads/DEM_prep/20151212_4_1.vv.mli.par",
+    "longitude_raster": "/home/ubuntu/Downloads/DEM_prep/20151212_4_1.rdc.lon",
+    "latitude_raster": "/home/ubuntu/Downloads/DEM_prep/20151212_4_1.rdc.lat",
+    "radar_width": 500,
+    "radar_length": 600,
+    "float32_expected_bytes": 1200000
+  },
+  "v1_1_resolution": {
+    "reference_rslc_par": "unique <reference_date>*.rslc.par in paths.rslc_dir",
+    "longitude_raster": "unique <reference_date>*.rdc.lon in paths.dem_dir",
+    "latitude_raster": "unique <reference_date>*.rdc.lat in paths.dem_dir",
+    "geometry_par": "matching <reference_date>*.mli.par by raster dimensions",
+    "ambiguity": "fail, never silently choose first candidate"
+  }
+}

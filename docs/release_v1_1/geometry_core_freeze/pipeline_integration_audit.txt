@@ -1,0 +1,161 @@
+pyPSDS-GAMMA v1.1 Geometry pipeline integration audit
+
+===== StageContract / registry =====
+40:class StageContract:
+66:STAGES = [
+210:STAGE_INDEX = {
+213:        STAGES
+221:# Production-contract registry:
+229:STAGE_CONTRACTS = {
+231:        StageContract(
+234:    for stage in STAGES
+247:STAGE_CONTRACTS["reference"] = StageContract(
+295:def validate_stage_contract_registry() -> None:
+302:        for x in STAGES
+317:        STAGE_CONTRACTS
+338:            "Stage contract registry mismatch: "
+345:            STAGE_CONTRACTS[
+543:        for x in STAGES
+1203:                "STAGE: phase_cache"
+1286:        f"STAGE: {stage.name}"
+1402:    validate_stage_contract_registry()
+1407:            STAGES,
+1528:        else STAGE_INDEX.get(
+1535:        len(STAGES) - 1
+1537:        else STAGE_INDEX.get(
+1562:        STAGES[
+1735:            STAGE_CONTRACTS[
+1799:            last == len(STAGES) - 1
+1852:                len(STAGES),
+1964:    "STAGES",
+
+===== Neighboring semantic stages =====
+72:        "phase_cache",
+73:        "build_phase_cache.py",
+92:        "point_stack",
+97:        "network_prepare",
+200:        "timeseries_inversion",
+204:        "reference",
+205:        "apply_reference.py",
+247:STAGE_CONTRACTS["reference"] = StageContract(
+248:    name="reference",
+259:        "processing/referenced_timeseries/"
+260:        "acquisition_phase_referenced_rad.npy",
+262:        "processing/referenced_timeseries/"
+265:        "processing/referenced_timeseries/"
+268:        "processing/referenced_timeseries/"
+269:        "reference_region_mask.npy",
+271:        "processing/referenced_timeseries/"
+272:        "reference_strict_indices.npy",
+274:        "processing/referenced_timeseries/"
+275:        "reference_point_ids.npy",
+277:        "processing/referenced_timeseries/"
+278:        "reference_phase_median_rad.npy",
+280:        "processing/referenced_timeseries/"
+281:        "reference_phase_mad_sigma_rad.npy",
+283:        "processing/referenced_timeseries/"
+284:        "reference_epoch_qa.csv",
+286:        "processing/referenced_timeseries/"
+287:        "referenced_timeseries_manifest.json",
+609:    elif stage.name == "phase_cache":
+616:                    "runtime.phase_cache_tile_rows",
+624:                    "runtime.phase_cache_tile_cols",
+632:                    "runtime.phase_cache_workers",
+907:    elif stage.name == "point_stack":
+961:    elif stage.name == "reference":
+966:                "reference.method",
+974:                "reference.min_points",
+982:                "reference.point_ids_path",
+991:                    "reference.method=point_ids requires "
+992:                    "reference.point_ids_path"
+1020:                "reference.radar_window.center_row",
+1026:                "reference.radar_window.center_col",
+1036:                    "reference.method=radar_window requires "
+1037:                    "reference.radar_window.center_row and center_col"
+1053:                        "reference.radar_window.half_row",
+1061:                        "reference.radar_window.half_col",
+1073:                f"Unsupported reference.method: {method!r}"
+1100:    #       -> always skip phase_cache
+1103:    #       -> preserve the original phase_cache stage
+1114:    if stage.name == "phase_cache":
+1160:        skip_phase_cache = False
+1172:                skip_phase_cache = True
+1187:                skip_phase_cache = True
+1195:        if skip_phase_cache:
+1203:                "STAGE: phase_cache"
+1234:                "[phase_cache] SKIPPED "
+1788:        #   --from-stage reference --to-stage reference
+
+===== ProjectPaths geometry-relevant fields =====
+14:class ProjectPaths:
+22:    rslc_dir
+27:    dem_dir
+33:    scratch_dir
+34:    products_dir
+47:    rslc_dir: Path
+59:    #     rslc_dir=...,
+64:    # resolve_project_paths() always populates scratch_dir and
+65:    # products_dir with concrete Paths for normal production use.
+66:    dem_dir: Path | None = None
+68:    scratch_dir: Path | None = None
+69:    products_dir: Path | None = None
+201:    rslc_dir = _resolve(
+204:            "paths.rslc_dir",
+210:    if rslc_dir is None:
+225:                rslc_dir = (
+233:        rslc_dir is None
+235:        not rslc_dir.is_dir()
+332:    dem_dir = _discover_directory(
+335:            "paths.dem_dir",
+371:    scratch_dir = (
+375:                "paths.scratch_dir",
+388:    scratch_dir.mkdir(
+398:    products_dir = (
+402:                "paths.products_dir",
+415:    products_dir.mkdir(
+425:        rslc_dir=rslc_dir,
+430:        dem_dir=dem_dir,
+433:        scratch_dir=scratch_dir,
+434:        products_dir=products_dir,
+
+===== CLI doctor / plan / run =====
+12:from .runtime import build_runtime_plan
+16:    raw = cfg_get(cfg, "runtime.cpu", None)
+20:def _runtime_solver_size(cfg, ndate):
+77:    print("Next: set the GAMMA reference date and study-area reference window, then run doctor.")
+90:def cmd_plan(args):
+95:        raw = cfg_get(cfg, "runtime.planning_ndate", None)
+101:    plan = build_runtime_plan(
+103:        memory_fraction=float(cfg_get(cfg, "runtime.memory_fraction", 0.85)),
+105:        max_solver_size=_runtime_solver_size(cfg, ndate),
+107:    payload = plan.as_dict()
+128:def cmd_doctor(args):
+132:    plan = build_runtime_plan(
+134:        memory_fraction=float(cfg_get(cfg, "runtime.memory_fraction", 0.85)),
+136:        max_solver_size=_runtime_solver_size(
+142:    print("pyPSDS-GAMMA production doctor")
+149:    print(f"CPU              : {plan.cpu_count}")
+150:    print(f"RAM available    : {plan.available_memory_bytes/1024**3:.2f} GiB")
+151:    print(f"RAM usable       : {plan.usable_memory_bytes/1024**3:.2f} GiB")
+152:    print(f"PL workers       : {plan.phase_link_workers}")
+153:    print(f"PL chunk         : {plan.phase_link_chunk_size}")
+154:    print(f"PL batch         : {plan.phase_link_batch_size}")
+155:    print(f"PL solver dim    : {plan.phase_link_solver_size}")
+158:        f"{plan.phase_link_tile_rows} x "
+159:        f"{plan.phase_link_tile_cols}"
+163:        f"{plan.support_cache_tile_rows} x "
+164:        f"{plan.support_cache_tile_cols}"
+168:        f"{plan.support_cache_batch_size}"
+178:    print("doctor           : PASS")
+181:def cmd_run(args):
+182:    from .pipeline import run_pipeline
+183:    return run_pipeline(
+187:        dry_run=args.dry_run,
+201:    q = sub.add_parser("config-check")
+204:    q = sub.add_parser("plan")
+207:    q.set_defaults(func=cmd_plan)
+208:    q = sub.add_parser("doctor")
+210:    q.set_defaults(func=cmd_doctor)
+211:    q = sub.add_parser("run", help="Run the production InSAR processing pipeline.")
+215:    q.add_argument("--dry-run", action="store_true")
+218:    q.set_defaults(func=cmd_run)

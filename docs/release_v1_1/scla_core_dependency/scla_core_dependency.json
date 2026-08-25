@@ -1,0 +1,501 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-scla-core-dependency",
+  "sources": {
+    "baseline": {
+      "path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/scla_baseline.py",
+      "sha256": "c943160b85444c0cbc99482c9d0a8d01c39dbb6749c676f2b1d0275f4389bb97",
+      "functions": {
+        "sha256": {
+          "lines": [
+            131,
+            150
+          ],
+          "sha256": "ceace3c6175f7c2891bfbc1b68cbf38de494bff01acf254fb58c93327640d131",
+          "arguments": [
+            "path"
+          ],
+          "imports": {
+            "hashlib": "import hashlib"
+          },
+          "module_dependencies": [],
+          "unresolved": [],
+          "calls": [
+            "f.read",
+            "h.hexdigest",
+            "h.update",
+            "hashlib.sha256",
+            "path.open"
+          ]
+        },
+        "parse_vector": {
+          "lines": [
+            153,
+            189
+          ],
+          "sha256": "ce558c6e3fbe7bdf56ae1812126c221a8376030de94d5fff669230753381fb8c",
+          "arguments": [
+            "text",
+            "labels"
+          ],
+          "imports": {
+            "np": "import numpy"
+          },
+          "module_dependencies": [
+            "NUM_RE"
+          ],
+          "unresolved": [],
+          "calls": [
+            "NUM_RE.findall",
+            "any",
+            "float",
+            "len",
+            "line.split",
+            "np.asarray",
+            "text.splitlines"
+          ]
+        },
+        "parse_base": {
+          "lines": [
+            192,
+            234
+          ],
+          "sha256": "791667e1b77c87928fedf60bdbbf3e1d69665daa544cf0e75f12355fae2ef5ee",
+          "arguments": [
+            "path"
+          ],
+          "imports": {
+            "np": "import numpy"
+          },
+          "module_dependencies": [
+            "parse_vector"
+          ],
+          "unresolved": [],
+          "calls": [
+            "RuntimeError",
+            "np.all",
+            "np.isfinite",
+            "parse_vector",
+            "path.read_text"
+          ]
+        },
+        "source_path_from_entry": {
+          "lines": [
+            237,
+            267
+          ],
+          "sha256": "3573dac78ffa213e10350c60a4c670bbd8f1e84ecf31f0ccadce1a057ecce3fd",
+          "arguments": [
+            "entry"
+          ],
+          "imports": {
+            "Path": "from pathlib import Path"
+          },
+          "module_dependencies": [],
+          "unresolved": [],
+          "calls": [
+            "Path",
+            "entry.get",
+            "isinstance"
+          ]
+        },
+        "generate_one": {
+          "lines": [
+            471,
+            634
+          ],
+          "sha256": "ae32bd25bf730ef39e162cda192e837918a0d5b2845c72e98a71f43f0b7af40e",
+          "arguments": [
+            "pair"
+          ],
+          "imports": {
+            "os": "import os",
+            "subprocess": "import subprocess",
+            "time": "import time"
+          },
+          "module_dependencies": [
+            "BASE_ORBIT",
+            "GEN",
+            "LOG",
+            "PAIR_RE",
+            "RSLC",
+            "parse_base",
+            "sha256"
+          ],
+          "unresolved": [],
+          "calls": [
+            "B.tolist",
+            "Br.tolist",
+            "PAIR_RE.match",
+            "RuntimeError",
+            "log.write_text",
+            "m.group",
+            "os.replace",
+            "parse_base",
+            "sha256",
+            "str",
+            "subprocess.run",
+            "time.perf_counter",
+            "tmp.exists",
+            "tmp.is_file",
+            "tmp.unlink"
+          ]
+        }
+      }
+    },
+    "k": {
+      "path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/scla_k.py",
+      "sha256": "435ca04ba3dd11f153465935af7c2424d6465983f24f567c62852c64dad731f4",
+      "functions": {
+        "read_par": {
+          "lines": [
+            147,
+            167
+          ],
+          "sha256": "f336c07a4098f49f32ee45598333b12ac5c494c034c32b17d056417b792a298e",
+          "arguments": [
+            "path"
+          ],
+          "imports": {},
+          "module_dependencies": [],
+          "unresolved": [],
+          "calls": [
+            "line.split",
+            "path.read_text",
+            "rhs.strip"
+          ]
+        },
+        "scalar_from_par": {
+          "lines": [
+            170,
+            195
+          ],
+          "sha256": "350decb09f44d47c5de59aac4dbe7f250d8f04bace2bf9d6f86ea9e5868978ba",
+          "arguments": [
+            "d",
+            "keys"
+          ],
+          "imports": {},
+          "module_dependencies": [
+            "NUM_RE"
+          ],
+          "unresolved": [],
+          "calls": [
+            "KeyError",
+            "NUM_RE.search",
+            "d.get",
+            "float",
+            "key.lower",
+            "m.group"
+          ]
+        },
+        "parse_vector": {
+          "lines": [
+            198,
+            234
+          ],
+          "sha256": "0601d7f47c5f3336c1474393dd8bce1dd341b3ace7c5d0c6f43b91d8afc462eb",
+          "arguments": [
+            "text",
+            "labels"
+          ],
+          "imports": {
+            "np": "import numpy"
+          },
+          "module_dependencies": [
+            "NUM_RE"
+          ],
+          "unresolved": [],
+          "calls": [
+            "NUM_RE.findall",
+            "any",
+            "float",
+            "len",
+            "line.split",
+            "np.asarray",
+            "text.splitlines"
+          ]
+        },
+        "parse_base": {
+          "lines": [
+            237,
+            278
+          ],
+          "sha256": "afc38ab84d516993ab744f4bd83671863db69cb81d7461054b99037352e27eef",
+          "arguments": [
+            "path"
+          ],
+          "imports": {
+            "np": "import numpy"
+          },
+          "module_dependencies": [
+            "parse_vector"
+          ],
+          "unresolved": [],
+          "calls": [
+            "RuntimeError",
+            "np.all",
+            "np.isfinite",
+            "parse_vector",
+            "path.read_text"
+          ]
+        },
+        "path_from_source_entry": {
+          "lines": [
+            281,
+            309
+          ],
+          "sha256": "1fce469c88374563a0c78dc89822306787bbb218960ec6fa763b752b180691b2",
+          "arguments": [
+            "entry"
+          ],
+          "imports": {
+            "Path": "from pathlib import Path"
+          },
+          "module_dependencies": [],
+          "unresolved": [],
+          "calls": [
+            "Path",
+            "entry.get",
+            "isinstance"
+          ]
+        },
+        "pair_orientation": {
+          "lines": [
+            312,
+            352
+          ],
+          "sha256": "e04cef3e6592ca88cdd4d7c0914ada3a2e541f72e575c376b4739dc57c9bf599",
+          "arguments": [
+            "path",
+            "date_i",
+            "date_j"
+          ],
+          "imports": {},
+          "module_dependencies": [
+            "PAIR_RE"
+          ],
+          "unresolved": [],
+          "calls": [
+            "PAIR_RE.search",
+            "RuntimeError",
+            "m.group",
+            "str"
+          ]
+        },
+        "ensure_catalog": {
+          "lines": [
+            417,
+            719
+          ],
+          "sha256": "87e21be81d7b714fa8290cca1a268bdc79f5dbf06ee4dc247aefe33ca4581695",
+          "arguments": [],
+          "imports": {
+            "Path": "from pathlib import Path",
+            "json": "import json",
+            "np": "import numpy"
+          },
+          "module_dependencies": [
+            "CATALOG",
+            "CONTRACT",
+            "GENERATED",
+            "network",
+            "pair_orientation",
+            "parse_base",
+            "path_from_source_entry"
+          ],
+          "unresolved": [],
+          "calls": [
+            "B.tolist",
+            "Br.tolist",
+            "CATALOG.is_file",
+            "CATALOG.parent.mkdir",
+            "CATALOG.read_text",
+            "CATALOG.write_text",
+            "CONTRACT.is_file",
+            "CONTRACT.read_text",
+            "FileNotFoundError",
+            "Path",
+            "RuntimeError",
+            "contract.get",
+            "enumerate",
+            "int",
+            "isinstance",
+            "json.dumps",
+            "json.loads",
+            "len",
+            "np.allclose",
+            "obj.get",
+            "p.is_file",
+            "pair_orientation",
+            "parse_base",
+            "path_from_source_entry",
+            "paths.append",
+            "q.is_file",
+            "q.resolve",
+            "row.get",
+            "rows.append",
+            "set",
+            "sorted",
+            "sources.get",
+            "str"
+          ]
+        },
+        "geometry_factors": {
+          "lines": [
+            1228,
+            1319
+          ],
+          "sha256": "f4693da521ad082f564b78c9a8014322f510b3f692e0cf4d22170321346db29f",
+          "arguments": [
+            "row_chunk",
+            "col_chunk"
+          ],
+          "imports": {
+            "np": "import numpy"
+          },
+          "module_dependencies": [
+            "azimuth_looks",
+            "earth_radius",
+            "mean_azimuth",
+            "near_range",
+            "prf",
+            "range_looks",
+            "range_spacing",
+            "sar_to_earth"
+          ],
+          "unresolved": [],
+          "calls": [
+            "np.arccos",
+            "np.clip",
+            "np.cos",
+            "np.sin"
+          ]
+        }
+      }
+    },
+    "c": {
+      "path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/scla_c.py",
+      "sha256": "967d439c53de5ea5ac14f82ad58a4da338ff97cbe3520b38d4b14878aba00eb2",
+      "functions": {
+        "read_par": {
+          "lines": [
+            123,
+            143
+          ],
+          "sha256": "98816c3f7662404f71c152e7f6caaa77c171fa69ae13e2f1cb2bcafea6067f32",
+          "arguments": [
+            "path"
+          ],
+          "imports": {},
+          "module_dependencies": [],
+          "unresolved": [],
+          "calls": [
+            "line.split",
+            "path.read_text",
+            "rhs.strip"
+          ]
+        },
+        "par_scalar": {
+          "lines": [
+            146,
+            171
+          ],
+          "sha256": "daec33dcad9b4b9d67520f70a666818c8de9fec377dc752e0a7c14e9926a6b24",
+          "arguments": [
+            "pars",
+            "keys"
+          ],
+          "imports": {},
+          "module_dependencies": [
+            "NUM_RE"
+          ],
+          "unresolved": [],
+          "calls": [
+            "KeyError",
+            "NUM_RE.search",
+            "float",
+            "key.lower",
+            "m.group",
+            "pars.get"
+          ]
+        },
+        "gls_projector": {
+          "lines": [
+            174,
+            220
+          ],
+          "sha256": "3b58fdb71c7da0a93dd2ab5c60ab7a9afe4c09be2cc3162c05f514d675261c37",
+          "arguments": [
+            "A",
+            "covariance"
+          ],
+          "imports": {
+            "np": "import numpy"
+          },
+          "module_dependencies": [],
+          "unresolved": [],
+          "calls": [
+            "RuntimeError",
+            "np.asarray",
+            "np.linalg.matrix_rank",
+            "np.linalg.solve"
+          ]
+        },
+        "geometry_factors": {
+          "lines": [
+            901,
+            989
+          ],
+          "sha256": "cd0399b21314a970dc766cfc505b1d82c36f06e6f00038d5fb1836d647b3ebcd",
+          "arguments": [
+            "rr",
+            "cc"
+          ],
+          "imports": {
+            "np": "import numpy"
+          },
+          "module_dependencies": [
+            "azimuth_looks",
+            "earth_radius",
+            "mean_azimuth",
+            "near_range",
+            "prf",
+            "range_looks",
+            "range_spacing",
+            "sar_to_earth"
+          ],
+          "unresolved": [],
+          "calls": [
+            "np.arccos",
+            "np.clip",
+            "np.cos",
+            "np.sin"
+          ]
+        },
+        "baseline_c_projection": {
+          "lines": [
+            1025,
+            1063
+          ],
+          "sha256": "e796d5b9fc1c300e71553ee6f7caa699d25dce1e5737849d2b081ddf8603addc",
+          "arguments": [
+            "rr",
+            "cc"
+          ],
+          "imports": {},
+          "module_dependencies": [
+            "CW_C",
+            "CW_CR",
+            "CW_N",
+            "CW_NR",
+            "geometry_factors"
+          ],
+          "unresolved": [],
+          "calls": [
+            "geometry_factors"
+          ]
+        }
+      }
+    }
+  }
+}

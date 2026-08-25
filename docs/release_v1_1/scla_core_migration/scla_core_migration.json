@@ -1,0 +1,26 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-scla-core",
+  "status": "PASS",
+  "modules": {
+    "baseline": "pypsds/corrections/scla_baseline.py",
+    "k": "pypsds/corrections/scla_k.py",
+    "c": "pypsds/corrections/scla_c.py"
+  },
+  "lineage": {
+    "baseline_sha256": "c943160b85444c0cbc99482c9d0a8d01c39dbb6749c676f2b1d0275f4389bb97",
+    "k_sha256": "435ca04ba3dd11f153465935af7c2424d6465983f24f567c62852c64dad731f4",
+    "c_sha256": "967d439c53de5ea5ac14f82ad58a4da338ff97cbe3520b38d4b14878aba00eb2"
+  },
+  "adaptations": {
+    "geometry_factors": "historical geometry globals converted to explicit required keyword arguments",
+    "baseline_c_projection": "historical CW coefficients and geometry globals converted to explicit required keyword arguments",
+    "generate_one": "deferred to stage orchestration",
+    "ensure_catalog": "deferred to stage orchestration"
+  },
+  "scientific_algorithm_change": false,
+  "geometry_modified": false,
+  "gacos_modified": false,
+  "pipeline_modified": false,
+  "production_stage_count": 33,
+  "next": "standalone SCLA production orchestration and full-scene parity"
+}

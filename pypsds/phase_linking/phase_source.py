@@ -662,12 +662,18 @@ class GammaStreamingPhaseSource:
     # Cell computation
     # --------------------------------------------------------
 
+
     def _correct_raw_cell(
         self,
         *,
         key,
         raw,
+        date_indices,
     ):
+        """
+        Correct one canonical spatial cell for only the
+        requested acquisition indices.
+        """
 
         (
             global_r0,
@@ -676,6 +682,17 @@ class GammaStreamingPhaseSource:
             cols,
         ) = self._cell_shape(
             key
+        )
+
+        date_indices = tuple(
+            int(x)
+            for x in date_indices
+        )
+
+        date_tag = (
+            f"d{date_indices[0]}_"
+            f"{date_indices[-1]}_"
+            f"n{len(date_indices)}"
         )
 
         (
@@ -688,8 +705,14 @@ class GammaStreamingPhaseSource:
             global_col0=global_c0,
             tile_label=(
                 f"dscanonical_"
-                f"r{global_r0}_{global_r0+rows}_"
-                f"c{global_c0}_{global_c0+cols}"
+                f"r{global_r0}_"
+                f"{global_r0+rows}_"
+                f"c{global_c0}_"
+                f"{global_c0+cols}_"
+                f"{date_tag}"
+            ),
+            date_indices=(
+                date_indices
             ),
         )
 
@@ -711,7 +734,7 @@ class GammaStreamingPhaseSource:
 
         local_r0, local_c0 = key
 
-        cell = _CanonicalCell(
+        return _CanonicalCell(
             row0=local_r0,
             row1=(
                 local_r0
@@ -736,36 +759,41 @@ class GammaStreamingPhaseSource:
             ),
         )
 
-        return cell
 
     def _compute_missing(
         self,
         missing,
+        *,
+        date_indices,
     ):
         """
-        Compute canonical misses in waves.
+        Compute canonical cache misses for one temporal subset.
 
-        I/O:
-            Cells are pre-read sequentially.
-            Each GammaStack.read_window() may use date-parallel
-            io_workers internally.
+        P11B-1:
+          RSLC read_window() receives date_indices.
+          GAMMA correction receives the same date_indices.
 
-        GAMMA:
-            A wave then runs spatial_workers cells concurrently,
-            each cell using pair_workers phase_sim processes.
-
-        This avoids nesting:
-            spatial_workers x io_workers
-        filesystem read thread pools.
+        Therefore sequential stage M reads/corrects only its
+        real acquisitions, not the complete stack.
         """
+
+        date_indices = tuple(
+            int(x)
+            for x in date_indices
+        )
 
         computed = {}
 
         total_read = 0.0
         total_correction = 0.0
 
-        phase_min = float("inf")
-        phase_max = float("-inf")
+        phase_min = float(
+            "inf"
+        )
+
+        phase_max = float(
+            "-inf"
+        )
 
         for start in range(
             0,
@@ -780,9 +808,10 @@ class GammaStreamingPhaseSource:
                 self.spatial_workers
             ]
 
-            # ------------------------------------------------
-            # Stage A: pre-read canonical RSLC cells.
-            # ------------------------------------------------
+            # ----------------------------------------------------
+            # Stage A:
+            # read ONLY selected acquisitions.
+            # ----------------------------------------------------
 
             raw_wave = {}
 
@@ -807,6 +836,9 @@ class GammaStreamingPhaseSource:
                         col0=global_c0,
                         rows=rows,
                         cols=cols,
+                        date_indices=list(
+                            date_indices
+                        ),
                     )
                     .astype(
                         np.complex64,
@@ -820,9 +852,10 @@ class GammaStreamingPhaseSource:
                     t0
                 )
 
-            # ------------------------------------------------
-            # Stage B: canonical cells concurrently.
-            # ------------------------------------------------
+            # ----------------------------------------------------
+            # Stage B:
+            # correct only selected acquisitions.
+            # ----------------------------------------------------
 
             t0 = perf_counter()
 
@@ -842,6 +875,9 @@ class GammaStreamingPhaseSource:
                         raw=raw_wave[
                             key
                         ],
+                        date_indices=(
+                            date_indices
+                        ),
                     ):
                     key
                     for key in wave
@@ -861,8 +897,14 @@ class GammaStreamingPhaseSource:
                         key
                     ] = cell
 
+                    cache_key = (
+                        int(key[0]),
+                        int(key[1]),
+                        date_indices,
+                    )
+
                     self._cache_put(
-                        key,
+                        cache_key,
                         cell,
                     )
 
@@ -890,18 +932,21 @@ class GammaStreamingPhaseSource:
                 t0
             )
 
-            # Raw data are no longer needed.
             raw_wave.clear()
 
         if not np.isfinite(
             phase_min
         ):
-            phase_min = float("nan")
+            phase_min = float(
+                "nan"
+            )
 
         if not np.isfinite(
             phase_max
         ):
-            phase_max = float("nan")
+            phase_max = float(
+                "nan"
+            )
 
         return (
             computed,
@@ -915,6 +960,7 @@ class GammaStreamingPhaseSource:
     # Public tile request
     # --------------------------------------------------------
 
+
     def read_tile(
         self,
         *,
@@ -922,7 +968,18 @@ class GammaStreamingPhaseSource:
         local_row1: int,
         local_col0: int,
         local_col1: int,
+        date_indices=None,
     ) -> PhaseTile:
+        """
+        Read one corrected spatial tile.
+
+        P11B-1:
+            date_indices defines which global acquisitions are
+            materialized.
+
+        If date_indices=None the original all-date behavior is
+        retained.
+        """
 
         if (
             local_row1
@@ -938,6 +995,50 @@ class GammaStreamingPhaseSource:
                 "invalid requested phase tile"
             )
 
+        if date_indices is None:
+
+            date_indices = tuple(
+                range(
+                    self.ndate
+                )
+            )
+
+        else:
+
+            date_indices = tuple(
+                int(x)
+                for x
+                in date_indices
+            )
+
+        if not date_indices:
+
+            raise ValueError(
+                "date_indices must not be empty"
+            )
+
+        if len(
+            set(date_indices)
+        ) != len(
+            date_indices
+        ):
+
+            raise ValueError(
+                "date_indices contains duplicates"
+            )
+
+        for x in date_indices:
+
+            if (
+                x < 0
+                or
+                x >= self.ndate
+            ):
+                raise ValueError(
+                    "date index outside stack: "
+                    f"{x}"
+                )
+
         rows = (
             local_row1
             -
@@ -950,11 +1051,13 @@ class GammaStreamingPhaseSource:
             local_col0
         )
 
-        keys = self._canonical_keys(
-            local_row0=local_row0,
-            local_row1=local_row1,
-            local_col0=local_col0,
-            local_col1=local_col1,
+        spatial_keys = (
+            self._canonical_keys(
+                local_row0=local_row0,
+                local_row1=local_row1,
+                local_col0=local_col0,
+                local_col1=local_col1,
+            )
         )
 
         cells = {}
@@ -963,10 +1066,16 @@ class GammaStreamingPhaseSource:
 
         hits = 0
 
-        for key in keys:
+        for key in spatial_keys:
+
+            cache_key = (
+                int(key[0]),
+                int(key[1]),
+                date_indices,
+            )
 
             cell = self._cache_get(
-                key
+                cache_key
             )
 
             if cell is None:
@@ -994,8 +1103,13 @@ class GammaStreamingPhaseSource:
         read_seconds = 0.0
         correction_seconds = 0.0
 
-        phase_min = float("nan")
-        phase_max = float("nan")
+        phase_min = float(
+            "nan"
+        )
+
+        phase_max = float(
+            "nan"
+        )
 
         if missing:
 
@@ -1006,22 +1120,27 @@ class GammaStreamingPhaseSource:
                 phase_min,
                 phase_max,
             ) = self._compute_missing(
-                missing
+                missing,
+                date_indices=(
+                    date_indices
+                ),
             )
 
             cells.update(
                 created
             )
 
-        # ----------------------------------------------------
-        # Assemble only the requested DS tile+halo.
-        # ----------------------------------------------------
+        # --------------------------------------------------------
+        # Mosaic only requested dates.
+        # --------------------------------------------------------
 
         yxt = np.empty(
             (
                 rows,
                 cols,
-                self.ndate,
+                len(
+                    date_indices
+                ),
             ),
             dtype=np.complex64,
         )
@@ -1042,7 +1161,7 @@ class GammaStreamingPhaseSource:
             dtype=np.bool_,
         )
 
-        for key in keys:
+        for key in spatial_keys:
 
             cell = cells[
                 key
@@ -1126,12 +1245,14 @@ class GammaStreamingPhaseSource:
             yxt[
                 dr0:dr1,
                 dc0:dc1,
-                :
-            ] = cell.yxt[
-                sr0:sr1,
-                sc0:sc1,
-                :
-            ]
+                :,
+            ] = (
+                cell.yxt[
+                    sr0:sr1,
+                    sc0:sc1,
+                    :,
+                ]
+            )
 
             geometry_valid[
                 dr0:dr1,
@@ -1153,15 +1274,21 @@ class GammaStreamingPhaseSource:
         ):
 
             raise RuntimeError(
-                "canonical phase mosaic did not "
-                "fully cover requested tile"
+                "canonical phase mosaic "
+                "did not fully cover "
+                "requested tile"
             )
 
         log(
             "Canonical phase tile "
-            f"r{local_row0}:{local_row1} "
-            f"c{local_col0}:{local_col1}: "
-            f"cells={len(keys)}, "
+            f"r{local_row0}:"
+            f"{local_row1} "
+            f"c{local_col0}:"
+            f"{local_col1}: "
+            f"dates={len(date_indices)} "
+            f"[{date_indices[0]}.."
+            f"{date_indices[-1]}], "
+            f"cells={len(spatial_keys)}, "
             f"hits={hits}, "
             f"misses={misses}, "
             f"read={read_seconds:.2f}s, "
@@ -1185,7 +1312,7 @@ class GammaStreamingPhaseSource:
             phase_min=phase_min,
             phase_max=phase_max,
             canonical_cells=len(
-                keys
+                spatial_keys
             ),
             cache_hits=hits,
             cache_misses=misses,

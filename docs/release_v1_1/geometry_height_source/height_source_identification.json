@@ -1,0 +1,114 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-height-source-identification",
+  "geometry": {
+    "reference_date": "20151212",
+    "geometry_par": "/home/ubuntu/Downloads/DEM_prep/20151212_4_1.vv.mli.par",
+    "radar_length": 600,
+    "radar_width": 500
+  },
+  "sample_count": 5120,
+  "candidate_count": 9,
+  "candidates": [
+    {
+      "path": "/home/ubuntu/Downloads/DEM_prep/20151212.hgt",
+      "data2pt_ok": true,
+      "exact": true,
+      "nonzero_difference_count": 0,
+      "max_abs_error_m": 0.0,
+      "minimum": 49.09114074707031,
+      "median": 219.75167846679688,
+      "maximum": 731.4588012695312
+    },
+    {
+      "path": "/home/ubuntu/Downloads/DEM_prep/20151212.pix_gamma0",
+      "data2pt_ok": true,
+      "exact": false,
+      "nonzero_difference_count": 5120,
+      "max_abs_error_m": 1161.9047546386719,
+      "minimum": 16.40481185913086,
+      "median": 179.42707061767578,
+      "maximum": 1621.79736328125
+    },
+    {
+      "path": "/home/ubuntu/Downloads/DEM_prep/20151212.pixel_area.hgt",
+      "data2pt_ok": true,
+      "exact": false,
+      "nonzero_difference_count": 5120,
+      "max_abs_error_m": 19.2965087890625,
+      "minimum": 49.08304214477539,
+      "median": 219.76276397705078,
+      "maximum": 731.3764038085938
+    },
+    {
+      "path": "/home/ubuntu/Downloads/DEM_prep/20151212_4_1.inc_ellipsoid_gamma_rdc",
+      "data2pt_ok": true,
+      "exact": false,
+      "nonzero_difference_count": 5120,
+      "max_abs_error_m": 730.8367205858231,
+      "minimum": 0.613386869430542,
+      "median": 0.6179281175136566,
+      "maximum": 0.6236365437507629
+    },
+    {
+      "path": "/home/ubuntu/Downloads/DEM_prep/20151212_4_1.inc_rdc",
+      "data2pt_ok": true,
+      "exact": false,
+      "nonzero_difference_count": 5120,
+      "max_abs_error_m": 730.8089232444763,
+      "minimum": 0.11032285541296005,
+      "median": 0.6385584473609924,
+      "maximum": 1.5098357200622559
+    },
+    {
+      "path": "/home/ubuntu/Downloads/DEM_prep/20151212_4_1.lv_theta_rdc",
+      "data2pt_ok": true,
+      "exact": false,
+      "nonzero_difference_count": 5120,
+      "max_abs_error_m": 730.5105555057526,
+      "minimum": 0.9466206431388855,
+      "median": 0.9522787928581238,
+      "maximum": 0.9568201303482056
+    },
+    {
+      "path": "/home/ubuntu/Downloads/DEM_prep/20151212_4_1.rdc.lat",
+      "data2pt_ok": true,
+      "exact": false,
+      "nonzero_difference_count": 5120,
+      "max_abs_error_m": 693.3472480773926,
+      "minimum": 38.028079986572266,
+      "median": 38.07281303405762,
+      "maximum": 38.116310119628906
+    },
+    {
+      "path": "/home/ubuntu/Downloads/DEM_prep/20151212_4_1.rdc.lon",
+      "data2pt_ok": true,
+      "exact": false,
+      "nonzero_difference_count": 5120,
+      "max_abs_error_m": 707.8308086395264,
+      "minimum": 23.605083465576172,
+      "median": 23.658157348632812,
+      "maximum": 23.707733154296875
+    },
+    {
+      "path": "/home/ubuntu/Downloads/DEM_prep/20151212_4_1.vv.mli",
+      "data2pt_ok": true,
+      "exact": false,
+      "nonzero_difference_count": 5120,
+      "max_abs_error_m": 133262773.32928467,
+      "minimum": 2655.25,
+      "median": 116260.25,
+      "maximum": 133262952.0
+    }
+  ],
+  "unique_height_source": "/home/ubuntu/Downloads/DEM_prep/20151212.hgt",
+  "full_scene": {
+    "point_count": 881315,
+    "exact_array_equal": true,
+    "nonzero_difference_count": 0,
+    "max_abs_error_m": 0.0,
+    "minimum_m": 47.094390869140625,
+    "median_m": 217.57887268066406,
+    "maximum_m": 734.9635009765625
+  },
+  "pass": true
+}

@@ -1,0 +1,865 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-public-orchestration-contract",
+  "status": "PASS",
+  "current_pipeline": {
+    "count": 33,
+    "stages": [
+      {
+        "index": 1,
+        "type": "Stage",
+        "name": "ds_statistics",
+        "script": "build_ds_statistics.py"
+      },
+      {
+        "index": 2,
+        "type": "Stage",
+        "name": "phase_cache",
+        "script": "build_phase_cache.py"
+      },
+      {
+        "index": 3,
+        "type": "Stage",
+        "name": "exact_support_cache",
+        "script": "build_exact_support_cache.py"
+      },
+      {
+        "index": 4,
+        "type": "Stage",
+        "name": "phase_linking",
+        "script": "run_phase_linking.py"
+      },
+      {
+        "index": 5,
+        "type": "Stage",
+        "name": "ds_selection",
+        "script": "select_ds.py"
+      },
+      {
+        "index": 6,
+        "type": "Stage",
+        "name": "ps_finalize",
+        "script": "finalize_ps_geometry.py"
+      },
+      {
+        "index": 7,
+        "type": "Stage",
+        "name": "point_stack",
+        "script": "build_point_phase_stack.py"
+      },
+      {
+        "index": 8,
+        "type": "Stage",
+        "name": "network_prepare",
+        "script": "prepare_temporal_network.py"
+      },
+      {
+        "index": 9,
+        "type": "Stage",
+        "name": "network_build",
+        "script": "build_temporal_network.py"
+      },
+      {
+        "index": 10,
+        "type": "Stage",
+        "name": "network_cycle_quality",
+        "script": "assess_network_cycle_quality.py"
+      },
+      {
+        "index": 11,
+        "type": "Stage",
+        "name": "network_finalize",
+        "script": "finalize_temporal_network.py"
+      },
+      {
+        "index": 12,
+        "type": "Stage",
+        "name": "virtual_ifg_quality",
+        "script": "assess_virtual_ifg_quality.py"
+      },
+      {
+        "index": 13,
+        "type": "Stage",
+        "name": "spatial_graph_quality",
+        "script": "assess_spatial_graph_quality.py"
+      },
+      {
+        "index": 14,
+        "type": "Stage",
+        "name": "spatial_bridge_quality",
+        "script": "assess_spatial_bridge_quality.py"
+      },
+      {
+        "index": 15,
+        "type": "Stage",
+        "name": "spatial_component_quality",
+        "script": "assess_spatial_components.py"
+      },
+      {
+        "index": 16,
+        "type": "Stage",
+        "name": "spatial_anchor_quality",
+        "script": "assess_spatial_anchor_quality.py"
+      },
+      {
+        "index": 17,
+        "type": "Stage",
+        "name": "spatial_anchor_summary",
+        "script": "summarize_spatial_anchor_quality.py"
+      },
+      {
+        "index": 18,
+        "type": "Stage",
+        "name": "spatial_local_graph_quality",
+        "script": "assess_local_spatial_graph.py"
+      },
+      {
+        "index": 19,
+        "type": "Stage",
+        "name": "spatial_graph",
+        "script": "build_spatial_graph.py"
+      },
+      {
+        "index": 20,
+        "type": "Stage",
+        "name": "spatial_gradient_quality",
+        "script": "assess_spatial_phase_gradient.py"
+      },
+      {
+        "index": 21,
+        "type": "Stage",
+        "name": "unwrap_policy",
+        "script": "finalize_unwrap_policy.py"
+      },
+      {
+        "index": 22,
+        "type": "Stage",
+        "name": "unwrap",
+        "script": "unwrap_all_ifgs.py"
+      },
+      {
+        "index": 23,
+        "type": "Stage",
+        "name": "unwrap_severity_quality",
+        "script": "assess_unwrap_severity.py"
+      },
+      {
+        "index": 24,
+        "type": "Stage",
+        "name": "unwrap_conflict_quality",
+        "script": "assess_unwrap_conflicts.py"
+      },
+      {
+        "index": 25,
+        "type": "Stage",
+        "name": "unwrap_acquisition_quality",
+        "script": "assess_unwrap_acquisition_quality.py"
+      },
+      {
+        "index": 26,
+        "type": "Stage",
+        "name": "temporal_closure",
+        "script": "assess_temporal_integer_closure.py"
+      },
+      {
+        "index": 27,
+        "type": "Stage",
+        "name": "temporal_integer_candidate",
+        "script": "build_temporal_integer_candidates.py"
+      },
+      {
+        "index": 28,
+        "type": "Stage",
+        "name": "temporal_candidate_spatial_quality",
+        "script": "validate_temporal_integer_candidates.py"
+      },
+      {
+        "index": 29,
+        "type": "Stage",
+        "name": "unwrap_signature_quality",
+        "script": "assess_unwrap_signature_feasibility.py"
+      },
+      {
+        "index": 30,
+        "type": "Stage",
+        "name": "unwrap_finalize",
+        "script": "finalize_unwrap_solution.py"
+      },
+      {
+        "index": 31,
+        "type": "Stage",
+        "name": "timeseries_inversion",
+        "script": "invert_timeseries.py"
+      },
+      {
+        "index": 32,
+        "type": "Stage",
+        "name": "point_geometry",
+        "script": "build_point_geometry.py"
+      },
+      {
+        "index": 33,
+        "type": "Stage",
+        "name": "reference",
+        "script": "apply_reference.py"
+      }
+    ],
+    "tail": [
+      "temporal_candidate_spatial_quality",
+      "unwrap_signature_quality",
+      "unwrap_finalize",
+      "timeseries_inversion",
+      "point_geometry",
+      "reference"
+    ]
+  },
+  "pipeline_api": {
+    "Stage": {
+      "signature": "(name: 'str', script: 'str') -> None",
+      "fields": [
+        {
+          "name": "name",
+          "default": "<dataclasses._MISSING_TYPE object at 0x7fef8f5d3140>"
+        },
+        {
+          "name": "script",
+          "default": "<dataclasses._MISSING_TYPE object at 0x7fef8f5d3140>"
+        }
+      ]
+    },
+    "StageContract": {
+      "signature": "(name: 'str', required_inputs: 'tuple[str, ...]' = (), required_outputs: 'tuple[str, ...]' = (), validated: 'bool' = False, cacheable: 'bool' = False) -> None",
+      "fields": [
+        {
+          "name": "name",
+          "default": "<dataclasses._MISSING_TYPE object at 0x7fef8f5d3140>"
+        },
+        {
+          "name": "required_inputs",
+          "default": "()"
+        },
+        {
+          "name": "required_outputs",
+          "default": "()"
+        },
+        {
+          "name": "validated",
+          "default": "False"
+        },
+        {
+          "name": "cacheable",
+          "default": "False"
+        }
+      ]
+    }
+  },
+  "project_modules": [
+    "pypsds.project",
+    "pypsds.config"
+  ],
+  "reference_geometry_stage_audit": {
+    "pypsds/stages/build_point_geometry.py": [
+      {
+        "line": 13,
+        "text": "    compute_incidence_rad,"
+      },
+      {
+        "line": 64,
+        "text": "        / \"strict_point_ids.npy\""
+      },
+      {
+        "line": 85,
+        "text": "    strict_ids = np.load("
+      },
+      {
+        "line": 89,
+        "text": "    all_rows = np.load("
+      },
+      {
+        "line": 93,
+        "text": "    all_cols = np.load("
+      },
+      {
+        "line": 100,
+        "text": "            \"strict_point_ids.npy must be 1-D.\""
+      },
+      {
+        "line": 134,
+        "text": "        / \"point_geometry\""
+      },
+      {
+        "line": 163,
+        "text": "    incidence = compute_incidence_rad("
+      },
+      {
+        "line": 164,
+        "text": "        longitude_deg=geo.longitude_deg,"
+      },
+      {
+        "line": 165,
+        "text": "        latitude_deg=geo.latitude_deg,"
+      },
+      {
+        "line": 168,
+        "text": "        reference_rslc_par="
+      },
+      {
+        "line": 169,
+        "text": "            geometry.reference_rslc_par,"
+      },
+      {
+        "line": 174,
+        "text": "            \"Invalid longitude/latitude in strict domain.\""
+      },
+      {
+        "line": 177,
+        "text": "    np.save("
+      },
+      {
+        "line": 181,
+        "text": "    np.save("
+      },
+      {
+        "line": 185,
+        "text": "    np.save("
+      },
+      {
+        "line": 186,
+        "text": "        out / \"longitude_deg.npy\","
+      },
+      {
+        "line": 187,
+        "text": "        geo.longitude_deg,"
+      },
+      {
+        "line": 189,
+        "text": "    np.save("
+      },
+      {
+        "line": 190,
+        "text": "        out / \"latitude_deg.npy\","
+      },
+      {
+        "line": 191,
+        "text": "        geo.latitude_deg,"
+      },
+      {
+        "line": 193,
+        "text": "    np.save("
+      },
+      {
+        "line": 200,
+        "text": "    np.save("
+      },
+      {
+        "line": 201,
+        "text": "        out / \"incidence_rad.npy\","
+      },
+      {
+        "line": 202,
+        "text": "        incidence,"
+      },
+      {
+        "line": 205,
+        "text": "    manifest = {"
+      },
+      {
+        "line": 212,
+        "text": "        \"reference_date\":"
+      },
+      {
+        "line": 213,
+        "text": "            geometry.reference_date,"
+      },
+      {
+        "line": 216,
+        "text": "            \"strict_point_ids\":"
+      },
+      {
+        "line": 225,
+        "text": "            \"reference_rslc_par\":"
+      },
+      {
+        "line": 227,
+        "text": "                    geometry.reference_rslc_par"
+      },
+      {
+        "line": 235,
+        "text": "            \"longitude_raster\":"
+      },
+      {
+        "line": 237,
+        "text": "                    geometry.longitude_raster"
+      },
+      {
+        "line": 240,
+        "text": "            \"latitude_raster\":"
+      },
+      {
+        "line": 242,
+        "text": "                    geometry.latitude_raster"
+      },
+      {
+        "line": 263,
+        "text": "            \"longitude\":"
+      },
+      {
+        "line": 264,
+        "text": "                \"longitude_deg.npy\","
+      },
+      {
+        "line": 266,
+        "text": "            \"latitude\":"
+      },
+      {
+        "line": 267,
+        "text": "                \"latitude_deg.npy\","
+      },
+      {
+        "line": 272,
+        "text": "            \"incidence\":"
+      },
+      {
+        "line": 273,
+        "text": "                \"incidence_rad.npy\","
+      },
+      {
+        "line": 277,
+        "text": "            \"longitude_min\":"
+      },
+      {
+        "line": 279,
+        "text": "                    geo.longitude_deg.min()"
+      },
+      {
+        "line": 282,
+        "text": "            \"longitude_max\":"
+      },
+      {
+        "line": 284,
+        "text": "                    geo.longitude_deg.max()"
+      },
+      {
+        "line": 287,
+        "text": "            \"latitude_min\":"
+      },
+      {
+        "line": 289,
+        "text": "                    geo.latitude_deg.min()"
+      },
+      {
+        "line": 292,
+        "text": "            \"latitude_max\":"
+      },
+      {
+        "line": 294,
+        "text": "                    geo.latitude_deg.max()"
+      },
+      {
+        "line": 312,
+        "text": "            \"incidence_min_rad\":"
+      },
+      {
+        "line": 314,
+        "text": "                    incidence.min()"
+      },
+      {
+        "line": 317,
+        "text": "            \"incidence_median_rad\":"
+      },
+      {
+        "line": 319,
+        "text": "                    np.median(incidence)"
+      },
+      {
+        "line": 322,
+        "text": "            \"incidence_max_rad\":"
+      },
+      {
+        "line": 324,
+        "text": "                    incidence.max()"
+      },
+      {
+        "line": 329,
+        "text": "    manifest_path = ("
+      },
+      {
+        "line": 331,
+        "text": "        / \"point_geometry_manifest.json\""
+      },
+      {
+        "line": 333,
+        "text": "    manifest_path.write_text("
+      },
+      {
+        "line": 335,
+        "text": "            manifest,"
+      },
+      {
+        "line": 346,
+        "text": "    print(\"reference date :\", geometry.reference_date)"
+      },
+      {
+        "line": 350,
+        "text": "    print(\"manifest       :\", manifest_path)"
+      }
+    ]
+  },
+  "frozen_dependency_map": {
+    "gacos": [
+      "*.json",
+      "*date*.npy",
+      "*dates*.npy",
+      ".acquisition_phase_gacos_corrected_rad.tmp.npy",
+      "/home/ubuntu/Downloads/RSLC/20151212.rslc.par",
+      "P15-5B_RESIDUAL_DEM_SCLA_ESTIMATION",
+      "acquisition_phase_gacos_corrected_rad.npy",
+      "acquisition_phase_referenced_rad.npy",
+      "atmosphere-corrected referenced phase; NOT final geodetic LOS",
+      "base.npy",
+      "corrected reference median failed: ",
+      "corrected reference median invariant failed",
+      "fx.npy",
+      "fy.npy",
+      "gacos_corrected_phase",
+      "gacos_correction_epoch_stats.csv",
+      "gacos_correction_manifest.json",
+      "gacos_fast_smoke",
+      "gacos_geometry",
+      "gacos_grid",
+      "gacos_read_seconds",
+      "incidence_gamma_compatible_fast_rad.npy",
+      "phi_corr = phi_obs + (4*pi/lambda)*dL_ref, followed by exact same-region phase re-reference",
+      "ref_idx.npy",
+      "reference date missing: ",
+      "reference-date atmospheric delay is not zero",
+      "reference-date final phase offset is not zero",
+      "reference-index contract failed: ",
+      "reference_date",
+      "reference_dlos_epoch0_m",
+      "reference_points",
+      "referenced_timeseries",
+      "sec_inc.npy",
+      "source reference median not zero enough: "
+    ],
+    "scla_baseline": [
+      ".base",
+      ".base.tmp",
+      "92 original GAMMA .base + 16 regenerated with GAMMA base_orbit from current RSLC state vectors",
+      "RSLC",
+      "complete_108_baseline_sources.json",
+      "conflicting original .base sources for ",
+      "missing-pair/network mismatch",
+      "original GAMMA .base     :",
+      "p15_5b3_baseline_source_contract.json",
+      "p15_5b3b_regeneration_report.json",
+      "prototype_outputs/v09/scla_v09/pystamps_bridge/r3b_grid_adapter/generated_bases/current_network_missing",
+      "stamps_scla_baseline"
+    ],
+    "scla_k": [
+      ".base",
+      ".base date mismatch: ",
+      "DEM_prep",
+      "K_ps_uw_rad_per_m_bperp.npy",
+      "K_reference_mean",
+      "K_reference_median",
+      "RSLC",
+      "acquisition_bperp_m.npy",
+      "acquisition_phase_gacos_corrected_rad.npy",
+      "baseline_sm_transform_coefficients.npz",
+      "cannot determine .base orientation: ",
+      "catalog/network mismatch at edge ",
+      "complete_108_baseline_sources.json",
+      "conflicting original .base sources for ",
+      "gacos_corrected_phase",
+      "gacos_correction_manifest.json",
+      "gacos_fast_smoke",
+      "gacos_geometry",
+      "network",
+      "network date not in acquisition list: ",
+      "no readable original .base for ",
+      "p15_5b3_baseline_source_contract.json",
+      "p15_5b4_stamps_final_pass_k_manifest.json",
+      "ref_idx.npy",
+      "reference",
+      "reference K mean               :",
+      "reference K median             :",
+      "reference point count = ",
+      "scla_beta_rad_per_m_bperp.npy",
+      "stamps_scla_baseline",
+      "stamps_scla_final_pass"
+    ],
+    "scla_c": [
+      "108-IFG network contract failed",
+      "C_ps_uw_gls_contract.npz",
+      "C_ps_uw_rad.npy",
+      "K_ps_uw_rad_per_m_bperp.npy",
+      "RSLC",
+      "acquisition_phase_gacos_corrected_rad.npy",
+      "baseline_sm_transform_coefficients.npz",
+      "current_network_inversion",
+      "gacos_corrected_phase",
+      "gacos_correction_manifest.json",
+      "gacos_fast_smoke",
+      "gacos_geometry",
+      "network covariance model       :",
+      "p15_5b5_stamps_final_pass_c_manifest.json",
+      "prototype_outputs/v09/scla_v09/pystamps_bridge/r4a_stage7_contract/bridge_sm_cov_unit_ifg.npy",
+      "ref_idx.npy",
+      "reference C mean               :",
+      "reference C median             :",
+      "reference count=",
+      "reference_mean",
+      "reference_median",
+      "sm_cov_unit_ifg_geom_master.npy",
+      "stamps_scla_final_pass"
+    ],
+    "pre_scn": [
+      ".acquisition_phase_pre_scn_rad.tmp.npy",
+      "C_ps_uw_gls_contract.npz",
+      "C_ps_uw_rad.npy",
+      "K_ps_uw_rad_per_m_bperp.npy",
+      "RSLC",
+      "acquisition_phase_gacos_corrected_rad.npy",
+      "acquisition_phase_pre_scn_rad.npy",
+      "baseline_sm_transform_coefficients.npz",
+      "complete_108_baseline_sources.json",
+      "fast_vs_pystamps_Bperp_float32_max_m",
+      "fast_vs_pystamps_Bperp_float32_rms_m",
+      "fast_vs_pystamps_ph_scla_max_rad",
+      "fast_vs_pystamps_ph_scla_rms_rad",
+      "frozen_C_vs_pystamps_C_float32_max_rad",
+      "frozen_C_vs_pystamps_C_float32_rms_rad",
+      "gacos_corrected_phase",
+      "gacos_correction_manifest.json",
+      "gacos_fast_smoke",
+      "gacos_geometry",
+      "invalid .base: ",
+      "p15_5b6_pre_scn_manifest.json",
+      "preSCN_fast_vs_pystamps_max_rad",
+      "preSCN_fast_vs_pystamps_rms_rad",
+      "ref_idx.npy",
+      "reference points=",
+      "reference_epoch_mean_max_abs_rad",
+      "stamps_pre_scn_phase",
+      "stamps_scla_baseline",
+      "stamps_scla_final_pass"
+    ],
+    "scn": [
+      ".ph_hpt_rad.tmp.npy",
+      ".ph_scn_slave_rad.tmp.npy",
+      "acquisition_phase_pre_scn_rad.npy",
+      "gacos_corrected_phase",
+      "gacos_correction_manifest.json",
+      "p15_6b1_exact_engine_benchmark.json",
+      "p15_6b2_stage8_scn_manifest.json",
+      "ph_hpt_rad.npy",
+      "ph_scn_slave_rad.npy",
+      "reference seconds               :",
+      "reference_seconds",
+      "stage8_neighbor_count_r400m.npy",
+      "stamps_pre_scn_phase",
+      "stamps_sort_index.npy",
+      "stamps_stage8",
+      "stamps_xy_exact_float32_m.npy",
+      "temporal first-PS reference failed: ",
+      "temporal_reference_tolerance_rad"
+    ],
+    "final_los": [
+      ".acquisition_phase_final_rad.tmp.npy",
+      ".los_displacement_toward_satellite_m.tmp.npy",
+      ".los_displacement_toward_satellite_mm.tmp.npy",
+      "LOS temporal reference failed: ",
+      "RSLC",
+      "acquisition_phase_final_rad.npy",
+      "acquisition_phase_pre_scn_rad.npy",
+      "final reference median failed: ",
+      "final temporal reference failed: ",
+      "frozen temporal reference changed: first date=",
+      "gacos_corrected_phase",
+      "gacos_correction_manifest.json",
+      "gacos_fast_smoke",
+      "invalid reference-point index",
+      "los_displacement_toward_satellite_m.npy",
+      "los_displacement_toward_satellite_mm.npy",
+      "p15_6b2_stage8_scn_manifest.json",
+      "p15_6c_final_los_timeseries_manifest.json",
+      "ph_scn_slave_rad.npy",
+      "phi_final = phi_t - median(phi_t[607 reference points], epoch)",
+      "ref_idx.npy",
+      "reference LOS median max |mm|   :",
+      "reference median at temporal reference is not exactly zero: ",
+      "reference median max |rad|      :",
+      "reference set changed: ",
+      "reference_indices",
+      "reference_los_median_max_abs_mm",
+      "reference_phase_median_max_abs_rad",
+      "spatial reference               :",
+      "spatial_reference",
+      "spatial_reference_method",
+      "spatial_reference_points",
+      "stamps_pre_scn_phase",
+      "stamps_stage8",
+      "temporal reference              :",
+      "temporal_reference",
+      "temporal_reference_date",
+      "temporal_reference_index_0based"
+    ],
+    "point_metrics": [
+      ".cumulative.tmp.npy",
+      ".rms.tmp.npy",
+      ".velocity.tmp.npy",
+      ".velocity_se.tmp.npy",
+      "final LOS temporal reference changed: ",
+      "gacos_corrected_phase",
+      "gacos_correction_manifest.json",
+      "gacos_fast_smoke",
+      "gacos_geometry",
+      "last acquisition minus 20141006 reference acquisition",
+      "latitude_deg.npy",
+      "linear_residual_rms_mm.npy",
+      "longitude_deg.npy",
+      "los_cumulative_toward_satellite_mm.npy",
+      "los_displacement_toward_satellite_mm.npy",
+      "los_velocity_toward_satellite_mm_per_year.npy",
+      "p15_6c_final_los_timeseries_manifest.json",
+      "p15_7a_final_point_products_manifest.json",
+      "ref_idx.npy",
+      "reference cumulative median     :",
+      "reference cumulative median unexpectedly nonzero: ",
+      "reference point count=",
+      "reference velocity median       :",
+      "reference_cumulative_median_mm",
+      "reference_velocity_median_mm_per_year",
+      "temporal_reference",
+      "time_axis_contract.npz",
+      "velocity_slope_standard_error_mm_per_year.npy"
+    ]
+  },
+  "legacy_ownership_hits": {
+    "gacos": [
+      "gacos_geometry",
+      "gacos_fast_smoke"
+    ],
+    "scla_baseline": [
+      "stamps_scla_baseline"
+    ],
+    "scla_k": [
+      "gacos_geometry",
+      "gacos_fast_smoke",
+      "stamps_scla_baseline",
+      "stamps_scla_final_pass"
+    ],
+    "scla_c": [
+      "gacos_geometry",
+      "gacos_fast_smoke",
+      "stamps_scla_final_pass"
+    ],
+    "pre_scn": [
+      "gacos_geometry",
+      "gacos_fast_smoke",
+      "stamps_scla_baseline",
+      "stamps_scla_final_pass",
+      "stamps_pre_scn_phase"
+    ],
+    "scn": [
+      "stamps_pre_scn_phase",
+      "stamps_stage8",
+      "stamps_xy_exact_float32_m.npy",
+      "stamps_sort_index.npy",
+      "stage8_neighbor_count_r400m.npy",
+      "p15_6b1_exact_engine_benchmark.json"
+    ],
+    "final_los": [
+      "gacos_fast_smoke",
+      "stamps_pre_scn_phase",
+      "stamps_stage8"
+    ],
+    "point_metrics": [
+      "gacos_geometry",
+      "gacos_fast_smoke"
+    ]
+  },
+  "support_inventory": [
+    {
+      "name": "stamps_xy_exact_float32_m.npy",
+      "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/stamps_xy_exact_float32_m.npy",
+      "bytes": 7050648,
+      "shape": [
+        881315,
+        2
+      ],
+      "dtype": "float32"
+    },
+    {
+      "name": "stamps_sort_index.npy",
+      "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/stamps_sort_index.npy",
+      "bytes": 3525388,
+      "shape": [
+        881315
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "stage8_neighbor_count_r400m.npy",
+      "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/stage8_neighbor_count_r400m.npy",
+      "bytes": 3525388,
+      "shape": [
+        881315
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "p15_6b1_exact_engine_benchmark.json",
+      "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/p15_6b1_exact_engine_benchmark.json",
+      "bytes": 5270
+    }
+  ],
+  "reference_index_candidates": [
+    {
+      "path": "/home/ubuntu/Downloads/psds/output/processing/gacos_fast_smoke/project_local_interp/ref_idx.npy",
+      "shape": [
+        607
+      ],
+      "dtype": "int32",
+      "size": 607
+    }
+  ],
+  "version_hits": [
+    {
+      "path": "pyproject.toml",
+      "line": 7,
+      "text": "version = \"1.0.0\""
+    },
+    {
+      "path": "pypsds/__init__.py",
+      "line": 3,
+      "text": "from importlib.metadata import PackageNotFoundError, version"
+    },
+    {
+      "path": "pypsds/__init__.py",
+      "line": 6,
+      "text": "    __version__ = version(\"pypsds-gamma\")"
+    },
+    {
+      "path": "pypsds/__init__.py",
+      "line": 8,
+      "text": "    __version__ = \"1.0.0.dev0\""
+    },
+    {
+      "path": "pypsds/__init__.py",
+      "line": 10,
+      "text": "__all__ = [\"__version__\"]"
+    }
+  ],
+  "proposed_public_tail": [
+    "reference",
+    "atmosphere_correction",
+    "scla",
+    "scn",
+    "final_los",
+    "point_products"
+  ],
+  "proposed_stage_count": 38,
+  "scientific_numeric_chain_frozen": true,
+  "numeric_reaudit_required": false
+}

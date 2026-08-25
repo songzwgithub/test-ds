@@ -1,0 +1,2034 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-final-los-production-contract",
+  "status": "PASS",
+  "authoritative_sources": [
+    {
+      "path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/inversion/los_timeseries.py",
+      "sha256": "42b48c5df8926a624b1e2d8851b2015156e0924af84697cd8c4edaac8308fcdb",
+      "hits": [
+        "acquisition_phase_final_rad",
+        "los_displacement_toward_satellite"
+      ],
+      "functions": [
+        {
+          "name": "read_par",
+          "arguments": [
+            "path"
+          ],
+          "line_start": 139,
+          "line_end": 159
+        },
+        {
+          "name": "par_scalar",
+          "arguments": [
+            "pars",
+            "keys"
+          ],
+          "line_start": 162,
+          "line_end": 185
+        }
+      ],
+      "io_lines": [
+        {
+          "line": 16,
+          "text": "PROC = PSDS / \"output/processing\""
+        },
+        {
+          "line": 19,
+          "text": "    PROC"
+        },
+        {
+          "line": 20,
+          "text": "    / \"stamps_pre_scn_phase\""
+        },
+        {
+          "line": 21,
+          "text": "    / \"acquisition_phase_pre_scn_rad.npy\""
+        },
+        {
+          "line": 25,
+          "text": "    PROC"
+        },
+        {
+          "line": 27,
+          "text": "    / \"ph_scn_slave_rad.npy\""
+        },
+        {
+          "line": 30,
+          "text": "SCN_MANIFEST = ("
+        },
+        {
+          "line": 31,
+          "text": "    PROC"
+        },
+        {
+          "line": 33,
+          "text": "    / \"p15_6b2_stage8_scn_manifest.json\""
+        },
+        {
+          "line": 37,
+          "text": "    PROC"
+        },
+        {
+          "line": 39,
+          "text": "    / \"gacos_correction_manifest.json\""
+        },
+        {
+          "line": 43,
+          "text": "    PROC"
+        },
+        {
+          "line": 46,
+          "text": "    / \"ref_idx.npy\""
+        },
+        {
+          "line": 55,
+          "text": "OUTDIR = ("
+        },
+        {
+          "line": 56,
+          "text": "    PROC"
+        },
+        {
+          "line": 60,
+          "text": "OUTDIR.mkdir("
+        },
+        {
+          "line": 66,
+          "text": "PHASE_OUT = ("
+        },
+        {
+          "line": 67,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 68,
+          "text": "    / \"acquisition_phase_final_rad.npy\""
+        },
+        {
+          "line": 71,
+          "text": "LOS_M_OUT = ("
+        },
+        {
+          "line": 72,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 73,
+          "text": "    / \"los_displacement_toward_satellite_m.npy\""
+        },
+        {
+          "line": 76,
+          "text": "LOS_MM_OUT = ("
+        },
+        {
+          "line": 77,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 78,
+          "text": "    / \"los_displacement_toward_satellite_mm.npy\""
+        },
+        {
+          "line": 81,
+          "text": "MANIFEST = ("
+        },
+        {
+          "line": 82,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 83,
+          "text": "    / \"p15_6c_final_los_timeseries_manifest.json\""
+        },
+        {
+          "line": 88,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 89,
+          "text": "    / \".acquisition_phase_final_rad.tmp.npy\""
+        },
+        {
+          "line": 93,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 94,
+          "text": "    / \".los_displacement_toward_satellite_m.tmp.npy\""
+        },
+        {
+          "line": 98,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 99,
+          "text": "    / \".los_displacement_toward_satellite_mm.tmp.npy\""
+        },
+        {
+          "line": 107,
+          "text": "TEMPORAL_REFERENCE_DATE = \"20141006\""
+        },
+        {
+          "line": 111,
+          "text": "REFERENCE_POINTS_EXPECTED = 607"
+        },
+        {
+          "line": 195,
+          "text": "    SCN_MANIFEST,"
+        },
+        {
+          "line": 205,
+          "text": "pre = np.load("
+        },
+        {
+          "line": 210,
+          "text": "scn = np.load("
+        },
+        {
+          "line": 255,
+          "text": "if dates[0] != TEMPORAL_REFERENCE_DATE:"
+        },
+        {
+          "line": 259,
+          "text": "            \"frozen temporal reference \""
+        },
+        {
+          "line": 266,
+          "text": "    TEMPORAL_REFERENCE_DATE"
+        },
+        {
+          "line": 275,
+          "text": "scn_manifest = json.loads("
+        },
+        {
+          "line": 276,
+          "text": "    SCN_MANIFEST.read_text()"
+        },
+        {
+          "line": 281,
+          "text": "    scn_manifest.get("
+        },
+        {
+          "line": 294,
+          "text": "    scn_manifest["
+        },
+        {
+          "line": 307,
+          "text": "# Frozen reference point set"
+        },
+        {
+          "line": 310,
+          "text": "ref_idx = np.load("
+        },
+        {
+          "line": 317,
+          "text": "if ref_idx.size != REFERENCE_POINTS_EXPECTED:"
+        },
+        {
+          "line": 321,
+          "text": "            \"reference set changed: \""
+        },
+        {
+          "line": 334,
+          "text": "        \"invalid reference-point index\""
+        },
+        {
+          "line": 355,
+          "text": "radar_frequency = par_scalar("
+        },
+        {
+          "line": 358,
+          "text": "        \"radar_frequency\","
+        },
+        {
+          "line": 363,
+          "text": "wavelength = ("
+        },
+        {
+          "line": 366,
+          "text": "    radar_frequency"
+        },
+        {
+          "line": 371,
+          "text": "    wavelength"
+        },
+        {
+          "line": 384,
+          "text": "    wavelength"
+        },
+        {
+          "line": 391,
+          "text": "            \"unexpected Sentinel-1 wavelength: \""
+        },
+        {
+          "line": 392,
+          "text": "            f\"{wavelength}\""
+        },
+        {
+          "line": 400,
+          "text": "# Construct corrected RAW phase only for the 607 reference points."
+        },
+        {
+          "line": 408,
+          "text": "# Spatial reference for every epoch is median of same 607 points."
+        },
+        {
+          "line": 449,
+          "text": "spatial_reference_median = np.median("
+        },
+        {
+          "line": 456,
+          "text": "if spatial_reference_median["
+        },
+        {
+          "line": 462,
+          "text": "            \"reference median at temporal \""
+        },
+        {
+          "line": 463,
+          "text": "            \"reference is not exactly zero: \""
+        },
+        {
+          "line": 464,
+          "text": "            f\"{spatial_reference_median[tref0]}\""
+        },
+        {
+          "line": 470,
+          "text": "# Atomic output preparation"
+        },
+        {
+          "line": 483,
+          "text": "phase_out = np.lib.format.open_memmap("
+        },
+        {
+          "line": 494,
+          "text": "los_m_out = np.lib.format.open_memmap("
+        },
+        {
+          "line": 505,
+          "text": "los_mm_out = np.lib.format.open_memmap("
+        },
+        {
+          "line": 572,
+          "text": "    # preSCN - ph_scn_slave"
+        },
+        {
+          "line": 627,
+          "text": "    # median of same 607-point reference = 0 each epoch."
+        },
+        {
+          "line": 633,
+          "text": "        spatial_reference_median["
+        },
+        {
+          "line": 673,
+          "text": "    phase_out["
+        },
+        {
+          "line": 679,
+          "text": "    los_m_out["
+        },
+        {
+          "line": 685,
+          "text": "    los_mm_out["
+        },
+        {
+          "line": 765,
+          "text": "phase_out.flush()"
+        },
+        {
+          "line": 766,
+          "text": "los_m_out.flush()"
+        },
+        {
+          "line": 767,
+          "text": "los_mm_out.flush()"
+        },
+        {
+          "line": 805,
+          "text": "del phase_out"
+        },
+        {
+          "line": 806,
+          "text": "del los_m_out"
+        },
+        {
+          "line": 807,
+          "text": "del los_mm_out"
+        },
+        {
+          "line": 816,
+          "text": "    PHASE_OUT,"
+        },
+        {
+          "line": 822,
+          "text": "    LOS_M_OUT,"
+        },
+        {
+          "line": 828,
+          "text": "    LOS_MM_OUT,"
+        },
+        {
+          "line": 836,
+          "text": "phase_final = np.load("
+        },
+        {
+          "line": 837,
+          "text": "    PHASE_OUT,"
+        },
+        {
+          "line": 842,
+          "text": "los_m = np.load("
+        },
+        {
+          "line": 843,
+          "text": "    LOS_M_OUT,"
+        },
+        {
+          "line": 848,
+          "text": "los_mm = np.load("
+        },
+        {
+          "line": 849,
+          "text": "    LOS_MM_OUT,"
+        },
+        {
+          "line": 893,
+          "text": "        \"final output contains non-finite values\""
+        },
+        {
+          "line": 930,
+          "text": "            \"final temporal reference failed: \""
+        },
+        {
+          "line": 940,
+          "text": "            \"LOS temporal reference failed: \""
+        },
+        {
+          "line": 948,
+          "text": "# same 607 reference points, per-epoch median = 0."
+        },
+        {
+          "line": 983,
+          "text": "            \"final reference median failed: \""
+        },
+        {
+          "line": 1110,
+          "text": "# Manifest"
+        },
+        {
+          "line": 1113,
+          "text": "manifest = {"
+        },
+        {
+          "line": 1116,
+          "text": "        \"PASS_FINAL_REFERENCED_LOS_TIMESERIES\","
+        },
+        {
+          "line": 1123,
+          "text": "                    \"phi_preSCN - ph_scn_slave\""
+        },
+        {
+          "line": 1126,
+          "text": "            \"temporal_reference\":"
+        },
+        {
+          "line": 1132,
+          "text": "            \"spatial_reference\":"
+        },
+        {
+          "line": 1135,
+          "text": "                    \"median(phi_t[607 reference points], epoch)\""
+        },
+        {
+          "line": 1147,
+          "text": "            \"temporal_reference_date\":"
+        },
+        {
+          "line": 1148,
+          "text": "                TEMPORAL_REFERENCE_DATE,"
+        },
+        {
+          "line": 1150,
+          "text": "            \"temporal_reference_index_0based\":"
+        },
+        {
+          "line": 1153,
+          "text": "            \"spatial_reference_method\":"
+        },
+        {
+          "line": 1156,
+          "text": "            \"spatial_reference_points\":"
+        },
+        {
+          "line": 1170,
+          "text": "            \"radar_frequency_hz\":"
+        },
+        {
+          "line": 1171,
+          "text": "                radar_frequency,"
+        },
+        {
+          "line": 1173,
+          "text": "            \"wavelength_m\":"
+        },
+        {
+          "line": 1174,
+          "text": "                wavelength,"
+        },
+        {
+          "line": 1201,
+          "text": "            \"reference_phase_median_max_abs_rad\":"
+        },
+        {
+          "line": 1204,
+          "text": "            \"reference_los_median_max_abs_mm\":"
+        },
+        {
+          "line": 1267,
+          "text": "            \"pre_scn_phase\":"
+        },
+        {
+          "line": 1272,
+          "text": "            \"ph_scn_slave\":"
+        },
+        {
+          "line": 1277,
+          "text": "            \"reference_indices\":"
+        },
+        {
+          "line": 1283,
+          "text": "    \"outputs\":"
+        },
+        {
+          "line": 1287,
+          "text": "                    PHASE_OUT"
+        },
+        {
+          "line": 1292,
+          "text": "                    LOS_M_OUT"
+        },
+        {
+          "line": 1297,
+          "text": "                    LOS_MM_OUT"
+        },
+        {
+          "line": 1309,
+          "text": "            \"P15-7 final LOS velocity / \""
+        },
+        {
+          "line": 1315,
+          "text": "MANIFEST.write_text("
+        },
+        {
+          "line": 1317,
+          "text": "        manifest,"
+        },
+        {
+          "line": 1330,
+          "text": "print(\"P15-6C FINAL REFERENCED LOS TIMESERIES\")"
+        },
+        {
+          "line": 1339,
+          "text": "    \"temporal reference              :\","
+        },
+        {
+          "line": 1341,
+          "text": "        f\"{TEMPORAL_REFERENCE_DATE} \""
+        },
+        {
+          "line": 1347,
+          "text": "    \"spatial reference               :\","
+        },
+        {
+          "line": 1362,
+          "text": "    \"radar frequency                 :\","
+        },
+        {
+          "line": 1363,
+          "text": "    f\"{radar_frequency:.6f} Hz\","
+        },
+        {
+          "line": 1367,
+          "text": "    \"wavelength                      :\","
+        },
+        {
+          "line": 1368,
+          "text": "    f\"{wavelength:.15f} m\","
+        },
+        {
+          "line": 1397,
+          "text": "    \"reference median max |rad|      :\","
+        },
+        {
+          "line": 1402,
+          "text": "    \"reference LOS median max |mm|   :\","
+        },
+        {
+          "line": 1464,
+          "text": "    PHASE_OUT,"
+        },
+        {
+          "line": 1469,
+          "text": "    LOS_M_OUT,"
+        },
+        {
+          "line": 1474,
+          "text": "    LOS_MM_OUT,"
+        },
+        {
+          "line": 1483,
+          "text": "    \"manifest                        :\","
+        },
+        {
+          "line": 1484,
+          "text": "    MANIFEST,"
+        },
+        {
+          "line": 1491,
+          "text": "    \"PASS_FINAL_REFERENCED_LOS_TIMESERIES\""
+        }
+      ]
+    },
+    {
+      "path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/products/point_attributes.py",
+      "sha256": "62e595bd33b19bf6a63dc61933dcdeb220d4090c94103a8cf5959e37ecf57b7f",
+      "hits": [
+        "acquisition_phase_final_rad",
+        "los_velocity_toward_satellite",
+        "los_cumulative_toward_satellite",
+        "velocity_slope_standard_error",
+        "linear_residual_rms"
+      ],
+      "functions": [
+        {
+          "name": "append_array",
+          "arguments": [
+            "column",
+            "filename"
+          ],
+          "line_start": 139,
+          "line_end": 153
+        }
+      ],
+      "io_lines": [
+        {
+          "line": 7,
+          "text": "import subprocess"
+        },
+        {
+          "line": 18,
+          "text": "    \"/home/ubuntu/Downloads/psds/output/processing\""
+        },
+        {
+          "line": 31,
+          "text": "OUT = ("
+        },
+        {
+          "line": 38,
+          "text": "OUT.mkdir("
+        },
+        {
+          "line": 71,
+          "text": "    \"gacos_geometry\""
+        },
+        {
+          "line": 78,
+          "text": "    \"longitude_deg.npy\""
+        },
+        {
+          "line": 84,
+          "text": "    \"latitude_deg.npy\""
+        },
+        {
+          "line": 90,
+          "text": "    \"incidence_gamma_compatible_fast_rad.npy\""
+        },
+        {
+          "line": 99,
+          "text": "lon = np.load("
+        },
+        {
+          "line": 103,
+          "text": "lat = np.load("
+        },
+        {
+          "line": 107,
+          "text": "inc = np.load("
+        },
+        {
+          "line": 144,
+          "text": "    arr = np.load("
+        },
+        {
+          "line": 158,
+          "text": "    \"los_velocity_mm_yr\","
+        },
+        {
+          "line": 159,
+          "text": "    \"los_velocity_toward_satellite_mm_per_year.npy\""
+        },
+        {
+          "line": 164,
+          "text": "    \"los_cumulative_mm\","
+        },
+        {
+          "line": 165,
+          "text": "    \"los_cumulative_toward_satellite_mm.npy\""
+        },
+        {
+          "line": 170,
+          "text": "    \"linear_residual_rms_mm\","
+        },
+        {
+          "line": 171,
+          "text": "    \"linear_residual_rms_mm.npy\""
+        },
+        {
+          "line": 176,
+          "text": "    \"velocity_se_mm_yr\","
+        },
+        {
+          "line": 177,
+          "text": "    \"velocity_slope_standard_error_mm_per_year.npy\""
+        },
+        {
+          "line": 196,
+          "text": "    \"acquisition_phase_final_rad.npy\""
+        },
+        {
+          "line": 200,
+          "text": "phase = np.load("
+        },
+        {
+          "line": 243,
+          "text": "OUT_PARQUET = ("
+        },
+        {
+          "line": 244,
+          "text": "    OUT"
+        },
+        {
+          "line": 251,
+          "text": "    OUT_PARQUET,"
+        },
+        {
+          "line": 259,
+          "text": "    OUT_PARQUET"
+        },
+        {
+          "line": 268,
+          "text": "OUT_CSV = ("
+        },
+        {
+          "line": 269,
+          "text": "    OUT"
+        },
+        {
+          "line": 276,
+          "text": "    OUT_CSV,"
+        },
+        {
+          "line": 283,
+          "text": "    OUT_CSV"
+        },
+        {
+          "line": 292,
+          "text": "OUT_GPKG = ("
+        },
+        {
+          "line": 293,
+          "text": "    OUT"
+        },
+        {
+          "line": 316,
+          "text": "        str(OUT_GPKG),"
+        },
+        {
+          "line": 318,
+          "text": "        str(OUT_CSV),"
+        },
+        {
+          "line": 334,
+          "text": "        subprocess.run("
+        },
+        {
+          "line": 343,
+          "text": "            OUT_GPKG"
+        },
+        {
+          "line": 386,
+          "text": "        str(OUT_PARQUET),"
+        },
+        {
+          "line": 389,
+          "text": "        str(OUT_CSV),"
+        },
+        {
+          "line": 392,
+          "text": "        str(OUT_GPKG)"
+        },
+        {
+          "line": 408,
+          "text": "    OUT /"
+        },
+        {
+          "line": 409,
+          "text": "    \"p15_8_point_product_metadata.json\","
+        }
+      ]
+    },
+    {
+      "path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/products/point_geocoding.py",
+      "sha256": "f7222964ac9095ffc89dbd828d3a1f38705961b226187d7987f29797d8f468d8",
+      "hits": [
+        "los_velocity_toward_satellite",
+        "los_cumulative_toward_satellite",
+        "velocity_slope_standard_error",
+        "linear_residual_rms"
+      ],
+      "functions": [],
+      "io_lines": [
+        {
+          "line": 15,
+          "text": "PROC = ("
+        },
+        {
+          "line": 17,
+          "text": "    \"output/processing\""
+        },
+        {
+          "line": 21,
+          "text": "    PROC /"
+        },
+        {
+          "line": 22,
+          "text": "    \"gacos_geometry\""
+        },
+        {
+          "line": 26,
+          "text": "    PROC /"
+        },
+        {
+          "line": 30,
+          "text": "OUT = ("
+        },
+        {
+          "line": 31,
+          "text": "    PROC /"
+        },
+        {
+          "line": 35,
+          "text": "OUT.mkdir("
+        },
+        {
+          "line": 45,
+          "text": "lon_file = GEOM / \"longitude_deg.npy\""
+        },
+        {
+          "line": 46,
+          "text": "lat_file = GEOM / \"latitude_deg.npy\""
+        },
+        {
+          "line": 50,
+          "text": "    \"los_velocity_toward_satellite_mm_per_year.npy\""
+        },
+        {
+          "line": 55,
+          "text": "    \"los_cumulative_toward_satellite_mm.npy\""
+        },
+        {
+          "line": 60,
+          "text": "    \"linear_residual_rms_mm.npy\""
+        },
+        {
+          "line": 65,
+          "text": "    \"velocity_slope_standard_error_mm_per_year.npy\""
+        },
+        {
+          "line": 76,
+          "text": "lon=np.load("
+        },
+        {
+          "line": 81,
+          "text": "lat=np.load("
+        },
+        {
+          "line": 86,
+          "text": "vel=np.load("
+        },
+        {
+          "line": 91,
+          "text": "cum=np.load("
+        },
+        {
+          "line": 96,
+          "text": "rms=np.load("
+        },
+        {
+          "line": 101,
+          "text": "se=np.load("
+        },
+        {
+          "line": 160,
+          "text": "        \"los_velocity_mm_yr\":"
+        },
+        {
+          "line": 163,
+          "text": "        \"los_cumulative_mm\":"
+        },
+        {
+          "line": 166,
+          "text": "        \"residual_rms_mm\":"
+        },
+        {
+          "line": 169,
+          "text": "        \"velocity_se_mm_yr\":"
+        },
+        {
+          "line": 179,
+          "text": "csv_out=("
+        },
+        {
+          "line": 180,
+          "text": "    OUT /"
+        },
+        {
+          "line": 186,
+          "text": "    csv_out,"
+        },
+        {
+          "line": 193,
+          "text": "    csv_out"
+        },
+        {
+          "line": 226,
+          "text": "    gpkg_out=("
+        },
+        {
+          "line": 227,
+          "text": "        OUT /"
+        },
+        {
+          "line": 233,
+          "text": "        gpkg_out,"
+        },
+        {
+          "line": 234,
+          "text": "        layer=\"LOS_velocity\","
+        },
+        {
+          "line": 244,
+          "text": "        gpkg_out"
+        },
+        {
+          "line": 257,
+          "text": "# manifest"
+        },
+        {
+          "line": 260,
+          "text": "manifest={"
+        },
+        {
+          "line": 286,
+          "text": "    \"velocity_sign\":"
+        },
+        {
+          "line": 298,
+          "text": "    OUT /"
+        },
+        {
+          "line": 299,
+          "text": "    \"p15_7b2_point_geocoding_manifest.json\","
+        },
+        {
+          "line": 304,
+          "text": "        manifest,"
+        }
+      ]
+    },
+    {
+      "path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/products/point_metrics.py",
+      "sha256": "d865468fdf65a334345be43985606dbe94d196fcc71749db5d02401293a22a07",
+      "hits": [
+        "los_displacement_toward_satellite",
+        "los_velocity_toward_satellite",
+        "los_cumulative_toward_satellite",
+        "velocity_slope_standard_error",
+        "linear_residual_rms"
+      ],
+      "functions": [],
+      "io_lines": [
+        {
+          "line": 16,
+          "text": "PROC = PSDS / \"output/processing\""
+        },
+        {
+          "line": 19,
+          "text": "    PROC"
+        },
+        {
+          "line": 21,
+          "text": "    / \"los_displacement_toward_satellite_mm.npy\""
+        },
+        {
+          "line": 24,
+          "text": "FINAL_MANIFEST = ("
+        },
+        {
+          "line": 25,
+          "text": "    PROC"
+        },
+        {
+          "line": 27,
+          "text": "    / \"p15_6c_final_los_timeseries_manifest.json\""
+        },
+        {
+          "line": 31,
+          "text": "    PROC"
+        },
+        {
+          "line": 33,
+          "text": "    / \"gacos_correction_manifest.json\""
+        },
+        {
+          "line": 37,
+          "text": "    PROC"
+        },
+        {
+          "line": 40,
+          "text": "    / \"ref_idx.npy\""
+        },
+        {
+          "line": 44,
+          "text": "    PROC"
+        },
+        {
+          "line": 45,
+          "text": "    / \"gacos_geometry\""
+        },
+        {
+          "line": 46,
+          "text": "    / \"longitude_deg.npy\""
+        },
+        {
+          "line": 50,
+          "text": "    PROC"
+        },
+        {
+          "line": 51,
+          "text": "    / \"gacos_geometry\""
+        },
+        {
+          "line": 52,
+          "text": "    / \"latitude_deg.npy\""
+        },
+        {
+          "line": 56,
+          "text": "    PROC"
+        },
+        {
+          "line": 57,
+          "text": "    / \"gacos_geometry\""
+        },
+        {
+          "line": 61,
+          "text": "OUTDIR = ("
+        },
+        {
+          "line": 62,
+          "text": "    PROC"
+        },
+        {
+          "line": 66,
+          "text": "OUTDIR.mkdir("
+        },
+        {
+          "line": 73,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 74,
+          "text": "    / \"los_velocity_toward_satellite_mm_per_year.npy\""
+        },
+        {
+          "line": 78,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 79,
+          "text": "    / \"los_cumulative_toward_satellite_mm.npy\""
+        },
+        {
+          "line": 83,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 84,
+          "text": "    / \"linear_residual_rms_mm.npy\""
+        },
+        {
+          "line": 88,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 89,
+          "text": "    / \"velocity_slope_standard_error_mm_per_year.npy\""
+        },
+        {
+          "line": 94,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 95,
+          "text": "    / \".velocity.tmp.npy\""
+        },
+        {
+          "line": 99,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 100,
+          "text": "    / \".cumulative.tmp.npy\""
+        },
+        {
+          "line": 104,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 105,
+          "text": "    / \".rms.tmp.npy\""
+        },
+        {
+          "line": 109,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 110,
+          "text": "    / \".velocity_se.tmp.npy\""
+        },
+        {
+          "line": 114,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 115,
+          "text": "    / \"time_axis_contract.npz\""
+        },
+        {
+          "line": 118,
+          "text": "MANIFEST = ("
+        },
+        {
+          "line": 119,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 120,
+          "text": "    / \"p15_7a_final_point_products_manifest.json\""
+        },
+        {
+          "line": 127,
+          "text": "YEAR_DAYS = 365.25"
+        },
+        {
+          "line": 139,
+          "text": "    FINAL_MANIFEST,"
+        },
+        {
+          "line": 151,
+          "text": "final_manifest = json.loads("
+        },
+        {
+          "line": 152,
+          "text": "    FINAL_MANIFEST.read_text()"
+        },
+        {
+          "line": 157,
+          "text": "    final_manifest.get(\"status\")"
+        },
+        {
+          "line": 159,
+          "text": "    \"PASS_FINAL_REFERENCED_LOS_TIMESERIES\""
+        },
+        {
+          "line": 167,
+          "text": "los = np.load("
+        },
+        {
+          "line": 223,
+          "text": "            \"final LOS temporal reference \""
+        },
+        {
+          "line": 229,
+          "text": "ref_idx = np.load("
+        },
+        {
+          "line": 239,
+          "text": "        f\"reference point count={ref_idx.size}\""
+        },
+        {
+          "line": 243,
+          "text": "lon = np.load("
+        },
+        {
+          "line": 249,
+          "text": "lat = np.load("
+        },
+        {
+          "line": 457,
+          "text": "            \"velocity fused/lstsq parity failed: \""
+        },
+        {
+          "line": 494,
+          "text": "            \"cumulative parity failed: \""
+        },
+        {
+          "line": 501,
+          "text": "# Atomic output preparation"
+        },
+        {
+          "line": 515,
+          "text": "vel_out = np.lib.format.open_memmap("
+        },
+        {
+          "line": 523,
+          "text": "cum_out = np.lib.format.open_memmap("
+        },
+        {
+          "line": 531,
+          "text": "rms_out = np.lib.format.open_memmap("
+        },
+        {
+          "line": 539,
+          "text": "vel_se_out = np.lib.format.open_memmap("
+        },
+        {
+          "line": 576,
+          "text": "    # Velocity [mm/yr]"
+        },
+        {
+          "line": 606,
+          "text": "    # Model / residual"
+        },
+        {
+          "line": 627,
+          "text": "    residual = ("
+        },
+        {
+          "line": 635,
+          "text": "        residual"
+        },
+        {
+          "line": 637,
+          "text": "        residual,"
+        },
+        {
+          "line": 675,
+          "text": "    # Last-minus-first cumulative displacement"
+        },
+        {
+          "line": 678,
+          "text": "    cumulative = ("
+        },
+        {
+          "line": 688,
+          "text": "        np.all(np.isfinite(cumulative))"
+        },
+        {
+          "line": 703,
+          "text": "    vel_out["
+        },
+        {
+          "line": 710,
+          "text": "    cum_out["
+        },
+        {
+          "line": 712,
+          "text": "    ] = cumulative.astype("
+        },
+        {
+          "line": 717,
+          "text": "    rms_out["
+        },
+        {
+          "line": 724,
+          "text": "    vel_se_out["
+        },
+        {
+          "line": 739,
+          "text": "vel_out.flush()"
+        },
+        {
+          "line": 740,
+          "text": "cum_out.flush()"
+        },
+        {
+          "line": 741,
+          "text": "rms_out.flush()"
+        },
+        {
+          "line": 742,
+          "text": "vel_se_out.flush()"
+        },
+        {
+          "line": 752,
+          "text": "del vel_out"
+        },
+        {
+          "line": 753,
+          "text": "del cum_out"
+        },
+        {
+          "line": 754,
+          "text": "del rms_out"
+        },
+        {
+          "line": 755,
+          "text": "del vel_se_out"
+        },
+        {
+          "line": 790,
+          "text": "vel = np.load("
+        },
+        {
+          "line": 796,
+          "text": "cum = np.load("
+        },
+        {
+          "line": 802,
+          "text": "rms = np.load("
+        },
+        {
+          "line": 808,
+          "text": "vel_se = np.load("
+        },
+        {
+          "line": 815,
+          "text": "    (\"velocity\", vel),"
+        },
+        {
+          "line": 816,
+          "text": "    (\"cumulative\", cum),"
+        },
+        {
+          "line": 817,
+          "text": "    (\"residual_rms\", rms),"
+        },
+        {
+          "line": 818,
+          "text": "    (\"velocity_se\", vel_se),"
+        },
+        {
+          "line": 914,
+          "text": "reference_velocity_median = float("
+        },
+        {
+          "line": 926,
+          "text": "reference_cumulative_median = float("
+        },
+        {
+          "line": 938,
+          "text": "# Reference cumulative should be extremely close to zero because"
+        },
+        {
+          "line": 939,
+          "text": "# each epoch is spatially median-referenced."
+        },
+        {
+          "line": 941,
+          "text": "    reference_cumulative_median"
+        },
+        {
+          "line": 946,
+          "text": "            \"reference cumulative median \""
+        },
+        {
+          "line": 948,
+          "text": "            f\"{reference_cumulative_median}\""
+        },
+        {
+          "line": 957,
+          "text": "np.savez("
+        },
+        {
+          "line": 966,
+          "text": "    days_since_reference="
+        },
+        {
+          "line": 969,
+          "text": "    years_since_reference="
+        },
+        {
+          "line": 978,
+          "text": "    temporal_reference_date="
+        },
+        {
+          "line": 998,
+          "text": "# Manifest"
+        },
+        {
+          "line": 1001,
+          "text": "manifest = {"
+        },
+        {
+          "line": 1021,
+          "text": "            \"velocity_method\":"
+        },
+        {
+          "line": 1027,
+          "text": "            \"velocity_unit\":"
+        },
+        {
+          "line": 1033,
+          "text": "            \"cumulative_definition\":"
+        },
+        {
+          "line": 1036,
+          "text": "                    \"20141006 reference acquisition\""
+        },
+        {
+          "line": 1039,
+          "text": "            \"temporal_reference\":"
+        },
+        {
+          "line": 1048,
+          "text": "            \"regression_standard_error_note\":"
+        },
+        {
+          "line": 1060,
+          "text": "            \"velocity_fused_vs_lstsq_max_abs_mm_per_year\":"
+        },
+        {
+          "line": 1063,
+          "text": "            \"velocity_tolerance\":"
+        },
+        {
+          "line": 1066,
+          "text": "            \"cumulative_last_minus_first_parity_mm\":"
+        },
+        {
+          "line": 1075,
+          "text": "            \"velocity_p01_p05_p50_p95_p99_mm_per_year\":"
+        },
+        {
+          "line": 1081,
+          "text": "            \"abs_velocity_p50_p95_p99_mm_per_year\":"
+        },
+        {
+          "line": 1087,
+          "text": "            \"cumulative_p01_p05_p50_p95_p99_mm\":"
+        },
+        {
+          "line": 1093,
+          "text": "            \"linear_residual_rms_p50_p95_p99_mm\":"
+        },
+        {
+          "line": 1099,
+          "text": "            \"velocity_standard_error_p50_p95_p99_mm_per_year\":"
+        },
+        {
+          "line": 1105,
+          "text": "            \"reference_velocity_median_mm_per_year\":"
+        },
+        {
+          "line": 1106,
+          "text": "                reference_velocity_median,"
+        },
+        {
+          "line": 1108,
+          "text": "            \"reference_cumulative_median_mm\":"
+        },
+        {
+          "line": 1109,
+          "text": "                reference_cumulative_median,"
+        },
+        {
+          "line": 1140,
+          "text": "    \"outputs\":"
+        },
+        {
+          "line": 1142,
+          "text": "            \"velocity\":"
+        },
+        {
+          "line": 1145,
+          "text": "            \"cumulative\":"
+        },
+        {
+          "line": 1148,
+          "text": "            \"linear_residual_rms\":"
+        },
+        {
+          "line": 1151,
+          "text": "            \"velocity_slope_standard_error\":"
+        },
+        {
+          "line": 1172,
+          "text": "MANIFEST.write_text("
+        },
+        {
+          "line": 1174,
+          "text": "        manifest,"
+        },
+        {
+          "line": 1204,
+          "text": "    \"velocity                        :\","
+        },
+        {
+          "line": 1216,
+          "text": "    \"velocity parity max             :\","
+        },
+        {
+          "line": 1221,
+          "text": "    \"cumulative parity max           :\","
+        },
+        {
+          "line": 1228,
+          "text": "    \"velocity p01/05/50/95/99        :\","
+        },
+        {
+          "line": 1233,
+          "text": "    \"|velocity| p50/p95/p99          :\","
+        },
+        {
+          "line": 1238,
+          "text": "    \"cumulative p01/05/50/95/99      :\","
+        },
+        {
+          "line": 1243,
+          "text": "    \"linear residual RMS p50/95/p99  :\","
+        },
+        {
+          "line": 1248,
+          "text": "    \"velocity SE p50/p95/p99         :\","
+        },
+        {
+          "line": 1255,
+          "text": "    \"reference velocity median       :\","
+        },
+        {
+          "line": 1257,
+          "text": "        f\"{reference_velocity_median:.12e} \""
+        },
+        {
+          "line": 1263,
+          "text": "    \"reference cumulative median     :\","
+        },
+        {
+          "line": 1265,
+          "text": "        f\"{reference_cumulative_median:.12e} \""
+        },
+        {
+          "line": 1285,
+          "text": "    \"velocity output                 :\","
+        },
+        {
+          "line": 1290,
+          "text": "    \"cumulative output               :\","
+        },
+        {
+          "line": 1295,
+          "text": "    \"residual RMS output             :\","
+        },
+        {
+          "line": 1300,
+          "text": "    \"velocity SE output              :\","
+        },
+        {
+          "line": 1310,
+          "text": "    \"manifest                        :\","
+        },
+        {
+          "line": 1311,
+          "text": "    MANIFEST,"
+        }
+      ]
+    },
+    {
+      "path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/quality/delivery_qc.py",
+      "sha256": "6147c99c2dc345815971e9bf274bb318dc8a6e484639c88f84073e35f02e5bd1",
+      "hits": [
+        "linear_residual_rms"
+      ],
+      "functions": [
+        {
+          "name": "phase_grade",
+          "arguments": [
+            "x"
+          ],
+          "line_start": 109,
+          "line_end": 120
+        }
+      ],
+      "io_lines": [
+        {
+          "line": 13,
+          "text": "\"/home/ubuntu/Downloads/psds/output/processing\""
+        },
+        {
+          "line": 24,
+          "text": "OUT = ("
+        },
+        {
+          "line": 29,
+          "text": "OUT.mkdir("
+        },
+        {
+          "line": 65,
+          "text": "\"los_velocity_mm_yr\","
+        },
+        {
+          "line": 66,
+          "text": "\"velocity_se_mm_yr\","
+        },
+        {
+          "line": 67,
+          "text": "\"linear_residual_rms_mm\","
+        },
+        {
+          "line": 94,
+          "text": "df[\"velocity_abs_mm_yr\"] = ("
+        },
+        {
+          "line": 96,
+          "text": "df[\"los_velocity_mm_yr\"]"
+        },
+        {
+          "line": 101,
+          "text": "df[\"velocity_snr\"] = ("
+        },
+        {
+          "line": 102,
+          "text": "df[\"velocity_abs_mm_yr\"]"
+        },
+        {
+          "line": 104,
+          "text": "(df[\"velocity_se_mm_yr\"]+1e-6)"
+        },
+        {
+          "line": 134,
+          "text": "(df[\"velocity_snr\"]>=2)"
+        },
+        {
+          "line": 136,
+          "text": "(df[\"linear_residual_rms_mm\"]<5)"
+        },
+        {
+          "line": 167,
+          "text": "\"velocity_mm_yr\":"
+        },
+        {
+          "line": 172,
+          "text": "float(np.percentile(df.los_velocity_mm_yr,1)),"
+        },
+        {
+          "line": 175,
+          "text": "float(np.percentile(df.los_velocity_mm_yr,50)),"
+        },
+        {
+          "line": 178,
+          "text": "float(np.percentile(df.los_velocity_mm_yr,99))"
+        },
+        {
+          "line": 194,
+          "text": "OUT/"
+        },
+        {
+          "line": 195,
+          "text": "\"velocity_statistics.json\","
+        },
+        {
+          "line": 213,
+          "text": "OUT/"
+        },
+        {
+          "line": 221,
+          "text": "OUT/"
+        },
+        {
+          "line": 258,
+          "text": "OUT/"
+        },
+        {
+          "line": 259,
+          "text": "\"p15_9_delivery_manifest.json\","
+        }
+      ]
+    }
+  ],
+  "products": {
+    "final_los_timeseries": [
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/acquisition_phase_final_rad.npy",
+        "name": "acquisition_phase_final_rad.npy",
+        "bytes": 133960008,
+        "kind": "npy",
+        "shape": [
+          881315,
+          38
+        ],
+        "dtype": "float32",
+        "sha256": "7130e9dd771bfefefcad713db508f0798dc364cfae860c9777d4fb120637cf1d"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/los_displacement_toward_satellite_m.npy",
+        "name": "los_displacement_toward_satellite_m.npy",
+        "bytes": 133960008,
+        "kind": "npy",
+        "shape": [
+          881315,
+          38
+        ],
+        "dtype": "float32",
+        "sha256": "22de7039c1168cdea99a85eb7299dd5c12428b7f26daced3c0b58f854b46700e"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/los_displacement_toward_satellite_mm.npy",
+        "name": "los_displacement_toward_satellite_mm.npy",
+        "bytes": 133960008,
+        "kind": "npy",
+        "shape": [
+          881315,
+          38
+        ],
+        "dtype": "float32",
+        "sha256": "ebfb4664b4c747c6682a41beb96a02d31d5a1906f8d5825d07ca9710e840dff5"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/p15_6c_final_los_timeseries_manifest.json",
+        "name": "p15_6c_final_los_timeseries_manifest.json",
+        "bytes": 2888,
+        "kind": "json",
+        "sha256": "274eeafbf05f23eb4df74784a7035fecbdf4ec81b8212b410b8717b3cb985b31",
+        "json": {
+          "status": "PASS_FINAL_REFERENCED_LOS_TIMESERIES",
+          "formula": {
+            "scn_correction": "phi_raw = phi_preSCN - ph_scn_slave",
+            "temporal_reference": "phi_t = phi_raw - phi_raw[:,20141006]",
+            "spatial_reference": "phi_final = phi_t - median(phi_t[607 reference points], epoch)",
+            "los": "d_LOS_toward = +lambda/(4*pi) * phi_final"
+          },
+          "scientific_contract": {
+            "temporal_reference_date": "20141006",
+            "temporal_reference_index_0based": 0,
+            "spatial_reference_method": "median",
+            "spatial_reference_points": 607,
+            "geometric_master_date": "20151212",
+            "geometric_master_index_0based": 28,
+            "los_positive_direction": "toward_satellite",
+            "radar_frequency_hz": 5405000500.0,
+            "wavelength_m": 0.055465759531382094,
+            "los_factor_m_per_rad": 0.0044138249008829344,
+            "los_factor_mm_per_rad": 4.413824900882934
+          },
+          "hard_qa": {
+            "finite_phase_fraction": 1.0,
+            "finite_los_fraction": 1.0,
+            "epoch0_phase_max_abs_rad": 0.0,
+            "epoch0_los_max_abs_m": 0.0,
+            "reference_phase_median_max_abs_rad": 0.0,
+            "reference_los_median_max_abs_mm": 0.0,
+            "los_factor_sample_max_abs_error_m": 1.4790759277072407e-09,
+            "float32_phase_storage_max_error_rad": 4.428033637537965e-07,
+            "float32_los_storage_max_error_m": 1.7238515198636506e-09
+          },
+          "correction_statistics": {
+            "scn_rms_rad": 1.4602878943150932,
+            "scn_max_abs_rad": 7.886266357523618,
+            "final_phase_max_abs_rad": 10.436823168386905,
+            "final_los_max_abs_m": 0.046066309986738045
+          },
+          "sample_statistics": {
+            "points": 100000,
+            "abs_phase_p50_p95_p99_p999_rad": [
+              0.12802506983280182,
+              0.50110827088356,
+              0.9506633603572812,
+              2.3745031557083256
+            ],
+            "abs_los_p50_p95_p99_p999_mm": [
+              0.5650802340824157,
+              2.2118040011264375,
+              4.1960614919662325,
+              10.480641475878711
+            ]
+          },
+          "performance": {
+            "materialization_seconds": 13.772649617865682,
+            "point_epochs_per_second": 2431628.6937669055
+          },
+          "inputs": {
+            "pre_scn_phase": "/home/ubuntu/Downloads/psds/output/processing/stamps_pre_scn_phase/acquisition_phase_pre_scn_rad.npy",
+            "ph_scn_slave": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/ph_scn_slave_rad.npy",
+            "reference_indices": "/home/ubuntu/Downloads/psds/output/processing/gacos_fast_smoke/project_local_interp/ref_idx.npy"
+          },
+          "outputs": {
+            "final_phase_rad": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/acquisition_phase_final_rad.npy",
+            "los_toward_m": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/los_displacement_toward_satellite_m.npy",
+            "los_toward_mm": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/los_displacement_toward_satellite_mm.npy",
+            "dtype": "float32"
+          },
+          "upstream_modified": false,
+          "next": "P15-7 final LOS velocity / product geocoding and TIFF export"
+        }
+      }
+    ],
+    "final_los_products": [
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/linear_residual_rms_mm.npy",
+        "name": "linear_residual_rms_mm.npy",
+        "bytes": 3525388,
+        "kind": "npy",
+        "shape": [
+          881315
+        ],
+        "dtype": "float32",
+        "sha256": "4f10bb1ca16ea06083ce3e23692b78d85c08634927e074c5bfb4041453ec3580"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/los_cumulative_toward_satellite_mm.npy",
+        "name": "los_cumulative_toward_satellite_mm.npy",
+        "bytes": 3525388,
+        "kind": "npy",
+        "shape": [
+          881315
+        ],
+        "dtype": "float32",
+        "sha256": "fa7900cd59495d712d5112f8176324a7fb3f2440e916c74b5b24c61799535e12"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/los_velocity_toward_satellite_mm_per_year.npy",
+        "name": "los_velocity_toward_satellite_mm_per_year.npy",
+        "bytes": 3525388,
+        "kind": "npy",
+        "shape": [
+          881315
+        ],
+        "dtype": "float32",
+        "sha256": "262347d1cafdeaa3f16071314493787a2a8cba98a3409ad704557fe59526cd25"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/p15_7a_final_point_products_manifest.json",
+        "name": "p15_7a_final_point_products_manifest.json",
+        "bytes": 3027,
+        "kind": "json",
+        "sha256": "6782d34934d48f598552da70150eee9713776314b91354829160d7a49cb55a89",
+        "json": {
+          "status": "PASS_FINAL_LOS_POINT_PRODUCTS",
+          "points": 881315,
+          "acquisitions": 38,
+          "scientific_contract": {
+            "los_positive": "toward_satellite",
+            "velocity_method": "ordinary least squares with intercept over all acquisitions",
+            "velocity_unit": "mm/year",
+            "year_days": 365.25,
+            "cumulative_definition": "last acquisition minus 20141006 reference acquisition",
+            "temporal_reference": "20141006",
+            "time_span_days": 552.0,
+            "time_span_years": 1.51129363449692,
+            "regression_standard_error_note": "Temporal OLS slope standard error only; not total InSAR/geodetic uncertainty."
+          },
+          "hard_parity": {
+            "sample_points": 4096,
+            "velocity_fused_vs_lstsq_max_abs_mm_per_year": 3.552713678800501e-15,
+            "velocity_tolerance": 1e-10,
+            "cumulative_last_minus_first_parity_mm": 0.0,
+            "epoch0_los_max_abs_mm": 0.0
+          },
+          "statistics": {
+            "velocity_p01_p05_p50_p95_p99_mm_per_year": [
+              -2.2524067163467407,
+              -1.4527587056159972,
+              -0.08079756051301956,
+              1.0556274175643916,
+              1.6704362201690666
+            ],
+            "abs_velocity_p50_p95_p99_mm_per_year": [
+              0.4582999050617218,
+              1.5958113431930514,
+              2.3443991327285754
+            ],
+            "cumulative_p01_p05_p50_p95_p99_mm": [
+              -3.393991026878357,
+              -2.1725899934768678,
+              -0.06931497156620026,
+              1.6307698488235467,
+              2.638345651626581
+            ],
+            "linear_residual_rms_p50_p95_p99_mm": [
+              0.7528793811798096,
+              1.7957239508628844,
+              2.066712875366211
+            ],
+            "velocity_standard_error_p50_p95_p99_mm_per_year": [
+              0.2674676477909088,
+              0.6379482388496398,
+              0.7342196345329284
+            ],
+            "reference_velocity_median_mm_per_year": 0.020980672910809517,
+            "reference_cumulative_median_mm": 0.0
+          },
+          "geometry": {
+            "longitude": "/home/ubuntu/Downloads/psds/output/processing/gacos_geometry/longitude_deg.npy",
+            "latitude": "/home/ubuntu/Downloads/psds/output/processing/gacos_geometry/latitude_deg.npy",
+            "strict_plist": "/home/ubuntu/Downloads/psds/output/processing/gacos_geometry/strict_points.plist",
+            "plist_semantics": "range/column, azimuth/row"
+          },
+          "performance": {
+            "seconds": 1.2631397300865501,
+            "points_per_second": 697717.7417573687
+          },
+          "outputs": {
+            "velocity": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/los_velocity_toward_satellite_mm_per_year.npy",
+            "cumulative": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/los_cumulative_toward_satellite_mm.npy",
+            "linear_residual_rms": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/linear_residual_rms_mm.npy",
+            "velocity_slope_standard_error": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/velocity_slope_standard_error_mm_per_year.npy",
+            "time_axis_contract": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/time_axis_contract.npz",
+            "dtype": "float32"
+          },
+          "upstream_phase_modified": false,
+          "next": "P15-7B geocoding contract audit and exact GeoTIFF export"
+        }
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/time_axis_contract.npz",
+        "name": "time_axis_contract.npz",
+        "bytes": 4650,
+        "kind": "npz",
+        "sha256": "c3daa763219eeb21aff061c0999a2044d1a12b7fa7dc5162a04bc05b76c7c8f2",
+        "arrays": {
+          "acquisition_dates": {
+            "shape": [
+              38
+            ],
+            "dtype": "<U8"
+          },
+          "days_since_reference": {
+            "shape": [
+              38
+            ],
+            "dtype": "float64"
+          },
+          "years_since_reference": {
+            "shape": [
+              38
+            ],
+            "dtype": "float64"
+          },
+          "centered_years": {
+            "shape": [
+              38
+            ],
+            "dtype": "float64"
+          },
+          "slope_weights_per_year": {
+            "shape": [
+              38
+            ],
+            "dtype": "float64"
+          },
+          "temporal_reference_date": {
+            "shape": [],
+            "dtype": "<U8"
+          },
+          "time_span_days": {
+            "shape": [],
+            "dtype": "float64"
+          },
+          "time_span_years": {
+            "shape": [],
+            "dtype": "float64"
+          }
+        }
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/velocity_slope_standard_error_mm_per_year.npy",
+        "name": "velocity_slope_standard_error_mm_per_year.npy",
+        "bytes": 3525388,
+        "kind": "npy",
+        "shape": [
+          881315
+        ],
+        "dtype": "float32",
+        "sha256": "c7197250dd8a1b039f0895e5fe7f94f3de1756f3affa046461804720368f7ad0"
+      }
+    ]
+  },
+  "hard_products": {
+    "final_los_timeseries/acquisition_phase_final_rad.npy": {
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float32",
+      "sha256": "7130e9dd771bfefefcad713db508f0798dc364cfae860c9777d4fb120637cf1d"
+    },
+    "final_los_timeseries/los_displacement_toward_satellite_m.npy": {
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float32",
+      "sha256": "22de7039c1168cdea99a85eb7299dd5c12428b7f26daced3c0b58f854b46700e"
+    },
+    "final_los_timeseries/los_displacement_toward_satellite_mm.npy": {
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float32",
+      "sha256": "ebfb4664b4c747c6682a41beb96a02d31d5a1906f8d5825d07ca9710e840dff5"
+    },
+    "final_los_products/los_velocity_toward_satellite_mm_per_year.npy": {
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "sha256": "262347d1cafdeaa3f16071314493787a2a8cba98a3409ad704557fe59526cd25"
+    },
+    "final_los_products/los_cumulative_toward_satellite_mm.npy": {
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "sha256": "fa7900cd59495d712d5112f8176324a7fb3f2440e916c74b5b24c61799535e12"
+    },
+    "final_los_products/linear_residual_rms_mm.npy": {
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "sha256": "4f10bb1ca16ea06083ce3e23692b78d85c08634927e074c5bfb4041453ec3580"
+    },
+    "final_los_products/velocity_slope_standard_error_mm_per_year.npy": {
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "sha256": "c7197250dd8a1b039f0895e5fe7f94f3de1756f3affa046461804720368f7ad0"
+    }
+  },
+  "scientific_contract": {
+    "points": 881315,
+    "acquisitions": 38,
+    "temporal_reference": "20141006",
+    "geometric_master": "20151212",
+    "spatial_reference_points": 607,
+    "spatial_reference_method": "median",
+    "los_positive": "toward_satellite",
+    "wavelength_m": 0.055465759531382094,
+    "los_phase_factor": "+lambda/(4*pi)",
+    "velocity_year_days": 365.25
+  },
+  "frozen_upstream": {
+    "geometry": true,
+    "gacos": true,
+    "scla": true,
+    "pre_scn": true,
+    "scn": true
+  },
+  "pipeline_modified": false,
+  "production_stage_count": 33
+}

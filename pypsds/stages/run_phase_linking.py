@@ -21,6 +21,7 @@ from pypsds.phase_linking.shp_policy import (
 )
 from pypsds.phase_linking.sequential_production import run_sequential_production
 import pypsds.phase_linking.phase_source as phase_source_module
+import pypsds.gamma.phase_correction as phase_correction_module
 from pypsds.phase_linking.phase_source import (
     GammaStreamingPhaseSource,
 )
@@ -301,6 +302,13 @@ def _write_phase_source_token(
             _phase_source_sha256_file(
                 module_path
             ),
+
+        "phase_correction_sha256":
+            _phase_source_sha256_file(
+                Path(
+                    phase_correction_module.__file__
+                ).resolve()
+            ),
     }
 
 
@@ -516,10 +524,18 @@ class _PhaseSourceYXTProxy:
         )
 
 
+
     def __getitem__(
         self,
         key,
     ):
+        """
+        P11B-1 lazy date-aware access.
+
+        Resolve the temporal slice BEFORE asking the phase source
+        for data.  The old implementation read/corrected all dates
+        and sliced afterwards.
+        """
 
         if not (
             isinstance(
@@ -537,9 +553,7 @@ class _PhaseSourceYXTProxy:
                 "[row_slice, col_slice, date_slice]"
             )
 
-
         rk, ck, tk = key
-
 
         r0, r1 = self._slice_bounds(
             rk,
@@ -547,22 +561,55 @@ class _PhaseSourceYXTProxy:
             "row",
         )
 
-
         c0, c1 = self._slice_bounds(
             ck,
             self.shape[1],
             "column",
         )
 
+        if not isinstance(
+            tk,
+            slice,
+        ):
+
+            raise TypeError(
+                "streaming YXT date access "
+                "must be a slice"
+            )
+
+        t0, t1 = self._slice_bounds(
+            tk,
+            self.shape[2],
+            "date",
+        )
+
+        if t1 <= t0:
+
+            return np.empty(
+                (
+                    r1 - r0,
+                    c1 - c0,
+                    0,
+                ),
+                dtype=np.complex64,
+            )
+
+        date_indices = tuple(
+            range(
+                t0,
+                t1,
+            )
+        )
 
         tile = self.phase_source.read_tile(
             local_row0=r0,
             local_row1=r1,
-
             local_col0=c0,
             local_col1=c1,
+            date_indices=(
+                date_indices
+            ),
         )
-
 
         if self.expected_geometry is not None:
 
@@ -573,7 +620,6 @@ class _PhaseSourceYXTProxy:
                 ],
                 dtype=np.bool_,
             )
-
 
             if not np.array_equal(
                 tile.geometry_valid,
@@ -587,25 +633,20 @@ class _PhaseSourceYXTProxy:
                     f"cols={c0}:{c1}"
                 )
 
-
-        if isinstance(
-            tk,
-            slice,
+        if tile.yxt.shape != (
+            r1 - r0,
+            c1 - c0,
+            t1 - t0,
         ):
 
-            return np.ascontiguousarray(
-                tile.yxt[
-                    :,
-                    :,
-                    tk,
-                ],
-                dtype=np.complex64,
+            raise RuntimeError(
+                "date-aware phase-source shape "
+                f"mismatch: {tile.yxt.shape}"
             )
 
-
-        raise TypeError(
-            "streaming YXT date access "
-            "must be a slice"
+        return np.ascontiguousarray(
+            tile.yxt,
+            dtype=np.complex64,
         )
 
 
@@ -624,9 +665,12 @@ def main():
     ap.add_argument("--beta", type=float, default=0.0)
     ap.add_argument("--gamma-jitter", type=float, default=1e-6)
     ap.add_argument("--emi-mu", type=float, default=0.99)
-    ap.add_argument("--batch-size", type=int, default=16000)
-    ap.add_argument("--pl-workers", type=int, default=16)
-    ap.add_argument("--pl-chunk-size", type=int, default=512)
+    ap.add_argument("--batch-size", type=int, default=0)
+    ap.add_argument("--pl-workers", type=int, default=0)
+    ap.add_argument("--pl-chunk-size", type=int, default=0)
+    ap.add_argument("--tile-rows", type=int, default=0)
+    ap.add_argument("--tile-cols", type=int, default=0)
+    ap.add_argument("--support-block", type=int, default=0)
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--max-centers", type=int, default=0)
     args = ap.parse_args()
@@ -644,6 +688,50 @@ def main():
     args.half_row = int(shp_policy.half_row)
     args.half_col = int(shp_policy.half_col)
     args.min_shp = int(shp_policy.formal_min_shp)
+
+    # ---------------------------------------------------------
+    # Hardware-aware execution geometry.
+    #
+    # This changes execution only.  Scientific SHP/EMI settings
+    # remain owned by shp_policy/config.
+    # ---------------------------------------------------------
+
+    auto_plan = build_runtime_plan(
+        ndate=ndate,
+        max_solver_size=(
+            shp_policy.max_solver_size
+        ),
+    )
+
+    if args.batch_size <= 0:
+        args.batch_size = (
+            auto_plan.phase_link_batch_size
+        )
+
+    if args.pl_workers <= 0:
+        args.pl_workers = (
+            auto_plan.phase_link_workers
+        )
+
+    if args.pl_chunk_size <= 0:
+        args.pl_chunk_size = (
+            auto_plan.phase_link_chunk_size
+        )
+
+    if args.tile_rows <= 0:
+        args.tile_rows = (
+            auto_plan.phase_link_tile_rows
+        )
+
+    if args.tile_cols <= 0:
+        args.tile_cols = (
+            auto_plan.phase_link_tile_cols
+        )
+
+    if args.support_block <= 0:
+        args.support_block = (
+            auto_plan.support_cache_support_block
+        )
 
     pairs = image_pairs(ndate)
     pi, pj = pairs[:, 0], pairs[:, 1]
@@ -676,6 +764,11 @@ def main():
     print(f"batch size      : {args.batch_size}")
     print(f"PL workers      : {args.pl_workers}")
     print(f"PL chunk        : {args.pl_chunk_size}")
+    print(
+        f"PL tile         : "
+        f"{args.tile_rows} x {args.tile_cols}"
+    )
+    print(f"support block   : {args.support_block}")
     print(f"Numba threads   : {os.environ.get('NUMBA_NUM_THREADS', 'runtime-default')}")
     print(f"resume          : {args.resume}")
 
@@ -864,9 +957,7 @@ def main():
         "gamma"
     ):
 
-        _runtime_plan = build_runtime_plan(
-            ndate=ndate,
-        )
+        _runtime_plan = auto_plan
 
 
         _phase_source = (

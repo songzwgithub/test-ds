@@ -1,0 +1,2910 @@
+{
+  "point_geolocation": {
+    "source": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/geometry/point_geolocation.py",
+    "imports": [
+      "Path",
+      "json",
+      "math",
+      "np"
+    ],
+    "top_level_globals": [
+      "DEST",
+      "PROC",
+      "PROJECT",
+      "RSLC_PAR",
+      "accepted",
+      "accepted_frac",
+      "all_cols",
+      "all_rows",
+      "center_difference",
+      "cols",
+      "gacos_frac",
+      "gamma_center_inc",
+      "inc",
+      "inc_frac",
+      "inside_gacos",
+      "lat",
+      "lat_bin",
+      "ll_frac",
+      "lon",
+      "lon_bin",
+      "manifest",
+      "manifest_path",
+      "n",
+      "p",
+      "q",
+      "re",
+      "rg",
+      "rgc",
+      "rgn",
+      "rows",
+      "rps",
+      "se",
+      "stamps_center_inc",
+      "strict_ids",
+      "valid_inc",
+      "valid_ll"
+    ],
+    "functions": [
+      {
+        "name": "read_par",
+        "line_start": 18,
+        "line_end": 24,
+        "globals_used": [],
+        "other_free_names": [],
+        "source": "def read_par(path):\n    d = {}\n    for line in path.read_text(errors=\"ignore\").splitlines():\n        if \":\" in line:\n            k, v = line.split(\":\", 1)\n            d[k.strip().lower()] = v.strip()\n    return d"
+      },
+      {
+        "name": "val",
+        "line_start": 27,
+        "line_end": 28,
+        "globals_used": [],
+        "other_free_names": [],
+        "source": "def val(d, key):\n    return float(d[key].split()[0])"
+      },
+      {
+        "name": "stamps_incidence",
+        "line_start": 108,
+        "line_end": 121,
+        "globals_used": [
+          "re",
+          "se"
+        ],
+        "other_free_names": [],
+        "source": "def stamps_incidence(rg):\n    x = (\n        se * se\n        - re * re\n        - rg * rg\n    ) / (\n        2.0 * re * rg\n    )\n\n    return np.degrees(\n        np.arccos(\n            np.clip(x, -1.0, 1.0)\n        )\n    )"
+      }
+    ],
+    "top_level_blocks": [
+      {
+        "id": 1,
+        "line_start": 6,
+        "line_end": 6,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "Path"
+        ],
+        "writes": [
+          "PROJECT"
+        ],
+        "source": "PROJECT = Path(\"/home/ubuntu/Downloads/psds\")"
+      },
+      {
+        "id": 2,
+        "line_start": 7,
+        "line_end": 7,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "PROJECT"
+        ],
+        "writes": [
+          "PROC"
+        ],
+        "source": "PROC = PROJECT / \"output\" / \"processing\""
+      },
+      {
+        "id": 3,
+        "line_start": 8,
+        "line_end": 8,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "PROC"
+        ],
+        "writes": [
+          "DEST"
+        ],
+        "source": "DEST = PROC / \"gacos_geometry\""
+      },
+      {
+        "id": 4,
+        "line_start": 10,
+        "line_end": 12,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "Path"
+        ],
+        "writes": [
+          "RSLC_PAR"
+        ],
+        "source": "RSLC_PAR = Path(\n    \"/home/ubuntu/Downloads/RSLC/20151212.rslc.par\"\n)"
+      },
+      {
+        "id": 5,
+        "line_start": 14,
+        "line_end": 14,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "DEST"
+        ],
+        "writes": [
+          "lon_bin"
+        ],
+        "source": "lon_bin = DEST / \"longitude_deg.gamma_pt\""
+      },
+      {
+        "id": 6,
+        "line_start": 15,
+        "line_end": 15,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "DEST"
+        ],
+        "writes": [
+          "lat_bin"
+        ],
+        "source": "lat_bin = DEST / \"latitude_deg.gamma_pt\""
+      },
+      {
+        "id": 7,
+        "line_start": 31,
+        "line_end": 36,
+        "node_type": "Assign",
+        "category": "input",
+        "reads": [
+          "PROC",
+          "np"
+        ],
+        "writes": [
+          "strict_ids"
+        ],
+        "source": "strict_ids = np.asarray(\n    np.load(\n        PROC / \"network_inversion\" / \"strict_point_ids.npy\"\n    ),\n    dtype=np.int64,\n)"
+      },
+      {
+        "id": 8,
+        "line_start": 38,
+        "line_end": 41,
+        "node_type": "Assign",
+        "category": "input",
+        "reads": [
+          "PROC",
+          "np"
+        ],
+        "writes": [
+          "all_rows"
+        ],
+        "source": "all_rows = np.load(\n    PROC / \"point_phase_stack\" / \"rows.npy\",\n    mmap_mode=\"r\",\n)"
+      },
+      {
+        "id": 9,
+        "line_start": 43,
+        "line_end": 46,
+        "node_type": "Assign",
+        "category": "input",
+        "reads": [
+          "PROC",
+          "np"
+        ],
+        "writes": [
+          "all_cols"
+        ],
+        "source": "all_cols = np.load(\n    PROC / \"point_phase_stack\" / \"cols.npy\",\n    mmap_mode=\"r\",\n)"
+      },
+      {
+        "id": 10,
+        "line_start": 48,
+        "line_end": 48,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "all_rows",
+          "np",
+          "strict_ids"
+        ],
+        "writes": [
+          "rows"
+        ],
+        "source": "rows = np.asarray(all_rows[strict_ids], dtype=np.int32)"
+      },
+      {
+        "id": 11,
+        "line_start": 49,
+        "line_end": 49,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "all_cols",
+          "np",
+          "strict_ids"
+        ],
+        "writes": [
+          "cols"
+        ],
+        "source": "cols = np.asarray(all_cols[strict_ids], dtype=np.int32)"
+      },
+      {
+        "id": 12,
+        "line_start": 51,
+        "line_end": 51,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "strict_ids"
+        ],
+        "writes": [
+          "n"
+        ],
+        "source": "n = strict_ids.size"
+      },
+      {
+        "id": 13,
+        "line_start": 53,
+        "line_end": 53,
+        "node_type": "Assert",
+        "category": "validation",
+        "reads": [
+          "n"
+        ],
+        "writes": [],
+        "source": "assert n == 881315"
+      },
+      {
+        "id": 14,
+        "line_start": 60,
+        "line_end": 63,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "lon_bin",
+          "np"
+        ],
+        "writes": [
+          "lon"
+        ],
+        "source": "lon = np.fromfile(\n    lon_bin,\n    dtype=\">f4\",\n).astype(np.float64)"
+      },
+      {
+        "id": 15,
+        "line_start": 65,
+        "line_end": 68,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "lat_bin",
+          "np"
+        ],
+        "writes": [
+          "lat"
+        ],
+        "source": "lat = np.fromfile(\n    lat_bin,\n    dtype=\">f4\",\n).astype(np.float64)"
+      },
+      {
+        "id": 16,
+        "line_start": 70,
+        "line_end": 70,
+        "node_type": "Assert",
+        "category": "validation",
+        "reads": [
+          "lon",
+          "n"
+        ],
+        "writes": [],
+        "source": "assert lon.size == n"
+      },
+      {
+        "id": 17,
+        "line_start": 71,
+        "line_end": 71,
+        "node_type": "Assert",
+        "category": "validation",
+        "reads": [
+          "lat",
+          "n"
+        ],
+        "writes": [],
+        "source": "assert lat.size == n"
+      },
+      {
+        "id": 18,
+        "line_start": 74,
+        "line_end": 81,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "lat",
+          "lon",
+          "np"
+        ],
+        "writes": [
+          "valid_ll"
+        ],
+        "source": "valid_ll = (\n    np.isfinite(lon)\n    & np.isfinite(lat)\n    & (lon > -180)\n    & (lon < 180)\n    & (lat > -90)\n    & (lat < 90)\n)"
+      },
+      {
+        "id": 19,
+        "line_start": 83,
+        "line_end": 89,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "lat",
+          "lon",
+          "valid_ll"
+        ],
+        "writes": [
+          "inside_gacos"
+        ],
+        "source": "inside_gacos = (\n    valid_ll\n    & (lon >= 23.6)\n    & (lon <= 23.8)\n    & (lat >= 38.0)\n    & (lat <= 38.2)\n)"
+      },
+      {
+        "id": 20,
+        "line_start": 97,
+        "line_end": 97,
+        "node_type": "Assign",
+        "category": "input",
+        "reads": [
+          "RSLC_PAR",
+          "read_par"
+        ],
+        "writes": [
+          "p"
+        ],
+        "source": "p = read_par(RSLC_PAR)"
+      },
+      {
+        "id": 21,
+        "line_start": 99,
+        "line_end": 99,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "p",
+          "val"
+        ],
+        "writes": [
+          "rgn"
+        ],
+        "source": "rgn = val(p, \"near_range_slc\")"
+      },
+      {
+        "id": 22,
+        "line_start": 100,
+        "line_end": 100,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "p",
+          "val"
+        ],
+        "writes": [
+          "rps"
+        ],
+        "source": "rps = val(p, \"range_pixel_spacing\")"
+      },
+      {
+        "id": 23,
+        "line_start": 101,
+        "line_end": 101,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "p",
+          "val"
+        ],
+        "writes": [
+          "se"
+        ],
+        "source": "se = val(p, \"sar_to_earth_center\")"
+      },
+      {
+        "id": 24,
+        "line_start": 102,
+        "line_end": 102,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "p",
+          "val"
+        ],
+        "writes": [
+          "re"
+        ],
+        "source": "re = val(p, \"earth_radius_below_sensor\")"
+      },
+      {
+        "id": 25,
+        "line_start": 104,
+        "line_end": 104,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "p",
+          "val"
+        ],
+        "writes": [
+          "rgc"
+        ],
+        "source": "rgc = val(p, \"center_range_slc\")"
+      },
+      {
+        "id": 26,
+        "line_start": 105,
+        "line_end": 105,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "p",
+          "val"
+        ],
+        "writes": [
+          "gamma_center_inc"
+        ],
+        "source": "gamma_center_inc = val(p, \"incidence_angle\")"
+      },
+      {
+        "id": 27,
+        "line_start": 127,
+        "line_end": 130,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "cols",
+          "np",
+          "rgn",
+          "rps"
+        ],
+        "writes": [
+          "rg"
+        ],
+        "source": "rg = (\n    rgn\n    + cols.astype(np.float64) * rps\n)"
+      },
+      {
+        "id": 28,
+        "line_start": 132,
+        "line_end": 132,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "rg",
+          "stamps_incidence"
+        ],
+        "writes": [
+          "inc"
+        ],
+        "source": "inc = stamps_incidence(rg)"
+      },
+      {
+        "id": 29,
+        "line_start": 136,
+        "line_end": 138,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "float",
+          "rgc",
+          "stamps_incidence"
+        ],
+        "writes": [
+          "stamps_center_inc"
+        ],
+        "source": "stamps_center_inc = float(\n    stamps_incidence(rgc)\n)"
+      },
+      {
+        "id": 30,
+        "line_start": 140,
+        "line_end": 143,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "gamma_center_inc",
+          "stamps_center_inc"
+        ],
+        "writes": [
+          "center_difference"
+        ],
+        "source": "center_difference = (\n    stamps_center_inc\n    - gamma_center_inc\n)"
+      },
+      {
+        "id": 31,
+        "line_start": 146,
+        "line_end": 150,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "inc",
+          "np"
+        ],
+        "writes": [
+          "valid_inc"
+        ],
+        "source": "valid_inc = (\n    np.isfinite(inc)\n    & (inc > 10.0)\n    & (inc < 80.0)\n)"
+      },
+      {
+        "id": 32,
+        "line_start": 152,
+        "line_end": 155,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "inside_gacos",
+          "valid_inc"
+        ],
+        "writes": [
+          "accepted"
+        ],
+        "source": "accepted = (\n    inside_gacos\n    & valid_inc\n)"
+      },
+      {
+        "id": 33,
+        "line_start": 158,
+        "line_end": 158,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "float",
+          "valid_ll"
+        ],
+        "writes": [
+          "ll_frac"
+        ],
+        "source": "ll_frac = float(valid_ll.mean())"
+      },
+      {
+        "id": 34,
+        "line_start": 159,
+        "line_end": 159,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "float",
+          "inside_gacos"
+        ],
+        "writes": [
+          "gacos_frac"
+        ],
+        "source": "gacos_frac = float(inside_gacos.mean())"
+      },
+      {
+        "id": 35,
+        "line_start": 160,
+        "line_end": 160,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "float",
+          "valid_inc"
+        ],
+        "writes": [
+          "inc_frac"
+        ],
+        "source": "inc_frac = float(valid_inc.mean())"
+      },
+      {
+        "id": 36,
+        "line_start": 161,
+        "line_end": 161,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "accepted",
+          "float"
+        ],
+        "writes": [
+          "accepted_frac"
+        ],
+        "source": "accepted_frac = float(accepted.mean())"
+      },
+      {
+        "id": 37,
+        "line_start": 164,
+        "line_end": 167,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "inc",
+          "np",
+          "valid_inc"
+        ],
+        "writes": [
+          "q"
+        ],
+        "source": "q = np.percentile(\n    inc[valid_inc],\n    [1, 5, 50, 95, 99],\n)"
+      },
+      {
+        "id": 38,
+        "line_start": 170,
+        "line_end": 170,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\"=\" * 88)"
+      },
+      {
+        "id": 39,
+        "line_start": 171,
+        "line_end": 171,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\"P15-3A v4b StaMPS/GAMMA geometry finalize\")"
+      },
+      {
+        "id": 40,
+        "line_start": 172,
+        "line_end": 172,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\"=\" * 88)"
+      },
+      {
+        "id": 41,
+        "line_start": 174,
+        "line_end": 174,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "n",
+          "print"
+        ],
+        "writes": [],
+        "source": "print(f\"strict points             : {n:,}\")"
+      },
+      {
+        "id": 42,
+        "line_start": 175,
+        "line_end": 175,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "ll_frac",
+          "print"
+        ],
+        "writes": [],
+        "source": "print(f\"valid lon/lat             : {ll_frac*100:.6f}%\")"
+      },
+      {
+        "id": 43,
+        "line_start": 176,
+        "line_end": 176,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "gacos_frac",
+          "print"
+        ],
+        "writes": [],
+        "source": "print(f\"inside GACOS              : {gacos_frac*100:.6f}%\")"
+      },
+      {
+        "id": 44,
+        "line_start": 177,
+        "line_end": 177,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print()"
+      },
+      {
+        "id": 45,
+        "line_start": 179,
+        "line_end": 183,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "lon",
+          "print",
+          "valid_ll"
+        ],
+        "writes": [],
+        "source": "print(\n    \"longitude range          : \"\n    f\"{lon[valid_ll].min():.8f} .. \"\n    f\"{lon[valid_ll].max():.8f}\"\n)"
+      },
+      {
+        "id": 46,
+        "line_start": 185,
+        "line_end": 189,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "lat",
+          "print",
+          "valid_ll"
+        ],
+        "writes": [],
+        "source": "print(\n    \"latitude range           : \"\n    f\"{lat[valid_ll].min():.8f} .. \"\n    f\"{lat[valid_ll].max():.8f}\"\n)"
+      },
+      {
+        "id": 47,
+        "line_start": 191,
+        "line_end": 191,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print()"
+      },
+      {
+        "id": 48,
+        "line_start": 192,
+        "line_end": 195,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "gamma_center_inc",
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    f\"GAMMA parameter incidence : \"\n    f\"{gamma_center_inc:.6f} deg\"\n)"
+      },
+      {
+        "id": 49,
+        "line_start": 197,
+        "line_end": 200,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print",
+          "stamps_center_inc"
+        ],
+        "writes": [],
+        "source": "print(\n    f\"StaMPS spherical center   : \"\n    f\"{stamps_center_inc:.6f} deg\"\n)"
+      },
+      {
+        "id": 50,
+        "line_start": 202,
+        "line_end": 205,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "center_difference",
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    f\"diagnostic difference     : \"\n    f\"{center_difference:+.6f} deg\"\n)"
+      },
+      {
+        "id": 51,
+        "line_start": 207,
+        "line_end": 210,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    \"NOTE                      : \"\n    \"diagnostic only; NOT a failure gate\"\n)"
+      },
+      {
+        "id": 52,
+        "line_start": 212,
+        "line_end": 212,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print()"
+      },
+      {
+        "id": 53,
+        "line_start": 214,
+        "line_end": 216,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    \"incidence p01/p05/p50/p95/p99:\"\n)"
+      },
+      {
+        "id": 54,
+        "line_start": 218,
+        "line_end": 225,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print",
+          "q",
+          "x"
+        ],
+        "writes": [
+          "x"
+        ],
+        "source": "print(\n    \"  \"\n    + \" / \".join(\n        f\"{x:.6f}\"\n        for x in q\n    )\n    + \" deg\"\n)"
+      },
+      {
+        "id": 55,
+        "line_start": 227,
+        "line_end": 230,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "inc_frac",
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    f\"valid incidence           : \"\n    f\"{inc_frac*100:.6f}%\"\n)"
+      },
+      {
+        "id": 56,
+        "line_start": 232,
+        "line_end": 235,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "accepted_frac",
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    f\"accepted geometry         : \"\n    f\"{accepted_frac*100:.6f}%\"\n)"
+      },
+      {
+        "id": 57,
+        "line_start": 238,
+        "line_end": 239,
+        "node_type": "If",
+        "category": "validation",
+        "reads": [
+          "RuntimeError",
+          "ll_frac"
+        ],
+        "writes": [],
+        "source": "if ll_frac <= 0.999:\n    raise RuntimeError(\"lon/lat coverage failed\")"
+      },
+      {
+        "id": 58,
+        "line_start": 241,
+        "line_end": 242,
+        "node_type": "If",
+        "category": "validation",
+        "reads": [
+          "RuntimeError",
+          "gacos_frac"
+        ],
+        "writes": [],
+        "source": "if gacos_frac <= 0.999:\n    raise RuntimeError(\"GACOS geographic coverage failed\")"
+      },
+      {
+        "id": 59,
+        "line_start": 244,
+        "line_end": 245,
+        "node_type": "If",
+        "category": "validation",
+        "reads": [
+          "RuntimeError",
+          "inc_frac"
+        ],
+        "writes": [],
+        "source": "if inc_frac <= 0.999:\n    raise RuntimeError(\"StaMPS incidence coverage failed\")"
+      },
+      {
+        "id": 60,
+        "line_start": 247,
+        "line_end": 248,
+        "node_type": "If",
+        "category": "validation",
+        "reads": [
+          "RuntimeError",
+          "accepted_frac"
+        ],
+        "writes": [],
+        "source": "if accepted_frac <= 0.999:\n    raise RuntimeError(\"final point geometry coverage failed\")"
+      },
+      {
+        "id": 61,
+        "line_start": 255,
+        "line_end": 258,
+        "node_type": "Expr",
+        "category": "output",
+        "reads": [
+          "DEST",
+          "np",
+          "strict_ids"
+        ],
+        "writes": [],
+        "source": "np.save(\n    DEST / \"strict_point_ids.npy\",\n    strict_ids.astype(np.int32),\n)"
+      },
+      {
+        "id": 62,
+        "line_start": 260,
+        "line_end": 263,
+        "node_type": "Expr",
+        "category": "output",
+        "reads": [
+          "DEST",
+          "np",
+          "rows"
+        ],
+        "writes": [],
+        "source": "np.save(\n    DEST / \"radar_row.npy\",\n    rows,\n)"
+      },
+      {
+        "id": 63,
+        "line_start": 265,
+        "line_end": 268,
+        "node_type": "Expr",
+        "category": "output",
+        "reads": [
+          "DEST",
+          "cols",
+          "np"
+        ],
+        "writes": [],
+        "source": "np.save(\n    DEST / \"radar_col.npy\",\n    cols,\n)"
+      },
+      {
+        "id": 64,
+        "line_start": 270,
+        "line_end": 273,
+        "node_type": "Expr",
+        "category": "output",
+        "reads": [
+          "DEST",
+          "lon",
+          "np"
+        ],
+        "writes": [],
+        "source": "np.save(\n    DEST / \"longitude_deg.npy\",\n    lon,\n)"
+      },
+      {
+        "id": 65,
+        "line_start": 275,
+        "line_end": 278,
+        "node_type": "Expr",
+        "category": "output",
+        "reads": [
+          "DEST",
+          "lat",
+          "np"
+        ],
+        "writes": [],
+        "source": "np.save(\n    DEST / \"latitude_deg.npy\",\n    lat,\n)"
+      },
+      {
+        "id": 66,
+        "line_start": 280,
+        "line_end": 283,
+        "node_type": "Expr",
+        "category": "output",
+        "reads": [
+          "DEST",
+          "inc",
+          "np"
+        ],
+        "writes": [],
+        "source": "np.save(\n    DEST / \"incidence_angle_stamps_deg.npy\",\n    inc.astype(np.float32),\n)"
+      },
+      {
+        "id": 67,
+        "line_start": 285,
+        "line_end": 288,
+        "node_type": "Expr",
+        "category": "output",
+        "reads": [
+          "DEST",
+          "accepted",
+          "np"
+        ],
+        "writes": [],
+        "source": "np.save(\n    DEST / \"valid_gacos_geometry_mask.npy\",\n    accepted,\n)"
+      },
+      {
+        "id": 68,
+        "line_start": 291,
+        "line_end": 346,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "accepted_frac",
+          "center_difference",
+          "float",
+          "gacos_frac",
+          "gamma_center_inc",
+          "inc_frac",
+          "int",
+          "ll_frac",
+          "n",
+          "q",
+          "stamps_center_inc"
+        ],
+        "writes": [
+          "manifest"
+        ],
+        "source": "manifest = {\n    \"format\":\n        \"pyPSDS-GAMMA-P15-3A-StaMPS-geometry-v4b\",\n\n    \"status\":\n        \"PASS_RADAR_POINT_GEOLOCATION\",\n\n    \"longitude_latitude_method\":\n        \"GAMMA_data2pt_existing_rdc_lon_lat\",\n\n    \"incidence_method\":\n        \"StaMPS_mt_ml_select_gamma_spherical_geometry\",\n\n    \"incidence_formula\":\n        (\n            \"acos((se^2-re^2-rg^2)/(2*re*rg))\"\n        ),\n\n    \"points\":\n        int(n),\n\n    \"valid_lonlat_fraction\":\n        ll_frac,\n\n    \"gacos_coverage_fraction\":\n        gacos_frac,\n\n    \"incidence_valid_fraction\":\n        inc_frac,\n\n    \"accepted_fraction\":\n        accepted_frac,\n\n    \"gamma_parameter_center_incidence_deg\":\n        gamma_center_inc,\n\n    \"stamps_spherical_center_incidence_deg\":\n        stamps_center_inc,\n\n    \"center_difference_deg\":\n        center_difference,\n\n    \"center_difference_role\":\n        \"diagnostic_only_not_failure_gate\",\n\n    \"incidence_percentiles_deg\": {\n        \"p01\": float(q[0]),\n        \"p05\": float(q[1]),\n        \"p50\": float(q[2]),\n        \"p95\": float(q[3]),\n        \"p99\": float(q[4]),\n    },\n\n    \"next_step\":\n        \"P15-4_GACOS_POINT_SAMPLING_SMOKE\",\n}"
+      },
+      {
+        "id": 69,
+        "line_start": 349,
+        "line_end": 352,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "DEST"
+        ],
+        "writes": [
+          "manifest_path"
+        ],
+        "source": "manifest_path = (\n    DEST\n    / \"gacos_geometry_manifest.json\"\n)"
+      },
+      {
+        "id": 70,
+        "line_start": 354,
+        "line_end": 360,
+        "node_type": "Expr",
+        "category": "output",
+        "reads": [
+          "json",
+          "manifest",
+          "manifest_path"
+        ],
+        "writes": [],
+        "source": "manifest_path.write_text(\n    json.dumps(\n        manifest,\n        indent=2,\n    )\n    + \"\\n\"\n)"
+      },
+      {
+        "id": 71,
+        "line_start": 363,
+        "line_end": 363,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print()"
+      },
+      {
+        "id": 72,
+        "line_start": 364,
+        "line_end": 367,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "manifest_path",
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    \"manifest                  :\",\n    manifest_path,\n)"
+      },
+      {
+        "id": 73,
+        "line_start": 369,
+        "line_end": 369,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print()"
+      },
+      {
+        "id": 74,
+        "line_start": 370,
+        "line_end": 370,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\"=\" * 88)"
+      },
+      {
+        "id": 75,
+        "line_start": 371,
+        "line_end": 374,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    \"P15-3A FINAL RESULT: \"\n    \"PASS_RADAR_POINT_GEOLOCATION\"\n)"
+      },
+      {
+        "id": 76,
+        "line_start": 375,
+        "line_end": 375,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\"=\" * 88)"
+      }
+    ],
+    "candidate": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/geometry_core_extraction/candidate/point_geolocation_functions.py",
+    "block_dump": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/geometry_core_extraction/point_geolocation_top_level_blocks.txt",
+    "dependency_edges": [
+      {
+        "variable": "PROJECT",
+        "producer": 1,
+        "consumer": 2
+      },
+      {
+        "variable": "PROC",
+        "producer": 2,
+        "consumer": 3
+      },
+      {
+        "variable": "DEST",
+        "producer": 3,
+        "consumer": 5
+      },
+      {
+        "variable": "DEST",
+        "producer": 3,
+        "consumer": 6
+      },
+      {
+        "variable": "PROC",
+        "producer": 2,
+        "consumer": 7
+      },
+      {
+        "variable": "PROC",
+        "producer": 2,
+        "consumer": 8
+      },
+      {
+        "variable": "PROC",
+        "producer": 2,
+        "consumer": 9
+      },
+      {
+        "variable": "all_rows",
+        "producer": 8,
+        "consumer": 10
+      },
+      {
+        "variable": "strict_ids",
+        "producer": 7,
+        "consumer": 10
+      },
+      {
+        "variable": "all_cols",
+        "producer": 9,
+        "consumer": 11
+      },
+      {
+        "variable": "strict_ids",
+        "producer": 7,
+        "consumer": 11
+      },
+      {
+        "variable": "strict_ids",
+        "producer": 7,
+        "consumer": 12
+      },
+      {
+        "variable": "n",
+        "producer": 12,
+        "consumer": 13
+      },
+      {
+        "variable": "lon_bin",
+        "producer": 5,
+        "consumer": 14
+      },
+      {
+        "variable": "lat_bin",
+        "producer": 6,
+        "consumer": 15
+      },
+      {
+        "variable": "lon",
+        "producer": 14,
+        "consumer": 16
+      },
+      {
+        "variable": "n",
+        "producer": 12,
+        "consumer": 16
+      },
+      {
+        "variable": "lat",
+        "producer": 15,
+        "consumer": 17
+      },
+      {
+        "variable": "n",
+        "producer": 12,
+        "consumer": 17
+      },
+      {
+        "variable": "lat",
+        "producer": 15,
+        "consumer": 18
+      },
+      {
+        "variable": "lon",
+        "producer": 14,
+        "consumer": 18
+      },
+      {
+        "variable": "lat",
+        "producer": 15,
+        "consumer": 19
+      },
+      {
+        "variable": "lon",
+        "producer": 14,
+        "consumer": 19
+      },
+      {
+        "variable": "valid_ll",
+        "producer": 18,
+        "consumer": 19
+      },
+      {
+        "variable": "RSLC_PAR",
+        "producer": 4,
+        "consumer": 20
+      },
+      {
+        "variable": "p",
+        "producer": 20,
+        "consumer": 21
+      },
+      {
+        "variable": "p",
+        "producer": 20,
+        "consumer": 22
+      },
+      {
+        "variable": "p",
+        "producer": 20,
+        "consumer": 23
+      },
+      {
+        "variable": "p",
+        "producer": 20,
+        "consumer": 24
+      },
+      {
+        "variable": "p",
+        "producer": 20,
+        "consumer": 25
+      },
+      {
+        "variable": "p",
+        "producer": 20,
+        "consumer": 26
+      },
+      {
+        "variable": "cols",
+        "producer": 11,
+        "consumer": 27
+      },
+      {
+        "variable": "rgn",
+        "producer": 21,
+        "consumer": 27
+      },
+      {
+        "variable": "rps",
+        "producer": 22,
+        "consumer": 27
+      },
+      {
+        "variable": "rg",
+        "producer": 27,
+        "consumer": 28
+      },
+      {
+        "variable": "rgc",
+        "producer": 25,
+        "consumer": 29
+      },
+      {
+        "variable": "gamma_center_inc",
+        "producer": 26,
+        "consumer": 30
+      },
+      {
+        "variable": "stamps_center_inc",
+        "producer": 29,
+        "consumer": 30
+      },
+      {
+        "variable": "inc",
+        "producer": 28,
+        "consumer": 31
+      },
+      {
+        "variable": "inside_gacos",
+        "producer": 19,
+        "consumer": 32
+      },
+      {
+        "variable": "valid_inc",
+        "producer": 31,
+        "consumer": 32
+      },
+      {
+        "variable": "valid_ll",
+        "producer": 18,
+        "consumer": 33
+      },
+      {
+        "variable": "inside_gacos",
+        "producer": 19,
+        "consumer": 34
+      },
+      {
+        "variable": "valid_inc",
+        "producer": 31,
+        "consumer": 35
+      },
+      {
+        "variable": "accepted",
+        "producer": 32,
+        "consumer": 36
+      },
+      {
+        "variable": "inc",
+        "producer": 28,
+        "consumer": 37
+      },
+      {
+        "variable": "valid_inc",
+        "producer": 31,
+        "consumer": 37
+      },
+      {
+        "variable": "n",
+        "producer": 12,
+        "consumer": 41
+      },
+      {
+        "variable": "ll_frac",
+        "producer": 33,
+        "consumer": 42
+      },
+      {
+        "variable": "gacos_frac",
+        "producer": 34,
+        "consumer": 43
+      },
+      {
+        "variable": "lon",
+        "producer": 14,
+        "consumer": 45
+      },
+      {
+        "variable": "valid_ll",
+        "producer": 18,
+        "consumer": 45
+      },
+      {
+        "variable": "lat",
+        "producer": 15,
+        "consumer": 46
+      },
+      {
+        "variable": "valid_ll",
+        "producer": 18,
+        "consumer": 46
+      },
+      {
+        "variable": "gamma_center_inc",
+        "producer": 26,
+        "consumer": 48
+      },
+      {
+        "variable": "stamps_center_inc",
+        "producer": 29,
+        "consumer": 49
+      },
+      {
+        "variable": "center_difference",
+        "producer": 30,
+        "consumer": 50
+      },
+      {
+        "variable": "q",
+        "producer": 37,
+        "consumer": 54
+      },
+      {
+        "variable": "inc_frac",
+        "producer": 35,
+        "consumer": 55
+      },
+      {
+        "variable": "accepted_frac",
+        "producer": 36,
+        "consumer": 56
+      },
+      {
+        "variable": "ll_frac",
+        "producer": 33,
+        "consumer": 57
+      },
+      {
+        "variable": "gacos_frac",
+        "producer": 34,
+        "consumer": 58
+      },
+      {
+        "variable": "inc_frac",
+        "producer": 35,
+        "consumer": 59
+      },
+      {
+        "variable": "accepted_frac",
+        "producer": 36,
+        "consumer": 60
+      },
+      {
+        "variable": "DEST",
+        "producer": 3,
+        "consumer": 61
+      },
+      {
+        "variable": "strict_ids",
+        "producer": 7,
+        "consumer": 61
+      },
+      {
+        "variable": "DEST",
+        "producer": 3,
+        "consumer": 62
+      },
+      {
+        "variable": "rows",
+        "producer": 10,
+        "consumer": 62
+      },
+      {
+        "variable": "DEST",
+        "producer": 3,
+        "consumer": 63
+      },
+      {
+        "variable": "cols",
+        "producer": 11,
+        "consumer": 63
+      },
+      {
+        "variable": "DEST",
+        "producer": 3,
+        "consumer": 64
+      },
+      {
+        "variable": "lon",
+        "producer": 14,
+        "consumer": 64
+      },
+      {
+        "variable": "DEST",
+        "producer": 3,
+        "consumer": 65
+      },
+      {
+        "variable": "lat",
+        "producer": 15,
+        "consumer": 65
+      },
+      {
+        "variable": "DEST",
+        "producer": 3,
+        "consumer": 66
+      },
+      {
+        "variable": "inc",
+        "producer": 28,
+        "consumer": 66
+      },
+      {
+        "variable": "DEST",
+        "producer": 3,
+        "consumer": 67
+      },
+      {
+        "variable": "accepted",
+        "producer": 32,
+        "consumer": 67
+      },
+      {
+        "variable": "accepted_frac",
+        "producer": 36,
+        "consumer": 68
+      },
+      {
+        "variable": "center_difference",
+        "producer": 30,
+        "consumer": 68
+      },
+      {
+        "variable": "gacos_frac",
+        "producer": 34,
+        "consumer": 68
+      },
+      {
+        "variable": "gamma_center_inc",
+        "producer": 26,
+        "consumer": 68
+      },
+      {
+        "variable": "inc_frac",
+        "producer": 35,
+        "consumer": 68
+      },
+      {
+        "variable": "ll_frac",
+        "producer": 33,
+        "consumer": 68
+      },
+      {
+        "variable": "n",
+        "producer": 12,
+        "consumer": 68
+      },
+      {
+        "variable": "q",
+        "producer": 37,
+        "consumer": 68
+      },
+      {
+        "variable": "stamps_center_inc",
+        "producer": 29,
+        "consumer": 68
+      },
+      {
+        "variable": "DEST",
+        "producer": 3,
+        "consumer": 69
+      },
+      {
+        "variable": "manifest",
+        "producer": 68,
+        "consumer": 70
+      },
+      {
+        "variable": "manifest_path",
+        "producer": 69,
+        "consumer": 70
+      },
+      {
+        "variable": "manifest_path",
+        "producer": 69,
+        "consumer": 72
+      }
+    ]
+  },
+  "incidence": {
+    "source": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/geometry/incidence.py",
+    "imports": [
+      "Path",
+      "json",
+      "njit",
+      "np",
+      "prange",
+      "re",
+      "time"
+    ],
+    "top_level_globals": [
+      "A",
+      "E2",
+      "F",
+      "MANIFEST",
+      "N",
+      "NUM_RE",
+      "OUT",
+      "PAR",
+      "ROOT",
+      "_",
+      "deg",
+      "elapsed",
+      "gamma_file",
+      "hgt",
+      "i",
+      "inc",
+      "lat",
+      "line_dt",
+      "lon",
+      "manifest",
+      "max_abs",
+      "nlines",
+      "nsv",
+      "p",
+      "p99",
+      "pos",
+      "q",
+      "rms",
+      "row",
+      "sat_by_row",
+      "sv_dt",
+      "sv_t0",
+      "t0",
+      "truth_status",
+      "valid",
+      "vel"
+    ],
+    "functions": [
+      {
+        "name": "read_par",
+        "line_start": 38,
+        "line_end": 56,
+        "globals_used": [],
+        "other_free_names": [],
+        "source": "def read_par(path):\n\n    d = {}\n\n    for line in path.read_text(\n        errors=\"ignore\"\n    ).splitlines():\n\n        if \":\" not in line:\n            continue\n\n        k, v = line.split(\n            \":\",\n            1,\n        )\n\n        d[k.strip().lower()] = v.strip()\n\n    return d"
+      },
+      {
+        "name": "scalar",
+        "line_start": 59,
+        "line_end": 65,
+        "globals_used": [
+          "NUM_RE"
+        ],
+        "other_free_names": [],
+        "source": "def scalar(d, key):\n\n    return float(\n        NUM_RE.findall(\n            d[key]\n        )[0]\n    )"
+      },
+      {
+        "name": "vec3",
+        "line_start": 68,
+        "line_end": 81,
+        "globals_used": [
+          "NUM_RE"
+        ],
+        "other_free_names": [],
+        "source": "def vec3(d, key):\n\n    x = NUM_RE.findall(\n        d[key]\n    )\n\n    return np.array(\n        [\n            float(x[0]),\n            float(x[1]),\n            float(x[2]),\n        ],\n        dtype=np.float64,\n    )"
+      },
+      {
+        "name": "orbit_position",
+        "line_start": 256,
+        "line_end": 360,
+        "globals_used": [
+          "nsv",
+          "pos",
+          "sv_dt",
+          "sv_t0",
+          "vel"
+        ],
+        "other_free_names": [],
+        "source": "def orbit_position(\n    query_time,\n):\n\n    idx = (\n        np.searchsorted(\n            sv_t0\n            +\n            np.arange(\n                nsv,\n                dtype=np.float64,\n            )\n            *\n            sv_dt,\n            query_time,\n            side=\"right\",\n        )\n        -\n        1\n    )\n\n\n    idx = np.clip(\n        idx,\n        0,\n        nsv - 2,\n    )\n\n\n    t_left = (\n        sv_t0\n        +\n        idx\n        *\n        sv_dt\n    )\n\n\n    u = (\n        query_time\n        -\n        t_left\n    ) / sv_dt\n\n\n    u2 = u * u\n    u3 = u2 * u\n\n\n    h00 = (\n        2*u3\n        -\n        3*u2\n        +\n        1\n    )\n\n    h10 = (\n        u3\n        -\n        2*u2\n        +\n        u\n    )\n\n    h01 = (\n        -2*u3\n        +\n        3*u2\n    )\n\n    h11 = (\n        u3\n        -\n        u2\n    )\n\n\n    return (\n        h00[:, None]\n        *\n        pos[idx]\n\n        +\n\n        h10[:, None]\n        *\n        sv_dt\n        *\n        vel[idx]\n\n        +\n\n        h01[:, None]\n        *\n        pos[idx + 1]\n\n        +\n\n        h11[:, None]\n        *\n        sv_dt\n        *\n        vel[idx + 1]\n    )"
+      },
+      {
+        "name": "incidence_fast",
+        "line_start": 408,
+        "line_end": 572,
+        "globals_used": [],
+        "other_free_names": [],
+        "source": "def incidence_fast(\n    lon_deg,\n    lat_deg,\n    hgt_m,\n    radar_row,\n    sat_xyz,\n    a,\n    e2,\n):\n\n    n = lon_deg.size\n\n    out = np.empty(\n        n,\n        dtype=np.float32,\n    )\n\n    d2r = (\n        np.pi\n        /\n        180.0\n    )\n\n\n    for i in prange(\n        n\n    ):\n\n        lam = (\n            lon_deg[i]\n            *\n            d2r\n        )\n\n        phi = (\n            lat_deg[i]\n            *\n            d2r\n        )\n\n\n        sp = np.sin(\n            phi\n        )\n\n        cp = np.cos(\n            phi\n        )\n\n        sl = np.sin(\n            lam\n        )\n\n        cl = np.cos(\n            lam\n        )\n\n\n        rn = (\n            a\n            /\n            np.sqrt(\n                1.0\n                -\n                e2\n                *\n                sp\n                *\n                sp\n            )\n        )\n\n\n        h = hgt_m[i]\n\n\n        gx = (\n            rn + h\n        ) * cp * cl\n\n\n        gy = (\n            rn + h\n        ) * cp * sl\n\n\n        gz = (\n            rn\n            *\n            (\n                1.0\n                -\n                e2\n            )\n            +\n            h\n        ) * sp\n\n\n        r = radar_row[i]\n\n\n        lx = (\n            sat_xyz[r, 0]\n            -\n            gx\n        )\n\n        ly = (\n            sat_xyz[r, 1]\n            -\n            gy\n        )\n\n        lz = (\n            sat_xyz[r, 2]\n            -\n            gz\n        )\n\n\n        los_norm = np.sqrt(\n            lx*lx\n            +\n            ly*ly\n            +\n            lz*lz\n        )\n\n\n        ground_norm = np.sqrt(\n            gx*gx\n            +\n            gy*gy\n            +\n            gz*gz\n        )\n\n\n        cosine = (\n            gx*lx\n            +\n            gy*ly\n            +\n            gz*lz\n        ) / (\n            ground_norm\n            *\n            los_norm\n        )\n\n\n        if cosine > 1.0:\n            cosine = 1.0\n\n        elif cosine < -1.0:\n            cosine = -1.0\n\n\n        out[i] = np.arccos(\n            cosine\n        )\n\n\n    return out"
+      }
+    ],
+    "top_level_blocks": [
+      {
+        "id": 1,
+        "line_start": 10,
+        "line_end": 12,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "Path"
+        ],
+        "writes": [
+          "ROOT"
+        ],
+        "source": "ROOT = Path(\n    \"/home/ubuntu/Downloads/psds/output/processing/gacos_geometry\"\n)"
+      },
+      {
+        "id": 2,
+        "line_start": 14,
+        "line_end": 16,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "Path"
+        ],
+        "writes": [
+          "PAR"
+        ],
+        "source": "PAR = Path(\n    \"/home/ubuntu/Downloads/RSLC/20151212.rslc.par\"\n)"
+      },
+      {
+        "id": 3,
+        "line_start": 18,
+        "line_end": 21,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "ROOT"
+        ],
+        "writes": [
+          "OUT"
+        ],
+        "source": "OUT = (\n    ROOT\n    / \"incidence_gamma_compatible_fast_rad.npy\"\n)"
+      },
+      {
+        "id": 4,
+        "line_start": 23,
+        "line_end": 26,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "ROOT"
+        ],
+        "writes": [
+          "MANIFEST"
+        ],
+        "source": "MANIFEST = (\n    ROOT\n    / \"fast_incidence_manifest.json\"\n)"
+      },
+      {
+        "id": 5,
+        "line_start": 33,
+        "line_end": 35,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "re"
+        ],
+        "writes": [
+          "NUM_RE"
+        ],
+        "source": "NUM_RE = re.compile(\n    r\"[-+]?\\d+(?:\\.\\d*)?(?:[Ee][-+]?\\d+)?\"\n)"
+      },
+      {
+        "id": 6,
+        "line_start": 88,
+        "line_end": 94,
+        "node_type": "Assign",
+        "category": "input",
+        "reads": [
+          "ROOT",
+          "np"
+        ],
+        "writes": [
+          "lon"
+        ],
+        "source": "lon = np.asarray(\n    np.load(\n        ROOT / \"longitude_deg.npy\",\n        mmap_mode=\"r\",\n    ),\n    dtype=np.float64,\n)"
+      },
+      {
+        "id": 7,
+        "line_start": 96,
+        "line_end": 102,
+        "node_type": "Assign",
+        "category": "input",
+        "reads": [
+          "ROOT",
+          "np"
+        ],
+        "writes": [
+          "lat"
+        ],
+        "source": "lat = np.asarray(\n    np.load(\n        ROOT / \"latitude_deg.npy\",\n        mmap_mode=\"r\",\n    ),\n    dtype=np.float64,\n)"
+      },
+      {
+        "id": 8,
+        "line_start": 104,
+        "line_end": 110,
+        "node_type": "Assign",
+        "category": "input",
+        "reads": [
+          "ROOT",
+          "np"
+        ],
+        "writes": [
+          "row"
+        ],
+        "source": "row = np.asarray(\n    np.load(\n        ROOT / \"radar_row.npy\",\n        mmap_mode=\"r\",\n    ),\n    dtype=np.int32,\n)"
+      },
+      {
+        "id": 9,
+        "line_start": 112,
+        "line_end": 117,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "ROOT",
+          "np"
+        ],
+        "writes": [
+          "hgt"
+        ],
+        "source": "hgt = np.fromfile(\n    ROOT / \"height_m.gamma_pt\",\n    dtype=\">f4\",\n).astype(\n    np.float64\n)"
+      },
+      {
+        "id": 10,
+        "line_start": 120,
+        "line_end": 120,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "lon"
+        ],
+        "writes": [
+          "N"
+        ],
+        "source": "N = lon.size"
+      },
+      {
+        "id": 11,
+        "line_start": 122,
+        "line_end": 133,
+        "node_type": "If",
+        "category": "validation",
+        "reads": [
+          "N",
+          "RuntimeError",
+          "hgt",
+          "lat",
+          "row"
+        ],
+        "writes": [],
+        "source": "if not (\n    lat.size\n    ==\n    row.size\n    ==\n    hgt.size\n    ==\n    N\n):\n    raise RuntimeError(\n        \"point-array size mismatch\"\n    )"
+      },
+      {
+        "id": 12,
+        "line_start": 140,
+        "line_end": 142,
+        "node_type": "Assign",
+        "category": "input",
+        "reads": [
+          "PAR",
+          "read_par"
+        ],
+        "writes": [
+          "p"
+        ],
+        "source": "p = read_par(\n    PAR\n)"
+      },
+      {
+        "id": 13,
+        "line_start": 144,
+        "line_end": 151,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "int",
+          "p",
+          "round",
+          "scalar"
+        ],
+        "writes": [
+          "nlines"
+        ],
+        "source": "nlines = int(\n    round(\n        scalar(\n            p,\n            \"azimuth_lines\",\n        )\n    )\n)"
+      },
+      {
+        "id": 14,
+        "line_start": 153,
+        "line_end": 156,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "p",
+          "scalar"
+        ],
+        "writes": [
+          "line_dt"
+        ],
+        "source": "line_dt = scalar(\n    p,\n    \"azimuth_line_time\",\n)"
+      },
+      {
+        "id": 15,
+        "line_start": 159,
+        "line_end": 201,
+        "node_type": "If",
+        "category": "compute_or_control",
+        "reads": [
+          "center_time",
+          "line_dt",
+          "nlines",
+          "np",
+          "p",
+          "scalar",
+          "start_time"
+        ],
+        "writes": [
+          "center_time",
+          "row_time",
+          "start_time"
+        ],
+        "source": "if \"center_time\" in p:\n\n    center_time = scalar(\n        p,\n        \"center_time\",\n    )\n\n    row_time = (\n        center_time\n        +\n        (\n            np.arange(\n                nlines,\n                dtype=np.float64,\n            )\n            -\n            0.5\n            *\n            (\n                nlines - 1\n            )\n        )\n        *\n        line_dt\n    )\n\nelse:\n\n    start_time = scalar(\n        p,\n        \"start_time\",\n    )\n\n    row_time = (\n        start_time\n        +\n        np.arange(\n            nlines,\n            dtype=np.float64,\n        )\n        *\n        line_dt\n    )"
+      },
+      {
+        "id": 16,
+        "line_start": 208,
+        "line_end": 215,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "int",
+          "p",
+          "round",
+          "scalar"
+        ],
+        "writes": [
+          "nsv"
+        ],
+        "source": "nsv = int(\n    round(\n        scalar(\n            p,\n            \"number_of_state_vectors\",\n        )\n    )\n)"
+      },
+      {
+        "id": 17,
+        "line_start": 217,
+        "line_end": 220,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "p",
+          "scalar"
+        ],
+        "writes": [
+          "sv_t0"
+        ],
+        "source": "sv_t0 = scalar(\n    p,\n    \"time_of_first_state_vector\",\n)"
+      },
+      {
+        "id": 18,
+        "line_start": 222,
+        "line_end": 225,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "p",
+          "scalar"
+        ],
+        "writes": [
+          "sv_dt"
+        ],
+        "source": "sv_dt = scalar(\n    p,\n    \"state_vector_interval\",\n)"
+      },
+      {
+        "id": 19,
+        "line_start": 228,
+        "line_end": 236,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "i",
+          "np",
+          "nsv",
+          "p",
+          "range",
+          "vec3"
+        ],
+        "writes": [
+          "i",
+          "pos"
+        ],
+        "source": "pos = np.vstack(\n    [\n        vec3(\n            p,\n            f\"state_vector_position_{i+1}\",\n        )\n        for i in range(nsv)\n    ]\n)"
+      },
+      {
+        "id": 20,
+        "line_start": 239,
+        "line_end": 247,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "i",
+          "np",
+          "nsv",
+          "p",
+          "range",
+          "vec3"
+        ],
+        "writes": [
+          "i",
+          "vel"
+        ],
+        "source": "vel = np.vstack(\n    [\n        vec3(\n            p,\n            f\"state_vector_velocity_{i+1}\",\n        )\n        for i in range(nsv)\n    ]\n)"
+      },
+      {
+        "id": 21,
+        "line_start": 363,
+        "line_end": 365,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "orbit_position",
+          "row_time"
+        ],
+        "writes": [
+          "sat_by_row"
+        ],
+        "source": "sat_by_row = orbit_position(\n    row_time\n)"
+      },
+      {
+        "id": 22,
+        "line_start": 372,
+        "line_end": 372,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [],
+        "writes": [
+          "A"
+        ],
+        "source": "A = 6378137.0"
+      },
+      {
+        "id": 23,
+        "line_start": 374,
+        "line_end": 378,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [],
+        "writes": [
+          "F"
+        ],
+        "source": "F = (\n    1.0\n    /\n    298.257223563\n)"
+      },
+      {
+        "id": 24,
+        "line_start": 380,
+        "line_end": 388,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "F"
+        ],
+        "writes": [
+          "E2"
+        ],
+        "source": "E2 = (\n    F\n    *\n    (\n        2.0\n        -\n        F\n    )\n)"
+      },
+      {
+        "id": 25,
+        "line_start": 579,
+        "line_end": 587,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "A",
+          "E2",
+          "hgt",
+          "incidence_fast",
+          "lat",
+          "lon",
+          "row",
+          "sat_by_row"
+        ],
+        "writes": [
+          "_"
+        ],
+        "source": "_ = incidence_fast(\n    lon[:2048],\n    lat[:2048],\n    hgt[:2048],\n    row[:2048],\n    sat_by_row,\n    A,\n    E2,\n)"
+      },
+      {
+        "id": 26,
+        "line_start": 594,
+        "line_end": 594,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "time"
+        ],
+        "writes": [
+          "t0"
+        ],
+        "source": "t0 = time.perf_counter()"
+      },
+      {
+        "id": 27,
+        "line_start": 596,
+        "line_end": 604,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "A",
+          "E2",
+          "hgt",
+          "incidence_fast",
+          "lat",
+          "lon",
+          "row",
+          "sat_by_row"
+        ],
+        "writes": [
+          "inc"
+        ],
+        "source": "inc = incidence_fast(\n    lon,\n    lat,\n    hgt,\n    row,\n    sat_by_row,\n    A,\n    E2,\n)"
+      },
+      {
+        "id": 28,
+        "line_start": 606,
+        "line_end": 610,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "t0",
+          "time"
+        ],
+        "writes": [
+          "elapsed"
+        ],
+        "source": "elapsed = (\n    time.perf_counter()\n    -\n    t0\n)"
+      },
+      {
+        "id": 29,
+        "line_start": 613,
+        "line_end": 619,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "inc",
+          "np"
+        ],
+        "writes": [
+          "valid"
+        ],
+        "source": "valid = (\n    np.isfinite(inc)\n    &\n    (inc > 0)\n    &\n    (inc < np.pi/2)\n)"
+      },
+      {
+        "id": 30,
+        "line_start": 622,
+        "line_end": 628,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "inc",
+          "np",
+          "valid"
+        ],
+        "writes": [
+          "deg"
+        ],
+        "source": "deg = np.degrees(\n    inc[\n        valid\n    ].astype(\n        np.float64\n    )\n)"
+      },
+      {
+        "id": 31,
+        "line_start": 631,
+        "line_end": 640,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "deg",
+          "np"
+        ],
+        "writes": [
+          "q"
+        ],
+        "source": "q = np.percentile(\n    deg,\n    [\n        1,\n        5,\n        50,\n        95,\n        99,\n    ]\n)"
+      },
+      {
+        "id": 32,
+        "line_start": 643,
+        "line_end": 643,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\"=\" * 88)"
+      },
+      {
+        "id": 33,
+        "line_start": 644,
+        "line_end": 644,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\"P15-3H FINAL FAST GAMMA-COMPATIBLE INCIDENCE\")"
+      },
+      {
+        "id": 34,
+        "line_start": 645,
+        "line_end": 645,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\"=\" * 88)"
+      },
+      {
+        "id": 35,
+        "line_start": 647,
+        "line_end": 650,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "N",
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    \"points                    :\",\n    f\"{N:,}\",\n)"
+      },
+      {
+        "id": 36,
+        "line_start": 652,
+        "line_end": 655,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "elapsed",
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    \"compute seconds           :\",\n    f\"{elapsed:.6f}\",\n)"
+      },
+      {
+        "id": 37,
+        "line_start": 657,
+        "line_end": 660,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "N",
+          "elapsed",
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    \"throughput                :\",\n    f\"{N/elapsed:,.0f} points/s\",\n)"
+      },
+      {
+        "id": 38,
+        "line_start": 662,
+        "line_end": 665,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print",
+          "valid"
+        ],
+        "writes": [],
+        "source": "print(\n    \"valid                     :\",\n    f\"{100*valid.mean():.6f}%\",\n)"
+      },
+      {
+        "id": 39,
+        "line_start": 667,
+        "line_end": 674,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print",
+          "q",
+          "x"
+        ],
+        "writes": [
+          "x"
+        ],
+        "source": "print(\n    \"inc p01/p05/p50/p95/p99 :\",\n    \" / \".join(\n        f\"{x:.6f}\"\n        for x in q\n    ),\n    \"deg\",\n)"
+      },
+      {
+        "id": 40,
+        "line_start": 681,
+        "line_end": 685,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "ROOT"
+        ],
+        "writes": [
+          "gamma_file"
+        ],
+        "source": "gamma_file = (\n    ROOT\n    /\n    \"incidence_ellipsoid_gamma_rad.gamma_pt\"\n)"
+      },
+      {
+        "id": 41,
+        "line_start": 688,
+        "line_end": 690,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [],
+        "writes": [
+          "truth_status"
+        ],
+        "source": "truth_status = (\n    \"NOT_AVAILABLE\"\n)"
+      },
+      {
+        "id": 42,
+        "line_start": 692,
+        "line_end": 692,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [],
+        "writes": [
+          "rms"
+        ],
+        "source": "rms = None"
+      },
+      {
+        "id": 43,
+        "line_start": 693,
+        "line_end": 693,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [],
+        "writes": [
+          "p99"
+        ],
+        "source": "p99 = None"
+      },
+      {
+        "id": 44,
+        "line_start": 694,
+        "line_end": 694,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [],
+        "writes": [
+          "max_abs"
+        ],
+        "source": "max_abs = None"
+      },
+      {
+        "id": 45,
+        "line_start": 697,
+        "line_end": 801,
+        "node_type": "If",
+        "category": "validation",
+        "reads": [
+          "N",
+          "RuntimeError",
+          "ad",
+          "diff",
+          "float",
+          "gamma",
+          "gamma_file",
+          "inc",
+          "m",
+          "max_abs",
+          "np",
+          "p99",
+          "print",
+          "rms",
+          "valid"
+        ],
+        "writes": [
+          "ad",
+          "diff",
+          "gamma",
+          "m",
+          "max_abs",
+          "p99",
+          "rms",
+          "truth_status"
+        ],
+        "source": "if gamma_file.is_file():\n\n    gamma = np.fromfile(\n        gamma_file,\n        dtype=\">f4\",\n    ).astype(\n        np.float64\n    )\n\n\n    if gamma.size != N:\n        raise RuntimeError(\n            \"GAMMA truth size mismatch\"\n        )\n\n\n    m = (\n        valid\n        &\n        np.isfinite(gamma)\n        &\n        (gamma > 0)\n        &\n        (gamma < np.pi/2)\n    )\n\n\n    diff = np.degrees(\n        inc[m].astype(\n            np.float64\n        )\n        -\n        gamma[m]\n    )\n\n\n    ad = np.abs(\n        diff\n    )\n\n\n    rms = float(\n        np.sqrt(\n            np.mean(\n                diff\n                *\n                diff\n            )\n        )\n    )\n\n\n    p99 = float(\n        np.percentile(\n            ad,\n            99,\n        )\n    )\n\n\n    max_abs = float(\n        np.max(\n            ad\n        )\n    )\n\n\n    print()\n    print(\n        \"FAST vs GAMMA inc_flg=1\"\n    )\n\n    print(\n        \"RMS deg                  :\",\n        f\"{rms:.9f}\",\n    )\n\n    print(\n        \"p99 |diff| deg           :\",\n        f\"{p99:.9f}\",\n    )\n\n    print(\n        \"max |diff| deg           :\",\n        f\"{max_abs:.9f}\",\n    )\n\n\n    if (\n        rms <= 0.002\n        and\n        p99 <= 0.005\n        and\n        max_abs <= 0.02\n    ):\n\n        truth_status = (\n            \"PASS_STRONG\"\n        )\n\n    else:\n\n        raise RuntimeError(\n            \"FAST incidence failed GAMMA regression\"\n        )"
+      },
+      {
+        "id": 46,
+        "line_start": 808,
+        "line_end": 811,
+        "node_type": "Expr",
+        "category": "output",
+        "reads": [
+          "OUT",
+          "inc",
+          "np"
+        ],
+        "writes": [],
+        "source": "np.save(\n    OUT,\n    inc,\n)"
+      },
+      {
+        "id": 47,
+        "line_start": 814,
+        "line_end": 882,
+        "node_type": "Assign",
+        "category": "setup_or_compute",
+        "reads": [
+          "N",
+          "elapsed",
+          "float",
+          "int",
+          "max_abs",
+          "p99",
+          "q",
+          "rms",
+          "truth_status",
+          "valid"
+        ],
+        "writes": [
+          "manifest"
+        ],
+        "source": "manifest = {\n    \"status\":\n        \"PASS_FAST_GAMMA_COMPATIBLE_INCIDENCE\",\n\n    \"algorithm\":\n        \"actual_height_ECEF_radial_normal_LOS\",\n\n    \"orbit\":\n        \"row_time_cubic_Hermite\",\n\n    \"zero_doppler_refinement\":\n        False,\n\n    \"points\":\n        int(N),\n\n    \"seconds\":\n        float(elapsed),\n\n    \"points_per_second\":\n        float(\n            N\n            /\n            elapsed\n        ),\n\n    \"valid_fraction\":\n        float(\n            valid.mean()\n        ),\n\n    \"incidence_percentiles_deg\":\n        {\n            \"p01\": float(q[0]),\n            \"p05\": float(q[1]),\n            \"p50\": float(q[2]),\n            \"p95\": float(q[3]),\n            \"p99\": float(q[4]),\n        },\n\n    \"gamma_truth\":\n        {\n            \"status\": truth_status,\n            \"rms_deg\": rms,\n            \"p99_abs_deg\": p99,\n            \"max_abs_deg\": max_abs,\n        },\n\n    \"production_policy\":\n        {\n            \"gc_map2_incidence\":\n                \"validation_only\",\n\n            \"geocode_incidence\":\n                \"not_required\",\n\n            \"data2pt_incidence\":\n                \"not_required\",\n\n            \"local_incidence\":\n                \"not_for_gacos\",\n\n            \"lv_theta\":\n                \"qa_only\",\n        },\n\n    \"next\":\n        \"P15-4_FAST_GACOS_POINT_SAMPLING\",\n}"
+      },
+      {
+        "id": 48,
+        "line_start": 885,
+        "line_end": 892,
+        "node_type": "Expr",
+        "category": "output",
+        "reads": [
+          "MANIFEST",
+          "json",
+          "manifest"
+        ],
+        "writes": [],
+        "source": "MANIFEST.write_text(\n    json.dumps(\n        manifest,\n        indent=2,\n    )\n    +\n    \"\\n\"\n)"
+      },
+      {
+        "id": 49,
+        "line_start": 895,
+        "line_end": 895,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print()"
+      },
+      {
+        "id": 50,
+        "line_start": 896,
+        "line_end": 899,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "OUT",
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    \"output                    :\",\n    OUT,\n)"
+      },
+      {
+        "id": 51,
+        "line_start": 901,
+        "line_end": 904,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "MANIFEST",
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    \"manifest                  :\",\n    MANIFEST,\n)"
+      },
+      {
+        "id": 52,
+        "line_start": 906,
+        "line_end": 906,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print()"
+      },
+      {
+        "id": 53,
+        "line_start": 907,
+        "line_end": 907,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\"=\" * 88)"
+      },
+      {
+        "id": 54,
+        "line_start": 908,
+        "line_end": 911,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\n    \"P15-3H FINAL RESULT: \"\n    \"PASS_FAST_GAMMA_COMPATIBLE_INCIDENCE\"\n)"
+      },
+      {
+        "id": 55,
+        "line_start": 912,
+        "line_end": 912,
+        "node_type": "Expr",
+        "category": "logging",
+        "reads": [
+          "print"
+        ],
+        "writes": [],
+        "source": "print(\"=\" * 88)"
+      }
+    ],
+    "candidate": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/geometry_core_extraction/candidate/incidence_functions.py",
+    "block_dump": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/geometry_core_extraction/incidence_top_level_blocks.txt",
+    "dependency_edges": [
+      {
+        "variable": "ROOT",
+        "producer": 1,
+        "consumer": 3
+      },
+      {
+        "variable": "ROOT",
+        "producer": 1,
+        "consumer": 4
+      },
+      {
+        "variable": "ROOT",
+        "producer": 1,
+        "consumer": 6
+      },
+      {
+        "variable": "ROOT",
+        "producer": 1,
+        "consumer": 7
+      },
+      {
+        "variable": "ROOT",
+        "producer": 1,
+        "consumer": 8
+      },
+      {
+        "variable": "ROOT",
+        "producer": 1,
+        "consumer": 9
+      },
+      {
+        "variable": "lon",
+        "producer": 6,
+        "consumer": 10
+      },
+      {
+        "variable": "N",
+        "producer": 10,
+        "consumer": 11
+      },
+      {
+        "variable": "hgt",
+        "producer": 9,
+        "consumer": 11
+      },
+      {
+        "variable": "lat",
+        "producer": 7,
+        "consumer": 11
+      },
+      {
+        "variable": "row",
+        "producer": 8,
+        "consumer": 11
+      },
+      {
+        "variable": "PAR",
+        "producer": 2,
+        "consumer": 12
+      },
+      {
+        "variable": "p",
+        "producer": 12,
+        "consumer": 13
+      },
+      {
+        "variable": "p",
+        "producer": 12,
+        "consumer": 14
+      },
+      {
+        "variable": "line_dt",
+        "producer": 14,
+        "consumer": 15
+      },
+      {
+        "variable": "nlines",
+        "producer": 13,
+        "consumer": 15
+      },
+      {
+        "variable": "p",
+        "producer": 12,
+        "consumer": 15
+      },
+      {
+        "variable": "p",
+        "producer": 12,
+        "consumer": 16
+      },
+      {
+        "variable": "p",
+        "producer": 12,
+        "consumer": 17
+      },
+      {
+        "variable": "p",
+        "producer": 12,
+        "consumer": 18
+      },
+      {
+        "variable": "nsv",
+        "producer": 16,
+        "consumer": 19
+      },
+      {
+        "variable": "p",
+        "producer": 12,
+        "consumer": 19
+      },
+      {
+        "variable": "i",
+        "producer": 19,
+        "consumer": 20
+      },
+      {
+        "variable": "nsv",
+        "producer": 16,
+        "consumer": 20
+      },
+      {
+        "variable": "p",
+        "producer": 12,
+        "consumer": 20
+      },
+      {
+        "variable": "row_time",
+        "producer": 15,
+        "consumer": 21
+      },
+      {
+        "variable": "F",
+        "producer": 23,
+        "consumer": 24
+      },
+      {
+        "variable": "A",
+        "producer": 22,
+        "consumer": 25
+      },
+      {
+        "variable": "E2",
+        "producer": 24,
+        "consumer": 25
+      },
+      {
+        "variable": "hgt",
+        "producer": 9,
+        "consumer": 25
+      },
+      {
+        "variable": "lat",
+        "producer": 7,
+        "consumer": 25
+      },
+      {
+        "variable": "lon",
+        "producer": 6,
+        "consumer": 25
+      },
+      {
+        "variable": "row",
+        "producer": 8,
+        "consumer": 25
+      },
+      {
+        "variable": "sat_by_row",
+        "producer": 21,
+        "consumer": 25
+      },
+      {
+        "variable": "A",
+        "producer": 22,
+        "consumer": 27
+      },
+      {
+        "variable": "E2",
+        "producer": 24,
+        "consumer": 27
+      },
+      {
+        "variable": "hgt",
+        "producer": 9,
+        "consumer": 27
+      },
+      {
+        "variable": "lat",
+        "producer": 7,
+        "consumer": 27
+      },
+      {
+        "variable": "lon",
+        "producer": 6,
+        "consumer": 27
+      },
+      {
+        "variable": "row",
+        "producer": 8,
+        "consumer": 27
+      },
+      {
+        "variable": "sat_by_row",
+        "producer": 21,
+        "consumer": 27
+      },
+      {
+        "variable": "t0",
+        "producer": 26,
+        "consumer": 28
+      },
+      {
+        "variable": "inc",
+        "producer": 27,
+        "consumer": 29
+      },
+      {
+        "variable": "inc",
+        "producer": 27,
+        "consumer": 30
+      },
+      {
+        "variable": "valid",
+        "producer": 29,
+        "consumer": 30
+      },
+      {
+        "variable": "deg",
+        "producer": 30,
+        "consumer": 31
+      },
+      {
+        "variable": "N",
+        "producer": 10,
+        "consumer": 35
+      },
+      {
+        "variable": "elapsed",
+        "producer": 28,
+        "consumer": 36
+      },
+      {
+        "variable": "N",
+        "producer": 10,
+        "consumer": 37
+      },
+      {
+        "variable": "elapsed",
+        "producer": 28,
+        "consumer": 37
+      },
+      {
+        "variable": "valid",
+        "producer": 29,
+        "consumer": 38
+      },
+      {
+        "variable": "q",
+        "producer": 31,
+        "consumer": 39
+      },
+      {
+        "variable": "ROOT",
+        "producer": 1,
+        "consumer": 40
+      },
+      {
+        "variable": "N",
+        "producer": 10,
+        "consumer": 45
+      },
+      {
+        "variable": "gamma_file",
+        "producer": 40,
+        "consumer": 45
+      },
+      {
+        "variable": "inc",
+        "producer": 27,
+        "consumer": 45
+      },
+      {
+        "variable": "max_abs",
+        "producer": 44,
+        "consumer": 45
+      },
+      {
+        "variable": "p99",
+        "producer": 43,
+        "consumer": 45
+      },
+      {
+        "variable": "rms",
+        "producer": 42,
+        "consumer": 45
+      },
+      {
+        "variable": "valid",
+        "producer": 29,
+        "consumer": 45
+      },
+      {
+        "variable": "OUT",
+        "producer": 3,
+        "consumer": 46
+      },
+      {
+        "variable": "inc",
+        "producer": 27,
+        "consumer": 46
+      },
+      {
+        "variable": "N",
+        "producer": 10,
+        "consumer": 47
+      },
+      {
+        "variable": "elapsed",
+        "producer": 28,
+        "consumer": 47
+      },
+      {
+        "variable": "max_abs",
+        "producer": 45,
+        "consumer": 47
+      },
+      {
+        "variable": "p99",
+        "producer": 45,
+        "consumer": 47
+      },
+      {
+        "variable": "q",
+        "producer": 31,
+        "consumer": 47
+      },
+      {
+        "variable": "rms",
+        "producer": 45,
+        "consumer": 47
+      },
+      {
+        "variable": "truth_status",
+        "producer": 45,
+        "consumer": 47
+      },
+      {
+        "variable": "valid",
+        "producer": 29,
+        "consumer": 47
+      },
+      {
+        "variable": "MANIFEST",
+        "producer": 4,
+        "consumer": 48
+      },
+      {
+        "variable": "manifest",
+        "producer": 47,
+        "consumer": 48
+      },
+      {
+        "variable": "OUT",
+        "producer": 3,
+        "consumer": 50
+      },
+      {
+        "variable": "MANIFEST",
+        "producer": 4,
+        "consumer": 51
+      }
+    ]
+  }
+}

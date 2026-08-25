@@ -1,0 +1,34 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-geometry-core-freeze",
+  "status": "FROZEN",
+  "scientific_point_count": 881315,
+  "modules": {
+    "gamma_par.py": "6809c4d841fd941e6ecadc07492a0cbbbe421165eb7c5a7afbbf7fc312ca46dc",
+    "inputs.py": "19b878b9a7a260ad9b3877867692ecdef3957f4eb62422c52e2a4a4343181087",
+    "geolocation.py": "e802605d1a56e1ca80c735e3209d3559a831fb8fccbc94e41351fbecbc231f06",
+    "incidence.py": "4badb92454ec0a204c0d6796b689c66491010d572d3e3ba6dc3aacc85b18f3b1"
+  },
+  "geolocation": {
+    "full_scene_pass": true,
+    "point_count": 881315,
+    "longitude_exact": true,
+    "latitude_exact": true,
+    "longitude_max_error_deg": 0.0,
+    "latitude_max_error_deg": 0.0,
+    "point_list_exact": true
+  },
+  "incidence": {
+    "full_scene_pass": true,
+    "point_count": 881315,
+    "exact": true,
+    "nonzero_difference_count": 0,
+    "max_abs_error_rad": 0.0,
+    "dtype": "float32"
+  },
+  "policy": {
+    "geolocation_algorithm": "frozen_after_full-scene exact parity",
+    "incidence_algorithm": "frozen_after full-scene exact parity",
+    "scientific_output": "full-resolution PS/DS points",
+    "rasterization": "not part of Geometry scientific core"
+  }
+}

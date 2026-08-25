@@ -1,0 +1,1733 @@
+{
+  "point_geolocation": {
+    "component": "point_geolocation",
+    "source_path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/geometry/point_geolocation.py",
+    "sha256": "1a252a48fbdfc005a1126ae630b1014c30a217a7b50b8b1e96efc29cd6ed3673",
+    "line_count": 375,
+    "imports": [
+      {
+        "module": "pathlib.Path",
+        "alias": null,
+        "line": 1
+      },
+      {
+        "module": "json",
+        "alias": null,
+        "line": 2
+      },
+      {
+        "module": "math",
+        "alias": null,
+        "line": 3
+      },
+      {
+        "module": "numpy",
+        "alias": "np",
+        "line": 4
+      }
+    ],
+    "functions": [
+      {
+        "name": "read_par",
+        "line": 18,
+        "end_line": 24,
+        "args": [
+          "path"
+        ],
+        "async": false,
+        "docstring": null
+      },
+      {
+        "name": "val",
+        "line": 27,
+        "end_line": 28,
+        "args": [
+          "d",
+          "key"
+        ],
+        "async": false,
+        "docstring": null
+      },
+      {
+        "name": "stamps_incidence",
+        "line": 108,
+        "end_line": 121,
+        "args": [
+          "rg"
+        ],
+        "async": false,
+        "docstring": null
+      }
+    ],
+    "classes": [],
+    "assignments": [
+      {
+        "names": [
+          "PROJECT"
+        ],
+        "line": 6,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "PROC"
+        ],
+        "line": 7,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "DEST"
+        ],
+        "line": 8,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "RSLC_PAR"
+        ],
+        "line": 10,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "lon_bin"
+        ],
+        "line": 14,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "lat_bin"
+        ],
+        "line": 15,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "d"
+        ],
+        "line": 19,
+        "literal_value": {}
+      },
+      {
+        "names": [
+          "strict_ids"
+        ],
+        "line": 31,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "all_rows"
+        ],
+        "line": 38,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "all_cols"
+        ],
+        "line": 43,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "rows"
+        ],
+        "line": 48,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "cols"
+        ],
+        "line": 49,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "n"
+        ],
+        "line": 51,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "lon"
+        ],
+        "line": 60,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "lat"
+        ],
+        "line": 65,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "valid_ll"
+        ],
+        "line": 74,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "inside_gacos"
+        ],
+        "line": 83,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "p"
+        ],
+        "line": 97,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "rgn"
+        ],
+        "line": 99,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "rps"
+        ],
+        "line": 100,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "se"
+        ],
+        "line": 101,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "re"
+        ],
+        "line": 102,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "rgc"
+        ],
+        "line": 104,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "gamma_center_inc"
+        ],
+        "line": 105,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "x"
+        ],
+        "line": 109,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "rg"
+        ],
+        "line": 127,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "inc"
+        ],
+        "line": 132,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "stamps_center_inc"
+        ],
+        "line": 136,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "center_difference"
+        ],
+        "line": 140,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "valid_inc"
+        ],
+        "line": 146,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "accepted"
+        ],
+        "line": 152,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "ll_frac"
+        ],
+        "line": 158,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "gacos_frac"
+        ],
+        "line": 159,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "inc_frac"
+        ],
+        "line": 160,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "accepted_frac"
+        ],
+        "line": 161,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "q"
+        ],
+        "line": 164,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "manifest"
+        ],
+        "line": 291,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "manifest_path"
+        ],
+        "line": 349,
+        "literal_value": null
+      }
+    ],
+    "main_guard": false,
+    "top_level_execution": [
+      {
+        "type": "Assert",
+        "line": 53,
+        "end_line": 53,
+        "source": "assert n == 881315"
+      },
+      {
+        "type": "Assert",
+        "line": 70,
+        "end_line": 70,
+        "source": "assert lon.size == n"
+      },
+      {
+        "type": "Assert",
+        "line": 71,
+        "end_line": 71,
+        "source": "assert lat.size == n"
+      },
+      {
+        "type": "Expr",
+        "line": 170,
+        "end_line": 170,
+        "source": "print(\"=\" * 88)"
+      },
+      {
+        "type": "Expr",
+        "line": 171,
+        "end_line": 171,
+        "source": "print(\"P15-3A v4b StaMPS/GAMMA geometry finalize\")"
+      },
+      {
+        "type": "Expr",
+        "line": 172,
+        "end_line": 172,
+        "source": "print(\"=\" * 88)"
+      },
+      {
+        "type": "Expr",
+        "line": 174,
+        "end_line": 174,
+        "source": "print(f\"strict points             : {n:,}\")"
+      },
+      {
+        "type": "Expr",
+        "line": 175,
+        "end_line": 175,
+        "source": "print(f\"valid lon/lat             : {ll_frac*100:.6f}%\")"
+      },
+      {
+        "type": "Expr",
+        "line": 176,
+        "end_line": 176,
+        "source": "print(f\"inside GACOS              : {gacos_frac*100:.6f}%\")"
+      },
+      {
+        "type": "Expr",
+        "line": 177,
+        "end_line": 177,
+        "source": "print()"
+      },
+      {
+        "type": "Expr",
+        "line": 179,
+        "end_line": 183,
+        "source": "print(\n    \"longitude range          : \"\n    f\"{lon[valid_ll].min():.8f} .. \"\n    f\"{lon[valid_ll].max():.8f}\"\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 185,
+        "end_line": 189,
+        "source": "print(\n    \"latitude range           : \"\n    f\"{lat[valid_ll].min():.8f} .. \"\n    f\"{lat[valid_ll].max():.8f}\"\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 191,
+        "end_line": 191,
+        "source": "print()"
+      },
+      {
+        "type": "Expr",
+        "line": 192,
+        "end_line": 195,
+        "source": "print(\n    f\"GAMMA parameter incidence : \"\n    f\"{gamma_center_inc:.6f} deg\"\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 197,
+        "end_line": 200,
+        "source": "print(\n    f\"StaMPS spherical center   : \"\n    f\"{stamps_center_inc:.6f} deg\"\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 202,
+        "end_line": 205,
+        "source": "print(\n    f\"diagnostic difference     : \"\n    f\"{center_difference:+.6f} deg\"\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 207,
+        "end_line": 210,
+        "source": "print(\n    \"NOTE                      : \"\n    \"diagnostic only; NOT a failure gate\"\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 212,
+        "end_line": 212,
+        "source": "print()"
+      },
+      {
+        "type": "Expr",
+        "line": 214,
+        "end_line": 216,
+        "source": "print(\n    \"incidence p01/p05/p50/p95/p99:\"\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 218,
+        "end_line": 225,
+        "source": "print(\n    \"  \"\n    + \" / \".join(\n        f\"{x:.6f}\"\n        for x in q\n    )\n    + \" deg\"\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 227,
+        "end_line": 230,
+        "source": "print(\n    f\"valid incidence           : \"\n    f\"{inc_frac*100:.6f}%\"\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 232,
+        "end_line": 235,
+        "source": "print(\n    f\"accepted geometry         : \"\n    f\"{accepted_frac*100:.6f}%\"\n)"
+      },
+      {
+        "type": "If",
+        "line": 238,
+        "end_line": 239,
+        "source": "if ll_frac <= 0.999:\n    raise RuntimeError(\"lon/lat coverage failed\")"
+      },
+      {
+        "type": "If",
+        "line": 241,
+        "end_line": 242,
+        "source": "if gacos_frac <= 0.999:\n    raise RuntimeError(\"GACOS geographic coverage failed\")"
+      },
+      {
+        "type": "If",
+        "line": 244,
+        "end_line": 245,
+        "source": "if inc_frac <= 0.999:\n    raise RuntimeError(\"StaMPS incidence coverage failed\")"
+      },
+      {
+        "type": "If",
+        "line": 247,
+        "end_line": 248,
+        "source": "if accepted_frac <= 0.999:\n    raise RuntimeError(\"final point geometry coverage failed\")"
+      },
+      {
+        "type": "Expr",
+        "line": 255,
+        "end_line": 258,
+        "source": "np.save(\n    DEST / \"strict_point_ids.npy\",\n    strict_ids.astype(np.int32),\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 260,
+        "end_line": 263,
+        "source": "np.save(\n    DEST / \"radar_row.npy\",\n    rows,\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 265,
+        "end_line": 268,
+        "source": "np.save(\n    DEST / \"radar_col.npy\",\n    cols,\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 270,
+        "end_line": 273,
+        "source": "np.save(\n    DEST / \"longitude_deg.npy\",\n    lon,\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 275,
+        "end_line": 278,
+        "source": "np.save(\n    DEST / \"latitude_deg.npy\",\n    lat,\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 280,
+        "end_line": 283,
+        "source": "np.save(\n    DEST / \"incidence_angle_stamps_deg.npy\",\n    inc.astype(np.float32),\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 285,
+        "end_line": 288,
+        "source": "np.save(\n    DEST / \"valid_gacos_geometry_mask.npy\",\n    accepted,\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 354,
+        "end_line": 360,
+        "source": "manifest_path.write_text(\n    json.dumps(\n        manifest,\n        indent=2,\n    )\n    + \"\\n\"\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 363,
+        "end_line": 363,
+        "source": "print()"
+      },
+      {
+        "type": "Expr",
+        "line": 364,
+        "end_line": 367,
+        "source": "print(\n    \"manifest                  :\",\n    manifest_path,\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 369,
+        "end_line": 369,
+        "source": "print()"
+      },
+      {
+        "type": "Expr",
+        "line": 370,
+        "end_line": 370,
+        "source": "print(\"=\" * 88)"
+      },
+      {
+        "type": "Expr",
+        "line": 371,
+        "end_line": 374,
+        "source": "print(\n    \"P15-3A FINAL RESULT: \"\n    \"PASS_RADAR_POINT_GEOLOCATION\"\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 375,
+        "end_line": 375,
+        "source": "print(\"=\" * 88)"
+      }
+    ],
+    "absolute_paths": [
+      {
+        "line": 6,
+        "value": "/home/ubuntu/Downloads/psds"
+      },
+      {
+        "line": 11,
+        "value": "/home/ubuntu/Downloads/RSLC/20151212.rslc.par"
+      }
+    ],
+    "development_hits": [
+      {
+        "line": 171,
+        "value": "P15-3A v4b StaMPS/GAMMA geometry finalize"
+      },
+      {
+        "line": 293,
+        "value": "pyPSDS-GAMMA-P15-3A-StaMPS-geometry-v4b"
+      },
+      {
+        "line": 296,
+        "value": "PASS_RADAR_POINT_GEOLOCATION"
+      },
+      {
+        "line": 345,
+        "value": "P15-4_GACOS_POINT_SAMPLING_SMOKE"
+      },
+      {
+        "line": 372,
+        "value": "P15-3A FINAL RESULT: PASS_RADAR_POINT_GEOLOCATION"
+      },
+      {
+        "line": 171,
+        "value": "print(\"P15-3A v4b StaMPS/GAMMA geometry finalize\")"
+      },
+      {
+        "line": 293,
+        "value": "\"pyPSDS-GAMMA-P15-3A-StaMPS-geometry-v4b\","
+      },
+      {
+        "line": 296,
+        "value": "\"PASS_RADAR_POINT_GEOLOCATION\","
+      },
+      {
+        "line": 345,
+        "value": "\"P15-4_GACOS_POINT_SAMPLING_SMOKE\","
+      },
+      {
+        "line": 372,
+        "value": "\"P15-3A FINAL RESULT: \""
+      },
+      {
+        "line": 373,
+        "value": "\"PASS_RADAR_POINT_GEOLOCATION\""
+      }
+    ],
+    "io_calls": [
+      {
+        "name": "Path",
+        "line": 6,
+        "args": [
+          "/home/ubuntu/Downloads/psds"
+        ],
+        "source": "Path(\"/home/ubuntu/Downloads/psds\")"
+      },
+      {
+        "name": "Path",
+        "line": 10,
+        "args": [
+          "/home/ubuntu/Downloads/RSLC/20151212.rslc.par"
+        ],
+        "source": "Path(\n    \"/home/ubuntu/Downloads/RSLC/20151212.rslc.par\"\n)"
+      },
+      {
+        "name": "np.load",
+        "line": 32,
+        "args": [
+          "PROC / \"network_inversion\" / \"strict_point_ids.npy\""
+        ],
+        "source": "np.load(\n        PROC / \"network_inversion\" / \"strict_point_ids.npy\"\n    )"
+      },
+      {
+        "name": "np.load",
+        "line": 38,
+        "args": [
+          "PROC / \"point_phase_stack\" / \"rows.npy\""
+        ],
+        "source": "np.load(\n    PROC / \"point_phase_stack\" / \"rows.npy\",\n    mmap_mode=\"r\",\n)"
+      },
+      {
+        "name": "np.load",
+        "line": 43,
+        "args": [
+          "PROC / \"point_phase_stack\" / \"cols.npy\""
+        ],
+        "source": "np.load(\n    PROC / \"point_phase_stack\" / \"cols.npy\",\n    mmap_mode=\"r\",\n)"
+      },
+      {
+        "name": "np.save",
+        "line": 255,
+        "args": [
+          "DEST / \"strict_point_ids.npy\"",
+          "strict_ids.astype(np.int32)"
+        ],
+        "source": "np.save(\n    DEST / \"strict_point_ids.npy\",\n    strict_ids.astype(np.int32),\n)"
+      },
+      {
+        "name": "np.save",
+        "line": 260,
+        "args": [
+          "DEST / \"radar_row.npy\"",
+          "rows"
+        ],
+        "source": "np.save(\n    DEST / \"radar_row.npy\",\n    rows,\n)"
+      },
+      {
+        "name": "np.save",
+        "line": 265,
+        "args": [
+          "DEST / \"radar_col.npy\"",
+          "cols"
+        ],
+        "source": "np.save(\n    DEST / \"radar_col.npy\",\n    cols,\n)"
+      },
+      {
+        "name": "np.save",
+        "line": 270,
+        "args": [
+          "DEST / \"longitude_deg.npy\"",
+          "lon"
+        ],
+        "source": "np.save(\n    DEST / \"longitude_deg.npy\",\n    lon,\n)"
+      },
+      {
+        "name": "np.save",
+        "line": 275,
+        "args": [
+          "DEST / \"latitude_deg.npy\"",
+          "lat"
+        ],
+        "source": "np.save(\n    DEST / \"latitude_deg.npy\",\n    lat,\n)"
+      },
+      {
+        "name": "np.save",
+        "line": 280,
+        "args": [
+          "DEST / \"incidence_angle_stamps_deg.npy\"",
+          "inc.astype(np.float32)"
+        ],
+        "source": "np.save(\n    DEST / \"incidence_angle_stamps_deg.npy\",\n    inc.astype(np.float32),\n)"
+      },
+      {
+        "name": "np.save",
+        "line": 285,
+        "args": [
+          "DEST / \"valid_gacos_geometry_mask.npy\"",
+          "accepted"
+        ],
+        "source": "np.save(\n    DEST / \"valid_gacos_geometry_mask.npy\",\n    accepted,\n)"
+      },
+      {
+        "name": "json.dumps",
+        "line": 355,
+        "args": [
+          "manifest"
+        ],
+        "source": "json.dumps(\n        manifest,\n        indent=2,\n    )"
+      }
+    ],
+    "process_calls": [],
+    "gamma_mentions": [
+      {
+        "line": 105,
+        "command": "incidence_angle",
+        "source": "val(p, \"incidence_angle\")"
+      },
+      {
+        "line": 280,
+        "command": "incidence_angle",
+        "source": "np.save(\n    DEST / \"incidence_angle_stamps_deg.npy\",\n    inc.astype(np.float32),\n)"
+      },
+      {
+        "line": 105,
+        "command": "incidence_angle",
+        "source": "incidence_angle"
+      },
+      {
+        "line": 281,
+        "command": "incidence_angle",
+        "source": "incidence_angle_stamps_deg.npy"
+      },
+      {
+        "line": 299,
+        "command": "data2pt",
+        "source": "GAMMA_data2pt_existing_rdc_lon_lat"
+      }
+    ],
+    "migration_assessment": {
+      "likely_script_harness": true,
+      "function_count": 3,
+      "has_reusable_functions": true,
+      "requires_path_parameterization": true,
+      "requires_public_name_cleanup": true,
+      "calls_external_process": false
+    }
+  },
+  "incidence": {
+    "component": "incidence",
+    "source_path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/geometry/incidence.py",
+    "sha256": "14d749c8b9f744f8b256ecf81908ba21cf26e697a7dbc28507d612880b543034",
+    "line_count": 912,
+    "imports": [
+      {
+        "module": "pathlib.Path",
+        "alias": null,
+        "line": 1
+      },
+      {
+        "module": "json",
+        "alias": null,
+        "line": 2
+      },
+      {
+        "module": "re",
+        "alias": null,
+        "line": 3
+      },
+      {
+        "module": "time",
+        "alias": null,
+        "line": 4
+      },
+      {
+        "module": "numpy",
+        "alias": "np",
+        "line": 6
+      },
+      {
+        "module": "numba.njit",
+        "alias": null,
+        "line": 7
+      },
+      {
+        "module": "numba.prange",
+        "alias": null,
+        "line": 7
+      }
+    ],
+    "functions": [
+      {
+        "name": "read_par",
+        "line": 38,
+        "end_line": 56,
+        "args": [
+          "path"
+        ],
+        "async": false,
+        "docstring": null
+      },
+      {
+        "name": "scalar",
+        "line": 59,
+        "end_line": 65,
+        "args": [
+          "d",
+          "key"
+        ],
+        "async": false,
+        "docstring": null
+      },
+      {
+        "name": "vec3",
+        "line": 68,
+        "end_line": 81,
+        "args": [
+          "d",
+          "key"
+        ],
+        "async": false,
+        "docstring": null
+      },
+      {
+        "name": "orbit_position",
+        "line": 256,
+        "end_line": 360,
+        "args": [
+          "query_time"
+        ],
+        "async": false,
+        "docstring": null
+      },
+      {
+        "name": "incidence_fast",
+        "line": 408,
+        "end_line": 572,
+        "args": [
+          "lon_deg",
+          "lat_deg",
+          "hgt_m",
+          "radar_row",
+          "sat_xyz",
+          "a",
+          "e2"
+        ],
+        "async": false,
+        "docstring": null
+      }
+    ],
+    "classes": [],
+    "assignments": [
+      {
+        "names": [
+          "ROOT"
+        ],
+        "line": 10,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "PAR"
+        ],
+        "line": 14,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "OUT"
+        ],
+        "line": 18,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "MANIFEST"
+        ],
+        "line": 23,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "NUM_RE"
+        ],
+        "line": 33,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "d"
+        ],
+        "line": 40,
+        "literal_value": {}
+      },
+      {
+        "names": [
+          "x"
+        ],
+        "line": 70,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "lon"
+        ],
+        "line": 88,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "lat"
+        ],
+        "line": 96,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "row"
+        ],
+        "line": 104,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "hgt"
+        ],
+        "line": 112,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "N"
+        ],
+        "line": 120,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "p"
+        ],
+        "line": 140,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "nlines"
+        ],
+        "line": 144,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "line_dt"
+        ],
+        "line": 153,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "center_time"
+        ],
+        "line": 161,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "row_time"
+        ],
+        "line": 166,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "start_time"
+        ],
+        "line": 187,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "row_time"
+        ],
+        "line": 192,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "nsv"
+        ],
+        "line": 208,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "sv_t0"
+        ],
+        "line": 217,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "sv_dt"
+        ],
+        "line": 222,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "pos"
+        ],
+        "line": 228,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "vel"
+        ],
+        "line": 239,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "idx"
+        ],
+        "line": 260,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "idx"
+        ],
+        "line": 278,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "t_left"
+        ],
+        "line": 285,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "u"
+        ],
+        "line": 294,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "u2"
+        ],
+        "line": 301,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "u3"
+        ],
+        "line": 302,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "h00"
+        ],
+        "line": 305,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "h10"
+        ],
+        "line": 313,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "h01"
+        ],
+        "line": 321,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "h11"
+        ],
+        "line": 327,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "sat_by_row"
+        ],
+        "line": 363,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "A"
+        ],
+        "line": 372,
+        "literal_value": 6378137.0
+      },
+      {
+        "names": [
+          "F"
+        ],
+        "line": 374,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "E2"
+        ],
+        "line": 380,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "n"
+        ],
+        "line": 418,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "out"
+        ],
+        "line": 420,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "d2r"
+        ],
+        "line": 425,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "lam"
+        ],
+        "line": 436,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "phi"
+        ],
+        "line": 442,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "sp"
+        ],
+        "line": 449,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "cp"
+        ],
+        "line": 453,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "sl"
+        ],
+        "line": 457,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "cl"
+        ],
+        "line": 461,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "rn"
+        ],
+        "line": 466,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "h"
+        ],
+        "line": 481,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "gx"
+        ],
+        "line": 484,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "gy"
+        ],
+        "line": 489,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "gz"
+        ],
+        "line": 494,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "r"
+        ],
+        "line": 507,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "lx"
+        ],
+        "line": 510,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "ly"
+        ],
+        "line": 516,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "lz"
+        ],
+        "line": 522,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "los_norm"
+        ],
+        "line": 529,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "ground_norm"
+        ],
+        "line": 538,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "cosine"
+        ],
+        "line": 547,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "cosine"
+        ],
+        "line": 561,
+        "literal_value": 1.0
+      },
+      {
+        "names": [
+          "cosine"
+        ],
+        "line": 564,
+        "literal_value": -1.0
+      },
+      {
+        "names": [
+          "_"
+        ],
+        "line": 579,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "t0"
+        ],
+        "line": 594,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "inc"
+        ],
+        "line": 596,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "elapsed"
+        ],
+        "line": 606,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "valid"
+        ],
+        "line": 613,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "deg"
+        ],
+        "line": 622,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "q"
+        ],
+        "line": 631,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "gamma_file"
+        ],
+        "line": 681,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "truth_status"
+        ],
+        "line": 688,
+        "literal_value": "NOT_AVAILABLE"
+      },
+      {
+        "names": [
+          "rms"
+        ],
+        "line": 692,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "p99"
+        ],
+        "line": 693,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "max_abs"
+        ],
+        "line": 694,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "gamma"
+        ],
+        "line": 699,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "m"
+        ],
+        "line": 713,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "diff"
+        ],
+        "line": 724,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "ad"
+        ],
+        "line": 733,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "rms"
+        ],
+        "line": 738,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "p99"
+        ],
+        "line": 749,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "max_abs"
+        ],
+        "line": 757,
+        "literal_value": null
+      },
+      {
+        "names": [
+          "truth_status"
+        ],
+        "line": 793,
+        "literal_value": "PASS_STRONG"
+      },
+      {
+        "names": [
+          "manifest"
+        ],
+        "line": 814,
+        "literal_value": null
+      }
+    ],
+    "main_guard": false,
+    "top_level_execution": [
+      {
+        "type": "If",
+        "line": 122,
+        "end_line": 133,
+        "source": "if not (\n    lat.size\n    ==\n    row.size\n    ==\n    hgt.size\n    ==\n    N\n):\n    raise RuntimeError(\n        \"point-array size mismatch\"\n    )"
+      },
+      {
+        "type": "If",
+        "line": 159,
+        "end_line": 201,
+        "source": "if \"center_time\" in p:\n\n    center_time = scalar(\n        p,\n        \"center_time\",\n    )\n\n    row_time = (\n        center_time\n        +\n        (\n            np.arange(\n                nlines,\n                dtype=np.float64,\n            )\n            -\n            0.5\n            *\n            (\n                nlines - 1\n            )\n        )\n        *\n        line_dt\n    )\n\nelse:\n\n    start_time = scalar(\n        p,\n        \"start_time\",\n    )\n\n    row_time = (\n        start_time\n        +\n        np.arange(\n            nlines,\n            dtype=np.float64,\n        )\n        *\n        line_dt\n    )"
+      },
+      {
+        "type": "Expr",
+        "line": 643,
+        "end_line": 643,
+        "source": "print(\"=\" * 88)"
+      },
+      {
+        "type": "Expr",
+        "line": 644,
+        "end_line": 644,
+        "source": "print(\"P15-3H FINAL FAST GAMMA-COMPATIBLE INCIDENCE\")"
+      },
+      {
+        "type": "Expr",
+        "line": 645,
+        "end_line": 645,
+        "source": "print(\"=\" * 88)"
+      },
+      {
+        "type": "Expr",
+        "line": 647,
+        "end_line": 650,
+        "source": "print(\n    \"points                    :\",\n    f\"{N:,}\",\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 652,
+        "end_line": 655,
+        "source": "print(\n    \"compute seconds           :\",\n    f\"{elapsed:.6f}\",\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 657,
+        "end_line": 660,
+        "source": "print(\n    \"throughput                :\",\n    f\"{N/elapsed:,.0f} points/s\",\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 662,
+        "end_line": 665,
+        "source": "print(\n    \"valid                     :\",\n    f\"{100*valid.mean():.6f}%\",\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 667,
+        "end_line": 674,
+        "source": "print(\n    \"inc p01/p05/p50/p95/p99 :\",\n    \" / \".join(\n        f\"{x:.6f}\"\n        for x in q\n    ),\n    \"deg\",\n)"
+      },
+      {
+        "type": "If",
+        "line": 697,
+        "end_line": 801,
+        "source": "if gamma_file.is_file():\n\n    gamma = np.fromfile(\n        gamma_file,\n        dtype=\">f4\",\n    ).astype(\n        np.float64\n    )\n\n\n    if gamma.size != N:\n        raise RuntimeError(\n            \"GAMMA truth size mismatch\"\n        )\n\n\n    m = (\n        valid\n        &\n        np.isfinite(gamma)\n        &\n        (gamma > 0)\n        &\n        (gamma < np.pi/2)\n    )\n\n\n    diff = np.degrees(\n        inc[m].astype(\n            np.float64\n        )\n        -\n        gamma[m]\n    )\n\n\n    ad = np.abs(\n        diff\n    )\n\n\n    rms = float(\n        np.sqrt(\n            np.mean(\n                diff\n                *\n                diff\n            )\n        )\n    )\n\n\n    p99 = float(\n        np.percentile(\n            ad,\n            99,\n        )\n    )\n\n\n    max_abs = float(\n        np.max(\n            ad\n        )\n    )\n\n\n    print()\n    print(\n        \"FAST vs GAMMA inc_flg=1\"\n    )\n\n    print(\n        \"RMS deg                  :\",\n        f\"{rms:.9f}\",\n    )\n\n    print(\n        \"p99 |di"
+      },
+      {
+        "type": "Expr",
+        "line": 808,
+        "end_line": 811,
+        "source": "np.save(\n    OUT,\n    inc,\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 885,
+        "end_line": 892,
+        "source": "MANIFEST.write_text(\n    json.dumps(\n        manifest,\n        indent=2,\n    )\n    +\n    \"\\n\"\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 895,
+        "end_line": 895,
+        "source": "print()"
+      },
+      {
+        "type": "Expr",
+        "line": 896,
+        "end_line": 899,
+        "source": "print(\n    \"output                    :\",\n    OUT,\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 901,
+        "end_line": 904,
+        "source": "print(\n    \"manifest                  :\",\n    MANIFEST,\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 906,
+        "end_line": 906,
+        "source": "print()"
+      },
+      {
+        "type": "Expr",
+        "line": 907,
+        "end_line": 907,
+        "source": "print(\"=\" * 88)"
+      },
+      {
+        "type": "Expr",
+        "line": 908,
+        "end_line": 911,
+        "source": "print(\n    \"P15-3H FINAL RESULT: \"\n    \"PASS_FAST_GAMMA_COMPATIBLE_INCIDENCE\"\n)"
+      },
+      {
+        "type": "Expr",
+        "line": 912,
+        "end_line": 912,
+        "source": "print(\"=\" * 88)"
+      }
+    ],
+    "absolute_paths": [
+      {
+        "line": 11,
+        "value": "/home/ubuntu/Downloads/psds/output/processing/gacos_geometry"
+      },
+      {
+        "line": 15,
+        "value": "/home/ubuntu/Downloads/RSLC/20151212.rslc.par"
+      }
+    ],
+    "development_hits": [
+      {
+        "line": 644,
+        "value": "P15-3H FINAL FAST GAMMA-COMPATIBLE INCIDENCE"
+      },
+      {
+        "line": 794,
+        "value": "PASS_STRONG"
+      },
+      {
+        "line": 816,
+        "value": "PASS_FAST_GAMMA_COMPATIBLE_INCIDENCE"
+      },
+      {
+        "line": 881,
+        "value": "P15-4_FAST_GACOS_POINT_SAMPLING"
+      },
+      {
+        "line": 909,
+        "value": "P15-3H FINAL RESULT: PASS_FAST_GAMMA_COMPATIBLE_INCIDENCE"
+      },
+      {
+        "line": 591,
+        "value": "# Full benchmark"
+      },
+      {
+        "line": 644,
+        "value": "print(\"P15-3H FINAL FAST GAMMA-COMPATIBLE INCIDENCE\")"
+      },
+      {
+        "line": 794,
+        "value": "\"PASS_STRONG\""
+      },
+      {
+        "line": 816,
+        "value": "\"PASS_FAST_GAMMA_COMPATIBLE_INCIDENCE\","
+      },
+      {
+        "line": 881,
+        "value": "\"P15-4_FAST_GACOS_POINT_SAMPLING\","
+      },
+      {
+        "line": 909,
+        "value": "\"P15-3H FINAL RESULT: \""
+      },
+      {
+        "line": 910,
+        "value": "\"PASS_FAST_GAMMA_COMPATIBLE_INCIDENCE\""
+      }
+    ],
+    "io_calls": [
+      {
+        "name": "Path",
+        "line": 10,
+        "args": [
+          "/home/ubuntu/Downloads/psds/output/processing/gacos_geometry"
+        ],
+        "source": "Path(\n    \"/home/ubuntu/Downloads/psds/output/processing/gacos_geometry\"\n)"
+      },
+      {
+        "name": "Path",
+        "line": 14,
+        "args": [
+          "/home/ubuntu/Downloads/RSLC/20151212.rslc.par"
+        ],
+        "source": "Path(\n    \"/home/ubuntu/Downloads/RSLC/20151212.rslc.par\"\n)"
+      },
+      {
+        "name": "np.load",
+        "line": 89,
+        "args": [
+          "ROOT / \"longitude_deg.npy\""
+        ],
+        "source": "np.load(\n        ROOT / \"longitude_deg.npy\",\n        mmap_mode=\"r\",\n    )"
+      },
+      {
+        "name": "np.load",
+        "line": 97,
+        "args": [
+          "ROOT / \"latitude_deg.npy\""
+        ],
+        "source": "np.load(\n        ROOT / \"latitude_deg.npy\",\n        mmap_mode=\"r\",\n    )"
+      },
+      {
+        "name": "np.load",
+        "line": 105,
+        "args": [
+          "ROOT / \"radar_row.npy\""
+        ],
+        "source": "np.load(\n        ROOT / \"radar_row.npy\",\n        mmap_mode=\"r\",\n    )"
+      },
+      {
+        "name": "np.save",
+        "line": 808,
+        "args": [
+          "OUT",
+          "inc"
+        ],
+        "source": "np.save(\n    OUT,\n    inc,\n)"
+      },
+      {
+        "name": "json.dumps",
+        "line": 886,
+        "args": [
+          "manifest"
+        ],
+        "source": "json.dumps(\n        manifest,\n        indent=2,\n    )"
+      }
+    ],
+    "process_calls": [],
+    "gamma_mentions": [
+      {
+        "line": 864,
+        "command": "gc_map2",
+        "source": "gc_map2_incidence"
+      },
+      {
+        "line": 864,
+        "command": "gc_map",
+        "source": "gc_map2_incidence"
+      },
+      {
+        "line": 867,
+        "command": "geocode",
+        "source": "geocode_incidence"
+      },
+      {
+        "line": 870,
+        "command": "data2pt",
+        "source": "data2pt_incidence"
+      }
+    ],
+    "migration_assessment": {
+      "likely_script_harness": true,
+      "function_count": 5,
+      "has_reusable_functions": true,
+      "requires_path_parameterization": true,
+      "requires_public_name_cleanup": true,
+      "calls_external_process": false
+    }
+  }
+}

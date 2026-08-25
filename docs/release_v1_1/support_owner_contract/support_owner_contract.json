@@ -1,0 +1,2945 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-final-support-owner-contract",
+  "status": "PASS_DISCOVERY",
+  "exact_filename_search": {
+    "stamps_xy_exact_float32_m.npy": [
+      {
+        "path": "docs/release_v1_1/authoritative_sources/production/corrections/scn.py",
+        "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+        "line": 42,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 36,
+            "text": "    / \"gacos_correction_manifest.json\""
+          },
+          {
+            "line": 37,
+            "text": ")"
+          },
+          {
+            "line": 38,
+            "text": ""
+          },
+          {
+            "line": 39,
+            "text": "XY = ("
+          },
+          {
+            "line": 40,
+            "text": "    PROC"
+          },
+          {
+            "line": 41,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 42,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 43,
+            "text": ")"
+          },
+          {
+            "line": 44,
+            "text": ""
+          },
+          {
+            "line": 45,
+            "text": "SORT_IX = ("
+          },
+          {
+            "line": 46,
+            "text": "    PROC"
+          },
+          {
+            "line": 47,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 48,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 49,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/validation_evidence/scn_exact_engine_benchmark.py",
+        "sha256": "49806f2cf15a95d3ecda62609c4c2d33a61a44e4f6fe2c803a04958148f38f2e",
+        "line": 37,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 31,
+            "text": "    / \"gacos_correction_manifest.json\""
+          },
+          {
+            "line": 32,
+            "text": ")"
+          },
+          {
+            "line": 33,
+            "text": ""
+          },
+          {
+            "line": 34,
+            "text": "XY = ("
+          },
+          {
+            "line": 35,
+            "text": "    PROC"
+          },
+          {
+            "line": 36,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 37,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 38,
+            "text": ")"
+          },
+          {
+            "line": 39,
+            "text": ""
+          },
+          {
+            "line": 40,
+            "text": "SORT_IX = ("
+          },
+          {
+            "line": 41,
+            "text": "    PROC"
+          },
+          {
+            "line": 42,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 43,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 44,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/validation_evidence/scn_neighbor_census.py",
+        "sha256": "d6529e8b88e09a2d92f00e916707b97562d3748d9a353ecd54eb97b7d6a7b029",
+        "line": 50,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 44,
+            "text": "    parents=True,"
+          },
+          {
+            "line": 45,
+            "text": "    exist_ok=True,"
+          },
+          {
+            "line": 46,
+            "text": ")"
+          },
+          {
+            "line": 47,
+            "text": ""
+          },
+          {
+            "line": 48,
+            "text": "XY_OUT = ("
+          },
+          {
+            "line": 49,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 50,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 51,
+            "text": ")"
+          },
+          {
+            "line": 52,
+            "text": ""
+          },
+          {
+            "line": 53,
+            "text": "SORT_OUT = ("
+          },
+          {
+            "line": 54,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 55,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 56,
+            "text": ")"
+          },
+          {
+            "line": 57,
+            "text": ""
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b0_exact_xy_neighbor_census__d6529e8b88.py",
+        "sha256": "d6529e8b88e09a2d92f00e916707b97562d3748d9a353ecd54eb97b7d6a7b029",
+        "line": 50,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 44,
+            "text": "    parents=True,"
+          },
+          {
+            "line": 45,
+            "text": "    exist_ok=True,"
+          },
+          {
+            "line": 46,
+            "text": ")"
+          },
+          {
+            "line": 47,
+            "text": ""
+          },
+          {
+            "line": 48,
+            "text": "XY_OUT = ("
+          },
+          {
+            "line": 49,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 50,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 51,
+            "text": ")"
+          },
+          {
+            "line": 52,
+            "text": ""
+          },
+          {
+            "line": 53,
+            "text": "SORT_OUT = ("
+          },
+          {
+            "line": 54,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 55,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 56,
+            "text": ")"
+          },
+          {
+            "line": 57,
+            "text": ""
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b1_exact_engine_benchmark__49806f2cf1.py",
+        "sha256": "49806f2cf15a95d3ecda62609c4c2d33a61a44e4f6fe2c803a04958148f38f2e",
+        "line": 37,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 31,
+            "text": "    / \"gacos_correction_manifest.json\""
+          },
+          {
+            "line": 32,
+            "text": ")"
+          },
+          {
+            "line": 33,
+            "text": ""
+          },
+          {
+            "line": 34,
+            "text": "XY = ("
+          },
+          {
+            "line": 35,
+            "text": "    PROC"
+          },
+          {
+            "line": 36,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 37,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 38,
+            "text": ")"
+          },
+          {
+            "line": 39,
+            "text": ""
+          },
+          {
+            "line": 40,
+            "text": "SORT_IX = ("
+          },
+          {
+            "line": 41,
+            "text": "    PROC"
+          },
+          {
+            "line": 42,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 43,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 44,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b2_stage8_scn_production__df55f1ac3a.py",
+        "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+        "line": 42,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 36,
+            "text": "    / \"gacos_correction_manifest.json\""
+          },
+          {
+            "line": 37,
+            "text": ")"
+          },
+          {
+            "line": 38,
+            "text": ""
+          },
+          {
+            "line": 39,
+            "text": "XY = ("
+          },
+          {
+            "line": 40,
+            "text": "    PROC"
+          },
+          {
+            "line": 41,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 42,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 43,
+            "text": ")"
+          },
+          {
+            "line": 44,
+            "text": ""
+          },
+          {
+            "line": 45,
+            "text": "SORT_IX = ("
+          },
+          {
+            "line": 46,
+            "text": "    PROC"
+          },
+          {
+            "line": 47,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 48,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 49,
+            "text": ")"
+          }
+        ]
+      }
+    ],
+    "stamps_sort_index.npy": [
+      {
+        "path": "docs/release_v1_1/authoritative_sources/production/corrections/scn.py",
+        "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+        "line": 48,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 42,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 43,
+            "text": ")"
+          },
+          {
+            "line": 44,
+            "text": ""
+          },
+          {
+            "line": 45,
+            "text": "SORT_IX = ("
+          },
+          {
+            "line": 46,
+            "text": "    PROC"
+          },
+          {
+            "line": 47,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 48,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 49,
+            "text": ")"
+          },
+          {
+            "line": 50,
+            "text": ""
+          },
+          {
+            "line": 51,
+            "text": "COUNTS = ("
+          },
+          {
+            "line": 52,
+            "text": "    PROC"
+          },
+          {
+            "line": 53,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 54,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 55,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/validation_evidence/scn_exact_engine_benchmark.py",
+        "sha256": "49806f2cf15a95d3ecda62609c4c2d33a61a44e4f6fe2c803a04958148f38f2e",
+        "line": 43,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 37,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 38,
+            "text": ")"
+          },
+          {
+            "line": 39,
+            "text": ""
+          },
+          {
+            "line": 40,
+            "text": "SORT_IX = ("
+          },
+          {
+            "line": 41,
+            "text": "    PROC"
+          },
+          {
+            "line": 42,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 43,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 44,
+            "text": ")"
+          },
+          {
+            "line": 45,
+            "text": ""
+          },
+          {
+            "line": 46,
+            "text": "COUNTS = ("
+          },
+          {
+            "line": 47,
+            "text": "    PROC"
+          },
+          {
+            "line": 48,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 49,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 50,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/validation_evidence/scn_neighbor_census.py",
+        "sha256": "d6529e8b88e09a2d92f00e916707b97562d3748d9a353ecd54eb97b7d6a7b029",
+        "line": 55,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 49,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 50,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 51,
+            "text": ")"
+          },
+          {
+            "line": 52,
+            "text": ""
+          },
+          {
+            "line": 53,
+            "text": "SORT_OUT = ("
+          },
+          {
+            "line": 54,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 55,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 56,
+            "text": ")"
+          },
+          {
+            "line": 57,
+            "text": ""
+          },
+          {
+            "line": 58,
+            "text": "COUNT_OUT = ("
+          },
+          {
+            "line": 59,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 60,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 61,
+            "text": ")"
+          },
+          {
+            "line": 62,
+            "text": ""
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b0_exact_xy_neighbor_census__d6529e8b88.py",
+        "sha256": "d6529e8b88e09a2d92f00e916707b97562d3748d9a353ecd54eb97b7d6a7b029",
+        "line": 55,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 49,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 50,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 51,
+            "text": ")"
+          },
+          {
+            "line": 52,
+            "text": ""
+          },
+          {
+            "line": 53,
+            "text": "SORT_OUT = ("
+          },
+          {
+            "line": 54,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 55,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 56,
+            "text": ")"
+          },
+          {
+            "line": 57,
+            "text": ""
+          },
+          {
+            "line": 58,
+            "text": "COUNT_OUT = ("
+          },
+          {
+            "line": 59,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 60,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 61,
+            "text": ")"
+          },
+          {
+            "line": 62,
+            "text": ""
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b1_exact_engine_benchmark__49806f2cf1.py",
+        "sha256": "49806f2cf15a95d3ecda62609c4c2d33a61a44e4f6fe2c803a04958148f38f2e",
+        "line": 43,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 37,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 38,
+            "text": ")"
+          },
+          {
+            "line": 39,
+            "text": ""
+          },
+          {
+            "line": 40,
+            "text": "SORT_IX = ("
+          },
+          {
+            "line": 41,
+            "text": "    PROC"
+          },
+          {
+            "line": 42,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 43,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 44,
+            "text": ")"
+          },
+          {
+            "line": 45,
+            "text": ""
+          },
+          {
+            "line": 46,
+            "text": "COUNTS = ("
+          },
+          {
+            "line": 47,
+            "text": "    PROC"
+          },
+          {
+            "line": 48,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 49,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 50,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b2_stage8_scn_production__df55f1ac3a.py",
+        "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+        "line": 48,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 42,
+            "text": "    / \"stamps_xy_exact_float32_m.npy\""
+          },
+          {
+            "line": 43,
+            "text": ")"
+          },
+          {
+            "line": 44,
+            "text": ""
+          },
+          {
+            "line": 45,
+            "text": "SORT_IX = ("
+          },
+          {
+            "line": 46,
+            "text": "    PROC"
+          },
+          {
+            "line": 47,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 48,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 49,
+            "text": ")"
+          },
+          {
+            "line": 50,
+            "text": ""
+          },
+          {
+            "line": 51,
+            "text": "COUNTS = ("
+          },
+          {
+            "line": 52,
+            "text": "    PROC"
+          },
+          {
+            "line": 53,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 54,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 55,
+            "text": ")"
+          }
+        ]
+      }
+    ],
+    "stage8_neighbor_count_r400m.npy": [
+      {
+        "path": "docs/release_v1_1/authoritative_sources/production/corrections/scn.py",
+        "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+        "line": 54,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 48,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 49,
+            "text": ")"
+          },
+          {
+            "line": 50,
+            "text": ""
+          },
+          {
+            "line": 51,
+            "text": "COUNTS = ("
+          },
+          {
+            "line": 52,
+            "text": "    PROC"
+          },
+          {
+            "line": 53,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 54,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 55,
+            "text": ")"
+          },
+          {
+            "line": 56,
+            "text": ""
+          },
+          {
+            "line": 57,
+            "text": "BENCH = ("
+          },
+          {
+            "line": 58,
+            "text": "    PROC"
+          },
+          {
+            "line": 59,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 60,
+            "text": "    / \"p15_6b1_exact_engine_benchmark.json\""
+          },
+          {
+            "line": 61,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/validation_evidence/scn_exact_engine_benchmark.py",
+        "sha256": "49806f2cf15a95d3ecda62609c4c2d33a61a44e4f6fe2c803a04958148f38f2e",
+        "line": 49,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 43,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 44,
+            "text": ")"
+          },
+          {
+            "line": 45,
+            "text": ""
+          },
+          {
+            "line": 46,
+            "text": "COUNTS = ("
+          },
+          {
+            "line": 47,
+            "text": "    PROC"
+          },
+          {
+            "line": 48,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 49,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 50,
+            "text": ")"
+          },
+          {
+            "line": 51,
+            "text": ""
+          },
+          {
+            "line": 52,
+            "text": "B0_MANIFEST = ("
+          },
+          {
+            "line": 53,
+            "text": "    PROC"
+          },
+          {
+            "line": 54,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 55,
+            "text": "    / \"p15_6b0_exact_neighbor_census.json\""
+          },
+          {
+            "line": 56,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/validation_evidence/scn_neighbor_census.py",
+        "sha256": "d6529e8b88e09a2d92f00e916707b97562d3748d9a353ecd54eb97b7d6a7b029",
+        "line": 60,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 54,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 55,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 56,
+            "text": ")"
+          },
+          {
+            "line": 57,
+            "text": ""
+          },
+          {
+            "line": 58,
+            "text": "COUNT_OUT = ("
+          },
+          {
+            "line": 59,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 60,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 61,
+            "text": ")"
+          },
+          {
+            "line": 62,
+            "text": ""
+          },
+          {
+            "line": 63,
+            "text": "MANIFEST = ("
+          },
+          {
+            "line": 64,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 65,
+            "text": "    / \"p15_6b0_exact_neighbor_census.json\""
+          },
+          {
+            "line": 66,
+            "text": ")"
+          },
+          {
+            "line": 67,
+            "text": ""
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b0_exact_xy_neighbor_census__d6529e8b88.py",
+        "sha256": "d6529e8b88e09a2d92f00e916707b97562d3748d9a353ecd54eb97b7d6a7b029",
+        "line": 60,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 54,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 55,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 56,
+            "text": ")"
+          },
+          {
+            "line": 57,
+            "text": ""
+          },
+          {
+            "line": 58,
+            "text": "COUNT_OUT = ("
+          },
+          {
+            "line": 59,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 60,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 61,
+            "text": ")"
+          },
+          {
+            "line": 62,
+            "text": ""
+          },
+          {
+            "line": 63,
+            "text": "MANIFEST = ("
+          },
+          {
+            "line": 64,
+            "text": "    OUTDIR"
+          },
+          {
+            "line": 65,
+            "text": "    / \"p15_6b0_exact_neighbor_census.json\""
+          },
+          {
+            "line": 66,
+            "text": ")"
+          },
+          {
+            "line": 67,
+            "text": ""
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b1_exact_engine_benchmark__49806f2cf1.py",
+        "sha256": "49806f2cf15a95d3ecda62609c4c2d33a61a44e4f6fe2c803a04958148f38f2e",
+        "line": 49,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 43,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 44,
+            "text": ")"
+          },
+          {
+            "line": 45,
+            "text": ""
+          },
+          {
+            "line": 46,
+            "text": "COUNTS = ("
+          },
+          {
+            "line": 47,
+            "text": "    PROC"
+          },
+          {
+            "line": 48,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 49,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 50,
+            "text": ")"
+          },
+          {
+            "line": 51,
+            "text": ""
+          },
+          {
+            "line": 52,
+            "text": "B0_MANIFEST = ("
+          },
+          {
+            "line": 53,
+            "text": "    PROC"
+          },
+          {
+            "line": 54,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 55,
+            "text": "    / \"p15_6b0_exact_neighbor_census.json\""
+          },
+          {
+            "line": 56,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b2_stage8_scn_production__df55f1ac3a.py",
+        "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+        "line": 54,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 48,
+            "text": "    / \"stamps_sort_index.npy\""
+          },
+          {
+            "line": 49,
+            "text": ")"
+          },
+          {
+            "line": 50,
+            "text": ""
+          },
+          {
+            "line": 51,
+            "text": "COUNTS = ("
+          },
+          {
+            "line": 52,
+            "text": "    PROC"
+          },
+          {
+            "line": 53,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 54,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 55,
+            "text": ")"
+          },
+          {
+            "line": 56,
+            "text": ""
+          },
+          {
+            "line": 57,
+            "text": "BENCH = ("
+          },
+          {
+            "line": 58,
+            "text": "    PROC"
+          },
+          {
+            "line": 59,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 60,
+            "text": "    / \"p15_6b1_exact_engine_benchmark.json\""
+          },
+          {
+            "line": 61,
+            "text": ")"
+          }
+        ]
+      }
+    ],
+    "p15_6b1_exact_engine_benchmark.json": [
+      {
+        "path": "docs/release_v1_1/authoritative_sources/production/corrections/scn.py",
+        "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+        "line": 60,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 54,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 55,
+            "text": ")"
+          },
+          {
+            "line": 56,
+            "text": ""
+          },
+          {
+            "line": 57,
+            "text": "BENCH = ("
+          },
+          {
+            "line": 58,
+            "text": "    PROC"
+          },
+          {
+            "line": 59,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 60,
+            "text": "    / \"p15_6b1_exact_engine_benchmark.json\""
+          },
+          {
+            "line": 61,
+            "text": ")"
+          },
+          {
+            "line": 62,
+            "text": ""
+          },
+          {
+            "line": 63,
+            "text": "OUTDIR = ("
+          },
+          {
+            "line": 64,
+            "text": "    PROC"
+          },
+          {
+            "line": 65,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 66,
+            "text": ")"
+          },
+          {
+            "line": 67,
+            "text": ""
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/validation_evidence/scn_exact_engine_benchmark.py",
+        "sha256": "49806f2cf15a95d3ecda62609c4c2d33a61a44e4f6fe2c803a04958148f38f2e",
+        "line": 61,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 55,
+            "text": "    / \"p15_6b0_exact_neighbor_census.json\""
+          },
+          {
+            "line": 56,
+            "text": ")"
+          },
+          {
+            "line": 57,
+            "text": ""
+          },
+          {
+            "line": 58,
+            "text": "OUT = ("
+          },
+          {
+            "line": 59,
+            "text": "    PROC"
+          },
+          {
+            "line": 60,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 61,
+            "text": "    / \"p15_6b1_exact_engine_benchmark.json\""
+          },
+          {
+            "line": 62,
+            "text": ")"
+          },
+          {
+            "line": 63,
+            "text": ""
+          },
+          {
+            "line": 64,
+            "text": ""
+          },
+          {
+            "line": 65,
+            "text": "MASTER_DATE = \"20151212\""
+          },
+          {
+            "line": 66,
+            "text": ""
+          },
+          {
+            "line": 67,
+            "text": "TIME_WIN_DAYS = 365.0"
+          },
+          {
+            "line": 68,
+            "text": "SIGMA_M = 100.0"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b1_exact_engine_benchmark__49806f2cf1.py",
+        "sha256": "49806f2cf15a95d3ecda62609c4c2d33a61a44e4f6fe2c803a04958148f38f2e",
+        "line": 61,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 55,
+            "text": "    / \"p15_6b0_exact_neighbor_census.json\""
+          },
+          {
+            "line": 56,
+            "text": ")"
+          },
+          {
+            "line": 57,
+            "text": ""
+          },
+          {
+            "line": 58,
+            "text": "OUT = ("
+          },
+          {
+            "line": 59,
+            "text": "    PROC"
+          },
+          {
+            "line": 60,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 61,
+            "text": "    / \"p15_6b1_exact_engine_benchmark.json\""
+          },
+          {
+            "line": 62,
+            "text": ")"
+          },
+          {
+            "line": 63,
+            "text": ""
+          },
+          {
+            "line": 64,
+            "text": ""
+          },
+          {
+            "line": 65,
+            "text": "MASTER_DATE = \"20151212\""
+          },
+          {
+            "line": 66,
+            "text": ""
+          },
+          {
+            "line": 67,
+            "text": "TIME_WIN_DAYS = 365.0"
+          },
+          {
+            "line": 68,
+            "text": "SIGMA_M = 100.0"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b2_stage8_scn_production__df55f1ac3a.py",
+        "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+        "line": 60,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 54,
+            "text": "    / \"stage8_neighbor_count_r400m.npy\""
+          },
+          {
+            "line": 55,
+            "text": ")"
+          },
+          {
+            "line": 56,
+            "text": ""
+          },
+          {
+            "line": 57,
+            "text": "BENCH = ("
+          },
+          {
+            "line": 58,
+            "text": "    PROC"
+          },
+          {
+            "line": 59,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 60,
+            "text": "    / \"p15_6b1_exact_engine_benchmark.json\""
+          },
+          {
+            "line": 61,
+            "text": ")"
+          },
+          {
+            "line": 62,
+            "text": ""
+          },
+          {
+            "line": 63,
+            "text": "OUTDIR = ("
+          },
+          {
+            "line": 64,
+            "text": "    PROC"
+          },
+          {
+            "line": 65,
+            "text": "    / \"stamps_stage8\""
+          },
+          {
+            "line": 66,
+            "text": ")"
+          },
+          {
+            "line": 67,
+            "text": ""
+          }
+        ]
+      }
+    ],
+    "ref_idx.npy": [
+      {
+        "path": "docs/release_v1_1/authoritative_sources/production/corrections/gacos.py",
+        "sha256": "785a545075895859ad4a7a8cc0274a94e3dabf5102800cb9c9c04a5813382e43",
+        "line": 519,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 513,
+            "text": ""
+          },
+          {
+            "line": 514,
+            "text": "for p in ("
+          },
+          {
+            "line": 515,
+            "text": "    CACHE / \"base.npy\","
+          },
+          {
+            "line": 516,
+            "text": "    CACHE / \"fx.npy\","
+          },
+          {
+            "line": 517,
+            "text": "    CACHE / \"fy.npy\","
+          },
+          {
+            "line": 518,
+            "text": "    CACHE / \"sec_inc.npy\","
+          },
+          {
+            "line": 519,
+            "text": "    CACHE / \"ref_idx.npy\","
+          },
+          {
+            "line": 520,
+            "text": "):"
+          },
+          {
+            "line": 521,
+            "text": ""
+          },
+          {
+            "line": 522,
+            "text": "    if not p.is_file():"
+          },
+          {
+            "line": 523,
+            "text": ""
+          },
+          {
+            "line": 524,
+            "text": "        raise FileNotFoundError("
+          },
+          {
+            "line": 525,
+            "text": "            p"
+          },
+          {
+            "line": 526,
+            "text": "        )"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/production/corrections/gacos.py",
+        "sha256": "785a545075895859ad4a7a8cc0274a94e3dabf5102800cb9c9c04a5813382e43",
+        "line": 829,
+        "role": "reader",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 823,
+            "text": "sec_inc = np.load("
+          },
+          {
+            "line": 824,
+            "text": "    CACHE / \"sec_inc.npy\","
+          },
+          {
+            "line": 825,
+            "text": "    mmap_mode=\"r\","
+          },
+          {
+            "line": 826,
+            "text": ")"
+          },
+          {
+            "line": 827,
+            "text": ""
+          },
+          {
+            "line": 828,
+            "text": "ref_idx = np.load("
+          },
+          {
+            "line": 829,
+            "text": "    CACHE / \"ref_idx.npy\","
+          },
+          {
+            "line": 830,
+            "text": ")"
+          },
+          {
+            "line": 831,
+            "text": ""
+          },
+          {
+            "line": 832,
+            "text": ""
+          },
+          {
+            "line": 833,
+            "text": "if not ("
+          },
+          {
+            "line": 834,
+            "text": "    base.size"
+          },
+          {
+            "line": 835,
+            "text": "    =="
+          },
+          {
+            "line": 836,
+            "text": "    fx.size"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/production/corrections/pre_scn.py",
+        "sha256": "685f3ce84b87fe25aaf219b8eb38bf3693712a51f39767105cf459c12a311e1b",
+        "line": 71,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 65,
+            "text": ")"
+          },
+          {
+            "line": 66,
+            "text": ""
+          },
+          {
+            "line": 67,
+            "text": "REF_FILE = ("
+          },
+          {
+            "line": 68,
+            "text": "    PROC"
+          },
+          {
+            "line": 69,
+            "text": "    / \"gacos_fast_smoke\""
+          },
+          {
+            "line": 70,
+            "text": "    / \"project_local_interp\""
+          },
+          {
+            "line": 71,
+            "text": "    / \"ref_idx.npy\""
+          },
+          {
+            "line": 72,
+            "text": ")"
+          },
+          {
+            "line": 73,
+            "text": ""
+          },
+          {
+            "line": 74,
+            "text": "RSLC_PAR = ("
+          },
+          {
+            "line": 75,
+            "text": "    ROOT"
+          },
+          {
+            "line": 76,
+            "text": "    / \"RSLC\""
+          },
+          {
+            "line": 77,
+            "text": "    / \"20151212.rslc.par\""
+          },
+          {
+            "line": 78,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/production/corrections/scla_c.py",
+        "sha256": "967d439c53de5ea5ac14f82ad58a4da338ff97cbe3520b38d4b14878aba00eb2",
+        "line": 55,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 49,
+            "text": ")"
+          },
+          {
+            "line": 50,
+            "text": ""
+          },
+          {
+            "line": 51,
+            "text": "REF_FILE = ("
+          },
+          {
+            "line": 52,
+            "text": "    PROC"
+          },
+          {
+            "line": 53,
+            "text": "    / \"gacos_fast_smoke\""
+          },
+          {
+            "line": 54,
+            "text": "    / \"project_local_interp\""
+          },
+          {
+            "line": 55,
+            "text": "    / \"ref_idx.npy\""
+          },
+          {
+            "line": 56,
+            "text": ")"
+          },
+          {
+            "line": 57,
+            "text": ""
+          },
+          {
+            "line": 58,
+            "text": "RSLC_PAR = ("
+          },
+          {
+            "line": 59,
+            "text": "    ROOT"
+          },
+          {
+            "line": 60,
+            "text": "    / \"RSLC\""
+          },
+          {
+            "line": 61,
+            "text": "    / \"20151212.rslc.par\""
+          },
+          {
+            "line": 62,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/production/corrections/scla_k.py",
+        "sha256": "435ca04ba3dd11f153465935af7c2424d6465983f24f567c62852c64dad731f4",
+        "line": 62,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 56,
+            "text": ")"
+          },
+          {
+            "line": 57,
+            "text": ""
+          },
+          {
+            "line": 58,
+            "text": "REF_IDX_FILE = ("
+          },
+          {
+            "line": 59,
+            "text": "    PROC"
+          },
+          {
+            "line": 60,
+            "text": "    / \"gacos_fast_smoke\""
+          },
+          {
+            "line": 61,
+            "text": "    / \"project_local_interp\""
+          },
+          {
+            "line": 62,
+            "text": "    / \"ref_idx.npy\""
+          },
+          {
+            "line": 63,
+            "text": ")"
+          },
+          {
+            "line": 64,
+            "text": ""
+          },
+          {
+            "line": 65,
+            "text": "RSLC_PAR = ("
+          },
+          {
+            "line": 66,
+            "text": "    ROOT"
+          },
+          {
+            "line": 67,
+            "text": "    / \"RSLC\""
+          },
+          {
+            "line": 68,
+            "text": "    / \"20151212.rslc.par\""
+          },
+          {
+            "line": 69,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/production/inversion/los_timeseries.py",
+        "sha256": "42b48c5df8926a624b1e2d8851b2015156e0924af84697cd8c4edaac8308fcdb",
+        "line": 46,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 40,
+            "text": ")"
+          },
+          {
+            "line": 41,
+            "text": ""
+          },
+          {
+            "line": 42,
+            "text": "REF_FILE = ("
+          },
+          {
+            "line": 43,
+            "text": "    PROC"
+          },
+          {
+            "line": 44,
+            "text": "    / \"gacos_fast_smoke\""
+          },
+          {
+            "line": 45,
+            "text": "    / \"project_local_interp\""
+          },
+          {
+            "line": 46,
+            "text": "    / \"ref_idx.npy\""
+          },
+          {
+            "line": 47,
+            "text": ")"
+          },
+          {
+            "line": 48,
+            "text": ""
+          },
+          {
+            "line": 49,
+            "text": "RSLC_PAR = ("
+          },
+          {
+            "line": 50,
+            "text": "    ROOT"
+          },
+          {
+            "line": 51,
+            "text": "    / \"RSLC\""
+          },
+          {
+            "line": 52,
+            "text": "    / \"20151212.rslc.par\""
+          },
+          {
+            "line": 53,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/production/products/point_metrics.py",
+        "sha256": "d865468fdf65a334345be43985606dbe94d196fcc71749db5d02401293a22a07",
+        "line": 40,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 34,
+            "text": ")"
+          },
+          {
+            "line": 35,
+            "text": ""
+          },
+          {
+            "line": 36,
+            "text": "REF_FILE = ("
+          },
+          {
+            "line": 37,
+            "text": "    PROC"
+          },
+          {
+            "line": 38,
+            "text": "    / \"gacos_fast_smoke\""
+          },
+          {
+            "line": 39,
+            "text": "    / \"project_local_interp\""
+          },
+          {
+            "line": 40,
+            "text": "    / \"ref_idx.npy\""
+          },
+          {
+            "line": 41,
+            "text": ")"
+          },
+          {
+            "line": 42,
+            "text": ""
+          },
+          {
+            "line": 43,
+            "text": "LON = ("
+          },
+          {
+            "line": 44,
+            "text": "    PROC"
+          },
+          {
+            "line": 45,
+            "text": "    / \"gacos_geometry\""
+          },
+          {
+            "line": 46,
+            "text": "    / \"longitude_deg.npy\""
+          },
+          {
+            "line": 47,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/gacos/p15_4_fast_gacos_smoke__988d8de739.py",
+        "sha256": "988d8de7399a4ad9d3d4a44ff4ac6877c1d1a99b8b5dea74fa9a0e51aec21c48",
+        "line": 856,
+        "role": "writer",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 850,
+            "text": "    sec_inc,"
+          },
+          {
+            "line": 851,
+            "text": ")"
+          },
+          {
+            "line": 852,
+            "text": ""
+          },
+          {
+            "line": 853,
+            "text": "np.save("
+          },
+          {
+            "line": 854,
+            "text": "    cache_dir"
+          },
+          {
+            "line": 855,
+            "text": "    /"
+          },
+          {
+            "line": 856,
+            "text": "    \"ref_idx.npy\","
+          },
+          {
+            "line": 857,
+            "text": "    ref_idx,"
+          },
+          {
+            "line": 858,
+            "text": ")"
+          },
+          {
+            "line": 859,
+            "text": ""
+          },
+          {
+            "line": 860,
+            "text": ""
+          },
+          {
+            "line": 861,
+            "text": "# ======================================================================"
+          },
+          {
+            "line": 862,
+            "text": "# Wavelength / correction sign"
+          },
+          {
+            "line": 863,
+            "text": "# ======================================================================"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/gacos/p15_5a_fast_gacos_production__785a545075.py",
+        "sha256": "785a545075895859ad4a7a8cc0274a94e3dabf5102800cb9c9c04a5813382e43",
+        "line": 519,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 513,
+            "text": ""
+          },
+          {
+            "line": 514,
+            "text": "for p in ("
+          },
+          {
+            "line": 515,
+            "text": "    CACHE / \"base.npy\","
+          },
+          {
+            "line": 516,
+            "text": "    CACHE / \"fx.npy\","
+          },
+          {
+            "line": 517,
+            "text": "    CACHE / \"fy.npy\","
+          },
+          {
+            "line": 518,
+            "text": "    CACHE / \"sec_inc.npy\","
+          },
+          {
+            "line": 519,
+            "text": "    CACHE / \"ref_idx.npy\","
+          },
+          {
+            "line": 520,
+            "text": "):"
+          },
+          {
+            "line": 521,
+            "text": ""
+          },
+          {
+            "line": 522,
+            "text": "    if not p.is_file():"
+          },
+          {
+            "line": 523,
+            "text": ""
+          },
+          {
+            "line": 524,
+            "text": "        raise FileNotFoundError("
+          },
+          {
+            "line": 525,
+            "text": "            p"
+          },
+          {
+            "line": 526,
+            "text": "        )"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/gacos/p15_5a_fast_gacos_production__785a545075.py",
+        "sha256": "785a545075895859ad4a7a8cc0274a94e3dabf5102800cb9c9c04a5813382e43",
+        "line": 829,
+        "role": "reader",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 823,
+            "text": "sec_inc = np.load("
+          },
+          {
+            "line": 824,
+            "text": "    CACHE / \"sec_inc.npy\","
+          },
+          {
+            "line": 825,
+            "text": "    mmap_mode=\"r\","
+          },
+          {
+            "line": 826,
+            "text": ")"
+          },
+          {
+            "line": 827,
+            "text": ""
+          },
+          {
+            "line": 828,
+            "text": "ref_idx = np.load("
+          },
+          {
+            "line": 829,
+            "text": "    CACHE / \"ref_idx.npy\","
+          },
+          {
+            "line": 830,
+            "text": ")"
+          },
+          {
+            "line": 831,
+            "text": ""
+          },
+          {
+            "line": 832,
+            "text": ""
+          },
+          {
+            "line": 833,
+            "text": "if not ("
+          },
+          {
+            "line": 834,
+            "text": "    base.size"
+          },
+          {
+            "line": 835,
+            "text": "    =="
+          },
+          {
+            "line": 836,
+            "text": "    fx.size"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/gacos/p15_5b4_stamps_final_pass_k__435ca04ba3.py",
+        "sha256": "435ca04ba3dd11f153465935af7c2424d6465983f24f567c62852c64dad731f4",
+        "line": 62,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 56,
+            "text": ")"
+          },
+          {
+            "line": 57,
+            "text": ""
+          },
+          {
+            "line": 58,
+            "text": "REF_IDX_FILE = ("
+          },
+          {
+            "line": 59,
+            "text": "    PROC"
+          },
+          {
+            "line": 60,
+            "text": "    / \"gacos_fast_smoke\""
+          },
+          {
+            "line": 61,
+            "text": "    / \"project_local_interp\""
+          },
+          {
+            "line": 62,
+            "text": "    / \"ref_idx.npy\""
+          },
+          {
+            "line": 63,
+            "text": ")"
+          },
+          {
+            "line": 64,
+            "text": ""
+          },
+          {
+            "line": 65,
+            "text": "RSLC_PAR = ("
+          },
+          {
+            "line": 66,
+            "text": "    ROOT"
+          },
+          {
+            "line": 67,
+            "text": "    / \"RSLC\""
+          },
+          {
+            "line": 68,
+            "text": "    / \"20151212.rslc.par\""
+          },
+          {
+            "line": 69,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/gacos/p15_5b_fast_scla_estimation__29441c372f.py",
+        "sha256": "29441c372fbced8488aa5b07820088d5521d9c41690faf2cd14bce0e04ccc2fe",
+        "line": 1023,
+        "role": "reader",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 1017,
+            "text": "# ======================================================================"
+          },
+          {
+            "line": 1018,
+            "text": ""
+          },
+          {
+            "line": 1019,
+            "text": "ref_idx = np.load("
+          },
+          {
+            "line": 1020,
+            "text": "    PROC"
+          },
+          {
+            "line": 1021,
+            "text": "    / \"gacos_fast_smoke\""
+          },
+          {
+            "line": 1022,
+            "text": "    / \"project_local_interp\""
+          },
+          {
+            "line": 1023,
+            "text": "    / \"ref_idx.npy\""
+          },
+          {
+            "line": 1024,
+            "text": ")"
+          },
+          {
+            "line": 1025,
+            "text": ""
+          },
+          {
+            "line": 1026,
+            "text": ""
+          },
+          {
+            "line": 1027,
+            "text": "if ref_idx.size != 607:"
+          },
+          {
+            "line": 1028,
+            "text": ""
+          },
+          {
+            "line": 1029,
+            "text": "    raise RuntimeError("
+          },
+          {
+            "line": 1030,
+            "text": "        ("
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/gacos/p15_5c_scla_spatial_regularization__72bf99005f.py",
+        "sha256": "72bf99005f8e74782c247a122332be4b8f55fb2d25b6644cc0a7a06382791e45",
+        "line": 62,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 56,
+            "text": ")"
+          },
+          {
+            "line": 57,
+            "text": ""
+          },
+          {
+            "line": 58,
+            "text": "REF_IDX_FILE = ("
+          },
+          {
+            "line": 59,
+            "text": "    PROC"
+          },
+          {
+            "line": 60,
+            "text": "    / \"gacos_fast_smoke\""
+          },
+          {
+            "line": 61,
+            "text": "    / \"project_local_interp\""
+          },
+          {
+            "line": 62,
+            "text": "    / \"ref_idx.npy\""
+          },
+          {
+            "line": 63,
+            "text": ")"
+          },
+          {
+            "line": 64,
+            "text": ""
+          },
+          {
+            "line": 65,
+            "text": "RSLC_PAR = Path("
+          },
+          {
+            "line": 66,
+            "text": "    \"/home/ubuntu/Downloads/RSLC/20151212.rslc.par\""
+          },
+          {
+            "line": 67,
+            "text": ")"
+          },
+          {
+            "line": 68,
+            "text": ""
+          },
+          {
+            "line": 69,
+            "text": "OUT = ("
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/los_timeseries/p15_6c_finalize_los_timeseries__42b48c5df8.py",
+        "sha256": "42b48c5df8926a624b1e2d8851b2015156e0924af84697cd8c4edaac8308fcdb",
+        "line": 46,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 40,
+            "text": ")"
+          },
+          {
+            "line": 41,
+            "text": ""
+          },
+          {
+            "line": 42,
+            "text": "REF_FILE = ("
+          },
+          {
+            "line": 43,
+            "text": "    PROC"
+          },
+          {
+            "line": 44,
+            "text": "    / \"gacos_fast_smoke\""
+          },
+          {
+            "line": 45,
+            "text": "    / \"project_local_interp\""
+          },
+          {
+            "line": 46,
+            "text": "    / \"ref_idx.npy\""
+          },
+          {
+            "line": 47,
+            "text": ")"
+          },
+          {
+            "line": 48,
+            "text": ""
+          },
+          {
+            "line": 49,
+            "text": "RSLC_PAR = ("
+          },
+          {
+            "line": 50,
+            "text": "    ROOT"
+          },
+          {
+            "line": 51,
+            "text": "    / \"RSLC\""
+          },
+          {
+            "line": 52,
+            "text": "    / \"20151212.rslc.par\""
+          },
+          {
+            "line": 53,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/point_products/p15_7a_final_point_products__d865468fdf.py",
+        "sha256": "d865468fdf65a334345be43985606dbe94d196fcc71749db5d02401293a22a07",
+        "line": 40,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 34,
+            "text": ")"
+          },
+          {
+            "line": 35,
+            "text": ""
+          },
+          {
+            "line": 36,
+            "text": "REF_FILE = ("
+          },
+          {
+            "line": 37,
+            "text": "    PROC"
+          },
+          {
+            "line": 38,
+            "text": "    / \"gacos_fast_smoke\""
+          },
+          {
+            "line": 39,
+            "text": "    / \"project_local_interp\""
+          },
+          {
+            "line": 40,
+            "text": "    / \"ref_idx.npy\""
+          },
+          {
+            "line": 41,
+            "text": ")"
+          },
+          {
+            "line": 42,
+            "text": ""
+          },
+          {
+            "line": 43,
+            "text": "LON = ("
+          },
+          {
+            "line": 44,
+            "text": "    PROC"
+          },
+          {
+            "line": 45,
+            "text": "    / \"gacos_geometry\""
+          },
+          {
+            "line": 46,
+            "text": "    / \"longitude_deg.npy\""
+          },
+          {
+            "line": 47,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scla/p15_5b5_stamps_final_pass_c__967d439c53.py",
+        "sha256": "967d439c53de5ea5ac14f82ad58a4da338ff97cbe3520b38d4b14878aba00eb2",
+        "line": 55,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 49,
+            "text": ")"
+          },
+          {
+            "line": 50,
+            "text": ""
+          },
+          {
+            "line": 51,
+            "text": "REF_FILE = ("
+          },
+          {
+            "line": 52,
+            "text": "    PROC"
+          },
+          {
+            "line": 53,
+            "text": "    / \"gacos_fast_smoke\""
+          },
+          {
+            "line": 54,
+            "text": "    / \"project_local_interp\""
+          },
+          {
+            "line": 55,
+            "text": "    / \"ref_idx.npy\""
+          },
+          {
+            "line": 56,
+            "text": ")"
+          },
+          {
+            "line": 57,
+            "text": ""
+          },
+          {
+            "line": 58,
+            "text": "RSLC_PAR = ("
+          },
+          {
+            "line": 59,
+            "text": "    ROOT"
+          },
+          {
+            "line": 60,
+            "text": "    / \"RSLC\""
+          },
+          {
+            "line": 61,
+            "text": "    / \"20151212.rslc.par\""
+          },
+          {
+            "line": 62,
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scla/p15_5b6_materialize_pre_scn__685f3ce84b.py",
+        "sha256": "685f3ce84b87fe25aaf219b8eb38bf3693712a51f39767105cf459c12a311e1b",
+        "line": 71,
+        "role": "reference",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 65,
+            "text": ")"
+          },
+          {
+            "line": 66,
+            "text": ""
+          },
+          {
+            "line": 67,
+            "text": "REF_FILE = ("
+          },
+          {
+            "line": 68,
+            "text": "    PROC"
+          },
+          {
+            "line": 69,
+            "text": "    / \"gacos_fast_smoke\""
+          },
+          {
+            "line": 70,
+            "text": "    / \"project_local_interp\""
+          },
+          {
+            "line": 71,
+            "text": "    / \"ref_idx.npy\""
+          },
+          {
+            "line": 72,
+            "text": ")"
+          },
+          {
+            "line": 73,
+            "text": ""
+          },
+          {
+            "line": 74,
+            "text": "RSLC_PAR = ("
+          },
+          {
+            "line": 75,
+            "text": "    ROOT"
+          },
+          {
+            "line": 76,
+            "text": "    / \"RSLC\""
+          },
+          {
+            "line": 77,
+            "text": "    / \"20151212.rslc.par\""
+          },
+          {
+            "line": 78,
+            "text": ")"
+          }
+        ]
+      }
+    ]
+  },
+  "writer_summary": {
+    "stamps_xy_exact_float32_m.npy": [],
+    "stamps_sort_index.npy": [],
+    "stage8_neighbor_count_r400m.npy": [],
+    "p15_6b1_exact_engine_benchmark.json": [],
+    "ref_idx.npy": [
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/gacos/p15_4_fast_gacos_smoke__988d8de739.py",
+        "sha256": "988d8de7399a4ad9d3d4a44ff4ac6877c1d1a99b8b5dea74fa9a0e51aec21c48",
+        "line": 856,
+        "role": "writer",
+        "function": "<module>",
+        "context": [
+          {
+            "line": 850,
+            "text": "    sec_inc,"
+          },
+          {
+            "line": 851,
+            "text": ")"
+          },
+          {
+            "line": 852,
+            "text": ""
+          },
+          {
+            "line": 853,
+            "text": "np.save("
+          },
+          {
+            "line": 854,
+            "text": "    cache_dir"
+          },
+          {
+            "line": 855,
+            "text": "    /"
+          },
+          {
+            "line": 856,
+            "text": "    \"ref_idx.npy\","
+          },
+          {
+            "line": 857,
+            "text": "    ref_idx,"
+          },
+          {
+            "line": 858,
+            "text": ")"
+          },
+          {
+            "line": 859,
+            "text": ""
+          },
+          {
+            "line": 860,
+            "text": ""
+          },
+          {
+            "line": 861,
+            "text": "# ======================================================================"
+          },
+          {
+            "line": 862,
+            "text": "# Wavelength / correction sign"
+          },
+          {
+            "line": 863,
+            "text": "# ======================================================================"
+          }
+        ]
+      }
+    ]
+  },
+  "semantic_generator_candidates": {
+    "scn_xy": [
+      {
+        "path": "docs/release_v1_1/authoritative_sources/production/corrections/scn.py",
+        "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+        "score": 7,
+        "matched": [
+          "neighbor_count",
+          "sort_index",
+          "KDTree",
+          "cKDTree",
+          "cell_size",
+          "400",
+          "stamps_xy"
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/validation_evidence/scn_exact_engine_benchmark.py",
+        "sha256": "49806f2cf15a95d3ecda62609c4c2d33a61a44e4f6fe2c803a04958148f38f2e",
+        "score": 7,
+        "matched": [
+          "neighbor_count",
+          "sort_index",
+          "KDTree",
+          "cKDTree",
+          "cell_size",
+          "400",
+          "stamps_xy"
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/validation_evidence/scn_neighbor_census.py",
+        "sha256": "d6529e8b88e09a2d92f00e916707b97562d3748d9a353ecd54eb97b7d6a7b029",
+        "score": 7,
+        "matched": [
+          "neighbor_count",
+          "sort_index",
+          "KDTree",
+          "cKDTree",
+          "cell_size",
+          "400",
+          "stamps_xy"
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/authoritative_sources/validation_evidence/stamps_xy_geometry_audit.py",
+        "sha256": "ee51f32f9b14a458f278e18df4f659d0a5540433f32eedd53de4db64af1f1e5f",
+        "score": 3,
+        "matched": [
+          "KDTree",
+          "400",
+          "stamps_xy"
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/geometry/p15_6a_stamps_xy_grid_audit__ee51f32f9b.py",
+        "sha256": "ee51f32f9b14a458f278e18df4f659d0a5540433f32eedd53de4db64af1f1e5f",
+        "score": 3,
+        "matched": [
+          "KDTree",
+          "400",
+          "stamps_xy"
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scla/stage78_layer_attribution_v6_2__6f47887c98.py",
+        "sha256": "6f47887c982b150b6d04df43f64ee4c99f51b51cda80aa900adb7b82fb8b0a2b",
+        "score": 3,
+        "matched": [
+          "KDTree",
+          "cKDTree",
+          "400"
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b0_exact_xy_neighbor_census__d6529e8b88.py",
+        "sha256": "d6529e8b88e09a2d92f00e916707b97562d3748d9a353ecd54eb97b7d6a7b029",
+        "score": 7,
+        "matched": [
+          "neighbor_count",
+          "sort_index",
+          "KDTree",
+          "cKDTree",
+          "cell_size",
+          "400",
+          "stamps_xy"
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b1_exact_engine_benchmark__49806f2cf1.py",
+        "sha256": "49806f2cf15a95d3ecda62609c4c2d33a61a44e4f6fe2c803a04958148f38f2e",
+        "score": 7,
+        "matched": [
+          "neighbor_count",
+          "sort_index",
+          "KDTree",
+          "cKDTree",
+          "cell_size",
+          "400",
+          "stamps_xy"
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/p15_6b2_stage8_scn_production__df55f1ac3a.py",
+        "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+        "score": 7,
+        "matched": [
+          "neighbor_count",
+          "sort_index",
+          "KDTree",
+          "cKDTree",
+          "cell_size",
+          "400",
+          "stamps_xy"
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/scn/robust_deramp_stability_v6_4__7a94391f3c.py",
+        "sha256": "7a94391f3cfe8c1997d09695f075a83e1db272481483bdf5449ac910c793306c",
+        "score": 3,
+        "matched": [
+          "KDTree",
+          "cKDTree",
+          "400"
+        ]
+      }
+    ],
+    "reference_indices": [
+      {
+        "path": "docs/release_v1_1/authoritative_sources/validation_evidence/geocoding_contract_audit.py",
+        "sha256": "6b9b65547398d741bd900bcb94935ec1ba80ecd5fa50b13b62bbd33998f74a39",
+        "score": 4,
+        "matched": [
+          "lon_min",
+          "lon_max",
+          "lat_min",
+          "lat_max"
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/gacos/p15_3a_v2_build_radar_point_geolocation__13c1cf02e8.py",
+        "sha256": "13c1cf02e87aecdfb6af04301bd461ce789c37e7d1e3fcbbcb713d49a9f91efb",
+        "score": 5,
+        "matched": [
+          "flatnonzero",
+          "lon_min",
+          "lon_max",
+          "lat_min",
+          "lat_max"
+        ]
+      },
+      {
+        "path": "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/geometry/p15_7b0_geocoding_contract_audit__6b9b655473.py",
+        "sha256": "6b9b65547398d741bd900bcb94935ec1ba80ecd5fa50b13b62bbd33998f74a39",
+        "score": 4,
+        "matched": [
+          "lon_min",
+          "lon_max",
+          "lat_min",
+          "lat_max"
+        ]
+      }
+    ]
+  },
+  "existing_products": {
+    "stamps_xy_exact_float32_m.npy": [
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/stamps_xy_exact_float32_m.npy",
+        "sha256": "ed7ed3919b5df6a25b221e513d881c5ab59ba396ef6851bf97f1e97cab778068",
+        "bytes": 7050648,
+        "shape": [
+          881315,
+          2
+        ],
+        "dtype": "float32"
+      }
+    ],
+    "stamps_sort_index.npy": [
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/stamps_sort_index.npy",
+        "sha256": "ba4aedc46210e48d6b3318b94db22c69cbff705f93e01c86cfca535f8edf673e",
+        "bytes": 3525388,
+        "shape": [
+          881315
+        ],
+        "dtype": "int32"
+      }
+    ],
+    "stage8_neighbor_count_r400m.npy": [
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/stage8_neighbor_count_r400m.npy",
+        "sha256": "8efc41205581c6b814b74684356e8e7062dff8b08819e350fd9c43a7a8662cd7",
+        "bytes": 3525388,
+        "shape": [
+          881315
+        ],
+        "dtype": "int32"
+      }
+    ],
+    "p15_6b1_exact_engine_benchmark.json": [
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/p15_6b1_exact_engine_benchmark.json",
+        "sha256": "7b523a786ea324de94df3935f048ceecf85a9e4014a31d2f47af3f66ca03ed90",
+        "bytes": 5270
+      }
+    ],
+    "ref_idx.npy": [
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/gacos_fast_smoke/project_local_interp/ref_idx.npy",
+        "sha256": "5c54de2432346982767f4b58458dffba471f7f73beba6e2186b7b085fb6a985f",
+        "bytes": 2556,
+        "shape": [
+          607
+        ],
+        "dtype": "int32"
+      }
+    ]
+  },
+  "apply_reference_audit": {
+    "16": "    med = np.median(",
+    "26": "    mad = np.median(",
+    "53": "            \"as the exact computational reference set. When supplied, \"",
+    "102": "        args.center_row = cfg_get(cfg, \"reference.radar_window.center_row\", None)",
+    "104": "        args.center_col = cfg_get(cfg, \"reference.radar_window.center_col\", None)",
+    "107": "            \"reference.radar_window.center_row and center_col must be set for this study area.\"",
+    "112": "        args.half_row = int(cfg_get(cfg, \"reference.radar_window.half_row\", 10))",
+    "114": "        args.half_col = int(cfg_get(cfg, \"reference.radar_window.half_col\", 15))",
+    "116": "        args.min_points = int(cfg_get(cfg, \"reference.radar_window.min_points\", 100))",
+    "118": "        raise ValueError(\"reference.radar_window.min_points must be >= 1\")",
+    "137": "        / \"referenced_timeseries\"",
+    "190": "    # Reference-region membership",
+    "194": "        reference_method = \"point_ids\"",
+    "210": "                \"Reference point-ID file must contain \"",
+    "222": "                \"Reference point-ID file contains duplicates.\"",
+    "240": "                f\"{len(missing)} requested reference point IDs \"",
+    "255": "        reference_method = \"radar_window\"",
+    "263": "                \"radar_window reference requires \"",
+    "289": "        region_idx = np.where(",
+    "299": "            f\"Reference region has only \"",
+    "305": "    # Epoch-wise robust reference",
+    "316": "    reference_median = np.median(",
+    "321": "    reference_sigma = robust_mad_sigma(",
+    "332": "        / \"acquisition_phase_referenced_rad.npy\"",
+    "372": "            reference_median[",
+    "383": "    # Reference verification",
+    "386": "    referenced = np.asarray(",
+    "394": "    post_ref_median = np.median(",
+    "395": "        referenced,",
+    "400": "        referenced,",
+    "462": "        np.mean(",
+    "520": "        ymean = np.mean(",
+    "529": "                ymean[",
+    "541": "            ymean",
+    "545": "            np.mean(",
+    "572": "            np.mean(",
+    "596": "    # Reference-region phase rate QA",
+    "606": "    ref_rate_median = float(",
+    "607": "        np.median(",
+    "615": "        np.median(",
+    "619": "                ref_rate_median",
+    "625": "    # Save region masks",
+    "628": "    full_mask = np.zeros(",
+    "633": "    full_mask[",
+    "639": "    np.save(",
+    "641": "        / \"reference_region_mask.npy\",",
+    "642": "        full_mask,",
+    "645": "    np.save(",
+    "647": "        / \"reference_strict_indices.npy\",",
+    "653": "    np.save(",
+    "655": "        / \"reference_point_ids.npy\",",
+    "663": "    np.save(",
+    "665": "        / \"reference_phase_median_rad.npy\",",
+    "666": "        reference_median.astype(",
+    "671": "    np.save(",
+    "673": "        / \"reference_phase_mad_sigma_rad.npy\",",
+    "674": "        reference_sigma.astype(",
+    "690": "            \"index\":",
+    "700": "            \"reference_phase_median_before_rad\":",
+    "702": "                    reference_median[",
+    "707": "            \"reference_phase_mad_sigma_before_rad\":",
+    "709": "                    reference_sigma[",
+    "714": "            \"reference_phase_median_after_rad\":",
+    "716": "                    post_ref_median[",
+    "721": "            \"reference_phase_mad_sigma_after_rad\":",
+    "731": "        / \"reference_epoch_qa.csv\"",
+    "769": "        \"Apply computational reference region\"",
+    "784": "        f\"reference center row/col   : \"",
+    "790": "        f\"reference window           : \"",
+    "796": "        f\"reference points           : \"",
+    "803": "        \"Reference application QA\"",
+    "808": "        f\"max |epoch median after|   : \"",
+    "809": "        f\"{np.max(np.abs(post_ref_median)):.3e} rad\"",
+    "821": "        f\"reference phase-rate median:\"",
+    "825": "        f\"  {ref_rate_median:.6e} rad/yr\"",
+    "829": "        f\"reference phase-rate MAD sigma:\"",
+    "901": "            \"pyPSDS-GAMMA-referenced-timeseries-processing\",",
+    "904": "            \"PRELIMINARY_REFERENCED_PHASE\",",
+    "906": "        \"reference_type\":",
+    "907": "            \"computational_region_median\",",
+    "912": "        \"reference_region\": {",
+    "940": "            \"referenced_acquisition_phase\":",
+    "957": "            \"spatial_reference\":",
+    "987": "                \"Reference is a computational region median. \"",
+    "996": "        / \"referenced_timeseries_manifest.json\"",
+    "1011": "        f\"referenced phase           : \"",
+    "1021": "        f\"reference epoch QA         : \"",
+    "1032": "        \"STEP reference STATUS: PASS / \"",
+    "1033": "        \"PRELIMINARY REFERENCED PHASE\""
+  },
+  "decision": {
+    "scn_writer_paths": [],
+    "reference_writer_paths": [
+      "docs/release_v1_1/migration_sources/snapshot_20260825_094037/files/gacos/p15_4_fast_gacos_smoke__988d8de739.py"
+    ],
+    "scn_writer_found": false,
+    "reference_writer_found": true
+  },
+  "scientific_chain_frozen": true,
+  "numeric_reaudit_required": false,
+  "pipeline_modified": false,
+  "pipeline_stage_count": 33
+}

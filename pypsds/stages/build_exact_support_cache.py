@@ -7,11 +7,17 @@ import json
 from pathlib import Path
 from time import perf_counter
 import time
+import subprocess
+import tempfile
 
 import numpy as np
 
 from pypsds.context import (
     open_from_config,
+)
+
+from pypsds.gamma.phase_correction import (
+    GammaPointPhaseCorrectionProvider,
 )
 
 from pypsds.progress import (
@@ -112,6 +118,406 @@ def make_tiles(
     return out
 
 
+
+def ensure_phase_geometry_valid(
+    *,
+    cfg,
+    paths,
+    stack,
+    base_row0,
+    base_col0,
+    H,
+    W,
+    geom_path,
+):
+    """
+    Ensure the geometry-valid mask required by static SHP support.
+
+    Sequential GAMMA streaming deliberately avoids the full corrected
+    YXT cache.  The geometry mask, however, is still required before
+    Phase Linking by the exact-support-cache stage.
+
+    Geometry validity is defined identically to the GAMMA phase
+    correction provider:
+
+        data2pt radar height
+        -> finite
+        -> optionally reject zero height
+
+    No phase_sim_orb_pt call is required here.
+    """
+
+    geom_path = Path(
+        geom_path
+    )
+
+    # --------------------------------------------------------
+    # Existing cache: validate and reuse.
+    # --------------------------------------------------------
+
+    if geom_path.is_file():
+
+        geom = np.load(
+            geom_path,
+            mmap_mode="r",
+            allow_pickle=False,
+        )
+
+        if geom.shape != (
+            H,
+            W,
+        ):
+
+            raise RuntimeError(
+                "phase geometry cache shape mismatch: "
+                f"{geom.shape} != {(H, W)}"
+            )
+
+        print(
+            "phase geometry   : existing cache"
+        )
+
+        return geom_path
+
+
+    geom_path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+
+    provider = (
+        GammaPointPhaseCorrectionProvider(
+            cfg,
+            paths,
+            stack,
+        )
+    )
+
+
+    # If phase correction is disabled, there is no additional
+    # phase-correction geometry restriction.
+    if not provider.enabled:
+
+        valid = np.ones(
+            (
+                H,
+                W,
+            ),
+            dtype=np.bool_,
+        )
+
+        tmp = geom_path.with_name(
+            geom_path.name
+            +
+            ".tmp.npy"
+        )
+
+        np.save(
+            tmp,
+            valid,
+        )
+
+        tmp.replace(
+            geom_path
+        )
+
+        print(
+            "phase geometry   : all-valid "
+            "(phase correction disabled)"
+        )
+
+        return geom_path
+
+
+    # prepare() also resolves the exact height raster,
+    # geometry parameter file, GAMMA commands and reference par.
+    assets = provider.prepare()
+
+
+    tile_root = (
+        provider.scratch_dir
+        /
+        "tiles"
+    )
+
+    tile_root.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+
+    with tempfile.TemporaryDirectory(
+        prefix="geometry_valid_",
+        dir=tile_root,
+    ) as tmpdir:
+
+        tmpdir = Path(
+            tmpdir
+        )
+
+        plist = (
+            tmpdir
+            /
+            "plist"
+        )
+
+        phgt = (
+            tmpdir
+            /
+            "phgt"
+        )
+
+
+        # ----------------------------------------------------
+        # Build IPTA point list in exact range,azimuth order.
+        #
+        # Do it row-wise so memory is independent of H.
+        # ----------------------------------------------------
+
+        cols = np.arange(
+            int(base_col0),
+            int(base_col0)
+            +
+            int(W),
+            dtype=np.int32,
+        )
+
+        rowbuf = np.empty(
+            (
+                int(W),
+                2,
+            ),
+            dtype=">i4",
+        )
+
+        rowbuf[
+            :,
+            0
+        ] = cols
+
+
+        with plist.open(
+            "wb"
+        ) as f:
+
+            for row in range(
+                int(base_row0),
+                int(base_row0)
+                +
+                int(H),
+            ):
+
+                rowbuf[
+                    :,
+                    1
+                ] = row
+
+                rowbuf.tofile(
+                    f
+                )
+
+
+        # ----------------------------------------------------
+        # Geometry only:
+        # same data2pt call used by correct_block().
+        # ----------------------------------------------------
+
+        cmd = [
+            provider._commands[
+                "data2pt"
+            ],
+            str(
+                assets.height_path
+            ),
+            str(
+                assets.height_geometry_par
+            ),
+            str(
+                plist
+            ),
+            str(
+                assets.reference_par
+            ),
+            str(
+                phgt
+            ),
+            "1",
+            "2",
+        ]
+
+
+        print(
+            "phase geometry   : generating with data2pt only"
+        )
+
+
+        t0 = perf_counter()
+
+        proc = subprocess.run(
+            cmd,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        )
+
+        elapsed = (
+            perf_counter()
+            -
+            t0
+        )
+
+
+        gamma_log = (
+            provider.scratch_dir
+            /
+            "gamma.log"
+        )
+
+        with gamma_log.open(
+            "a",
+            encoding="utf-8",
+        ) as f:
+
+            f.write(
+                "\n===== data2pt:phase_geometry_valid =====\n"
+            )
+
+            f.write(
+                "$ "
+                +
+                " ".join(
+                    cmd
+                )
+                +
+                "\n"
+            )
+
+            f.write(
+                proc.stdout
+                or
+                ""
+            )
+
+            f.write(
+                "\nreturncode="
+                f"{proc.returncode} "
+                f"elapsed={elapsed:.3f}s\n"
+            )
+
+
+        if proc.returncode != 0:
+
+            tail = "\n".join(
+                (
+                    proc.stdout
+                    or
+                    ""
+                ).splitlines()[
+                    -30:
+                ]
+            )
+
+            raise RuntimeError(
+                "data2pt geometry generation failed "
+                f"(returncode={proc.returncode})\n"
+                f"{tail}\n"
+                f"log: {gamma_log}"
+            )
+
+
+        h = np.fromfile(
+            phgt,
+            dtype=">f4",
+        )
+
+
+        expected = (
+            int(H)
+            *
+            int(W)
+        )
+
+
+        if h.size != expected:
+
+            raise RuntimeError(
+                "data2pt geometry output size mismatch: "
+                f"{h.size} != {expected}"
+            )
+
+
+        h_native = h.astype(
+            np.float32,
+            copy=False,
+        )
+
+        finite = np.isfinite(
+            h_native
+        )
+
+
+        if provider.zero_height_is_valid:
+
+            valid = finite
+
+        else:
+
+            valid = (
+                finite
+                &
+                (
+                    h_native
+                    !=
+                    0.0
+                )
+            )
+
+
+        valid = np.ascontiguousarray(
+            valid.reshape(
+                H,
+                W,
+            ),
+            dtype=np.bool_,
+        )
+
+
+        tmp = geom_path.with_name(
+            geom_path.name
+            +
+            ".tmp.npy"
+        )
+
+        np.save(
+            tmp,
+            valid,
+        )
+
+        tmp.replace(
+            geom_path
+        )
+
+
+        print(
+            "phase geometry   : "
+            f"{int(valid.sum())}/{valid.size} "
+            f"({100.0 * valid.mean():.3f}%)"
+        )
+
+        print(
+            "geometry data2pt : "
+            f"{elapsed:.3f}s"
+        )
+
+        print(
+            "saved            :",
+            geom_path,
+        )
+
+
+    return geom_path
+
 def main():
 
     ap = argparse.ArgumentParser()
@@ -176,7 +582,7 @@ def main():
         config_path,
         paths,
         stack,
-        (_, _, H, W),
+        (base_row0, base_col0, H, W),
     ) = open_from_config(
         args.config
     )
@@ -264,6 +670,17 @@ def main():
     ps_raw = np.load(
         ps_path,
         mmap_mode="r",
+    )
+
+    ensure_phase_geometry_valid(
+        cfg=cfg,
+        paths=paths,
+        stack=stack,
+        base_row0=base_row0,
+        base_col0=base_col0,
+        H=H,
+        W=W,
+        geom_path=geom_path,
     )
 
     geom = np.load(

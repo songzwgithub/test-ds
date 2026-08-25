@@ -1,0 +1,273 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-final-los-deterministic-parity",
+  "status": "PASS",
+  "authoritative_vs_migrated": {
+    "phase_final": {
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "7130e9dd771bfefefcad713db508f0798dc364cfae860c9777d4fb120637cf1d",
+      "sha_b": "7130e9dd771bfefefcad713db508f0798dc364cfae860c9777d4fb120637cf1d",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    },
+    "los_m": {
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "22de7039c1168cdea99a85eb7299dd5c12428b7f26daced3c0b58f854b46700e",
+      "sha_b": "22de7039c1168cdea99a85eb7299dd5c12428b7f26daced3c0b58f854b46700e",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    },
+    "los_mm": {
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "ebfb4664b4c747c6682a41beb96a02d31d5a1906f8d5825d07ca9710e840dff5",
+      "sha_b": "ebfb4664b4c747c6682a41beb96a02d31d5a1906f8d5825d07ca9710e840dff5",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    },
+    "velocity": {
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "262347d1cafdeaa3f16071314493787a2a8cba98a3409ad704557fe59526cd25",
+      "sha_b": "262347d1cafdeaa3f16071314493787a2a8cba98a3409ad704557fe59526cd25",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    },
+    "cumulative": {
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "fa7900cd59495d712d5112f8176324a7fb3f2440e916c74b5b24c61799535e12",
+      "sha_b": "fa7900cd59495d712d5112f8176324a7fb3f2440e916c74b5b24c61799535e12",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    },
+    "residual_rms": {
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "4f10bb1ca16ea06083ce3e23692b78d85c08634927e074c5bfb4041453ec3580",
+      "sha_b": "4f10bb1ca16ea06083ce3e23692b78d85c08634927e074c5bfb4041453ec3580",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    },
+    "velocity_se": {
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "c7197250dd8a1b039f0895e5fe7f94f3de1756f3affa046461804720368f7ad0",
+      "sha_b": "c7197250dd8a1b039f0895e5fe7f94f3de1756f3affa046461804720368f7ad0",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    }
+  },
+  "time_axis_contract": {
+    "arrays": {
+      "acquisition_dates": {
+        "shape": [
+          38
+        ],
+        "dtype": "<U8",
+        "exact": true
+      },
+      "centered_years": {
+        "shape": [
+          38
+        ],
+        "dtype": "float64",
+        "exact": true
+      },
+      "days_since_reference": {
+        "shape": [
+          38
+        ],
+        "dtype": "float64",
+        "exact": true
+      },
+      "slope_weights_per_year": {
+        "shape": [
+          38
+        ],
+        "dtype": "float64",
+        "exact": true
+      },
+      "temporal_reference_date": {
+        "shape": [],
+        "dtype": "<U8",
+        "exact": true
+      },
+      "time_span_days": {
+        "shape": [],
+        "dtype": "float64",
+        "exact": true
+      },
+      "time_span_years": {
+        "shape": [],
+        "dtype": "float64",
+        "exact": true
+      },
+      "years_since_reference": {
+        "shape": [
+          38
+        ],
+        "dtype": "float64",
+        "exact": true
+      }
+    },
+    "all_arrays_exact": true
+  },
+  "manifest_science_exact": true,
+  "historical_vs_current_authoritative_diagnostic": {
+    "phase_final": {
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "7130e9dd771bfefefcad713db508f0798dc364cfae860c9777d4fb120637cf1d",
+      "sha_b": "7130e9dd771bfefefcad713db508f0798dc364cfae860c9777d4fb120637cf1d",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    },
+    "los_m": {
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "22de7039c1168cdea99a85eb7299dd5c12428b7f26daced3c0b58f854b46700e",
+      "sha_b": "22de7039c1168cdea99a85eb7299dd5c12428b7f26daced3c0b58f854b46700e",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    },
+    "los_mm": {
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "ebfb4664b4c747c6682a41beb96a02d31d5a1906f8d5825d07ca9710e840dff5",
+      "sha_b": "ebfb4664b4c747c6682a41beb96a02d31d5a1906f8d5825d07ca9710e840dff5",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    },
+    "velocity": {
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "262347d1cafdeaa3f16071314493787a2a8cba98a3409ad704557fe59526cd25",
+      "sha_b": "262347d1cafdeaa3f16071314493787a2a8cba98a3409ad704557fe59526cd25",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    },
+    "cumulative": {
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "fa7900cd59495d712d5112f8176324a7fb3f2440e916c74b5b24c61799535e12",
+      "sha_b": "fa7900cd59495d712d5112f8176324a7fb3f2440e916c74b5b24c61799535e12",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    },
+    "residual_rms": {
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "4f10bb1ca16ea06083ce3e23692b78d85c08634927e074c5bfb4041453ec3580",
+      "sha_b": "4f10bb1ca16ea06083ce3e23692b78d85c08634927e074c5bfb4041453ec3580",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    },
+    "velocity_se": {
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "shape_exact": true,
+      "dtype_exact": true,
+      "sha_a": "c7197250dd8a1b039f0895e5fe7f94f3de1756f3affa046461804720368f7ad0",
+      "sha_b": "c7197250dd8a1b039f0895e5fe7f94f3de1756f3affa046461804720368f7ad0",
+      "file_bytes_exact": true,
+      "different_elements": 0,
+      "max_abs_difference": 0.0
+    }
+  },
+  "scientific_contract": {
+    "points": 881315,
+    "acquisitions": 38,
+    "temporal_reference": "20141006",
+    "geometric_master": "20151212",
+    "spatial_reference_points": 607,
+    "spatial_reference_method": "median",
+    "los_positive": "toward_satellite",
+    "wavelength_m": 0.055465759531382094,
+    "velocity_year_days": 365.25,
+    "geometry_owner": "point_geometry"
+  },
+  "frozen_upstream": {
+    "geometry": true,
+    "gacos": true,
+    "scla": true,
+    "pre_scn": true,
+    "scn": true
+  },
+  "pipeline_modified": false,
+  "production_stage_count": 33
+}

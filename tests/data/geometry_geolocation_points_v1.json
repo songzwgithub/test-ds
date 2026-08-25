@@ -1,0 +1,24 @@
+{
+  "contract": "pyPSDS-GAMMA-geometry-geolocation-points-v1",
+  "purpose": "Radar-coordinate sidecar for the frozen geometry_reference_v1 fixture.",
+  "sample_count": 5120,
+  "index_semantics": "point_index indexes the final strict-point arrays; source_point_id = strict_point_ids[point_index].",
+  "mapping": {
+    "radar_row": "all_rows[source_point_id]",
+    "radar_col": "all_cols[source_point_id]"
+  },
+  "validation": {
+    "full_strict_row_mapping": true,
+    "full_strict_col_mapping": true,
+    "fixture_row_mapping": true,
+    "fixture_col_mapping": true,
+    "fixture_longitude_index_semantics": true,
+    "fixture_latitude_index_semantics": true
+  },
+  "array_sha256": {
+    "point_index": "4a79a455a1519c26911a1db78ef69c2b207260decf063bc61ac2c22661975dae",
+    "source_point_id": "6c64cc23823832013c326ae22d23d52001c0aa2dfedbede25ce7b31d263d7845",
+    "radar_row": "54fac17879e90c9bc7410d47ab960b5c59063bb596536f5b21a4016226e84955",
+    "radar_col": "8a04f136fdd94304be515626053b4db06c7d4eb7315768d3ad87a102c02e7644"
+  }
+}

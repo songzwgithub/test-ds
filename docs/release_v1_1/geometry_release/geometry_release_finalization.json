@@ -1,0 +1,28 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-geometry-release",
+  "status": "PASS",
+  "production_stage_count": 33,
+  "point_geometry_stage_position": 32,
+  "pipeline_tail": [
+    "timeseries_inversion",
+    "point_geometry",
+    "reference"
+  ],
+  "geometry": {
+    "scientific_core": "FROZEN",
+    "full_scene_point_count": 881315,
+    "numerical_parity": "EXACT",
+    "public_config": "PASS",
+    "config_check": "PASS",
+    "doctor": "PASS",
+    "init_template": "PASS",
+    "wheel_gate": "PASS",
+    "default_dem_dir": "DEM_prep",
+    "reference_date_default": null
+  },
+  "files": {
+    "cli.py": "37c5d8194bc2c97428204ddfd675663b0378772416c4fd793412f3885d350c05",
+    "default_config.yaml": "2a712dee2a7747d2f8074079307b61967aec926e36524358f70471dc22f38cb2",
+    "release_gate.py": "ebdf2c36af1fea6c323d841b958db610e33b52c751dea7017beb18e30103cf1c"
+  }
+}

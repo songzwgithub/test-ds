@@ -1,0 +1,430 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-dynamic-scla-numerical-equivalence",
+  "status": "PASS_NUMERICAL_EQUIVALENCE",
+  "comparison_policy": {
+    "floating_point": "strict numerical equivalence; byte identity not required across BLAS/LAPACK runtime executions",
+    "float32_rtol": 2e-07,
+    "float32_atol": 5e-07,
+    "float64_rtol": 2e-12,
+    "float64_atol": 2e-12,
+    "nonfloating": "array exact",
+    "primary_product_signature_guard": {
+      "K": {
+        "max_different_elements": 1,
+        "max_abs_difference": 2.4e-10
+      },
+      "C": {
+        "max_different_elements": 1,
+        "max_abs_difference": 3.1e-08
+      },
+      "sm_cov": {
+        "max_different_elements": 1500,
+        "max_abs_difference": 1.1e-14
+      },
+      "pre_scn": {
+        "max_different_elements": 64,
+        "max_abs_difference": 2.5e-07
+      }
+    }
+  },
+  "primary_products": {
+    "K": {
+      "old": "/home/ubuntu/Downloads/psds/output/processing/stamps_scla_final_pass/K_ps_uw_rad_per_m_bperp.npy",
+      "new": "/home/ubuntu/Downloads/psds/output/processing/scla_dynamic_final/K_ps_uw_rad_per_m_bperp.npy",
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "old_sha256": "e9572bdd051397ce16b9e5a287837704920352d15f26c8013a799333cfcc971c",
+      "new_sha256": "d2001de5e74148fad1968b3dfd8b15e1fdcd983e2174b2c47f3690f4a25451d3",
+      "file_bytes_exact": false,
+      "array_exact": false,
+      "different_elements": 1,
+      "max_abs_difference": 2.3283064365386963e-10,
+      "rms_difference": 2.3283064365386963e-10,
+      "rtol": 2e-07,
+      "atol": 5e-07,
+      "numerically_equivalent": true
+    },
+    "C": {
+      "old": "/home/ubuntu/Downloads/psds/output/processing/stamps_scla_final_pass/C_ps_uw_rad.npy",
+      "new": "/home/ubuntu/Downloads/psds/output/processing/scla_dynamic_final/C_ps_uw_rad.npy",
+      "shape": [
+        881315
+      ],
+      "dtype": "float32",
+      "old_sha256": "76400efd136db036933b43b4db05275970378f6bebe7c6dd16a42022c8fc5c89",
+      "new_sha256": "9c04a7ef4f6818c75535ba881567e7bbd453a49611f21f4b86a0b2ba4dea706f",
+      "file_bytes_exact": false,
+      "array_exact": false,
+      "different_elements": 1,
+      "max_abs_difference": 2.9802322387695312e-08,
+      "rms_difference": 2.9802322387695312e-08,
+      "rtol": 2e-07,
+      "atol": 5e-07,
+      "numerically_equivalent": true
+    },
+    "sm_cov": {
+      "old": "/home/ubuntu/Downloads/psds/output/processing/stamps_scla_final_pass/sm_cov_unit_ifg_geom_master.npy",
+      "new": "/home/ubuntu/Downloads/psds/output/processing/scla_dynamic_final/sm_cov_unit_ifg_geom_master.npy",
+      "shape": [
+        38,
+        38
+      ],
+      "dtype": "float64",
+      "old_sha256": "45caf5e722350093d932549020b8e699bb44a63f40eba354ebfeeb964c520653",
+      "new_sha256": "71ebaf63c8e11b5148c89e91c1f2e499e77382e9207176870c5524f17941906e",
+      "file_bytes_exact": false,
+      "array_exact": false,
+      "different_elements": 1292,
+      "max_abs_difference": 1.021405182655144e-14,
+      "rms_difference": 4.6435632688501574e-15,
+      "rtol": 2e-12,
+      "atol": 2e-12,
+      "numerically_equivalent": true
+    },
+    "pre_scn": {
+      "old": "/home/ubuntu/Downloads/psds/output/processing/stamps_pre_scn_phase/acquisition_phase_pre_scn_rad.npy",
+      "new": "/home/ubuntu/Downloads/psds/output/processing/scla_dynamic_pre_scn/acquisition_phase_pre_scn_rad.npy",
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float32",
+      "old_sha256": "ded06a9b7efab5d5a6b6b23e0280a3f0078dd32d4929448ee6d2de527f21837b",
+      "new_sha256": "0b50f7a2b45138b6cf85e0de1fd9ceb8a284c99fe7160342de3d823ed1d98f9a",
+      "file_bytes_exact": false,
+      "array_exact": false,
+      "different_elements": 19,
+      "max_abs_difference": 1.1920928955078125e-07,
+      "rms_difference": 5.469697329296154e-08,
+      "rtol": 2e-07,
+      "atol": 5e-07,
+      "numerically_equivalent": true
+    }
+  },
+  "npz_contracts": {
+    "baseline_transform": {
+      "A2": {
+        "shape": [
+          36,
+          3
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 34,
+        "max_abs_difference": 6.821210263296962e-13,
+        "rms_difference": 2.655477860339811e-13,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "CR_SM": {
+        "shape": [
+          37
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 35,
+        "max_abs_difference": 3.3306690738754696e-16,
+        "rms_difference": 1.5568379102516195e-16,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "C_SM": {
+        "shape": [
+          37
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 35,
+        "max_abs_difference": 7.389644451905042e-13,
+        "rms_difference": 3.1801805627209707e-13,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "NR_SM": {
+        "shape": [
+          37
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 34,
+        "max_abs_difference": 1.1102230246251565e-16,
+        "rms_difference": 5.71630289912879e-17,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "N_SM": {
+        "shape": [
+          37
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 36,
+        "max_abs_difference": 1.4210854715202004e-13,
+        "rms_difference": 6.165860569211024e-14,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "P2": {
+        "shape": [
+          3,
+          36
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 98,
+        "max_abs_difference": 7.979727989493313e-17,
+        "rms_difference": 1.590121040527913e-17,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "Pbase": {
+        "shape": [
+          37,
+          108
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 3886,
+        "max_abs_difference": 1.3322676295501878e-15,
+        "rms_difference": 1.855933651873402e-16,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "dates": {
+        "shape": [
+          38
+        ],
+        "dtype": "<U8",
+        "array_exact": true,
+        "different_elements": 0,
+        "numerically_equivalent": true,
+        "rule": "non-floating arrays must be exact"
+      },
+      "day": {
+        "shape": [
+          38
+        ],
+        "dtype": "float64",
+        "array_exact": true,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "day_seq": {
+        "shape": [
+          36
+        ],
+        "dtype": "float64",
+        "array_exact": true,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "img0": {
+        "shape": [
+          37
+        ],
+        "dtype": "int64",
+        "array_exact": true,
+        "different_elements": 0,
+        "numerically_equivalent": true,
+        "rule": "non-floating arrays must be exact"
+      },
+      "master0": {
+        "shape": [],
+        "dtype": "int64",
+        "array_exact": true,
+        "different_elements": 0,
+        "numerically_equivalent": true,
+        "rule": "non-floating arrays must be exact"
+      },
+      "mean_bperp_full_m": {
+        "shape": [
+          38
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 34,
+        "max_abs_difference": 6.821210263296962e-13,
+        "rms_difference": 2.973861907254108e-13,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "mean_dbperp_m": {
+        "shape": [
+          36
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 34,
+        "max_abs_difference": 6.821210263296962e-13,
+        "rms_difference": 2.655477860339811e-13,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "phase_weights": {
+        "shape": [
+          37
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 37,
+        "max_abs_difference": 2.9815559743351372e-18,
+        "rms_difference": 1.3357078596407595e-18,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      }
+    },
+    "C_GLS": {
+      "Ac": {
+        "shape": [
+          37,
+          2
+        ],
+        "dtype": "float64",
+        "array_exact": true,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "Pc": {
+        "shape": [
+          2,
+          37
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 74,
+        "max_abs_difference": 1.3166551182663966e-15,
+        "rms_difference": 3.2757479489714525e-16,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "baseline_C_projection_coefficients": {
+        "shape": [
+          4
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 4,
+        "max_abs_difference": 5.684341886080801e-13,
+        "rms_difference": 2.844890120485798e-13,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "c_weights": {
+        "shape": [
+          37
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 37,
+        "max_abs_difference": 1.3166551182663966e-15,
+        "rms_difference": 4.63249934343217e-16,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "phase_reference_mean": {
+        "shape": [
+          38
+        ],
+        "dtype": "float64",
+        "array_exact": true,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "phase_reference_projection": {
+        "shape": [],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 1,
+        "max_abs_difference": 2.949029909160572e-17,
+        "rms_difference": 2.949029909160572e-17,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "sm_cov_full": {
+        "shape": [
+          38,
+          38
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 1292,
+        "max_abs_difference": 1.021405182655144e-14,
+        "rms_difference": 4.6435632688501574e-15,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "sm_cov_nonmaster": {
+        "shape": [
+          37,
+          37
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 1292,
+        "max_abs_difference": 1.021405182655144e-14,
+        "rms_difference": 4.6435632688501574e-15,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      },
+      "velocity_weights": {
+        "shape": [
+          37
+        ],
+        "dtype": "float64",
+        "array_exact": false,
+        "different_elements": 37,
+        "max_abs_difference": 8.294146619514109e-18,
+        "rms_difference": 3.16082818556809e-18,
+        "rtol": 2e-12,
+        "atol": 2e-12,
+        "numerically_equivalent": true
+      }
+    }
+  },
+  "scientific_logic_changed": false,
+  "dynamic_dimensions": {
+    "nimage": 38,
+    "nifg": 108,
+    "nslave": 37
+  },
+  "ownership": {
+    "geometry": "processing/point_geometry",
+    "reference_indices": "processing/referenced_timeseries/reference_strict_indices.npy"
+  },
+  "pipeline_modified": false,
+  "pipeline_stage_count": 33
+}

@@ -447,6 +447,21 @@ def _phase_linking_completion_fingerprint(
                     int(
                         args.pl_chunk_size
                     ),
+
+                "tile_rows":
+                    int(
+                        args.tile_rows
+                    ),
+
+                "tile_cols":
+                    int(
+                        args.tile_cols
+                    ),
+
+                "support_block":
+                    int(
+                        args.support_block
+                    ),
             },
 
         "exact_support_manifest_sha256":
@@ -1477,6 +1492,22 @@ def run_sequential_production(
     print("state min SHP      :", state_min_shp)
     print("formal min SHP     :", args.min_shp)
     print("fullspan batch     :", fullspan_batch_size)
+    print(
+        "PL tile            :",
+        f"{args.tile_rows} x {args.tile_cols}",
+    )
+    print(
+        "PL workers         :",
+        args.pl_workers,
+    )
+    print(
+        "PL chunk           :",
+        args.pl_chunk_size,
+    )
+    print(
+        "support block      :",
+        args.support_block,
+    )
     print("beta               :", args.beta)
     print("EMI mu             :", args.emi_mu)
     print("EMI backend        :", emi_backend)
@@ -1513,7 +1544,7 @@ def run_sequential_production(
         alpha=args.alpha,
 
         batch=args.batch_size,
-        support_block=1024,
+        support_block=args.support_block,
     
         support_cache=static_support_cache,)
 
@@ -1973,14 +2004,20 @@ def run_sequential_production(
 
         emi_backend=emi_backend,
 
-        tile_rows=256,
-        tile_cols=512,
+        tile_rows=(
+            args.tile_rows
+        ),
+        tile_cols=(
+            args.tile_cols
+        ),
 
         center_batch=(
             args.batch_size
         ),
 
-        support_block=1024,
+        support_block=(
+            args.support_block
+        ),
 
         pl_workers=(
             args.pl_workers

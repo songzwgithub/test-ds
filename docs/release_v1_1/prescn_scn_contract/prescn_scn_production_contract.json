@@ -1,0 +1,2184 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-prescn-scn-production-contract",
+  "status": "PASS",
+  "authoritative": {
+    "pre_scn": {
+      "path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/pre_scn.py",
+      "sha256": "685f3ce84b87fe25aaf219b8eb38bf3693712a51f39767105cf459c12a311e1b",
+      "functions": [
+        {
+          "name": "read_par",
+          "arguments": [
+            "path"
+          ],
+          "line_start": 128,
+          "line_end": 148
+        },
+        {
+          "name": "par_scalar",
+          "arguments": [
+            "pars",
+            "names"
+          ],
+          "line_start": 151,
+          "line_end": 176
+        },
+        {
+          "name": "parse_vector",
+          "arguments": [
+            "text",
+            "labels"
+          ],
+          "line_start": 179,
+          "line_end": 215
+        },
+        {
+          "name": "parse_base",
+          "arguments": [
+            "path"
+          ],
+          "line_start": 218,
+          "line_end": 248
+        },
+        {
+          "name": "geometry_factors",
+          "arguments": [
+            "rr",
+            "cc"
+          ],
+          "line_start": 551,
+          "line_end": 639
+        },
+        {
+          "name": "fast_bsm",
+          "arguments": [
+            "rr",
+            "cc"
+          ],
+          "line_start": 642,
+          "line_end": 680
+        }
+      ],
+      "io_lines": [
+        {
+          "line": 16,
+          "text": "PROC = PSDS / \"output/processing\""
+        },
+        {
+          "line": 18,
+          "text": "PHASE = ("
+        },
+        {
+          "line": 19,
+          "text": "    PROC"
+        },
+        {
+          "line": 20,
+          "text": "    / \"gacos_corrected_phase\""
+        },
+        {
+          "line": 21,
+          "text": "    / \"acquisition_phase_gacos_corrected_rad.npy\""
+        },
+        {
+          "line": 25,
+          "text": "    PROC"
+        },
+        {
+          "line": 26,
+          "text": "    / \"gacos_corrected_phase\""
+        },
+        {
+          "line": 27,
+          "text": "    / \"gacos_correction_manifest.json\""
+        },
+        {
+          "line": 30,
+          "text": "SCLA = ("
+        },
+        {
+          "line": 31,
+          "text": "    PROC"
+        },
+        {
+          "line": 32,
+          "text": "    / \"stamps_scla_final_pass\""
+        },
+        {
+          "line": 36,
+          "text": "    SCLA"
+        },
+        {
+          "line": 37,
+          "text": "    / \"K_ps_uw_rad_per_m_bperp.npy\""
+        },
+        {
+          "line": 41,
+          "text": "    SCLA"
+        },
+        {
+          "line": 42,
+          "text": "    / \"C_ps_uw_rad.npy\""
+        },
+        {
+          "line": 46,
+          "text": "    SCLA"
+        },
+        {
+          "line": 47,
+          "text": "    / \"baseline_sm_transform_coefficients.npz\""
+        },
+        {
+          "line": 51,
+          "text": "    SCLA"
+        },
+        {
+          "line": 52,
+          "text": "    / \"C_ps_uw_gls_contract.npz\""
+        },
+        {
+          "line": 56,
+          "text": "    PROC"
+        },
+        {
+          "line": 57,
+          "text": "    / \"stamps_scla_baseline\""
+        },
+        {
+          "line": 58,
+          "text": "    / \"complete_108_baseline_sources.json\""
+        },
+        {
+          "line": 62,
+          "text": "    PROC"
+        },
+        {
+          "line": 63,
+          "text": "    / \"gacos_geometry\""
+        },
+        {
+          "line": 68,
+          "text": "    PROC"
+        },
+        {
+          "line": 69,
+          "text": "    / \"gacos_fast_smoke\""
+        },
+        {
+          "line": 71,
+          "text": "    / \"ref_idx.npy\""
+        },
+        {
+          "line": 80,
+          "text": "OUTDIR = ("
+        },
+        {
+          "line": 81,
+          "text": "    PROC"
+        },
+        {
+          "line": 82,
+          "text": "    / \"stamps_pre_scn_phase\""
+        },
+        {
+          "line": 85,
+          "text": "OUTDIR.mkdir("
+        },
+        {
+          "line": 90,
+          "text": "OUT = ("
+        },
+        {
+          "line": 91,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 92,
+          "text": "    / \"acquisition_phase_pre_scn_rad.npy\""
+        },
+        {
+          "line": 96,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 97,
+          "text": "    / \".acquisition_phase_pre_scn_rad.tmp.npy\""
+        },
+        {
+          "line": 100,
+          "text": "MANIFEST = ("
+        },
+        {
+          "line": 101,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 102,
+          "text": "    / \"p15_5b6_pre_scn_manifest.json\""
+        },
+        {
+          "line": 112,
+          "text": "PH_SCLA_FLOAT32_TOL_RAD = 1e-6"
+        },
+        {
+          "line": 114,
+          "text": "PRE_SCN_FLOAT32_TOL_RAD = 2e-6"
+        },
+        {
+          "line": 130,
+          "text": "    out = {}"
+        },
+        {
+          "line": 144,
+          "text": "        out["
+        },
+        {
+          "line": 148,
+          "text": "    return out"
+        },
+        {
+          "line": 256,
+          "text": "    PHASE,"
+        },
+        {
+          "line": 272,
+          "text": "phase = np.load("
+        },
+        {
+          "line": 273,
+          "text": "    PHASE,"
+        },
+        {
+          "line": 277,
+          "text": "Kf32 = np.load("
+        },
+        {
+          "line": 282,
+          "text": "Cf32 = np.load("
+        },
+        {
+          "line": 287,
+          "text": "coef = np.load("
+        },
+        {
+          "line": 292,
+          "text": "cgls = np.load("
+        },
+        {
+          "line": 311,
+          "text": "npoint, nimage = phase.shape"
+        },
+        {
+          "line": 325,
+          "text": "        \"phase/K/C contract failed\""
+        },
+        {
+          "line": 382,
+          "text": "phase_weights = np.asarray("
+        },
+        {
+          "line": 383,
+          "text": "    coef[\"phase_weights\"],"
+        },
+        {
+          "line": 397,
+          "text": "    phase_weights.shape != (37,)"
+        },
+        {
+          "line": 408,
+          "text": "# Reference-area mean used by StaMPS Stage 7"
+        },
+        {
+          "line": 411,
+          "text": "ref_idx = np.load("
+        },
+        {
+          "line": 421,
+          "text": "        f\"reference points={ref_idx.size}\""
+        },
+        {
+          "line": 427,
+          "text": "        phase["
+        },
+        {
+          "line": 442,
+          "text": "    phase_weights"
+        },
+        {
+          "line": 905,
+          "text": "# Reconstruct K64 used to make ph_scla."
+        },
+        {
+          "line": 908,
+          "text": "# ph_scla from its unrounded K estimate before writing scla2."
+        },
+        {
+          "line": 914,
+          "text": "sample_phase = np.asarray("
+        },
+        {
+          "line": 915,
+          "text": "    phase["
+        },
+        {
+          "line": 924,
+          "text": "    sample_phase["
+        },
+        {
+          "line": 929,
+          "text": "    phase_weights"
+        },
+        {
+          "line": 966,
+          "text": "# ph_scla precision oracle"
+        },
+        {
+          "line": 969,
+          "text": "phscla_oracle = ("
+        },
+        {
+          "line": 980,
+          "text": "phscla_fast = ("
+        },
+        {
+          "line": 989,
+          "text": "phscla_diff = ("
+        },
+        {
+          "line": 990,
+          "text": "    phscla_fast.astype("
+        },
+        {
+          "line": 994,
+          "text": "    phscla_oracle.astype("
+        },
+        {
+          "line": 1000,
+          "text": "phscla_max = float("
+        },
+        {
+          "line": 1003,
+          "text": "            phscla_diff"
+        },
+        {
+          "line": 1009,
+          "text": "phscla_rms = float("
+        },
+        {
+          "line": 1012,
+          "text": "            phscla_diff"
+        },
+        {
+          "line": 1014,
+          "text": "            phscla_diff"
+        },
+        {
+          "line": 1021,
+          "text": "    phscla_max"
+        },
+        {
+          "line": 1023,
+          "text": "    PH_SCLA_FLOAT32_TOL_RAD"
+        },
+        {
+          "line": 1028,
+          "text": "            \"fast ph_scla differs from \""
+        },
+        {
+          "line": 1030,
+          "text": "            f\"{phscla_max} rad\""
+        },
+        {
+          "line": 1036,
+          "text": "# C_ps precision oracle"
+        },
+        {
+          "line": 1043,
+          "text": "    sample_phase["
+        },
+        {
+          "line": 1134,
+          "text": "#   ph_all -= single(ph_scla)"
+        },
+        {
+          "line": 1135,
+          "text": "#   ph_all -= single(C_ps_uw)"
+        },
+        {
+          "line": 1139,
+          "text": "phscla_oracle_full = np.zeros("
+        },
+        {
+          "line": 1147,
+          "text": "phscla_oracle_full["
+        },
+        {
+          "line": 1150,
+          "text": "] = phscla_oracle"
+        },
+        {
+          "line": 1154,
+          "text": "    sample_phase.astype("
+        },
+        {
+          "line": 1158,
+          "text": "    phscla_oracle_full"
+        },
+        {
+          "line": 1164,
+          "text": "phscla_fast_full = np.zeros("
+        },
+        {
+          "line": 1172,
+          "text": "phscla_fast_full["
+        },
+        {
+          "line": 1175,
+          "text": "] = phscla_fast"
+        },
+        {
+          "line": 1179,
+          "text": "    sample_phase.astype("
+        },
+        {
+          "line": 1183,
+          "text": "    phscla_fast_full"
+        },
+        {
+          "line": 1223,
+          "text": "    PRE_SCN_FLOAT32_TOL_RAD"
+        },
+        {
+          "line": 1228,
+          "text": "            \"pre-SCN fast path differs from \""
+        },
+        {
+          "line": 1243,
+          "text": "out = np.lib.format.open_memmap("
+        },
+        {
+          "line": 1277,
+          "text": "        phase["
+        },
+        {
+          "line": 1285,
+          "text": "    # Rebuild the unrounded K used for ph_scla."
+        },
+        {
+          "line": 1294,
+          "text": "        phase_weights"
+        },
+        {
+          "line": 1336,
+          "text": "    ph_scla = ("
+        },
+        {
+          "line": 1360,
+          "text": "    ] -= ph_scla"
+        },
+        {
+          "line": 1377,
+          "text": "                \"non-finite pre-SCN phase \""
+        },
+        {
+          "line": 1383,
+          "text": "    out["
+        },
+        {
+          "line": 1427,
+          "text": "out.flush()"
+        },
+        {
+          "line": 1451,
+          "text": "    OUT,"
+        },
+        {
+          "line": 1456,
+          "text": "# Output QA"
+        },
+        {
+          "line": 1459,
+          "text": "pre = np.load("
+        },
+        {
+          "line": 1460,
+          "text": "    OUT,"
+        },
+        {
+          "line": 1477,
+          "text": "        \"pre-SCN finite fraction < 1\""
+        },
+        {
+          "line": 1490,
+          "text": "# Stage-8 input is NOT required to retain the old temporal-reference zero."
+        },
+        {
+          "line": 1521,
+          "text": "# Reference-area means after correction are diagnostic only."
+        },
+        {
+          "line": 1522,
+          "text": "reference_epoch_mean = np.mean("
+        },
+        {
+          "line": 1535,
+          "text": "# Manifest"
+        },
+        {
+          "line": 1538,
+          "text": "manifest = {"
+        },
+        {
+          "line": 1541,
+          "text": "        \"PASS_STAMPS_PRE_SCN_PHASE\","
+        },
+        {
+          "line": 1545,
+          "text": "            \"phi_preSCN = \""
+        },
+        {
+          "line": 1546,
+          "text": "            \"phi_GACOS - ph_scla - C_ps_uw\""
+        },
+        {
+          "line": 1551,
+          "text": "            \"phase_dtype\":"
+        },
+        {
+          "line": 1554,
+          "text": "            \"ph_scla_dtype\":"
+        },
+        {
+          "line": 1597,
+          "text": "            \"fast_vs_pystamps_ph_scla_max_rad\":"
+        },
+        {
+          "line": 1598,
+          "text": "                phscla_max,"
+        },
+        {
+          "line": 1600,
+          "text": "            \"fast_vs_pystamps_ph_scla_rms_rad\":"
+        },
+        {
+          "line": 1601,
+          "text": "                phscla_rms,"
+        },
+        {
+          "line": 1603,
+          "text": "            \"ph_scla_tolerance_rad\":"
+        },
+        {
+          "line": 1604,
+          "text": "                PH_SCLA_FLOAT32_TOL_RAD,"
+        },
+        {
+          "line": 1615,
+          "text": "            \"preSCN_fast_vs_pystamps_max_rad\":"
+        },
+        {
+          "line": 1618,
+          "text": "            \"preSCN_fast_vs_pystamps_rms_rad\":"
+        },
+        {
+          "line": 1621,
+          "text": "            \"preSCN_tolerance_rad\":"
+        },
+        {
+          "line": 1622,
+          "text": "                PRE_SCN_FLOAT32_TOL_RAD,"
+        },
+        {
+          "line": 1666,
+          "text": "            \"reference_epoch_mean_max_abs_rad\":"
+        },
+        {
+          "line": 1670,
+          "text": "                            reference_epoch_mean"
+        },
+        {
+          "line": 1678,
+          "text": "            \"phase\":"
+        },
+        {
+          "line": 1680,
+          "text": "                    PHASE"
+        },
+        {
+          "line": 1683,
+          "text": "            \"K_ps_uw\":"
+        },
+        {
+          "line": 1688,
+          "text": "            \"C_ps_uw\":"
+        },
+        {
+          "line": 1704,
+          "text": "    \"outputs\":"
+        },
+        {
+          "line": 1706,
+          "text": "            \"pre_scn_phase\":"
+        },
+        {
+          "line": 1708,
+          "text": "                    OUT"
+        },
+        {
+          "line": 1711,
+          "text": "            \"ph_scla_persisted\":"
+        },
+        {
+          "line": 1718,
+          "text": "    \"production_phase_modified\":"
+        },
+        {
+          "line": 1723,
+          "text": "            \"P15-6 Stage-8 ps_scn_filt \""
+        },
+        {
+          "line": 1729,
+          "text": "MANIFEST.write_text("
+        },
+        {
+          "line": 1731,
+          "text": "        manifest,"
+        },
+        {
+          "line": 1744,
+          "text": "print(\"P15-5B6 STAMPS SCLA -> PRE-SCN PHASE\")"
+        },
+        {
+          "line": 1773,
+          "text": "    \"ph_scla oracle max diff rad     :\","
+        },
+        {
+          "line": 1774,
+          "text": "    f\"{phscla_max:.12e}\","
+        },
+        {
+          "line": 1778,
+          "text": "    \"ph_scla oracle RMS rad          :\","
+        },
+        {
+          "line": 1779,
+          "text": "    f\"{phscla_rms:.12e}\","
+        },
+        {
+          "line": 1793,
+          "text": "    \"pre-SCN oracle max diff rad     :\","
+        },
+        {
+          "line": 1798,
+          "text": "    \"pre-SCN oracle RMS rad          :\","
+        },
+        {
+          "line": 1828,
+          "text": "    \"SCLA+C correction RMS rad       :\","
+        },
+        {
+          "line": 1833,
+          "text": "    \"SCLA+C correction max |rad|     :\","
+        },
+        {
+          "line": 1840,
+          "text": "    \"epoch0 |phase| p50/p95/p99      :\","
+        },
+        {
+          "line": 1845,
+          "text": "    \"master |phase| p50/p95/p99      :\","
+        },
+        {
+          "line": 1857,
+          "text": "    \"ph_scla matrix persisted         :\","
+        },
+        {
+          "line": 1862,
+          "text": "    \"original GACOS phase modified    :\","
+        },
+        {
+          "line": 1867,
+          "text": "    \"pre-SCN output                   :\","
+        },
+        {
+          "line": 1868,
+          "text": "    OUT,"
+        },
+        {
+          "line": 1872,
+          "text": "    \"manifest                         :\","
+        },
+        {
+          "line": 1873,
+          "text": "    MANIFEST,"
+        },
+        {
+          "line": 1880,
+          "text": "    \"PASS_STAMPS_PRE_SCN_PHASE\""
+        }
+      ]
+    },
+    "scn": {
+      "path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/scn.py",
+      "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+      "functions": [
+        {
+          "name": "temporal_weight_matrix",
+          "arguments": [
+            "day",
+            "master0",
+            "time_win"
+          ],
+          "line_start": 132,
+          "line_end": 180
+        },
+        {
+          "name": "build_cell_index",
+          "arguments": [
+            "coords",
+            "cell_size"
+          ],
+          "line_start": 187,
+          "line_end": 281
+        },
+        {
+          "name": "build_safe_offsets",
+          "arguments": [
+            "cell_size",
+            "radius"
+          ],
+          "line_start": 284,
+          "line_end": 355
+        },
+        {
+          "name": "spatial_gaussian_exact",
+          "arguments": [
+            "coords",
+            "values",
+            "targets",
+            "cx",
+            "cy",
+            "nx",
+            "ny",
+            "order",
+            "starts",
+            "offsets",
+            "radius_sq",
+            "sigma2x2"
+          ],
+          "line_start": 367,
+          "line_end": 570
+        }
+      ],
+      "io_lines": [
+        {
+          "line": 25,
+          "text": "PROC = PSDS / \"output/processing\""
+        },
+        {
+          "line": 28,
+          "text": "    PROC"
+        },
+        {
+          "line": 29,
+          "text": "    / \"stamps_pre_scn_phase\""
+        },
+        {
+          "line": 30,
+          "text": "    / \"acquisition_phase_pre_scn_rad.npy\""
+        },
+        {
+          "line": 34,
+          "text": "    PROC"
+        },
+        {
+          "line": 35,
+          "text": "    / \"gacos_corrected_phase\""
+        },
+        {
+          "line": 36,
+          "text": "    / \"gacos_correction_manifest.json\""
+        },
+        {
+          "line": 40,
+          "text": "    PROC"
+        },
+        {
+          "line": 42,
+          "text": "    / \"stamps_xy_exact_float32_m.npy\""
+        },
+        {
+          "line": 46,
+          "text": "    PROC"
+        },
+        {
+          "line": 48,
+          "text": "    / \"stamps_sort_index.npy\""
+        },
+        {
+          "line": 52,
+          "text": "    PROC"
+        },
+        {
+          "line": 54,
+          "text": "    / \"stage8_neighbor_count_r400m.npy\""
+        },
+        {
+          "line": 58,
+          "text": "    PROC"
+        },
+        {
+          "line": 60,
+          "text": "    / \"p15_6b1_exact_engine_benchmark.json\""
+        },
+        {
+          "line": 63,
+          "text": "OUTDIR = ("
+        },
+        {
+          "line": 64,
+          "text": "    PROC"
+        },
+        {
+          "line": 69,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 70,
+          "text": "    / \"ph_hpt_rad.npy\""
+        },
+        {
+          "line": 73,
+          "text": "SCN_FINAL = ("
+        },
+        {
+          "line": 74,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 75,
+          "text": "    / \"ph_scn_slave_rad.npy\""
+        },
+        {
+          "line": 79,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 80,
+          "text": "    / \".ph_hpt_rad.tmp.npy\""
+        },
+        {
+          "line": 83,
+          "text": "SCN_TMP = ("
+        },
+        {
+          "line": 84,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 85,
+          "text": "    / \".ph_scn_slave_rad.tmp.npy\""
+        },
+        {
+          "line": 88,
+          "text": "MANIFEST = ("
+        },
+        {
+          "line": 89,
+          "text": "    OUTDIR"
+        },
+        {
+          "line": 90,
+          "text": "    / \"p15_6b2_stage8_scn_manifest.json\""
+        },
+        {
+          "line": 102,
+          "text": "SCN_WAVELENGTH_M = 100.0"
+        },
+        {
+          "line": 107,
+          "text": "    SCN_WAVELENGTH_M"
+        },
+        {
+          "line": 271,
+          "text": "        out=starts[1:],"
+        },
+        {
+          "line": 386,
+          "text": "    output = np.empty("
+        },
+        {
+          "line": 532,
+          "text": "                output["
+        },
+        {
+          "line": 549,
+          "text": "                output["
+        },
+        {
+          "line": 567,
+          "text": "        output,"
+        },
+        {
+          "line": 593,
+          "text": "pre = np.load("
+        },
+        {
+          "line": 599,
+          "text": "coords = np.load("
+        },
+        {
+          "line": 607,
+          "text": "sort_ix = np.load("
+        },
+        {
+          "line": 614,
+          "text": "census_count = np.load("
+        },
+        {
+          "line": 786,
+          "text": "    SCN_TMP,"
+        },
+        {
+          "line": 793,
+          "text": "first_phase = np.asarray("
+        },
+        {
+          "line": 803,
+          "text": "    first_phase"
+        },
+        {
+          "line": 805,
+          "text": "    first_phase"
+        },
+        {
+          "line": 811,
+          "text": "ph_hpt_out = ("
+        },
+        {
+          "line": 812,
+          "text": "    np.lib.format.open_memmap("
+        },
+        {
+          "line": 866,
+          "text": "    ph_hpt_out["
+        },
+        {
+          "line": 882,
+          "text": "ph_hpt_out.flush()"
+        },
+        {
+          "line": 892,
+          "text": "del ph_hpt_out"
+        },
+        {
+          "line": 895,
+          "text": "ph_hpt = np.load("
+        },
+        {
+          "line": 925,
+          "text": "            f\"reference failed: \""
+        },
+        {
+          "line": 1160,
+          "text": "    SCN_WAVELENGTH_M**2,"
+        },
+        {
+          "line": 1195,
+          "text": "    SCN_WAVELENGTH_M**2,"
+        },
+        {
+          "line": 1282,
+          "text": "            SCN_WAVELENGTH_M**2"
+        },
+        {
+          "line": 1381,
+          "text": "# Official ph_scn is double."
+        },
+        {
+          "line": 1384,
+          "text": "ph_scn_out = ("
+        },
+        {
+          "line": 1385,
+          "text": "    np.lib.format.open_memmap("
+        },
+        {
+          "line": 1386,
+          "text": "        SCN_TMP,"
+        },
+        {
+          "line": 1448,
+          "text": "        SCN_WAVELENGTH_M**2,"
+        },
+        {
+          "line": 1460,
+          "text": "                \"non-finite SCN \""
+        },
+        {
+          "line": 1466,
+          "text": "    ph_scn_out["
+        },
+        {
+          "line": 1518,
+          "text": "ph_scn_out.flush()"
+        },
+        {
+          "line": 1529,
+          "text": "# Official Stage-8 reference:"
+        },
+        {
+          "line": 1531,
+          "text": "# ref_scn = ph_scn(first_PS,:)"
+        },
+        {
+          "line": 1532,
+          "text": "# ph_scn -= ref_scn"
+        },
+        {
+          "line": 1533,
+          "text": "# ph_scn(:,master)=0"
+        },
+        {
+          "line": 1536,
+          "text": "ref_scn = np.asarray("
+        },
+        {
+          "line": 1537,
+          "text": "    ph_scn_out["
+        },
+        {
+          "line": 1545,
+          "text": "t_reference = ("
+        },
+        {
+          "line": 1564,
+          "text": "    ph_scn_out["
+        },
+        {
+          "line": 1567,
+          "text": "    ] -= ref_scn["
+        },
+        {
+          "line": 1573,
+          "text": "ph_scn_out["
+        },
+        {
+          "line": 1579,
+          "text": "ph_scn_out.flush()"
+        },
+        {
+          "line": 1582,
+          "text": "reference_seconds = ("
+        },
+        {
+          "line": 1585,
+          "text": "    t_reference"
+        },
+        {
+          "line": 1589,
+          "text": "first_scn_max = float("
+        },
+        {
+          "line": 1592,
+          "text": "            ph_scn_out["
+        },
+        {
+          "line": 1601,
+          "text": "master_scn_max = float("
+        },
+        {
+          "line": 1604,
+          "text": "            ph_scn_out["
+        },
+        {
+          "line": 1614,
+          "text": "    first_scn_max"
+        },
+        {
+          "line": 1621,
+          "text": "            \"final first-PS SCN \""
+        },
+        {
+          "line": 1623,
+          "text": "            f\"{first_scn_max}\""
+        },
+        {
+          "line": 1629,
+          "text": "    master_scn_max"
+        },
+        {
+          "line": 1636,
+          "text": "            \"master SCN not zero: \""
+        },
+        {
+          "line": 1637,
+          "text": "            f\"{master_scn_max}\""
+        },
+        {
+          "line": 1659,
+          "text": "qa_scn = np.asarray("
+        },
+        {
+          "line": 1660,
+          "text": "    ph_scn_out["
+        },
+        {
+          "line": 1668,
+          "text": "abs_scn = np.abs("
+        },
+        {
+          "line": 1669,
+          "text": "    qa_scn"
+        },
+        {
+          "line": 1673,
+          "text": "scn_abs_q = np.percentile("
+        },
+        {
+          "line": 1674,
+          "text": "    abs_scn,"
+        },
+        {
+          "line": 1684,
+          "text": "scn_rms_sample = float("
+        },
+        {
+          "line": 1687,
+          "text": "            qa_scn"
+        },
+        {
+          "line": 1689,
+          "text": "            qa_scn"
+        },
+        {
+          "line": 1698,
+          "text": "            qa_scn"
+        },
+        {
+          "line": 1711,
+          "text": "        \"SCN sample contains non-finite values\""
+        },
+        {
+          "line": 1719,
+          "text": "del ph_scn_out"
+        },
+        {
+          "line": 1730,
+          "text": "    SCN_TMP,"
+        },
+        {
+          "line": 1731,
+          "text": "    SCN_FINAL,"
+        },
+        {
+          "line": 1736,
+          "text": "# Manifest"
+        },
+        {
+          "line": 1746,
+          "text": "manifest = {"
+        },
+        {
+          "line": 1749,
+          "text": "        \"PASS_STAMPS_STAGE8_SCN\","
+        },
+        {
+          "line": 1753,
+          "text": "            \"StaMPS ps_scn_filt parity; \""
+        },
+        {
+          "line": 1760,
+          "text": "            \"scn_time_win_days\":"
+        },
+        {
+          "line": 1763,
+          "text": "            \"scn_wavelength_m\":"
+        },
+        {
+          "line": 1764,
+          "text": "                SCN_WAVELENGTH_M,"
+        },
+        {
+          "line": 1833,
+          "text": "            \"temporal_reference_tolerance_rad\":"
+        },
+        {
+          "line": 1860,
+          "text": "            \"final_first_ps_scn_max_abs_rad\":"
+        },
+        {
+          "line": 1861,
+          "text": "                first_scn_max,"
+        },
+        {
+          "line": 1863,
+          "text": "            \"final_master_scn_max_abs_rad\":"
+        },
+        {
+          "line": 1864,
+          "text": "                master_scn_max,"
+        },
+        {
+          "line": 1875,
+          "text": "            \"reference_seconds\":"
+        },
+        {
+          "line": 1876,
+          "text": "                reference_seconds,"
+        },
+        {
+          "line": 1884,
+          "text": "                    reference_seconds"
+        },
+        {
+          "line": 1919,
+          "text": "            \"scn_rms_rad\":"
+        },
+        {
+          "line": 1920,
+          "text": "                scn_rms_sample,"
+        },
+        {
+          "line": 1922,
+          "text": "            \"abs_scn_p50_p95_p99_p999_rad\":"
+        },
+        {
+          "line": 1925,
+          "text": "                    for x in scn_abs_q"
+        },
+        {
+          "line": 1929,
+          "text": "    \"outputs\":"
+        },
+        {
+          "line": 1936,
+          "text": "            \"ph_scn_slave\":"
+        },
+        {
+          "line": 1938,
+          "text": "                    SCN_FINAL"
+        },
+        {
+          "line": 1944,
+          "text": "            \"ph_scn_slave_dtype\":"
+        },
+        {
+          "line": 1948,
+          "text": "    \"input_phase_modified\":"
+        },
+        {
+          "line": 1953,
+          "text": "            \"P15-6C apply SCN correction \""
+        },
+        {
+          "line": 1959,
+          "text": "MANIFEST.write_text("
+        },
+        {
+          "line": 1961,
+          "text": "        manifest,"
+        },
+        {
+          "line": 1975,
+          "text": "print(\"P15-6B2 FULL STAMPS STAGE-8 SCN\")"
+        },
+        {
+          "line": 2070,
+          "text": "    \"reference seconds               :\","
+        },
+        {
+          "line": 2071,
+          "text": "    f\"{reference_seconds:.6f}\","
+        },
+        {
+          "line": 2077,
+          "text": "        f\"{temporal_seconds + spatial_seconds + reference_seconds:.6f}\""
+        },
+        {
+          "line": 2091,
+          "text": "    \"final first PS SCN max          :\","
+        },
+        {
+          "line": 2092,
+          "text": "    f\"{first_scn_max:.12e}\","
+        },
+        {
+          "line": 2096,
+          "text": "    \"final master SCN max            :\","
+        },
+        {
+          "line": 2097,
+          "text": "    f\"{master_scn_max:.12e}\","
+        },
+        {
+          "line": 2101,
+          "text": "    \"sample SCN RMS                  :\","
+        },
+        {
+          "line": 2102,
+          "text": "    f\"{scn_rms_sample:.6f} rad\","
+        },
+        {
+          "line": 2106,
+          "text": "    \"|SCN| p50/p95/p99/p999         :\","
+        },
+        {
+          "line": 2107,
+          "text": "    scn_abs_q,"
+        },
+        {
+          "line": 2118,
+          "text": "    \"ph_scn_slave                    :\","
+        },
+        {
+          "line": 2119,
+          "text": "    SCN_FINAL,"
+        },
+        {
+          "line": 2123,
+          "text": "    \"original pre-SCN modified       :\","
+        },
+        {
+          "line": 2128,
+          "text": "    \"manifest                        :\","
+        },
+        {
+          "line": 2129,
+          "text": "    MANIFEST,"
+        },
+        {
+          "line": 2136,
+          "text": "    \"PASS_STAMPS_STAGE8_SCN\""
+        }
+      ]
+    }
+  },
+  "production_outputs": {
+    "final_los_geocoding": [
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_geocoding/p15_7b0_geocoding_contract_audit.json",
+        "relative": "p15_7b0_geocoding_contract_audit.json",
+        "bytes": 3055,
+        "type": "json",
+        "sha256": "8a49bfd27a5f70703a0e7a8558221ddd650f942c0ab84e80d39da08190b5aec2",
+        "json": {
+          "status": "PASS_GEOCODING_CONTRACT_AUDIT",
+          "points": 881315,
+          "point_extent": {
+            "lon_min": 23.605083465576172,
+            "lon_max": 23.707733154296875,
+            "lat_min": 38.028079986572266,
+            "lat_max": 38.116310119628906
+          },
+          "dem_prep": "/home/ubuntu/Downloads/DEM_prep",
+          "map_parameter_candidates": [
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/dem/N38E023_dem.par",
+              "name": "N38E023_dem.par",
+              "width": 3600,
+              "nlines": 3600,
+              "projection": "EQA",
+              "corner_lon": 22.9998611111111,
+              "corner_lat": 39.0001388888889,
+              "post_lon": 0.000277777777777777,
+              "post_lat": -0.000277777777777777,
+              "corner_east": null,
+              "corner_north": null,
+              "post_east": null,
+              "post_north": null
+            }
+          ],
+          "evaluated_geographic_grids": [
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/dem/N38E023_dem.par",
+              "name": "N38E023_dem.par",
+              "width": 3600,
+              "nlines": 3600,
+              "projection": "EQA",
+              "corner_lon": 22.9998611111111,
+              "corner_lat": 39.0001388888889,
+              "post_lon": 0.000277777777777777,
+              "post_lat": -0.000277777777777777,
+              "corner_east": null,
+              "corner_north": null,
+              "post_east": null,
+              "post_north": null,
+              "inside_fraction": 1.0,
+              "approx_pixel_ew_m": 24.34282345781245,
+              "approx_pixel_ns_m": 30.92222222222214,
+              "nearest_grid_distance_p50_m": 10.939195251753395,
+              "nearest_grid_distance_p95_m": 16.75548543318892,
+              "nearest_grid_distance_p99_m": 18.33205404622478,
+              "nearest_grid_distance_max_m": 19.64876338840243,
+              "unique_cells": 79841,
+              "collision_points": 801474,
+              "collision_fraction": 0.9094069657273506,
+              "ranking_score": 0.9545296517136325
+            }
+          ],
+          "best_geographic_grid": {
+            "path": "/home/ubuntu/Downloads/DEM_prep/dem/N38E023_dem.par",
+            "name": "N38E023_dem.par",
+            "width": 3600,
+            "nlines": 3600,
+            "projection": "EQA",
+            "corner_lon": 22.9998611111111,
+            "corner_lat": 39.0001388888889,
+            "post_lon": 0.000277777777777777,
+            "post_lat": -0.000277777777777777,
+            "corner_east": null,
+            "corner_north": null,
+            "post_east": null,
+            "post_north": null,
+            "inside_fraction": 1.0,
+            "approx_pixel_ew_m": 24.34282345781245,
+            "approx_pixel_ns_m": 30.92222222222214,
+            "nearest_grid_distance_p50_m": 10.939195251753395,
+            "nearest_grid_distance_p95_m": 16.75548543318892,
+            "nearest_grid_distance_p99_m": 18.33205404622478,
+            "nearest_grid_distance_max_m": 19.64876338840243,
+            "unique_cells": 79841,
+            "collision_points": 801474,
+            "collision_fraction": 0.9094069657273506,
+            "ranking_score": 0.9545296517136325
+          },
+          "lookup_related_files": [
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/N38E023.20151212.lt_fine",
+              "size_bytes": 4738968
+            },
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/N38E023.20151212.lt",
+              "size_bytes": 4738968
+            }
+          ],
+          "lookup_size_matches": [],
+          "recommendation": "REQUIRE_LOOKUP_TABLE_GEOCODING_BEFORE_GEOTIFF",
+          "products_modified": false
+        }
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_geocoding/p15_7b1_lookup_contract_audit.json",
+        "relative": "p15_7b1_lookup_contract_audit.json",
+        "bytes": 8705,
+        "type": "json",
+        "sha256": "52cb505e3743f155340c7cb8e10493276d32eef3fb990aeed1dd3fce536f53ec",
+        "json": {
+          "status": "PASS_LOOKUP_CONTRACT_AUDIT",
+          "frozen_radar_geometry": {
+            "width_range": 2000,
+            "lines_azimuth": 600
+          },
+          "lookup_candidates": [
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/N38E023.20151212.lt_fine",
+              "name": "N38E023.20151212.lt_fine",
+              "size_bytes": 4738968,
+              "divisible_by_complex64": true,
+              "complex64_pixels": 592371,
+              "exact_grid_matches": [
+                {
+                  "parameter_file": "/home/ubuntu/Downloads/DEM_prep/N38E023.dem_par",
+                  "width": 793,
+                  "nlines": 747,
+                  "projection": "EQA",
+                  "corner_lon": 23.5876389,
+                  "corner_lat": 38.1193056,
+                  "post_lon": 0.0001605651895,
+                  "post_lat": -0.0001256913022
+                }
+              ],
+              "binary_interpretations": [
+                {
+                  "byte_order": "big",
+                  "orientation": "real_azimuth_imag_range",
+                  "finite_fraction": 1.0,
+                  "plausible_fraction": 0.809995,
+                  "range_p01_p50_p99": [
+                    -93.38595108032227,
+                    294.0072326660156,
+                    681.3679376220706
+                  ],
+                  "azimuth_p01_p50_p99": [
+                    -77.11303054809571,
+                    265.4740905761719,
+                    638.3951641845705
+                  ]
+                },
+                {
+                  "byte_order": "big",
+                  "orientation": "real_range_imag_azimuth",
+                  "finite_fraction": 1.0,
+                  "plausible_fraction": 0.77188,
+                  "range_p01_p50_p99": [
+                    -77.11303054809571,
+                    265.4740905761719,
+                    638.3951641845705
+                  ],
+                  "azimuth_p01_p50_p99": [
+                    -93.38595108032227,
+                    294.0072326660156,
+                    681.3679376220706
+                  ]
+                },
+                {
+                  "byte_order": "little",
+                  "orientation": "real_range_imag_azimuth",
+                  "finite_fraction": 0.992255,
+                  "plausible_fraction": 0.28065366261696845,
+                  "range_p01_p50_p99": [
+                    -9.836481879940573e+36,
+                    0.0,
+                    9.880983704999535e+36
+                  ],
+                  "azimuth_p01_p50_p99": [
+                    -9.937286723321322e+36,
+                    0.0,
+                    9.803301442392249e+36
+                  ]
+                },
+                {
+                  "byte_order": "little",
+                  "orientation": "real_azimuth_imag_range",
+                  "finite_fraction": 0.992255,
+                  "plausible_fraction": 0.28049745277171695,
+                  "range_p01_p50_p99": [
+                    -9.937286723321322e+36,
+                    0.0,
+                    9.803301442392249e+36
+                  ],
+                  "azimuth_p01_p50_p99": [
+                    -9.836481879940573e+36,
+                    0.0,
+                    9.880983704999535e+36
+                  ]
+                }
+              ],
+              "best_binary_interpretation": {
+                "byte_order": "big",
+                "orientation": "real_azimuth_imag_range",
+                "finite_fraction": 1.0,
+                "plausible_fraction": 0.809995,
+                "range_p01_p50_p99": [
+                  -93.38595108032227,
+                  294.0072326660156,
+                  681.3679376220706
+                ],
+                "azimuth_p01_p50_p99": [
+                  -77.11303054809571,
+                  265.4740905761719,
+                  638.3951641845705
+                ]
+              }
+            },
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/N38E023.20151212.lt",
+              "name": "N38E023.20151212.lt",
+              "size_bytes": 4738968,
+              "divisible_by_complex64": true,
+              "complex64_pixels": 592371,
+              "exact_grid_matches": [
+                {
+                  "parameter_file": "/home/ubuntu/Downloads/DEM_prep/N38E023.dem_par",
+                  "width": 793,
+                  "nlines": 747,
+                  "projection": "EQA",
+                  "corner_lon": 23.5876389,
+                  "corner_lat": 38.1193056,
+                  "post_lon": 0.0001605651895,
+                  "post_lat": -0.0001256913022
+                }
+              ],
+              "binary_interpretations": [
+                {
+                  "byte_order": "big",
+                  "orientation": "real_azimuth_imag_range",
+                  "finite_fraction": 1.0,
+                  "plausible_fraction": 0.80916,
+                  "range_p01_p50_p99": [
+                    -94.22766403198243,
+                    293.16552734375,
+                    680.5262017822268
+                  ],
+                  "azimuth_p01_p50_p99": [
+                    -76.66958724975586,
+                    265.91754150390625,
+                    638.8385845947267
+                  ]
+                },
+                {
+                  "byte_order": "big",
+                  "orientation": "real_range_imag_azimuth",
+                  "finite_fraction": 1.0,
+                  "plausible_fraction": 0.77238,
+                  "range_p01_p50_p99": [
+                    -76.66958724975586,
+                    265.91754150390625,
+                    638.8385845947267
+                  ],
+                  "azimuth_p01_p50_p99": [
+                    -94.22766403198243,
+                    293.16552734375,
+                    680.5262017822268
+                  ]
+                },
+                {
+                  "byte_order": "little",
+                  "orientation": "real_azimuth_imag_range",
+                  "finite_fraction": 0.992375,
+                  "plausible_fraction": 0.2823932485199647,
+                  "range_p01_p50_p99": [
+                    -1.0112678961780947e+37,
+                    0.0,
+                    9.684808208184217e+36
+                  ],
+                  "azimuth_p01_p50_p99": [
+                    -1.0628535568828788e+37,
+                    0.0,
+                    9.475685676051826e+36
+                  ]
+                },
+                {
+                  "byte_order": "little",
+                  "orientation": "real_range_imag_azimuth",
+                  "finite_fraction": 0.992375,
+                  "plausible_fraction": 0.2823075954150397,
+                  "range_p01_p50_p99": [
+                    -1.0628535568828788e+37,
+                    0.0,
+                    9.475685676051826e+36
+                  ],
+                  "azimuth_p01_p50_p99": [
+                    -1.0112678961780947e+37,
+                    0.0,
+                    9.684808208184217e+36
+                  ]
+                }
+              ],
+              "best_binary_interpretation": {
+                "byte_order": "big",
+                "orientation": "real_azimuth_imag_range",
+                "finite_fraction": 1.0,
+                "plausible_fraction": 0.80916,
+                "range_p01_p50_p99": [
+                  -94.22766403198243,
+                  293.16552734375,
+                  680.5262017822268
+                ],
+                "azimuth_p01_p50_p99": [
+                  -76.66958724975586,
+                  265.91754150390625,
+                  638.8385845947267
+                ]
+              }
+            }
+          ],
+          "broad_related_files": [
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/N38E023.20151212.lt_fine",
+              "size_bytes": 4738968
+            },
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/N38E023.20151212.lt",
+              "size_bytes": 4738968
+            }
+          ],
+          "text_parameter_files": [
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/N38E023.dem_par",
+              "size_bytes": 872,
+              "width": 793,
+              "nlines": 747,
+              "projection": "EQA",
+              "corner_lon": 23.5876389,
+              "corner_lat": 38.1193056,
+              "post_lon": 0.0001605651895,
+              "post_lat": -0.0001256913022
+            },
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/20151212.diff_par",
+              "size_bytes": 1800,
+              "width": null,
+              "nlines": null,
+              "projection": "",
+              "corner_lon": null,
+              "corner_lat": null,
+              "post_lon": null,
+              "post_lat": null
+            },
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/20151212.geocoding.log",
+              "size_bytes": 31819,
+              "width": null,
+              "nlines": 747,
+              "projection": "",
+              "corner_lon": null,
+              "corner_lat": null,
+              "post_lon": null,
+              "post_lat": null
+            },
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/20151212.geocoding_quality",
+              "size_bytes": 2694,
+              "width": null,
+              "nlines": null,
+              "projection": "",
+              "corner_lon": null,
+              "corner_lat": null,
+              "post_lon": null,
+              "post_lat": null
+            },
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/20151212.ls_map_rdc.bmp",
+              "size_bytes": 76078,
+              "width": null,
+              "nlines": null,
+              "projection": "",
+              "corner_lon": null,
+              "corner_lat": null,
+              "post_lon": null,
+              "post_lat": null
+            },
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/20151212_4_1.vv.mli.par",
+              "size_bytes": 4858,
+              "width": 500,
+              "nlines": 600,
+              "projection": "",
+              "corner_lon": null,
+              "corner_lat": null,
+              "post_lon": null,
+              "post_lat": null
+            },
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/dem/N38E023_dem.par",
+              "size_bytes": 903,
+              "width": 3600,
+              "nlines": 3600,
+              "projection": "EQA",
+              "corner_lon": 22.9998611111111,
+              "corner_lat": 39.0001388888889,
+              "post_lon": 0.000277777777777777,
+              "post_lat": -0.000277777777777777
+            },
+            {
+              "path": "/home/ubuntu/Downloads/DEM_prep/dem/wget-log",
+              "size_bytes": 159046,
+              "width": null,
+              "nlines": null,
+              "projection": "",
+              "corner_lon": null,
+              "corner_lat": null,
+              "post_lon": null,
+              "post_lat": null
+            }
+          ],
+          "recommendation": "LOOKUP_TABLE_AND_MAP_GRID_IDENTIFIED",
+          "products_modified": false
+        }
+      }
+    ],
+    "final_los_products": [
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/linear_residual_rms_mm.npy",
+        "relative": "linear_residual_rms_mm.npy",
+        "bytes": 3525388,
+        "type": "npy",
+        "shape": [
+          881315
+        ],
+        "dtype": "float32",
+        "sha256": "4f10bb1ca16ea06083ce3e23692b78d85c08634927e074c5bfb4041453ec3580"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/los_cumulative_toward_satellite_mm.npy",
+        "relative": "los_cumulative_toward_satellite_mm.npy",
+        "bytes": 3525388,
+        "type": "npy",
+        "shape": [
+          881315
+        ],
+        "dtype": "float32",
+        "sha256": "fa7900cd59495d712d5112f8176324a7fb3f2440e916c74b5b24c61799535e12"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/los_velocity_toward_satellite_mm_per_year.npy",
+        "relative": "los_velocity_toward_satellite_mm_per_year.npy",
+        "bytes": 3525388,
+        "type": "npy",
+        "shape": [
+          881315
+        ],
+        "dtype": "float32",
+        "sha256": "262347d1cafdeaa3f16071314493787a2a8cba98a3409ad704557fe59526cd25"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/p15_7a_final_point_products_manifest.json",
+        "relative": "p15_7a_final_point_products_manifest.json",
+        "bytes": 3027,
+        "type": "json",
+        "sha256": "6782d34934d48f598552da70150eee9713776314b91354829160d7a49cb55a89",
+        "json": {
+          "status": "PASS_FINAL_LOS_POINT_PRODUCTS",
+          "points": 881315,
+          "acquisitions": 38,
+          "scientific_contract": {
+            "los_positive": "toward_satellite",
+            "velocity_method": "ordinary least squares with intercept over all acquisitions",
+            "velocity_unit": "mm/year",
+            "year_days": 365.25,
+            "cumulative_definition": "last acquisition minus 20141006 reference acquisition",
+            "temporal_reference": "20141006",
+            "time_span_days": 552.0,
+            "time_span_years": 1.51129363449692,
+            "regression_standard_error_note": "Temporal OLS slope standard error only; not total InSAR/geodetic uncertainty."
+          },
+          "hard_parity": {
+            "sample_points": 4096,
+            "velocity_fused_vs_lstsq_max_abs_mm_per_year": 3.552713678800501e-15,
+            "velocity_tolerance": 1e-10,
+            "cumulative_last_minus_first_parity_mm": 0.0,
+            "epoch0_los_max_abs_mm": 0.0
+          },
+          "statistics": {
+            "velocity_p01_p05_p50_p95_p99_mm_per_year": [
+              -2.2524067163467407,
+              -1.4527587056159972,
+              -0.08079756051301956,
+              1.0556274175643916,
+              1.6704362201690666
+            ],
+            "abs_velocity_p50_p95_p99_mm_per_year": [
+              0.4582999050617218,
+              1.5958113431930514,
+              2.3443991327285754
+            ],
+            "cumulative_p01_p05_p50_p95_p99_mm": [
+              -3.393991026878357,
+              -2.1725899934768678,
+              -0.06931497156620026,
+              1.6307698488235467,
+              2.638345651626581
+            ],
+            "linear_residual_rms_p50_p95_p99_mm": [
+              0.7528793811798096,
+              1.7957239508628844,
+              2.066712875366211
+            ],
+            "velocity_standard_error_p50_p95_p99_mm_per_year": [
+              0.2674676477909088,
+              0.6379482388496398,
+              0.7342196345329284
+            ],
+            "reference_velocity_median_mm_per_year": 0.020980672910809517,
+            "reference_cumulative_median_mm": 0.0
+          },
+          "geometry": {
+            "longitude": "/home/ubuntu/Downloads/psds/output/processing/gacos_geometry/longitude_deg.npy",
+            "latitude": "/home/ubuntu/Downloads/psds/output/processing/gacos_geometry/latitude_deg.npy",
+            "strict_plist": "/home/ubuntu/Downloads/psds/output/processing/gacos_geometry/strict_points.plist",
+            "plist_semantics": "range/column, azimuth/row"
+          },
+          "performance": {
+            "seconds": 1.2631397300865501,
+            "points_per_second": 697717.7417573687
+          },
+          "outputs": {
+            "velocity": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/los_velocity_toward_satellite_mm_per_year.npy",
+            "cumulative": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/los_cumulative_toward_satellite_mm.npy",
+            "linear_residual_rms": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/linear_residual_rms_mm.npy",
+            "velocity_slope_standard_error": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/velocity_slope_standard_error_mm_per_year.npy",
+            "time_axis_contract": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/time_axis_contract.npz",
+            "dtype": "float32"
+          },
+          "upstream_phase_modified": false,
+          "next": "P15-7B geocoding contract audit and exact GeoTIFF export"
+        }
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/time_axis_contract.npz",
+        "relative": "time_axis_contract.npz",
+        "bytes": 4650,
+        "type": "other"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_products/velocity_slope_standard_error_mm_per_year.npy",
+        "relative": "velocity_slope_standard_error_mm_per_year.npy",
+        "bytes": 3525388,
+        "type": "npy",
+        "shape": [
+          881315
+        ],
+        "dtype": "float32",
+        "sha256": "c7197250dd8a1b039f0895e5fe7f94f3de1756f3affa046461804720368f7ad0"
+      }
+    ],
+    "final_los_timeseries": [
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/acquisition_phase_final_rad.npy",
+        "relative": "acquisition_phase_final_rad.npy",
+        "bytes": 133960008,
+        "type": "npy",
+        "shape": [
+          881315,
+          38
+        ],
+        "dtype": "float32",
+        "sha256": "7130e9dd771bfefefcad713db508f0798dc364cfae860c9777d4fb120637cf1d"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/los_displacement_toward_satellite_m.npy",
+        "relative": "los_displacement_toward_satellite_m.npy",
+        "bytes": 133960008,
+        "type": "npy",
+        "shape": [
+          881315,
+          38
+        ],
+        "dtype": "float32",
+        "sha256": "22de7039c1168cdea99a85eb7299dd5c12428b7f26daced3c0b58f854b46700e"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/los_displacement_toward_satellite_mm.npy",
+        "relative": "los_displacement_toward_satellite_mm.npy",
+        "bytes": 133960008,
+        "type": "npy",
+        "shape": [
+          881315,
+          38
+        ],
+        "dtype": "float32",
+        "sha256": "ebfb4664b4c747c6682a41beb96a02d31d5a1906f8d5825d07ca9710e840dff5"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/p15_6c_final_los_timeseries_manifest.json",
+        "relative": "p15_6c_final_los_timeseries_manifest.json",
+        "bytes": 2888,
+        "type": "json",
+        "sha256": "274eeafbf05f23eb4df74784a7035fecbdf4ec81b8212b410b8717b3cb985b31",
+        "json": {
+          "status": "PASS_FINAL_REFERENCED_LOS_TIMESERIES",
+          "formula": {
+            "scn_correction": "phi_raw = phi_preSCN - ph_scn_slave",
+            "temporal_reference": "phi_t = phi_raw - phi_raw[:,20141006]",
+            "spatial_reference": "phi_final = phi_t - median(phi_t[607 reference points], epoch)",
+            "los": "d_LOS_toward = +lambda/(4*pi) * phi_final"
+          },
+          "scientific_contract": {
+            "temporal_reference_date": "20141006",
+            "temporal_reference_index_0based": 0,
+            "spatial_reference_method": "median",
+            "spatial_reference_points": 607,
+            "geometric_master_date": "20151212",
+            "geometric_master_index_0based": 28,
+            "los_positive_direction": "toward_satellite",
+            "radar_frequency_hz": 5405000500.0,
+            "wavelength_m": 0.055465759531382094,
+            "los_factor_m_per_rad": 0.0044138249008829344,
+            "los_factor_mm_per_rad": 4.413824900882934
+          },
+          "hard_qa": {
+            "finite_phase_fraction": 1.0,
+            "finite_los_fraction": 1.0,
+            "epoch0_phase_max_abs_rad": 0.0,
+            "epoch0_los_max_abs_m": 0.0,
+            "reference_phase_median_max_abs_rad": 0.0,
+            "reference_los_median_max_abs_mm": 0.0,
+            "los_factor_sample_max_abs_error_m": 1.4790759277072407e-09,
+            "float32_phase_storage_max_error_rad": 4.428033637537965e-07,
+            "float32_los_storage_max_error_m": 1.7238515198636506e-09
+          },
+          "correction_statistics": {
+            "scn_rms_rad": 1.4602878943150932,
+            "scn_max_abs_rad": 7.886266357523618,
+            "final_phase_max_abs_rad": 10.436823168386905,
+            "final_los_max_abs_m": 0.046066309986738045
+          },
+          "sample_statistics": {
+            "points": 100000,
+            "abs_phase_p50_p95_p99_p999_rad": [
+              0.12802506983280182,
+              0.50110827088356,
+              0.9506633603572812,
+              2.3745031557083256
+            ],
+            "abs_los_p50_p95_p99_p999_mm": [
+              0.5650802340824157,
+              2.2118040011264375,
+              4.1960614919662325,
+              10.480641475878711
+            ]
+          },
+          "performance": {
+            "materialization_seconds": 13.772649617865682,
+            "point_epochs_per_second": 2431628.6937669055
+          },
+          "inputs": {
+            "pre_scn_phase": "/home/ubuntu/Downloads/psds/output/processing/stamps_pre_scn_phase/acquisition_phase_pre_scn_rad.npy",
+            "ph_scn_slave": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/ph_scn_slave_rad.npy",
+            "reference_indices": "/home/ubuntu/Downloads/psds/output/processing/gacos_fast_smoke/project_local_interp/ref_idx.npy"
+          },
+          "outputs": {
+            "final_phase_rad": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/acquisition_phase_final_rad.npy",
+            "los_toward_m": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/los_displacement_toward_satellite_m.npy",
+            "los_toward_mm": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/los_displacement_toward_satellite_mm.npy",
+            "dtype": "float32"
+          },
+          "upstream_modified": false,
+          "next": "P15-7 final LOS velocity / product geocoding and TIFF export"
+        }
+      }
+    ],
+    "stamps_pre_scn_phase": [
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_pre_scn_phase/acquisition_phase_pre_scn_rad.npy",
+        "relative": "acquisition_phase_pre_scn_rad.npy",
+        "bytes": 133960008,
+        "type": "npy",
+        "shape": [
+          881315,
+          38
+        ],
+        "dtype": "float32",
+        "sha256": "ded06a9b7efab5d5a6b6b23e0280a3f0078dd32d4929448ee6d2de527f21837b"
+      },
+      {
+        "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_pre_scn_phase/p15_5b6_pre_scn_manifest.json",
+        "relative": "p15_5b6_pre_scn_manifest.json",
+        "bytes": 2621,
+        "type": "json",
+        "sha256": "7da0bdf26c15008705d271ad98aa6c7c5ee9bde060b5efa629b780bc926f4db4",
+        "json": {
+          "status": "PASS_STAMPS_PRE_SCN_PHASE",
+          "formula": "phi_preSCN = phi_GACOS - ph_scla - C_ps_uw",
+          "stage8_source_semantics": {
+            "phase_dtype": "float32",
+            "ph_scla_dtype": "float32",
+            "C_dtype": "float32",
+            "ramp_applied": false
+          },
+          "points": 881315,
+          "images": 38,
+          "geometric_master": {
+            "date": "20151212",
+            "index_0based": 28
+          },
+          "hard_precision_gate": {
+            "sample_points": 4096,
+            "fast_vs_pystamps_Bperp_float32_max_m": 3.0517578125e-05,
+            "fast_vs_pystamps_Bperp_float32_rms_m": 5.112875646365324e-06,
+            "Bperp_tolerance_m": 5e-05,
+            "fast_vs_pystamps_ph_scla_max_rad": 2.384185791015625e-07,
+            "fast_vs_pystamps_ph_scla_rms_rad": 1.3816754258892052e-08,
+            "ph_scla_tolerance_rad": 1e-06,
+            "frozen_C_vs_pystamps_C_float32_max_rad": 2.384185791015625e-07,
+            "frozen_C_vs_pystamps_C_float32_rms_rad": 1.758426745693756e-08,
+            "C_tolerance_rad": 1e-06,
+            "preSCN_fast_vs_pystamps_max_rad": 4.76837158203125e-07,
+            "preSCN_fast_vs_pystamps_rms_rad": 3.4657190456139926e-08,
+            "preSCN_tolerance_rad": 2e-06,
+            "frozen_K_float32_max_diff": 0.0
+          },
+          "production": {
+            "seconds": 6.280119589995593,
+            "point_epochs_per_second": 5332696.220204224,
+            "finite_fraction": 1.0,
+            "correction_rms_rad": 0.7353809172872223,
+            "correction_max_abs_rad": 10.324056625366211
+          },
+          "diagnostic": {
+            "epoch0_abs_p50_p95_p99_rad": [
+              0.4122323989868164,
+              1.4981202244758605,
+              1.919898598194122
+            ],
+            "geometric_master_abs_p50_p95_p99_rad": [
+              0.5180773735046387,
+              2.5499700784683226,
+              2.9313740444183347
+            ],
+            "reference_epoch_mean_max_abs_rad": 0.043384371966712756
+          },
+          "inputs": {
+            "phase": "/home/ubuntu/Downloads/psds/output/processing/gacos_corrected_phase/acquisition_phase_gacos_corrected_rad.npy",
+            "K_ps_uw": "/home/ubuntu/Downloads/psds/output/processing/stamps_scla_final_pass/K_ps_uw_rad_per_m_bperp.npy",
+            "C_ps_uw": "/home/ubuntu/Downloads/psds/output/processing/stamps_scla_final_pass/C_ps_uw_rad.npy",
+            "baseline_coefficients": "/home/ubuntu/Downloads/psds/output/processing/stamps_scla_final_pass/baseline_sm_transform_coefficients.npz",
+            "baseline_catalog": "/home/ubuntu/Downloads/psds/output/processing/stamps_scla_baseline/complete_108_baseline_sources.json"
+          },
+          "outputs": {
+            "pre_scn_phase": "/home/ubuntu/Downloads/psds/output/processing/stamps_pre_scn_phase/acquisition_phase_pre_scn_rad.npy",
+            "ph_scla_persisted": false,
+            "pointwise_Bperp_persisted": false
+          },
+          "production_phase_modified": false,
+          "next": "P15-6 Stage-8 ps_scn_filt parity implementation"
+        }
+      }
+    ]
+  },
+  "phase_products": [
+    {
+      "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_pre_scn_phase/acquisition_phase_pre_scn_rad.npy",
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float32",
+      "sha256": "ded06a9b7efab5d5a6b6b23e0280a3f0078dd32d4929448ee6d2de527f21837b"
+    },
+    {
+      "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_pre_scn_phase/acquisition_phase_pre_scn_rad.npy",
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float32",
+      "sha256": "ded06a9b7efab5d5a6b6b23e0280a3f0078dd32d4929448ee6d2de527f21837b"
+    },
+    {
+      "path": "/home/ubuntu/Downloads/psds/output/processing/stamps_stage8/ph_scn_slave_rad.npy",
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float64",
+      "sha256": "4edefa1efa27b4129305e457448550419069ceac5943a78f5b43e08a96e247b6"
+    },
+    {
+      "path": "/home/ubuntu/Downloads/psds/output/processing/final_ds_tc0.800_pc0.000_evd.npy",
+      "shape": [
+        600,
+        2000
+      ],
+      "dtype": "bool",
+      "sha256": "3ebd1d279867c2ea61434e18614957f793dd71ddf444c1237985f826029589fc"
+    },
+    {
+      "path": "/home/ubuntu/Downloads/psds/output/processing/final_los_timeseries/acquisition_phase_final_rad.npy",
+      "shape": [
+        881315,
+        38
+      ],
+      "dtype": "float32",
+      "sha256": "7130e9dd771bfefefcad713db508f0798dc364cfae860c9777d4fb120637cf1d"
+    },
+    {
+      "path": "/home/ubuntu/Downloads/psds/output/processing/final_ps_mask.npy",
+      "shape": [
+        600,
+        2000
+      ],
+      "dtype": "bool",
+      "sha256": "fac44f5036851e8f3318eeb41f219e9fa262ddc9102778a173aa37bb458cb09e"
+    }
+  ],
+  "frozen_upstream": {
+    "geometry": true,
+    "gacos": true,
+    "scla": true
+  },
+  "pipeline_modified": false,
+  "production_stage_count": 33
+}

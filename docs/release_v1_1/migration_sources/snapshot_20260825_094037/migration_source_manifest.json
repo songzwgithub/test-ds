@@ -1,0 +1,4200 @@
+{
+  "stage": "v1.1_migration_source_freeze",
+  "repository": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0",
+  "project": "/home/ubuntu/Downloads/psds",
+  "search_roots": [
+    "/tmp",
+    "/home/ubuntu/Downloads/psds",
+    "/home/ubuntu/Downloads",
+    "/home/ubuntu/software/pyPSDS-GAMMA-v1.0"
+  ],
+  "unique_candidate_count": 105,
+  "category_counts": {
+    "delivery": 2,
+    "gacos": 35,
+    "geocoding": 10,
+    "geometry": 10,
+    "los_timeseries": 2,
+    "point_products": 14,
+    "scla": 18,
+    "scn": 14
+  },
+  "files": [
+    {
+      "source_path": "/tmp/p15_9_delivery_qc.py",
+      "category": "delivery",
+      "score": 12,
+      "size_bytes": 2945,
+      "mtime": "2026-08-24T22:22:50.749344",
+      "sha256": "6147c99c2dc345815971e9bf274bb318dc8a6e484639c88f84073e35f02e5bd1",
+      "development_markers": [
+        "P15",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 2
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 3
+          },
+          {
+            "token": "latitude_deg",
+            "count": 3
+          }
+        ],
+        "delivery": [
+          {
+            "token": "psds_final_points",
+            "count": 3
+          },
+          {
+            "token": "phase_std_rad",
+            "count": 2
+          },
+          {
+            "token": "velocity_snr",
+            "count": 2
+          },
+          {
+            "token": "quality_flag",
+            "count": 3
+          },
+          {
+            "token": "final_delivery",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_9_delivery_qc.py"
+      ],
+      "snapshot_path": "files/delivery/p15_9_delivery_qc__6147c99c2d.py"
+    },
+    {
+      "source_path": "/tmp/run_p15_9_delivery_qc.sh",
+      "category": "delivery",
+      "score": 12,
+      "size_bytes": 3338,
+      "mtime": "2026-08-24T22:22:38.645344",
+      "sha256": "cd267e168821ddc8913e19c2489c25af73d4c0f4a3b46072b113b647cd8de315",
+      "development_markers": [
+        "P15",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 2
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 3
+          },
+          {
+            "token": "latitude_deg",
+            "count": 3
+          }
+        ],
+        "delivery": [
+          {
+            "token": "psds_final_points",
+            "count": 3
+          },
+          {
+            "token": "phase_std_rad",
+            "count": 2
+          },
+          {
+            "token": "velocity_snr",
+            "count": 2
+          },
+          {
+            "token": "quality_flag",
+            "count": 3
+          },
+          {
+            "token": "final_delivery",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/run_p15_9_delivery_qc.sh"
+      ],
+      "snapshot_path": "files/delivery/run_p15_9_delivery_qc__cd267e1688.sh"
+    },
+    {
+      "source_path": "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/pipeline/gacos_correction.py",
+      "category": "gacos",
+      "score": 141,
+      "size_bytes": 31511,
+      "mtime": "2026-08-15T12:01:31.343348",
+      "sha256": "c90599797aeb3401f4452f2aa921141d83a6368782cd5f1e3962916e96c7a8d6",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 2
+          },
+          {
+            "token": "GACOS",
+            "count": 111
+          },
+          {
+            "token": "ZTD",
+            "count": 25
+          },
+          {
+            "token": "strict_dates",
+            "count": 3
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "4*pi",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/pipeline/gacos_correction.py"
+      ],
+      "snapshot_path": "files/gacos/gacos_correction__c90599797a.py"
+    },
+    {
+      "source_path": "/tmp/p15_3_gacos_geometry_sign_unit_audit.sh",
+      "category": "gacos",
+      "score": 90,
+      "size_bytes": 31195,
+      "mtime": "2026-08-24T13:48:04.493148",
+      "sha256": "d21d118b857031d876120c3871edad6a931ecebf57bf996611285eaf060f2229",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "prototype",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "gacos_geometry",
+            "count": 4
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 52
+          },
+          {
+            "token": "ZTD",
+            "count": 38
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "4*pi",
+            "count": 5
+          },
+          {
+            "token": "toward_satellite",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_3_gacos_geometry_sign_unit_audit.sh"
+      ],
+      "snapshot_path": "files/gacos/p15_3_gacos_geometry_sign_unit_audit__d21d118b85.sh"
+    },
+    {
+      "source_path": "/tmp/02_patch_gacos_core.py",
+      "category": "gacos",
+      "score": 82,
+      "size_bytes": 11193,
+      "mtime": "2026-08-15T12:26:14.938437",
+      "sha256": "04f8eddc6e4c043ea465d017c8a1c2c4a462bcd5330bb5a252925419dd62eb7b",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 2
+          },
+          {
+            "token": "GACOS",
+            "count": 69
+          },
+          {
+            "token": "ZTD",
+            "count": 2
+          },
+          {
+            "token": "strict_dates",
+            "count": 9
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/02_patch_gacos_core.py"
+      ],
+      "snapshot_path": "files/gacos/02_patch_gacos_core__04f8eddc6e.py"
+    },
+    {
+      "source_path": "/tmp/p15_5a_fast_gacos_production.py",
+      "category": "gacos",
+      "score": 71,
+      "size_bytes": 32149,
+      "mtime": "2026-08-24T17:00:35.013148",
+      "sha256": "785a545075895859ad4a7a8cc0274a94e3dabf5102800cb9c9c04a5813382e43",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "incidence_gamma_compatible_fast_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 5
+          },
+          {
+            "token": "acquisition_phase_gacos_corrected_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "GACOS",
+            "count": 36
+          },
+          {
+            "token": "ZTD",
+            "count": 29
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "4*pi",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_5a_fast_gacos_production.py"
+      ],
+      "snapshot_path": "files/gacos/p15_5a_fast_gacos_production__785a545075.py"
+    },
+    {
+      "source_path": "/tmp/02d_fix_gacos_single_master.py",
+      "category": "gacos",
+      "score": 60,
+      "size_bytes": 26456,
+      "mtime": "2026-08-15T12:52:07.346437",
+      "sha256": "7ccd6ecee9b6b52b7384fd4fcaa7a8374cb114b8af820a483f0fadd1b4ceb0c8",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 3
+          },
+          {
+            "token": "GACOS",
+            "count": 53
+          },
+          {
+            "token": "ZTD",
+            "count": 2
+          },
+          {
+            "token": "strict_dates",
+            "count": 2
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "4*pi",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/02d_fix_gacos_single_master.py"
+      ],
+      "snapshot_path": "files/gacos/02d_fix_gacos_single_master__7ccd6ecee9.py"
+    },
+    {
+      "source_path": "/tmp/01_patch_gacos_config.py",
+      "category": "gacos",
+      "score": 45,
+      "size_bytes": 6012,
+      "mtime": "2026-08-15T12:22:42.642437",
+      "sha256": "0a3f38f5bda8cdccf98f9d3a4ba7be888dd1e0661c2433fbe84927843427ea0b",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 37
+          },
+          {
+            "token": "ZTD",
+            "count": 6
+          },
+          {
+            "token": "strict_dates",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/01_patch_gacos_config.py"
+      ],
+      "snapshot_path": "files/gacos/01_patch_gacos_config__0a3f38f5bd.py"
+    },
+    {
+      "source_path": "/tmp/p15_4_fast_gacos_smoke.py",
+      "category": "gacos",
+      "score": 43,
+      "size_bytes": 21211,
+      "mtime": "2026-08-24T16:43:45.701148",
+      "sha256": "988d8de7399a4ad9d3d4a44ff4ac6877c1d1a99b8b5dea74fa9a0e51aec21c48",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "incidence_gamma_compatible_fast_rad.npy",
+            "count": 2
+          },
+          {
+            "token": "strict_points.plist",
+            "count": 2
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 18
+          },
+          {
+            "token": "ZTD",
+            "count": 25
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "4*pi",
+            "count": 2
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_4_fast_gacos_smoke.py"
+      ],
+      "snapshot_path": "files/gacos/p15_4_fast_gacos_smoke__988d8de739.py"
+    },
+    {
+      "source_path": "/tmp/run_v11_config_path_contract.sh",
+      "category": "gacos",
+      "score": 34,
+      "size_bytes": 26961,
+      "mtime": "2026-08-25T09:23:20.545975",
+      "sha256": "e8562bd5bbfd4a3505111e41991b3dcbd58ee2e6571621cb468e5effe397c0fc",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 33
+          },
+          {
+            "token": "strict_dates",
+            "count": 1
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "geopackage",
+            "count": 2
+          },
+          {
+            "token": "GeoPackage",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/run_v11_config_path_contract.sh"
+      ],
+      "snapshot_path": "files/gacos/run_v11_config_path_contract__e8562bd5bb.sh"
+    },
+    {
+      "source_path": "/tmp/p15_0_final_chain_input_audit.sh",
+      "category": "gacos",
+      "score": 32,
+      "size_bytes": 26489,
+      "mtime": "2026-08-24T12:08:46.621740",
+      "sha256": "cfb05b7564c426e07bf0c625cac92464d8ae8660f2717e99992b9871ec21235a",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "prototype",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 30
+          },
+          {
+            "token": "ZTD",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_0_final_chain_input_audit.sh"
+      ],
+      "snapshot_path": "files/gacos/p15_0_final_chain_input_audit__cfb05b7564.sh"
+    },
+    {
+      "source_path": "/tmp/02c_gacos_auto_and_deps.py",
+      "category": "gacos",
+      "score": 27,
+      "size_bytes": 4973,
+      "mtime": "2026-08-15T12:46:06.614437",
+      "sha256": "121a8de14bdd3c7cc27ce955f0d5ce5f7cc763bf6669157961e48e02e579c7a5",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 15
+          },
+          {
+            "token": "ZTD",
+            "count": 12
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/02c_gacos_auto_and_deps.py"
+      ],
+      "snapshot_path": "files/gacos/02c_gacos_auto_and_deps__121a8de14b.py"
+    },
+    {
+      "source_path": "/tmp/03d_cache_stage78_phase.py",
+      "category": "gacos",
+      "score": 25,
+      "size_bytes": 4173,
+      "mtime": "2026-08-15T13:23:21.098437",
+      "sha256": "c92132550cb8d39cfa4bab211bcc890e2e8c9354ac5343cf0c1a9f88d70b7a1d",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 4
+          },
+          {
+            "token": "GACOS",
+            "count": 21
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/03d_cache_stage78_phase.py"
+      ],
+      "snapshot_path": "files/gacos/03d_cache_stage78_phase__c92132550c.py"
+    },
+    {
+      "source_path": "/tmp/p15_3a_build_radar_point_geolocation.sh",
+      "category": "gacos",
+      "score": 21,
+      "size_bytes": 33911,
+      "mtime": "2026-08-24T13:54:50.909148",
+      "sha256": "74f26bba1f2ccf4987cd9bf25d812de5dbbb2f1e69fcce1a7a51784e7b89ced5",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 2
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 2
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 3
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 21
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 3
+          },
+          {
+            "token": "latitude_deg",
+            "count": 3
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_3a_build_radar_point_geolocation.sh"
+      ],
+      "snapshot_path": "files/gacos/p15_3a_build_radar_point_geolocation__74f26bba1f.sh"
+    },
+    {
+      "source_path": "/tmp/p15_3a_v3_stamps_point_geometry.py",
+      "category": "gacos",
+      "score": 19,
+      "size_bytes": 15599,
+      "mtime": "2026-08-24T15:25:26.217148",
+      "sha256": "8eae26b2b568602f94d8f3805828cf4ac08ae4aa8ef9e6040d271f2516da93b2",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "strict_points.plist",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 3
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 19
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 2
+          },
+          {
+            "token": "latitude_deg",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_3a_v3_stamps_point_geometry.py"
+      ],
+      "snapshot_path": "files/gacos/p15_3a_v3_stamps_point_geometry__8eae26b2b5.py"
+    },
+    {
+      "source_path": "/tmp/p15_5b_fast_scla_estimation.py",
+      "category": "gacos",
+      "score": 17,
+      "size_bytes": 25644,
+      "mtime": "2026-08-24T17:07:13.513148",
+      "sha256": "29441c372fbced8488aa5b07820088d5521d9c41690faf2cd14bce0e04ccc2fe",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "strict_points.plist",
+            "count": 2
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 3
+          },
+          {
+            "token": "acquisition_phase_gacos_corrected_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "GACOS",
+            "count": 13
+          }
+        ],
+        "scn": [
+          {
+            "token": "400",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_5b_fast_scla_estimation.py"
+      ],
+      "snapshot_path": "files/gacos/p15_5b_fast_scla_estimation__29441c372f.py"
+    },
+    {
+      "source_path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/tests/test_v11_project_paths.py",
+      "category": "gacos",
+      "score": 16,
+      "size_bytes": 5895,
+      "mtime": "2026-08-25T09:34:37.109975",
+      "sha256": "ad75c3782214c54350a988ce2a391923c326268cd0ea58ad628b4cbe44372c32",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 16
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/tests/test_v11_project_paths.py"
+      ],
+      "snapshot_path": "files/gacos/test_v11_project_paths__ad75c37822.py"
+    },
+    {
+      "source_path": "/tmp/p15_3a_v2_build_radar_point_geolocation.sh",
+      "category": "gacos",
+      "score": 16,
+      "size_bytes": 29182,
+      "mtime": "2026-08-24T14:02:44.417148",
+      "sha256": "a8eab49a3bea8636d9dad233d1520004af0873d68e8956713942dade128df54c",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 3
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 16
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_3a_v2_build_radar_point_geolocation.sh"
+      ],
+      "snapshot_path": "files/gacos/p15_3a_v2_build_radar_point_geolocation__a8eab49a3b.sh"
+    },
+    {
+      "source_path": "/tmp/03b_stages_gacos_phase.py",
+      "category": "gacos",
+      "score": 15,
+      "size_bytes": 8529,
+      "mtime": "2026-08-15T13:01:41.102437",
+      "sha256": "01926a127d24971a9f2126b830a247e8450a5a3b851825a59daa2e2881e65987",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 2
+          },
+          {
+            "token": "GACOS",
+            "count": 13
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/03b_stages_gacos_phase.py"
+      ],
+      "snapshot_path": "files/gacos/03b_stages_gacos_phase__01926a127d.py"
+    },
+    {
+      "source_path": "/tmp/p15_3a_v4.py",
+      "category": "gacos",
+      "score": 15,
+      "size_bytes": 9247,
+      "mtime": "2026-08-24T15:28:21.165148",
+      "sha256": "717f6a84add760080ff52a093f205633b58edd993bfc26000aec01a8881f12cf",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "strict_points.plist",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 3
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 15
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 2
+          },
+          {
+            "token": "latitude_deg",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_3a_v4.py"
+      ],
+      "snapshot_path": "files/gacos/p15_3a_v4__717f6a84ad.py"
+    },
+    {
+      "source_path": "/tmp/p15_3a_v2_build_radar_point_geolocation.py",
+      "category": "gacos",
+      "score": 14,
+      "size_bytes": 27312,
+      "mtime": "2026-08-24T14:02:44.425148",
+      "sha256": "13c1cf02e87aecdfb6af04301bd461ce789c37e7d1e3fcbbcb713d49a9f91efb",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 2
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 14
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_3a_v2_build_radar_point_geolocation.py"
+      ],
+      "snapshot_path": "files/gacos/p15_3a_v2_build_radar_point_geolocation__13c1cf02e8.py"
+    },
+    {
+      "source_path": "/tmp/p15_3a_v4b_finalize.py",
+      "category": "gacos",
+      "score": 14,
+      "size_bytes": 6606,
+      "mtime": "2026-08-24T15:33:54.877148",
+      "sha256": "1a252a48fbdfc005a1126ae630b1014c30a217a7b50b8b1e96efc29cd6ed3673",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 3
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 14
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 2
+          },
+          {
+            "token": "latitude_deg",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_3a_v4b_finalize.py"
+      ],
+      "snapshot_path": "files/gacos/p15_3a_v4b_finalize__1a252a48fb.py"
+    },
+    {
+      "source_path": "/tmp/p15_5b4_stamps_final_pass_k.py",
+      "category": "gacos",
+      "score": 13,
+      "size_bytes": 41206,
+      "mtime": "2026-08-24T18:21:44.781358",
+      "sha256": "435ca04ba3dd11f153465935af7c2424d6465983f24f567c62852c64dad731f4",
+      "development_markers": [
+        "P15",
+        "PASS_STAMPS",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "strict_points.plist",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 3
+          },
+          {
+            "token": "acquisition_phase_gacos_corrected_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "GACOS",
+            "count": 9
+          }
+        ],
+        "scla": [
+          {
+            "token": "K_ps_uw",
+            "count": 4
+          },
+          {
+            "token": "C_ps_uw",
+            "count": 1
+          },
+          {
+            "token": "sm_cov",
+            "count": 1
+          },
+          {
+            "token": "ph_scla",
+            "count": 1
+          },
+          {
+            "token": "stamps_scla",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_5b4_stamps_final_pass_k.py"
+      ],
+      "snapshot_path": "files/gacos/p15_5b4_stamps_final_pass_k__435ca04ba3.py"
+    },
+    {
+      "source_path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/backups/projectpaths_compat_20260825_093437/project.py",
+      "category": "gacos",
+      "score": 11,
+      "size_bytes": 8235,
+      "mtime": "2026-08-25T09:23:20.569975",
+      "sha256": "29b8866f042b4e0eb29fab5d2298bea4d5d17dc8b6f61b45e98c04b6daa7a0f1",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 11
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/backups/projectpaths_compat_20260825_093437/project.py"
+      ],
+      "snapshot_path": "files/gacos/project__29b8866f04.py"
+    },
+    {
+      "source_path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/project.py",
+      "category": "gacos",
+      "score": 11,
+      "size_bytes": 8653,
+      "mtime": "2026-08-25T09:34:37.101975",
+      "sha256": "75522e86c824a0d1f9e1a19fb8bed515217c5a26bd1c2919cb7c6bb725f1e5df",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 11
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/project.py"
+      ],
+      "snapshot_path": "files/gacos/project__75522e86c8.py"
+    },
+    {
+      "source_path": "/tmp/p15_5c_scla_spatial_regularization.py",
+      "category": "gacos",
+      "score": 10,
+      "size_bytes": 21259,
+      "mtime": "2026-08-24T17:12:46.969358",
+      "sha256": "72bf99005f8e74782c247a122332be4b8f55fb2d25b6644cc0a7a06382791e45",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "incidence_gamma_compatible_fast_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "strict_points.plist",
+            "count": 2
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 3
+          },
+          {
+            "token": "acquisition_phase_gacos_corrected_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "GACOS",
+            "count": 6
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_5c_scla_spatial_regularization.py"
+      ],
+      "snapshot_path": "files/gacos/p15_5c_scla_spatial_regularization__72bf99005f.py"
+    },
+    {
+      "source_path": "/tmp/run_v11_migration_source_freeze.sh",
+      "category": "gacos",
+      "score": 10,
+      "size_bytes": 14544,
+      "mtime": "2026-08-25T09:40:37.313975",
+      "sha256": "5dfd2b016dc6239a47e60c38a54b70a918b6e3ff7d299b2d532cbf61c76fec6f",
+      "development_markers": [
+        "P15",
+        "PASS_FINAL",
+        "PASS_POINT",
+        "PASS_STAMPS",
+        "p15_",
+        "prototype",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "incidence_gamma_compatible_fast_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "strict_points.plist",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 2
+          },
+          {
+            "token": "acquisition_phase_gacos_corrected_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "GACOS",
+            "count": 5
+          },
+          {
+            "token": "ZTD",
+            "count": 1
+          },
+          {
+            "token": "strict_dates",
+            "count": 1
+          }
+        ],
+        "scla": [
+          {
+            "token": "K_ps_uw",
+            "count": 1
+          },
+          {
+            "token": "C_ps_uw",
+            "count": 1
+          },
+          {
+            "token": "sm_cov",
+            "count": 1
+          },
+          {
+            "token": "pre_scn",
+            "count": 1
+          },
+          {
+            "token": "ph_scla",
+            "count": 1
+          },
+          {
+            "token": "stamps_scla",
+            "count": 1
+          }
+        ],
+        "scn": [
+          {
+            "token": "ph_hpt_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "ph_scn_slave_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "scn_wavelength",
+            "count": 1
+          },
+          {
+            "token": "stamps_stage8",
+            "count": 1
+          },
+          {
+            "token": "400",
+            "count": 1
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "los_displacement_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "acquisition_phase_final_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "lambda/(4*pi)",
+            "count": 1
+          },
+          {
+            "token": "4*pi",
+            "count": 2
+          },
+          {
+            "token": "toward_satellite",
+            "count": 4
+          }
+        ],
+        "point_products": [
+          {
+            "token": "los_velocity_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "los_cumulative_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "velocity_slope_standard_error",
+            "count": 1
+          },
+          {
+            "token": "linear_residual_rms",
+            "count": 1
+          },
+          {
+            "token": "final_los_products",
+            "count": 1
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 2
+          },
+          {
+            "token": "latitude_deg",
+            "count": 2
+          },
+          {
+            "token": "geopackage",
+            "count": 2
+          },
+          {
+            "token": "ogr2ogr",
+            "count": 1
+          },
+          {
+            "token": "GeoPackage",
+            "count": 2
+          },
+          {
+            "token": "final_point_geocoding",
+            "count": 1
+          }
+        ],
+        "delivery": [
+          {
+            "token": "psds_final_points",
+            "count": 1
+          },
+          {
+            "token": "phase_std_rad",
+            "count": 1
+          },
+          {
+            "token": "velocity_snr",
+            "count": 1
+          },
+          {
+            "token": "quality_flag",
+            "count": 1
+          },
+          {
+            "token": "final_delivery",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/run_v11_migration_source_freeze.sh"
+      ],
+      "snapshot_path": "files/gacos/run_v11_migration_source_freeze__5dfd2b016d.sh"
+    },
+    {
+      "source_path": "/tmp/p15_3e_gamma_truth.sh",
+      "category": "gacos",
+      "score": 5,
+      "size_bytes": 7811,
+      "mtime": "2026-08-24T16:14:27.061148",
+      "sha256": "f3f0131084593e5381f0d1a3c2a214396dc6951b7597a185962b8733ab78e3b3",
+      "development_markers": [
+        "P15",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "strict_points.plist",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 2
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 4
+          },
+          {
+            "token": "ZTD",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_3e_gamma_truth.sh"
+      ],
+      "snapshot_path": "files/gacos/p15_3e_gamma_truth__f3f0131084.sh"
+    },
+    {
+      "source_path": "/tmp/02b_fix_ztd_boundary.py",
+      "category": "gacos",
+      "score": 4,
+      "size_bytes": 1817,
+      "mtime": "2026-08-15T12:32:12.114437",
+      "sha256": "d8e98de10c6ffd377ba1f9c8fd594a69f0ce3e4c843ffb55db42abbbe2bf7fe0",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          },
+          {
+            "token": "ZTD",
+            "count": 3
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/02b_fix_ztd_boundary.py"
+      ],
+      "snapshot_path": "files/gacos/02b_fix_ztd_boundary__d8e98de10c.py"
+    },
+    {
+      "source_path": "/tmp/03c_native_gacos_guard.py",
+      "category": "gacos",
+      "score": 4,
+      "size_bytes": 1583,
+      "mtime": "2026-08-15T13:07:05.050437",
+      "sha256": "1f1355f5bd453c563e9a684a9977fcd8e73a3fe3454751acafb879bed23825e0",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 4
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/03c_native_gacos_guard.py"
+      ],
+      "snapshot_path": "files/gacos/03c_native_gacos_guard__1f1355f5bd.py"
+    },
+    {
+      "source_path": "/tmp/prod_v65/pystamps_production_stage78_v6_5/run_production_stage78_v6_5.sh",
+      "category": "gacos",
+      "score": 4,
+      "size_bytes": 1720,
+      "mtime": "2026-08-12T11:54:20",
+      "sha256": "e4eaf7c7d71458c891a5f1627de18c9839e189a526de701f8364152b9595f029",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 4
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/prod_v65/pystamps_production_stage78_v6_5/run_production_stage78_v6_5.sh"
+      ],
+      "snapshot_path": "files/gacos/run_production_stage78_v6_5__e4eaf7c7d7.sh"
+    },
+    {
+      "source_path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/tests/test_v11_public_config.py",
+      "category": "gacos",
+      "score": 3,
+      "size_bytes": 2890,
+      "mtime": "2026-08-25T09:23:20.689975",
+      "sha256": "b027aa53baa9f0d5abb92b011f555c30a9c2d3362bf01d07a4a6ebbf7fa4236d",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 3
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/tests/test_v11_public_config.py"
+      ],
+      "snapshot_path": "files/gacos/test_v11_public_config__b027aa53ba.py"
+    },
+    {
+      "source_path": "/tmp/fix_v11_projectpaths_backward_compat.sh",
+      "category": "gacos",
+      "score": 3,
+      "size_bytes": 4899,
+      "mtime": "2026-08-25T09:34:37.045975",
+      "sha256": "58a4866bc94fb44324495d417dbb4dda7e9aced66cdf1ff99d9679058240a35e",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 3
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/fix_v11_projectpaths_backward_compat.sh"
+      ],
+      "snapshot_path": "files/gacos/fix_v11_projectpaths_backward_compat__58a4866bc9.sh"
+    },
+    {
+      "source_path": "/tmp/p15_2_scla_residual_dem_audit.sh",
+      "category": "gacos",
+      "score": 3,
+      "size_bytes": 28637,
+      "mtime": "2026-08-24T12:40:50.509740",
+      "sha256": "7ce3663ee430246971424ebe1abd321e0178cf83b3b63ee5919ff9bf1245adfa",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "prototype"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 3
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "4*pi",
+            "count": 3
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_2_scla_residual_dem_audit.sh"
+      ],
+      "snapshot_path": "files/gacos/p15_2_scla_residual_dem_audit__7ce3663ee4.sh"
+    },
+    {
+      "source_path": "/tmp/audit_old_pypsds_code.sh",
+      "category": "gacos",
+      "score": 2,
+      "size_bytes": 925,
+      "mtime": "2026-08-24T22:34:58.493344",
+      "sha256": "01d4142793533f9d559440bbbb4cb4e9bed7b42ad6526cbaa21aeb9fa9fd9325",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/audit_old_pypsds_code.sh"
+      ],
+      "snapshot_path": "files/gacos/audit_old_pypsds_code__01d4142793.sh"
+    },
+    {
+      "source_path": "/tmp/build_v11_real_mapping.sh",
+      "category": "gacos",
+      "score": 2,
+      "size_bytes": 1700,
+      "mtime": "2026-08-24T22:39:13.573344",
+      "sha256": "7442f564e25630f8117b363e4aeba0f115ad39f31902b2214ad3ac9f8dd19842",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/build_v11_real_mapping.sh"
+      ],
+      "snapshot_path": "files/gacos/build_v11_real_mapping__7442f564e2.sh"
+    },
+    {
+      "source_path": "/tmp/p14_final_product_audit.sh",
+      "category": "gacos",
+      "score": 2,
+      "size_bytes": 27636,
+      "mtime": "2026-08-24T11:50:11.981740",
+      "sha256": "cb7eb5231078fdfb8d1250d60a646ca7fc81170dc977b30cc69a7e67d76407e8",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 2
+          }
+        ],
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p14_final_product_audit.sh"
+      ],
+      "snapshot_path": "files/gacos/p14_final_product_audit__cb7eb52310.sh"
+    },
+    {
+      "source_path": "/tmp/p15_7b2_point_geocoding.py",
+      "category": "geocoding",
+      "score": 11,
+      "size_bytes": 4309,
+      "mtime": "2026-08-24T21:43:51.401344",
+      "sha256": "f7222964ac9095ffc89dbd828d3a1f38705961b226187d7987f29797d8f468d8",
+      "development_markers": [
+        "P15",
+        "PASS_POINT",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "toward_satellite",
+            "count": 3
+          }
+        ],
+        "point_products": [
+          {
+            "token": "los_velocity_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "los_cumulative_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "velocity_slope_standard_error",
+            "count": 1
+          },
+          {
+            "token": "linear_residual_rms",
+            "count": 1
+          },
+          {
+            "token": "final_los_products",
+            "count": 1
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 3
+          },
+          {
+            "token": "latitude_deg",
+            "count": 3
+          },
+          {
+            "token": "geopackage",
+            "count": 2
+          },
+          {
+            "token": "GeoPackage",
+            "count": 2
+          },
+          {
+            "token": "final_point_geocoding",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_7b2_point_geocoding.py"
+      ],
+      "snapshot_path": "files/geocoding/p15_7b2_point_geocoding__f7222964ac.py"
+    },
+    {
+      "source_path": "/tmp/run_p15_7b2_point_geocoding.sh",
+      "category": "geocoding",
+      "score": 11,
+      "size_bytes": 5021,
+      "mtime": "2026-08-24T21:39:15.329344",
+      "sha256": "a14c54d54a09ddb0090e3ced618ed2e76cb21cbb05153fff9a6e1ca9673519af",
+      "development_markers": [
+        "P15",
+        "PASS_POINT",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "toward_satellite",
+            "count": 3
+          }
+        ],
+        "point_products": [
+          {
+            "token": "los_velocity_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "los_cumulative_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "velocity_slope_standard_error",
+            "count": 1
+          },
+          {
+            "token": "linear_residual_rms",
+            "count": 1
+          },
+          {
+            "token": "final_los_products",
+            "count": 1
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 3
+          },
+          {
+            "token": "latitude_deg",
+            "count": 3
+          },
+          {
+            "token": "geopackage",
+            "count": 2
+          },
+          {
+            "token": "GeoPackage",
+            "count": 2
+          },
+          {
+            "token": "final_point_geocoding",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/run_p15_7b2_point_geocoding.sh"
+      ],
+      "snapshot_path": "files/geocoding/run_p15_7b2_point_geocoding__a14c54d54a.sh"
+    },
+    {
+      "source_path": "/tmp/p15_8_point_attribute_enrichment.py",
+      "category": "geocoding",
+      "score": 8,
+      "size_bytes": 5167,
+      "mtime": "2026-08-24T22:18:57.669344",
+      "sha256": "62e595bd33b19bf6a63dc61933dcdeb220d4090c94103a8cf5959e37ecf57b7f",
+      "development_markers": [
+        "P15",
+        "PASS_FINAL",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "incidence_gamma_compatible_fast_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "acquisition_phase_final_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "toward_satellite",
+            "count": 2
+          }
+        ],
+        "point_products": [
+          {
+            "token": "los_velocity_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "los_cumulative_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "velocity_slope_standard_error",
+            "count": 1
+          },
+          {
+            "token": "linear_residual_rms",
+            "count": 2
+          },
+          {
+            "token": "final_los_products",
+            "count": 1
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 3
+          },
+          {
+            "token": "latitude_deg",
+            "count": 3
+          },
+          {
+            "token": "ogr2ogr",
+            "count": 2
+          }
+        ],
+        "delivery": [
+          {
+            "token": "psds_final_points",
+            "count": 3
+          },
+          {
+            "token": "phase_std_rad",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_8_point_attribute_enrichment.py"
+      ],
+      "snapshot_path": "files/geocoding/p15_8_point_attribute_enrichment__62e595bd33.py"
+    },
+    {
+      "source_path": "/tmp/run_p15_8_point_attribute_enrichment.sh",
+      "category": "geocoding",
+      "score": 8,
+      "size_bytes": 5889,
+      "mtime": "2026-08-24T22:18:42.809344",
+      "sha256": "c847ca01b653b12a4195814a0bef69465966731bc5bd43099e9f077154368357",
+      "development_markers": [
+        "P15",
+        "PASS_FINAL",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "incidence_gamma_compatible_fast_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "acquisition_phase_final_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "toward_satellite",
+            "count": 2
+          }
+        ],
+        "point_products": [
+          {
+            "token": "los_velocity_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "los_cumulative_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "velocity_slope_standard_error",
+            "count": 1
+          },
+          {
+            "token": "linear_residual_rms",
+            "count": 2
+          },
+          {
+            "token": "final_los_products",
+            "count": 1
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 3
+          },
+          {
+            "token": "latitude_deg",
+            "count": 3
+          },
+          {
+            "token": "ogr2ogr",
+            "count": 2
+          }
+        ],
+        "delivery": [
+          {
+            "token": "psds_final_points",
+            "count": 3
+          },
+          {
+            "token": "phase_std_rad",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/run_p15_8_point_attribute_enrichment.sh"
+      ],
+      "snapshot_path": "files/geocoding/run_p15_8_point_attribute_enrichment__c847ca01b6.sh"
+    },
+    {
+      "source_path": "/tmp/p15_7c_point_packaging.py",
+      "category": "geocoding",
+      "score": 7,
+      "size_bytes": 3434,
+      "mtime": "2026-08-24T22:06:54.081344",
+      "sha256": "73b9b4ca1e9ded33e2c84fb02ed8ea473035ab7f07cfd76c4e51f01b830d9b3d",
+      "development_markers": [
+        "P15",
+        "PASS_POINT",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          },
+          {
+            "token": "ogr2ogr",
+            "count": 4
+          },
+          {
+            "token": "final_point_geocoding",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_7c_point_packaging.py"
+      ],
+      "snapshot_path": "files/geocoding/p15_7c_point_packaging__73b9b4ca1e.py"
+    },
+    {
+      "source_path": "/tmp/run_p15_7c_point_packaging.sh",
+      "category": "geocoding",
+      "score": 7,
+      "size_bytes": 4146,
+      "mtime": "2026-08-24T21:54:46.045344",
+      "sha256": "507d7dd008875382e92f53709ec7c078563f2f7caa09fb638e00676f960551d3",
+      "development_markers": [
+        "P15",
+        "PASS_POINT",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          },
+          {
+            "token": "ogr2ogr",
+            "count": 4
+          },
+          {
+            "token": "final_point_geocoding",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/run_p15_7c_point_packaging.sh"
+      ],
+      "snapshot_path": "files/geocoding/run_p15_7c_point_packaging__507d7dd008.sh"
+    },
+    {
+      "source_path": "/tmp/run_v11_release_inventory.sh",
+      "category": "geocoding",
+      "score": 4,
+      "size_bytes": 16990,
+      "mtime": "2026-08-25T09:18:33.713975",
+      "sha256": "95851a6fd278b5858d1c405769449129b2e67202ae497bab61f51c3db0d74e76",
+      "development_markers": [
+        "P15",
+        "prototype",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 2
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "geopackage",
+            "count": 2
+          },
+          {
+            "token": "GeoPackage",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/run_v11_release_inventory.sh"
+      ],
+      "snapshot_path": "files/geocoding/run_v11_release_inventory__95851a6fd2.sh"
+    },
+    {
+      "source_path": "/tmp/p15_7c_cog_rasterizer.py",
+      "category": "geocoding",
+      "score": 3,
+      "size_bytes": 3663,
+      "mtime": "2026-08-24T21:47:34.581344",
+      "sha256": "51ff8b0088673dc4ecf25e86ece3771ca1559af50ee1f87bae53eaf075a39e71",
+      "development_markers": [
+        "P15",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          },
+          {
+            "token": "final_point_geocoding",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_7c_cog_rasterizer.py"
+      ],
+      "snapshot_path": "files/geocoding/p15_7c_cog_rasterizer__51ff8b0088.py"
+    },
+    {
+      "source_path": "/tmp/run_p15_7c_cog_rasterizer.sh",
+      "category": "geocoding",
+      "score": 3,
+      "size_bytes": 4035,
+      "mtime": "2026-08-24T21:47:26.605344",
+      "sha256": "f129e377d39bb9eddec0949d4b2c0bdfea563770eadabb6a98a979ad51faca5a",
+      "development_markers": [
+        "P15",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          },
+          {
+            "token": "final_point_geocoding",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/run_p15_7c_cog_rasterizer.sh"
+      ],
+      "snapshot_path": "files/geocoding/run_p15_7c_cog_rasterizer__f129e377d3.sh"
+    },
+    {
+      "source_path": "/tmp/init_pypsds_v11_structure.sh",
+      "category": "geocoding",
+      "score": 2,
+      "size_bytes": 1236,
+      "mtime": "2026-08-24T22:34:45.785344",
+      "sha256": "fb1f9194ab29a68e9007d6fc5ff5cef95ffa95c5bfb3d11ed5111080214948b8",
+      "development_markers": [],
+      "matched_signatures": {
+        "geocoding": [
+          {
+            "token": "geopackage",
+            "count": 1
+          },
+          {
+            "token": "GeoPackage",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/init_pypsds_v11_structure.sh"
+      ],
+      "snapshot_path": "files/geocoding/init_pypsds_v11_structure__fb1f9194ab.sh"
+    },
+    {
+      "source_path": "/tmp/p15_6a_stamps_xy_grid_audit.py",
+      "category": "geometry",
+      "score": 6,
+      "size_bytes": 18126,
+      "mtime": "2026-08-24T19:34:08.055817",
+      "sha256": "ee51f32f9b14a458f278e18df4f659d0a5540433f32eedd53de4db64af1f1e5f",
+      "development_markers": [
+        "P15",
+        "PASS_STAMPS",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "strict_points.plist",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 3
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 3
+          }
+        ],
+        "scn": [
+          {
+            "token": "scn_wavelength",
+            "count": 1
+          },
+          {
+            "token": "stamps_stage8",
+            "count": 1
+          },
+          {
+            "token": "400",
+            "count": 4
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_6a_stamps_xy_grid_audit.py"
+      ],
+      "snapshot_path": "files/geometry/p15_6a_stamps_xy_grid_audit__ee51f32f9b.py"
+    },
+    {
+      "source_path": "/tmp/p15_7b0_geocoding_contract_audit.py",
+      "category": "geometry",
+      "score": 6,
+      "size_bytes": 16023,
+      "mtime": "2026-08-24T21:02:15.313344",
+      "sha256": "6b9b65547398d741bd900bcb94935ec1ba80ecd5fa50b13b62bbd33998f74a39",
+      "development_markers": [
+        "P15",
+        "PASS_FINAL",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "strict_points.plist",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 3
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 3
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "toward_satellite",
+            "count": 2
+          }
+        ],
+        "point_products": [
+          {
+            "token": "los_velocity_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "los_cumulative_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "final_los_products",
+            "count": 3
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_7b0_geocoding_contract_audit.py"
+      ],
+      "snapshot_path": "files/geometry/p15_7b0_geocoding_contract_audit__6b9b655473.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r5a1_fix_stage7_boundary_xy_v09.py",
+      "category": "geometry",
+      "score": 6,
+      "size_bytes": 22504,
+      "mtime": "2026-08-18T07:12:43",
+      "sha256": "ac207b122b9f3837d05aca6870eb63dcdab3252ef72997c6ae7effc9231d9cac",
+      "development_markers": [
+        "prototype"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 3
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 3
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 3
+          },
+          {
+            "token": "latitude_deg",
+            "count": 3
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r5a1_fix_stage7_boundary_xy_v09.py"
+      ],
+      "snapshot_path": "files/geometry/10r5a1_fix_stage7_boundary_xy_v09__ac207b122b.py"
+    },
+    {
+      "source_path": "/tmp/p15_5b3_stamps_baseline_source_audit.py",
+      "category": "geometry",
+      "score": 5,
+      "size_bytes": 7639,
+      "mtime": "2026-08-24T18:03:26.725358",
+      "sha256": "d63c14895eb9513cb9ebc384a12f0c383066922ea9ea804f6c05109b9d370ed6",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "prototype"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "incidence_gamma_compatible_fast_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "strict_points.plist",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_5b3_stamps_baseline_source_audit.py"
+      ],
+      "snapshot_path": "files/geometry/p15_5b3_stamps_baseline_source_audit__d63c14895e.py"
+    },
+    {
+      "source_path": "/tmp/p15_3h_fast_incidence_final.py",
+      "category": "geometry",
+      "score": 4,
+      "size_bytes": 12775,
+      "mtime": "2026-08-24T16:31:49.013148",
+      "sha256": "14d749c8b9f744f8b256ecf81908ba21cf26e697a7dbc28507d612880b543034",
+      "development_markers": [
+        "P15",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "incidence_gamma_compatible_fast_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 3
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_3h_fast_incidence_final.py"
+      ],
+      "snapshot_path": "files/geometry/p15_3h_fast_incidence_final__14d749c8b9.py"
+    },
+    {
+      "source_path": "/tmp/p15_3d_fast_incidence.py",
+      "category": "geometry",
+      "score": 3,
+      "size_bytes": 10959,
+      "mtime": "2026-08-24T16:11:24.757148",
+      "sha256": "507edab36312ab3824bf2017f2cce024951935dfa2a1448a8bd94f2c048c5c49",
+      "development_markers": [
+        "P15",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_3d_fast_incidence.py"
+      ],
+      "snapshot_path": "files/geometry/p15_3d_fast_incidence__507edab363.py"
+    },
+    {
+      "source_path": "/tmp/p15_3f_zero_doppler_fast.py",
+      "category": "geometry",
+      "score": 3,
+      "size_bytes": 17822,
+      "mtime": "2026-08-24T16:21:18.513148",
+      "sha256": "becab4f81a4866b6eb683758a9eb18a6743d8bc74b05c580e05bfbacb9981ea2",
+      "development_markers": [
+        "P15",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 2
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_3f_zero_doppler_fast.py"
+      ],
+      "snapshot_path": "files/geometry/p15_3f_zero_doppler_fast__becab4f81a.py"
+    },
+    {
+      "source_path": "/tmp/p15_3g_incidence_definition.py",
+      "category": "geometry",
+      "score": 3,
+      "size_bytes": 8076,
+      "mtime": "2026-08-24T16:26:12.069148",
+      "sha256": "7866f415c2dc8bcfbd9ccf62222f0f3b50bfdafd7ecdbd9c211ff0b8bd253dad",
+      "development_markers": [
+        "P15",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_3g_incidence_definition.py"
+      ],
+      "snapshot_path": "files/geometry/p15_3g_incidence_definition__7866f415c2.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r3_reuse_pystamps_geometry_bperp_v09.py",
+      "category": "geometry",
+      "score": 2,
+      "size_bytes": 28928,
+      "mtime": "2026-08-17T22:52:16",
+      "sha256": "9cdec4e691fc5c7cd3b40b33dd80c7d702f333f9f2a849ff147ef4c9fc377116",
+      "development_markers": [
+        "prototype"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r3_reuse_pystamps_geometry_bperp_v09.py"
+      ],
+      "snapshot_path": "files/geometry/10r3_reuse_pystamps_geometry_bperp_v09__9cdec4e691.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r3b_raw_grid_geometry_base_coverage_audit.py",
+      "category": "geometry",
+      "score": 2,
+      "size_bytes": 24255,
+      "mtime": "2026-08-17T22:59:33",
+      "sha256": "0e818c0bf76ba0ab9df55f08ce4ab9b799470a18781a92f53cddff212d028d7c",
+      "development_markers": [
+        "prototype"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r3b_raw_grid_geometry_base_coverage_audit.py"
+      ],
+      "snapshot_path": "files/geometry/10r3b_raw_grid_geometry_base_coverage_audit__0e818c0bf7.py"
+    },
+    {
+      "source_path": "/tmp/p15_1_los_sign_convention_audit.sh",
+      "category": "los_timeseries",
+      "score": 16,
+      "size_bytes": 16948,
+      "mtime": "2026-08-24T12:35:17.757740",
+      "sha256": "e58c20b81f921a0e87b19c3614e77b7a2d80f8ea0549530b7e012387bdadf194",
+      "development_markers": [
+        "P15",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "los_timeseries": [
+          {
+            "token": "lambda/(4*pi)",
+            "count": 7
+          },
+          {
+            "token": "4*pi",
+            "count": 7
+          },
+          {
+            "token": "toward_satellite",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_1_los_sign_convention_audit.sh"
+      ],
+      "snapshot_path": "files/los_timeseries/p15_1_los_sign_convention_audit__e58c20b81f.sh"
+    },
+    {
+      "source_path": "/tmp/p15_6c_finalize_los_timeseries.py",
+      "category": "los_timeseries",
+      "score": 14,
+      "size_bytes": 23566,
+      "mtime": "2026-08-24T19:56:38.723817",
+      "sha256": "42b48c5df8926a624b1e2d8851b2015156e0924af84697cd8c4edaac8308fcdb",
+      "development_markers": [
+        "P15",
+        "PASS_FINAL",
+        "PASS_STAMPS",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 1
+          },
+          {
+            "token": "GACOS",
+            "count": 3
+          }
+        ],
+        "scla": [
+          {
+            "token": "pre_scn",
+            "count": 3
+          }
+        ],
+        "scn": [
+          {
+            "token": "ph_scn_slave_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "stamps_stage8",
+            "count": 3
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "los_displacement_toward_satellite",
+            "count": 4
+          },
+          {
+            "token": "acquisition_phase_final_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "lambda/(4*pi)",
+            "count": 2
+          },
+          {
+            "token": "4*pi",
+            "count": 2
+          },
+          {
+            "token": "toward_satellite",
+            "count": 5
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_6c_finalize_los_timeseries.py"
+      ],
+      "snapshot_path": "files/los_timeseries/p15_6c_finalize_los_timeseries__42b48c5df8.py"
+    },
+    {
+      "source_path": "/tmp/p15_7a_final_point_products.py",
+      "category": "point_products",
+      "score": 8,
+      "size_bytes": 19565,
+      "mtime": "2026-08-24T20:50:45.869344",
+      "sha256": "d865468fdf65a334345be43985606dbe94d196fcc71749db5d02401293a22a07",
+      "development_markers": [
+        "P15",
+        "PASS_FINAL",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "strict_points.plist",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 3
+          }
+        ],
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 1
+          },
+          {
+            "token": "GACOS",
+            "count": 6
+          }
+        ],
+        "los_timeseries": [
+          {
+            "token": "los_displacement_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "toward_satellite",
+            "count": 4
+          }
+        ],
+        "point_products": [
+          {
+            "token": "los_velocity_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "los_cumulative_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "velocity_slope_standard_error",
+            "count": 2
+          },
+          {
+            "token": "linear_residual_rms",
+            "count": 3
+          },
+          {
+            "token": "final_los_products",
+            "count": 1
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_7a_final_point_products.py"
+      ],
+      "snapshot_path": "files/point_products/p15_7a_final_point_products__d865468fdf.py"
+    },
+    {
+      "source_path": "/tmp/p15_7b2_radar_rasterize.py",
+      "category": "point_products",
+      "score": 4,
+      "size_bytes": 3551,
+      "mtime": "2026-08-24T21:22:27.721344",
+      "sha256": "b0f17431ac7584a493e9b3df3b1f3e226cfec654af7ebb5cbd7897be05f93fbb",
+      "development_markers": [
+        "P15",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "los_timeseries": [
+          {
+            "token": "toward_satellite",
+            "count": 2
+          }
+        ],
+        "point_products": [
+          {
+            "token": "los_velocity_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "los_cumulative_toward_satellite",
+            "count": 1
+          },
+          {
+            "token": "final_los_products",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_7b2_radar_rasterize.py"
+      ],
+      "snapshot_path": "files/point_products/p15_7b2_radar_rasterize__b0f17431ac.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_portable_v1_bundle_20260821_062314/source/pypsds/stages/apply_reference.py",
+      "category": "point_products",
+      "score": 2,
+      "size_bytes": 20194,
+      "mtime": "2026-08-20T22:53:11",
+      "sha256": "0ce08ccedd6f948d42169ccd7b79141a528d4f158d44e50cb0882d10f3d8e21d",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          }
+        ],
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/stages/apply_reference.py",
+        "/tmp/pypsds_portable_v1_bundle_20260821_062314/source/pypsds/stages/apply_reference.py"
+      ],
+      "snapshot_path": "files/point_products/apply_reference__0ce08ccedd.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/09c_apply_reference_region_v09.py",
+      "category": "point_products",
+      "score": 2,
+      "size_bytes": 16777,
+      "mtime": "2026-08-17T12:42:46",
+      "sha256": "54d3ec05e0c820c5d86aab0ea13b720eae65e79ea6a9a6890d134b1e9c1a4849",
+      "development_markers": [
+        "prototype"
+      ],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          }
+        ],
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/09c_apply_reference_region_v09.py"
+      ],
+      "snapshot_path": "files/point_products/09c_apply_reference_region_v09__54d3ec05e0.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/scripts/apply_reference.py",
+      "category": "point_products",
+      "score": 2,
+      "size_bytes": 16772,
+      "mtime": "2026-08-20T19:12:39",
+      "sha256": "aa7c69144484e6460231bb0e48255a8aad7f6fb6e68ddc31bf9c6a4c4a6fbf07",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          }
+        ],
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/scripts/apply_reference.py"
+      ],
+      "snapshot_path": "files/point_products/apply_reference__aa7c691444.py"
+    },
+    {
+      "source_path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/pipeline.py",
+      "category": "point_products",
+      "score": 1,
+      "size_bytes": 41409,
+      "mtime": "2026-08-23T18:27:43.904048",
+      "sha256": "02cd1f5b68aebeb4f8a5a1fb2b64f6954e9943e65e949b6e24d4d04999ea4312",
+      "development_markers": [],
+      "matched_signatures": {
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/pipeline.py"
+      ],
+      "snapshot_path": "files/point_products/pipeline__02cd1f5b68.py"
+    },
+    {
+      "source_path": "/tmp/pipeline_before_p8g2_final_20260820_164604.py",
+      "category": "point_products",
+      "score": 1,
+      "size_bytes": 32979,
+      "mtime": "2026-08-20T16:46:04.107662",
+      "sha256": "f9ea1aa749b14174ed92cb02c853421f6a84e0acf7705e2a033ff590230e15db",
+      "development_markers": [],
+      "matched_signatures": {
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pipeline_before_p8g2_final_20260820_164604.py"
+      ],
+      "snapshot_path": "files/point_products/pipeline_before_p8g2_final_20260820_164604__f9ea1aa749.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_contract_fix_20260820_183852/freeze_stage_output_contracts.py",
+      "category": "point_products",
+      "score": 1,
+      "size_bytes": 14898,
+      "mtime": "2026-08-20T18:28:41.020540",
+      "sha256": "5cf26d6aa48b1453b339b2b491bec55effffe15c4e2e893814c90a2ea5165f21",
+      "development_markers": [],
+      "matched_signatures": {
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_contract_fix_20260820_183852/freeze_stage_output_contracts.py"
+      ],
+      "snapshot_path": "files/point_products/freeze_stage_output_contracts__5cf26d6aa4.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_portable_v1_bundle_20260821_062314/source/pypsds/pipeline.py",
+      "category": "point_products",
+      "score": 1,
+      "size_bytes": 39045,
+      "mtime": "2026-08-20T22:53:11",
+      "sha256": "70e9578d452f64b66277c614c4ee10388ce829cc7d3947f2e8c7e33d2b8c0665",
+      "development_markers": [],
+      "matched_signatures": {
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/.p11a_backup_20260823_182743/pypsds/pipeline.py",
+        "/tmp/pypsds_portable_v1_bundle_20260821_062314/source/pypsds/pipeline.py"
+      ],
+      "snapshot_path": "files/point_products/pipeline__70e9578d45.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_portable_v1_bundle_20260821_062314/source/tools/freeze_stage_output_contracts.py",
+      "category": "point_products",
+      "score": 1,
+      "size_bytes": 16440,
+      "mtime": "2026-08-20T20:01:49",
+      "sha256": "7c19fbe122cea8a48c62e62fa261bd4a8dba75177ec87b3b4cb5d4f5e8e333b1",
+      "development_markers": [],
+      "matched_signatures": {
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/tools/freeze_stage_output_contracts.py",
+        "/tmp/pypsds_portable_v1_bundle_20260821_062314/source/tools/freeze_stage_output_contracts.py"
+      ],
+      "snapshot_path": "files/point_products/freeze_stage_output_contracts__7c19fbe122.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_local_commit_bundle_20260820_184557/files/tools/freeze_stage_output_contracts.py",
+      "category": "point_products",
+      "score": 1,
+      "size_bytes": 16404,
+      "mtime": "2026-08-20T18:38:52.928540",
+      "sha256": "3a97984564888b229dd5f7c78efbb23a53050098e8f86118811cb2eea7b91101",
+      "development_markers": [],
+      "matched_signatures": {
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_local_commit_bundle_20260820_184557/files/tools/freeze_stage_output_contracts.py"
+      ],
+      "snapshot_path": "files/point_products/freeze_stage_output_contracts__3a97984564.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/pypsds/pipeline.py",
+      "category": "point_products",
+      "score": 1,
+      "size_bytes": 36512,
+      "mtime": "2026-08-20T19:12:39",
+      "sha256": "2f826aeb77996e0bbf395df7edc6643da9f7063a8837324a1ec2b1a033e5878a",
+      "development_markers": [],
+      "matched_signatures": {
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/pypsds/pipeline.py"
+      ],
+      "snapshot_path": "files/point_products/pipeline__2f826aeb77.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/tools/freeze_stage_output_contracts.py",
+      "category": "point_products",
+      "score": 1,
+      "size_bytes": 16400,
+      "mtime": "2026-08-20T19:12:39",
+      "sha256": "af1c0cb0065ff7ec572ff775c2875ce7c14b104810b69242edcf1a1bf9e33983",
+      "development_markers": [],
+      "matched_signatures": {
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/tools/freeze_stage_output_contracts.py"
+      ],
+      "snapshot_path": "files/point_products/freeze_stage_output_contracts__af1c0cb006.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_release_cleanup_20260820_182840/tools/freeze_stage_output_contracts.py",
+      "category": "point_products",
+      "score": 1,
+      "size_bytes": 14196,
+      "mtime": "2026-08-18T14:20:34.098652",
+      "sha256": "c6b7f5b6dbd28ea94ef61a3aa33b17a2d516accd3b330ab0017aae6a85022414",
+      "development_markers": [],
+      "matched_signatures": {
+        "point_products": [
+          {
+            "token": "linear_residual_rms",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_release_cleanup_20260820_182840/tools/freeze_stage_output_contracts.py"
+      ],
+      "snapshot_path": "files/point_products/freeze_stage_output_contracts__c6b7f5b6db.py"
+    },
+    {
+      "source_path": "/tmp/p15_5b5_stamps_final_pass_c.py",
+      "category": "scla",
+      "score": 41,
+      "size_bytes": 26236,
+      "mtime": "2026-08-24T18:31:36.473358",
+      "sha256": "967d439c53de5ea5ac14f82ad58a4da338ff97cbe3520b38d4b14878aba00eb2",
+      "development_markers": [
+        "P15",
+        "PASS_STAMPS",
+        "p15_",
+        "prototype",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "strict_points.plist",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 3
+          },
+          {
+            "token": "acquisition_phase_gacos_corrected_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "GACOS",
+            "count": 6
+          }
+        ],
+        "scla": [
+          {
+            "token": "K_ps_uw",
+            "count": 1
+          },
+          {
+            "token": "C_ps_uw",
+            "count": 7
+          },
+          {
+            "token": "sm_cov",
+            "count": 29
+          },
+          {
+            "token": "ph_scla",
+            "count": 2
+          },
+          {
+            "token": "stamps_scla",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_5b5_stamps_final_pass_c.py"
+      ],
+      "snapshot_path": "files/scla/p15_5b5_stamps_final_pass_c__967d439c53.py"
+    },
+    {
+      "source_path": "/tmp/p15_5b6_materialize_pre_scn.py",
+      "category": "scla",
+      "score": 40,
+      "size_bytes": 27663,
+      "mtime": "2026-08-24T19:28:05.967817",
+      "sha256": "685f3ce84b87fe25aaf219b8eb38bf3693712a51f39767105cf459c12a311e1b",
+      "development_markers": [
+        "P15",
+        "PASS_STAMPS",
+        "p15_",
+        "smoke"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "strict_points.plist",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 1
+          }
+        ],
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 3
+          },
+          {
+            "token": "acquisition_phase_gacos_corrected_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "GACOS",
+            "count": 8
+          }
+        ],
+        "scla": [
+          {
+            "token": "K_ps_uw",
+            "count": 2
+          },
+          {
+            "token": "C_ps_uw",
+            "count": 5
+          },
+          {
+            "token": "pre_scn",
+            "count": 11
+          },
+          {
+            "token": "ph_scla",
+            "count": 20
+          },
+          {
+            "token": "stamps_scla",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_5b6_materialize_pre_scn.py"
+      ],
+      "snapshot_path": "files/scla/p15_5b6_materialize_pre_scn__685f3ce84b.py"
+    },
+    {
+      "source_path": "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/pipeline/ported.py",
+      "category": "scla",
+      "score": 40,
+      "size_bytes": 378375,
+      "mtime": "2026-08-15T12:01:31.347348",
+      "sha256": "72dcd9e09ec4ca3a5df77eec327a07c9b3b7bd486cc283679225fe0ca181a3ac",
+      "development_markers": [],
+      "matched_signatures": {
+        "scla": [
+          {
+            "token": "K_ps_uw",
+            "count": 15
+          },
+          {
+            "token": "C_ps_uw",
+            "count": 16
+          },
+          {
+            "token": "ph_scla",
+            "count": 9
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/pipeline/ported.py"
+      ],
+      "snapshot_path": "files/scla/ported__72dcd9e09e.py"
+    },
+    {
+      "source_path": "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/pipeline/stage7_sbas.py",
+      "category": "scla",
+      "score": 40,
+      "size_bytes": 45194,
+      "mtime": "2026-08-15T12:01:31.347348",
+      "sha256": "f24136f9acff79ffa1917472180603a4ed2a9a1536621b3489c9896280fd1439",
+      "development_markers": [],
+      "matched_signatures": {
+        "scla": [
+          {
+            "token": "K_ps_uw",
+            "count": 3
+          },
+          {
+            "token": "C_ps_uw",
+            "count": 5
+          },
+          {
+            "token": "sm_cov",
+            "count": 16
+          },
+          {
+            "token": "ph_scla",
+            "count": 16
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/pipeline/stage7_sbas.py"
+      ],
+      "snapshot_path": "files/scla/stage7_sbas__f24136f9ac.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r5a_audit_mature_pystamps_stage7_v09.py",
+      "category": "scla",
+      "score": 22,
+      "size_bytes": 16804,
+      "mtime": "2026-08-18T07:17:17",
+      "sha256": "98f90d913f22a179f32d319c28562143255d3fd89142030c01794f742cd35f24",
+      "development_markers": [
+        "prototype"
+      ],
+      "matched_signatures": {
+        "scla": [
+          {
+            "token": "K_ps_uw",
+            "count": 3
+          },
+          {
+            "token": "C_ps_uw",
+            "count": 3
+          },
+          {
+            "token": "ph_scla",
+            "count": 16
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r5a_audit_mature_pystamps_stage7_v09.py"
+      ],
+      "snapshot_path": "files/scla/10r5a_audit_mature_pystamps_stage7_v09__98f90d913f.py"
+    },
+    {
+      "source_path": "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/pipeline/stage8_sbas.py",
+      "category": "scla",
+      "score": 21,
+      "size_bytes": 33746,
+      "mtime": "2026-08-15T12:01:31.347348",
+      "sha256": "27360aacbd766dec045dcf9f58e7b2296680b1b5c68520f38718b756a0c4bd93",
+      "development_markers": [],
+      "matched_signatures": {
+        "scla": [
+          {
+            "token": "C_ps_uw",
+            "count": 6
+          },
+          {
+            "token": "ph_scla",
+            "count": 15
+          }
+        ],
+        "scn": [
+          {
+            "token": "scn_wavelength",
+            "count": 5
+          },
+          {
+            "token": "stamps_stage8",
+            "count": 3
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/pipeline/stage8_sbas.py"
+      ],
+      "snapshot_path": "files/scla/stage8_sbas__27360aacbd.py"
+    },
+    {
+      "source_path": "/tmp/v62/stage78_layer_attribution_v6_2/stage78_layer_attribution_v6_2.py",
+      "category": "scla",
+      "score": 21,
+      "size_bytes": 44635,
+      "mtime": "2026-08-12T01:38:48",
+      "sha256": "6f47887c982b150b6d04df43f64ee4c99f51b51cda80aa900adb7b82fb8b0a2b",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          }
+        ],
+        "scla": [
+          {
+            "token": "ph_scla",
+            "count": 21
+          }
+        ],
+        "scn": [
+          {
+            "token": "scn_wavelength",
+            "count": 1
+          },
+          {
+            "token": "400",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/v62/stage78_layer_attribution_v6_2/stage78_layer_attribution_v6_2.py",
+        "/tmp/v63/deramp_scn_audit_v6_3/_v62_helpers.py"
+      ],
+      "snapshot_path": "files/scla/stage78_layer_attribution_v6_2__6f47887c98.py"
+    },
+    {
+      "source_path": "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/kernels/accelerated.py",
+      "category": "scla",
+      "score": 18,
+      "size_bytes": 35093,
+      "mtime": "2026-08-15T12:01:31.339348",
+      "sha256": "78c6eeb79ea2a92ae03a24d9e64e777bf43360a6de4513565a3201e5dc3cb4d3",
+      "development_markers": [],
+      "matched_signatures": {
+        "scla": [
+          {
+            "token": "K_ps_uw",
+            "count": 6
+          },
+          {
+            "token": "C_ps_uw",
+            "count": 6
+          },
+          {
+            "token": "ph_scla",
+            "count": 6
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/kernels/accelerated.py"
+      ],
+      "snapshot_path": "files/scla/accelerated__78c6eeb79e.py"
+    },
+    {
+      "source_path": "/tmp/p15_5b5a_sm_cov_gauge_audit.py",
+      "category": "scla",
+      "score": 10,
+      "size_bytes": 13196,
+      "mtime": "2026-08-24T19:15:22.223817",
+      "sha256": "5619002f64a04ac1dc2ef5b3dde7d52005164635617cf7ad005315428701c5e7",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "prototype"
+      ],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 1
+          },
+          {
+            "token": "GACOS",
+            "count": 2
+          }
+        ],
+        "scla": [
+          {
+            "token": "sm_cov",
+            "count": 8
+          },
+          {
+            "token": "stamps_scla",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_5b5a_sm_cov_gauge_audit.py"
+      ],
+      "snapshot_path": "files/scla/p15_5b5a_sm_cov_gauge_audit__5619002f64.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r4b_build_pystamps_stage7_bridge_v09.py",
+      "category": "scla",
+      "score": 10,
+      "size_bytes": 35537,
+      "mtime": "2026-08-17T23:31:53",
+      "sha256": "8e2ff9b795b29f4d9552da0eaff0fe6cf8685320430ddb70e1875645250dbfa9",
+      "development_markers": [
+        "prototype"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          }
+        ],
+        "scla": [
+          {
+            "token": "sm_cov",
+            "count": 10
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r4b_build_pystamps_stage7_bridge_v09.py"
+      ],
+      "snapshot_path": "files/scla/10r4b_build_pystamps_stage7_bridge_v09__8e2ff9b795.py"
+    },
+    {
+      "source_path": "/tmp/prod_v65/pystamps_production_stage78_v6_5/apply_production_patch_v6_5.py",
+      "category": "scla",
+      "score": 8,
+      "size_bytes": 12671,
+      "mtime": "2026-08-12T11:53:54",
+      "sha256": "c81c30b0b9ab0f14d17f772835c682a6148a47f83ee12c6df20ce6321eae3fcd",
+      "development_markers": [],
+      "matched_signatures": {
+        "scla": [
+          {
+            "token": "ph_scla",
+            "count": 8
+          }
+        ],
+        "scn": [
+          {
+            "token": "scn_wavelength",
+            "count": 5
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/prod_v65/pystamps_production_stage78_v6_5/apply_production_patch_v6_5.py"
+      ],
+      "snapshot_path": "files/scla/apply_production_patch_v6_5__c81c30b0b9.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r4a_stage7_bridge_contract_preflight_v09.py",
+      "category": "scla",
+      "score": 8,
+      "size_bytes": 26346,
+      "mtime": "2026-08-17T23:22:34",
+      "sha256": "114ceace0b0e0bf6161643cc8e2e4bd0bdcd72de3274d02384f7967ced2e42e2",
+      "development_markers": [
+        "prototype"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          }
+        ],
+        "scla": [
+          {
+            "token": "sm_cov",
+            "count": 8
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r4a_stage7_bridge_contract_preflight_v09.py"
+      ],
+      "snapshot_path": "files/scla/10r4a_stage7_bridge_contract_preflight_v09__114ceace0b.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r5b_validate_mature_stage7_scla_v09.py",
+      "category": "scla",
+      "score": 8,
+      "size_bytes": 20822,
+      "mtime": "2026-08-18T07:20:29",
+      "sha256": "8ea09e1a2d7008ab50767e0593c54067ca032d10b3b1ffc915053681496823e6",
+      "development_markers": [
+        "prototype"
+      ],
+      "matched_signatures": {
+        "scla": [
+          {
+            "token": "K_ps_uw",
+            "count": 2
+          },
+          {
+            "token": "C_ps_uw",
+            "count": 2
+          },
+          {
+            "token": "ph_scla",
+            "count": 4
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r5b_validate_mature_stage7_scla_v09.py"
+      ],
+      "snapshot_path": "files/scla/10r5b_validate_mature_stage7_scla_v09__8ea09e1a2d.py"
+    },
+    {
+      "source_path": "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/pipeline/stage6_sbas.py",
+      "category": "scla",
+      "score": 7,
+      "size_bytes": 128655,
+      "mtime": "2026-08-15T12:01:31.347348",
+      "sha256": "6f60564fa0618cd0c51dcde957a74d2f22bc89cccf439f7d6b1aeea388f85929",
+      "development_markers": [],
+      "matched_signatures": {
+        "scla": [
+          {
+            "token": "K_ps_uw",
+            "count": 2
+          },
+          {
+            "token": "sm_cov",
+            "count": 5
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/pipeline/stage6_sbas.py"
+      ],
+      "snapshot_path": "files/scla/stage6_sbas__6f60564fa0.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r2_pystamps_sbas_predictor_audit.py",
+      "category": "scla",
+      "score": 4,
+      "size_bytes": 18179,
+      "mtime": "2026-08-17T22:44:32",
+      "sha256": "5312707d9bc095f49f191f125fd9cd868e65e4370a1a93f7537cf5c60c83f99e",
+      "development_markers": [
+        "prototype"
+      ],
+      "matched_signatures": {
+        "scla": [
+          {
+            "token": "K_ps_uw",
+            "count": 2
+          },
+          {
+            "token": "ph_scla",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10r2_pystamps_sbas_predictor_audit.py"
+      ],
+      "snapshot_path": "files/scla/10r2_pystamps_sbas_predictor_audit__5312707d9b.py"
+    },
+    {
+      "source_path": "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/notebooks/diagnostics.py",
+      "category": "scla",
+      "score": 2,
+      "size_bytes": 19098,
+      "mtime": "2026-08-15T12:01:31.343348",
+      "sha256": "7ee19e604cbf18f3c6eb3d2c49ebb938d94a2628cca933c81678fa4163756b4d",
+      "development_markers": [],
+      "matched_signatures": {
+        "scla": [
+          {
+            "token": "C_ps_uw",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/notebooks/diagnostics.py"
+      ],
+      "snapshot_path": "files/scla/diagnostics__7ee19e604c.py"
+    },
+    {
+      "source_path": "/tmp/p15_5b3b_regenerate_missing_bases.py",
+      "category": "scla",
+      "score": 1,
+      "size_bytes": 19099,
+      "mtime": "2026-08-24T18:12:59.801358",
+      "sha256": "c943160b85444c0cbc99482c9d0a8d01c39dbb6749c676f2b1d0275f4389bb97",
+      "development_markers": [
+        "P15",
+        "p15_",
+        "prototype"
+      ],
+      "matched_signatures": {
+        "scla": [
+          {
+            "token": "stamps_scla",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_5b3b_regenerate_missing_bases.py"
+      ],
+      "snapshot_path": "files/scla/p15_5b3b_regenerate_missing_bases__c943160b85.py"
+    },
+    {
+      "source_path": "/tmp/v63/deramp_scn_audit_v6_3/deramp_scn_audit_v6_3.py",
+      "category": "scla",
+      "score": 1,
+      "size_bytes": 26504,
+      "mtime": "2026-08-12T10:48:41",
+      "sha256": "ee22811de73930dabd8c477fe549debaf4667a8a3b77782d5891a28ccae46d9f",
+      "development_markers": [],
+      "matched_signatures": {
+        "scla": [
+          {
+            "token": "ph_scla",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/v63/deramp_scn_audit_v6_3/deramp_scn_audit_v6_3.py"
+      ],
+      "snapshot_path": "files/scla/deramp_scn_audit_v6_3__ee22811de7.py"
+    },
+    {
+      "source_path": "/tmp/p15_6b2_stage8_scn_production.py",
+      "category": "scn",
+      "score": 18,
+      "size_bytes": 31703,
+      "mtime": "2026-08-24T19:51:03.335817",
+      "sha256": "df55f1ac3aa54d7d767e8238d8dfd83d3d48c421c5c7108af8e2816fe6b54ef1",
+      "development_markers": [
+        "P15",
+        "PASS_STAMPS",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 1
+          },
+          {
+            "token": "GACOS",
+            "count": 2
+          }
+        ],
+        "scla": [
+          {
+            "token": "pre_scn",
+            "count": 2
+          }
+        ],
+        "scn": [
+          {
+            "token": "ph_hpt_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "ph_scn_slave_rad.npy",
+            "count": 1
+          },
+          {
+            "token": "scn_wavelength",
+            "count": 8
+          },
+          {
+            "token": "stamps_stage8",
+            "count": 7
+          },
+          {
+            "token": "400",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_6b2_stage8_scn_production.py"
+      ],
+      "snapshot_path": "files/scn/p15_6b2_stage8_scn_production__df55f1ac3a.py"
+    },
+    {
+      "source_path": "/tmp/p15_6b1_exact_engine_benchmark.py",
+      "category": "scn",
+      "score": 9,
+      "size_bytes": 24887,
+      "mtime": "2026-08-24T19:46:43.863817",
+      "sha256": "49806f2cf15a95d3ecda62609c4c2d33a61a44e4f6fe2c803a04958148f38f2e",
+      "development_markers": [
+        "P15",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "gacos_corrected",
+            "count": 1
+          },
+          {
+            "token": "GACOS",
+            "count": 2
+          }
+        ],
+        "scla": [
+          {
+            "token": "pre_scn",
+            "count": 2
+          }
+        ],
+        "scn": [
+          {
+            "token": "stamps_stage8",
+            "count": 5
+          },
+          {
+            "token": "400",
+            "count": 4
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_6b1_exact_engine_benchmark.py"
+      ],
+      "snapshot_path": "files/scn/p15_6b1_exact_engine_benchmark__49806f2cf1.py"
+    },
+    {
+      "source_path": "/tmp/p15_6b0_exact_xy_neighbor_census.py",
+      "category": "scn",
+      "score": 7,
+      "size_bytes": 19390,
+      "mtime": "2026-08-24T19:39:09.483817",
+      "sha256": "d6529e8b88e09a2d92f00e916707b97562d3748d9a353ecd54eb97b7d6a7b029",
+      "development_markers": [
+        "P15",
+        "p15_"
+      ],
+      "matched_signatures": {
+        "geometry": [
+          {
+            "token": "longitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg.npy",
+            "count": 1
+          },
+          {
+            "token": "strict_points.plist",
+            "count": 1
+          },
+          {
+            "token": "gacos_geometry",
+            "count": 3
+          }
+        ],
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 3
+          }
+        ],
+        "scn": [
+          {
+            "token": "stamps_stage8",
+            "count": 1
+          },
+          {
+            "token": "400",
+            "count": 6
+          }
+        ],
+        "geocoding": [
+          {
+            "token": "longitude_deg",
+            "count": 1
+          },
+          {
+            "token": "latitude_deg",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/p15_6b0_exact_xy_neighbor_census.py"
+      ],
+      "snapshot_path": "files/scn/p15_6b0_exact_xy_neighbor_census__d6529e8b88.py"
+    },
+    {
+      "source_path": "/tmp/v64/robust_deramp_stability_v6_4/robust_deramp_stability_v6_4.py",
+      "category": "scn",
+      "score": 4,
+      "size_bytes": 51949,
+      "mtime": "2026-08-12T03:21:04",
+      "sha256": "7a94391f3cfe8c1997d09695f075a83e1db272481483bdf5449ac910c793306c",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          }
+        ],
+        "scn": [
+          {
+            "token": "scn_wavelength",
+            "count": 1
+          },
+          {
+            "token": "400",
+            "count": 3
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/v64/robust_deramp_stability_v6_4/robust_deramp_stability_v6_4.py"
+      ],
+      "snapshot_path": "files/scn/robust_deramp_stability_v6_4__7a94391f3c.py"
+    },
+    {
+      "source_path": "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/prep/gamma_stage1.py",
+      "category": "scn",
+      "score": 3,
+      "size_bytes": 51062,
+      "mtime": "2026-08-15T12:01:31.355348",
+      "sha256": "da5b056b83cb4e39a9284e7bf2f6f5aab09830b59ff994b5d96a638e8a266c8f",
+      "development_markers": [],
+      "matched_signatures": {
+        "gacos": [
+          {
+            "token": "GACOS",
+            "count": 1
+          }
+        ],
+        "scn": [
+          {
+            "token": "scn_wavelength",
+            "count": 3
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/prep/gamma_stage1.py"
+      ],
+      "snapshot_path": "files/scn/gamma_stage1__da5b056b83.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_portable_v1_bundle_20260821_062314/source/tools/benchmark_exact_support_cache.py",
+      "category": "scn",
+      "score": 2,
+      "size_bytes": 22646,
+      "mtime": "2026-08-20T20:01:49",
+      "sha256": "299c475651f1ae2157eb9de8732a72c84cb78caca58c0d1f2b75765e6625b30b",
+      "development_markers": [],
+      "matched_signatures": {
+        "scn": [
+          {
+            "token": "400",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/tools/benchmark_exact_support_cache.py",
+        "/tmp/pypsds_portable_v1_bundle_20260821_062314/source/tools/benchmark_exact_support_cache.py"
+      ],
+      "snapshot_path": "files/scn/benchmark_exact_support_cache__299c475651.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/tools/benchmark_exact_support_cache.py",
+      "category": "scn",
+      "score": 2,
+      "size_bytes": 22622,
+      "mtime": "2026-08-20T13:02:55",
+      "sha256": "411bac595bc5151c8c90a5c0ceea3984c9e9aff4932770b7c4e823e98fdb2b6f",
+      "development_markers": [],
+      "matched_signatures": {
+        "scn": [
+          {
+            "token": "400",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/tools/benchmark_exact_support_cache.py"
+      ],
+      "snapshot_path": "files/scn/benchmark_exact_support_cache__411bac595b.py"
+    },
+    {
+      "source_path": "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/grid_ifg_qc.py",
+      "category": "scn",
+      "score": 2,
+      "size_bytes": 51478,
+      "mtime": "2026-08-15T12:01:31.291348",
+      "sha256": "da8a3befa24c4cfdc5fc3598459b8f06b65d49d11fdd7e24bbe123350f25a36e",
+      "development_markers": [],
+      "matched_signatures": {
+        "scn": [
+          {
+            "token": "400",
+            "count": 2
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/grid_ifg_qc.py"
+      ],
+      "snapshot_path": "files/scn/grid_ifg_qc__da8a3befa2.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_portable_v1_bundle_20260821_062314/source/pypsds/stages/prepare_temporal_network.py",
+      "category": "scn",
+      "score": 1,
+      "size_bytes": 37167,
+      "mtime": "2026-08-20T20:01:49",
+      "sha256": "6b451ab805ab548f84929abe0091e49d877147b40d7cd462b32d6216cd9818cc",
+      "development_markers": [],
+      "matched_signatures": {
+        "scn": [
+          {
+            "token": "400",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/stages/prepare_temporal_network.py",
+        "/tmp/pypsds_portable_v1_bundle_20260821_062314/source/pypsds/stages/prepare_temporal_network.py",
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/scripts/prepare_temporal_network.py"
+      ],
+      "snapshot_path": "files/scn/prepare_temporal_network__6b451ab805.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_portable_v1_bundle_20260821_062314/source/tools/benchmark_phase_sim_parallel.py",
+      "category": "scn",
+      "score": 1,
+      "size_bytes": 15341,
+      "mtime": "2026-08-20T20:01:49",
+      "sha256": "da3f3477604e98946d4773f328be8572759d1e42843d651d970a66323e069f77",
+      "development_markers": [],
+      "matched_signatures": {
+        "scn": [
+          {
+            "token": "400",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/tools/benchmark_phase_sim_parallel.py",
+        "/tmp/pypsds_portable_v1_bundle_20260821_062314/source/tools/benchmark_phase_sim_parallel.py",
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/tools/benchmark_phase_sim_parallel.py"
+      ],
+      "snapshot_path": "files/scn/benchmark_phase_sim_parallel__da3f347760.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/07_build_network_v09.py",
+      "category": "scn",
+      "score": 1,
+      "size_bytes": 37168,
+      "mtime": "2026-08-16T20:52:57",
+      "sha256": "9033273396b596d6889fd5323077654b3126a212439970686df7f6e1bef4994f",
+      "development_markers": [
+        "prototype"
+      ],
+      "matched_signatures": {
+        "scn": [
+          {
+            "token": "400",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/07_build_network_v09.py"
+      ],
+      "snapshot_path": "files/scn/07_build_network_v09__9033273396.py"
+    },
+    {
+      "source_path": "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10a5c_batch_context_repeatability_v09.py",
+      "category": "scn",
+      "score": 1,
+      "size_bytes": 28770,
+      "mtime": "2026-08-17T22:00:15",
+      "sha256": "2acd2cada85165d7ac6edae70d0899b0cc23803a297c6d356d4f8eb8e116f598",
+      "development_markers": [
+        "prototype"
+      ],
+      "matched_signatures": {
+        "scn": [
+          {
+            "token": "400",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pypsds_v1_production_naming_bundle_20260820_191551/source/development/legacy_v09/scripts/10a5c_batch_context_repeatability_v09.py"
+      ],
+      "snapshot_path": "files/scn/10a5c_batch_context_repeatability_v09__2acd2cada8.py"
+    },
+    {
+      "source_path": "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/config.py",
+      "category": "scn",
+      "score": 1,
+      "size_bytes": 10971,
+      "mtime": "2026-08-15T12:01:31.291348",
+      "sha256": "495282e8c5f684da66cc44509138e68dffe7eb7d455b4d05f02d264b818dd131",
+      "development_markers": [],
+      "matched_signatures": {
+        "scn": [
+          {
+            "token": "400",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/config.py"
+      ],
+      "snapshot_path": "files/scn/config__495282e8c5.py"
+    },
+    {
+      "source_path": "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/ifg_selection.py",
+      "category": "scn",
+      "score": 1,
+      "size_bytes": 36657,
+      "mtime": "2026-08-15T12:01:31.291348",
+      "sha256": "54b7bbf37d57954256795f4911f0e848e6fa104ee25c8ac2872efce3b074fb3d",
+      "development_markers": [],
+      "matched_signatures": {
+        "scn": [
+          {
+            "token": "400",
+            "count": 1
+          }
+        ]
+      },
+      "duplicate_locations": [
+        "/tmp/pystamps_stale_sitepackages_20260815_131853/pystamps/ifg_selection.py"
+      ],
+      "snapshot_path": "files/scn/ifg_selection__54b7bbf37d.py"
+    }
+  ]
+}

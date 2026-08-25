@@ -451,6 +451,596 @@ class GammaPointPhaseCorrectionProvider:
             workers
         )
 
+
+    def _prepare_cached_geometry(
+        self,
+        *,
+        assets,
+        global_row0: int,
+        global_col0: int,
+        rows: int,
+        cols: int,
+        plist: Path,
+        label: str,
+    ):
+        """
+        Prepare or reuse date-independent GAMMA geometry.
+
+        `data2pt` depends on spatial coordinates, radar height and
+        the geometric reference acquisition, but not on the current
+        temporal ministack.
+
+        P11B-3 therefore persists:
+
+            phgt
+            pmask
+
+        per canonical spatial cell.
+
+        The cached phgt remains the exact GAMMA big-endian FLOAT
+        byte stream used by phase_sim_orb_pt.
+        """
+
+        global_row0 = int(
+            global_row0
+        )
+
+        global_col0 = int(
+            global_col0
+        )
+
+        rows = int(
+            rows
+        )
+
+        cols = int(
+            cols
+        )
+
+        global_row1 = (
+            global_row0
+            +
+            rows
+        )
+
+        global_col1 = (
+            global_col0
+            +
+            cols
+        )
+
+        npoints = (
+            rows
+            *
+            cols
+        )
+
+        cache_root = (
+            self.scratch_dir
+            /
+            "geometry_cache"
+        )
+
+        cache_root.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        cell_dir = (
+            cache_root
+            /
+            (
+                f"r{global_row0}_"
+                f"{global_row1}_"
+                f"c{global_col0}_"
+                f"{global_col1}"
+            )
+        )
+
+        cell_dir.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        phgt = (
+            cell_dir
+            /
+            "phgt"
+        )
+
+        pmask = (
+            cell_dir
+            /
+            "pmask"
+        )
+
+        manifest_path = (
+            cell_dir
+            /
+            "manifest.json"
+        )
+
+        # ---------------------------------------------------------
+        # Geometry source identity
+        # ---------------------------------------------------------
+
+        source_signature = getattr(
+            self,
+            "_geometry_source_signature_cache",
+            None,
+        )
+
+        if source_signature is None:
+
+            height_stat = (
+                assets.height_path.stat()
+            )
+
+            data2pt_cmd = Path(
+                str(
+                    self._commands[
+                        "data2pt"
+                    ]
+                )
+            )
+
+            if data2pt_cmd.is_file():
+
+                cmd_stat = (
+                    data2pt_cmd.stat()
+                )
+
+                cmd_identity = {
+                    "path":
+                        str(
+                            data2pt_cmd.resolve()
+                        ),
+
+                    "size":
+                        int(
+                            cmd_stat.st_size
+                        ),
+
+                    "mtime_ns":
+                        int(
+                            cmd_stat.st_mtime_ns
+                        ),
+                }
+
+            else:
+
+                cmd_identity = {
+                    "path":
+                        str(
+                            self._commands[
+                                "data2pt"
+                            ]
+                        )
+                }
+
+            source_signature = {
+                "reference_date":
+                    str(
+                        assets.reference_date
+                    ),
+
+                "reference_par":
+                    str(
+                        assets.reference_par.resolve()
+                    ),
+
+                "reference_par_sha256":
+                    _sha256(
+                        assets.reference_par
+                    ),
+
+                "height_path":
+                    str(
+                        assets.height_path.resolve()
+                    ),
+
+                "height_size":
+                    int(
+                        height_stat.st_size
+                    ),
+
+                "height_mtime_ns":
+                    int(
+                        height_stat.st_mtime_ns
+                    ),
+
+                "height_geometry_par":
+                    str(
+                        assets
+                        .height_geometry_par
+                        .resolve()
+                    ),
+
+                "height_geometry_par_sha256":
+                    _sha256(
+                        assets.height_geometry_par
+                    ),
+
+                "zero_height_is_valid":
+                    bool(
+                        self.zero_height_is_valid
+                    ),
+
+                "zero_height_epsilon_m":
+                    float(
+                        self.zero_height_epsilon_m
+                    ),
+
+                "data2pt":
+                    cmd_identity,
+            }
+
+            self._geometry_source_signature_cache = (
+                source_signature
+            )
+
+        expected_manifest = {
+            "format":
+                "pyPSDS-GAMMA-phase-geometry-cache-v1",
+
+            "global_row0":
+                global_row0,
+
+            "global_row1":
+                global_row1,
+
+            "global_col0":
+                global_col0,
+
+            "global_col1":
+                global_col1,
+
+            "rows":
+                rows,
+
+            "cols":
+                cols,
+
+            "npoints":
+                npoints,
+
+            "source":
+                source_signature,
+        }
+
+        # ---------------------------------------------------------
+        # Existing-cache validation
+        # ---------------------------------------------------------
+
+        cache_valid = False
+
+        if (
+            manifest_path.is_file()
+            and
+            phgt.is_file()
+            and
+            pmask.is_file()
+        ):
+
+            try:
+
+                old_manifest = json.loads(
+                    manifest_path.read_text(
+                        encoding="utf-8"
+                    )
+                )
+
+                cache_valid = (
+                    old_manifest
+                    ==
+                    expected_manifest
+                    and
+                    phgt.stat().st_size
+                    ==
+                    npoints * 4
+                    and
+                    pmask.stat().st_size
+                    ==
+                    npoints
+                )
+
+            except Exception:
+
+                cache_valid = False
+
+        if cache_valid:
+
+            mask_u8 = np.fromfile(
+                pmask,
+                dtype=np.uint8,
+            )
+
+            if (
+                mask_u8.size
+                ==
+                npoints
+                and
+                np.all(
+                    (
+                        mask_u8
+                        ==
+                        0
+                    )
+                    |
+                    (
+                        mask_u8
+                        ==
+                        1
+                    )
+                )
+            ):
+
+                valid = (
+                    mask_u8.astype(
+                        np.bool_,
+                        copy=False,
+                    )
+                )
+
+                log(
+                    "Geometry cache HIT "
+                    f"r{global_row0}:"
+                    f"{global_row1} "
+                    f"c{global_col0}:"
+                    f"{global_col1}"
+                )
+
+                return (
+                    phgt,
+                    pmask,
+                    valid,
+                    0.0,
+                    True,
+                )
+
+        # ---------------------------------------------------------
+        # MISS: run data2pt exactly once.
+        # ---------------------------------------------------------
+
+        log(
+            "Geometry cache MISS "
+            f"r{global_row0}:"
+            f"{global_row1} "
+            f"c{global_col0}:"
+            f"{global_col1}"
+        )
+
+        pid = os.getpid()
+
+        phgt_tmp = (
+            cell_dir
+            /
+            f"phgt.tmp.{pid}"
+        )
+
+        pmask_tmp = (
+            cell_dir
+            /
+            f"pmask.tmp.{pid}"
+        )
+
+        manifest_tmp = (
+            cell_dir
+            /
+            f"manifest.json.tmp.{pid}"
+        )
+
+        for tmp in (
+            phgt_tmp,
+            pmask_tmp,
+            manifest_tmp,
+        ):
+
+            if tmp.exists():
+                tmp.unlink()
+
+        try:
+
+            t0 = perf_counter()
+
+            _run_command(
+                [
+                    self._commands[
+                        "data2pt"
+                    ],
+                    str(
+                        assets.height_path
+                    ),
+                    str(
+                        assets.height_geometry_par
+                    ),
+                    str(
+                        plist
+                    ),
+                    str(
+                        assets.reference_par
+                    ),
+                    str(
+                        phgt_tmp
+                    ),
+                    "1",
+                    "2",
+                ],
+                log_file=(
+                    self.scratch_dir
+                    /
+                    "gamma.log"
+                ),
+                label=(
+                    "data2pt:"
+                    "geometry_cache:"
+                    f"r{global_row0}_"
+                    f"c{global_col0}"
+                ),
+            )
+
+            height_seconds = (
+                perf_counter()
+                -
+                t0
+            )
+
+            h = np.fromfile(
+                phgt_tmp,
+                dtype=">f4",
+            )
+
+            if h.size != npoints:
+
+                raise PhaseCorrectionError(
+                    "data2pt produced "
+                    f"{h.size} heights; "
+                    f"expected {npoints} "
+                    f"for {label}"
+                )
+
+            h_native = h.astype(
+                np.float32
+            )
+
+            finite = np.isfinite(
+                h_native
+            )
+
+            if self.zero_height_is_valid:
+
+                valid = finite
+
+                zero = (
+                    finite
+                    &
+                    (
+                        h_native
+                        ==
+                        0.0
+                    )
+                )
+
+                h_native[
+                    zero
+                ] = (
+                    self.zero_height_epsilon_m
+                )
+
+                # Same production convention as before:
+                # phgt consumed by GAMMA is >f4.
+                h_native.astype(
+                    ">f4"
+                ).tofile(
+                    phgt_tmp
+                )
+
+            else:
+
+                valid = (
+                    finite
+                    &
+                    (
+                        h_native
+                        !=
+                        0.0
+                    )
+                )
+
+            valid.astype(
+                np.uint8
+            ).tofile(
+                pmask_tmp
+            )
+
+            if (
+                phgt_tmp.stat().st_size
+                !=
+                npoints * 4
+            ):
+
+                raise PhaseCorrectionError(
+                    "geometry-cache phgt "
+                    "byte-size mismatch"
+                )
+
+            if (
+                pmask_tmp.stat().st_size
+                !=
+                npoints
+            ):
+
+                raise PhaseCorrectionError(
+                    "geometry-cache pmask "
+                    "byte-size mismatch"
+                )
+
+            # Publish arrays first.
+            os.replace(
+                phgt_tmp,
+                phgt,
+            )
+
+            os.replace(
+                pmask_tmp,
+                pmask,
+            )
+
+            # Manifest published last = valid-cache marker.
+            manifest_tmp.write_text(
+                json.dumps(
+                    expected_manifest,
+                    indent=2,
+                    sort_keys=True,
+                )
+                +
+                "\n",
+                encoding="utf-8",
+            )
+
+            os.replace(
+                manifest_tmp,
+                manifest_path,
+            )
+
+            log(
+                "Geometry cache CREATED "
+                f"r{global_row0}:"
+                f"{global_row1} "
+                f"c{global_col0}:"
+                f"{global_col1} "
+                f"data2pt="
+                f"{height_seconds:.2f}s"
+            )
+
+            return (
+                phgt,
+                pmask,
+                np.asarray(
+                    valid,
+                    dtype=np.bool_,
+                ),
+                height_seconds,
+                False,
+            )
+
+        finally:
+
+            for tmp in (
+                phgt_tmp,
+                pmask_tmp,
+                manifest_tmp,
+            ):
+
+                try:
+
+                    if tmp.exists():
+                        tmp.unlink()
+
+                except OSError:
+
+                    pass
+
     def correct_block(
         self,
         block: np.ndarray,
@@ -458,85 +1048,293 @@ class GammaPointPhaseCorrectionProvider:
         global_row0: int,
         global_col0: int,
         tile_label: str | None = None,
-    ) -> tuple[np.ndarray, np.ndarray, CorrectionTileStats]:
+        date_indices=None,
+    ) -> tuple[
+        np.ndarray,
+        np.ndarray,
+        CorrectionTileStats,
+    ]:
+        """
+        Apply GAMMA orbit/topographic phase correction.
+
+        P11B-1
+        -------
+        date_indices=None
+            Preserve the original all-date production path.
+
+        date_indices=(...)
+            block contains only the requested GLOBAL acquisition
+            indices, in exactly that order.
+
+            Only reference-secondary pairs required for those dates
+            are simulated.  The geometrical reference acquisition
+            itself has zero simulated phase.
+
+        Scientific phase convention is unchanged.
+        """
+
         assets = self._ensure_assets()
-        if block.ndim != 3 or block.shape[0] != len(self.stack.records):
-            raise ValueError("correct_block expects (all_dates, rows, cols)")
-        ndate, rows, cols = block.shape
-        npoints = rows * cols
-        label = tile_label or f"r{global_row0}_c{global_col0}_{rows}x{cols}"
+
+        full_ndate = len(
+            self.stack.records
+        )
+
+        if date_indices is None:
+
+            selected_indices = tuple(
+                range(full_ndate)
+            )
+
+        else:
+
+            selected_indices = tuple(
+                int(x)
+                for x in date_indices
+            )
+
+            if not selected_indices:
+                raise ValueError(
+                    "date_indices must not be empty"
+                )
+
+            if len(
+                set(selected_indices)
+            ) != len(
+                selected_indices
+            ):
+                raise ValueError(
+                    "date_indices contains duplicates"
+                )
+
+            bad = [
+                x
+                for x in selected_indices
+                if (
+                    x < 0
+                    or
+                    x >= full_ndate
+                )
+            ]
+
+            if bad:
+                raise ValueError(
+                    "date_indices outside stack: "
+                    f"{bad}"
+                )
+
+        local_ndate = len(
+            selected_indices
+        )
+
+        if (
+            block.ndim != 3
+            or
+            block.shape[0] != local_ndate
+        ):
+            raise ValueError(
+                "correct_block expects "
+                "(len(date_indices), rows, cols); "
+                f"block={block.shape}, "
+                f"dates={local_ndate}"
+            )
+
+        legacy_all_dates = (
+            selected_indices
+            ==
+            tuple(
+                range(full_ndate)
+            )
+        )
+
+        rows = int(
+            block.shape[1]
+        )
+
+        cols = int(
+            block.shape[2]
+        )
+
+        npoints = (
+            rows
+            *
+            cols
+        )
+
+        label = (
+            tile_label
+            or
+            (
+                f"r{global_row0}_"
+                f"c{global_col0}_"
+                f"{rows}x{cols}"
+            )
+        )
+
         t_total = perf_counter()
 
-        fixed_dir = self.scratch_dir / "tiles" / label
+        fixed_dir = (
+            self.scratch_dir
+            /
+            "tiles"
+            /
+            label
+        )
+
         tmp_ctx = None
+
         if self.keep_tile_files:
-            fixed_dir.mkdir(parents=True, exist_ok=True)
+
+            fixed_dir.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
             tile_dir = fixed_dir
+
         else:
-            tmp_ctx = tempfile.TemporaryDirectory(prefix=label + "_", dir=self.scratch_dir / "tiles")
-            tile_dir = Path(tmp_ctx.name)
+
+            tmp_ctx = (
+                tempfile.TemporaryDirectory(
+                    prefix=label + "_",
+                    dir=(
+                        self.scratch_dir
+                        /
+                        "tiles"
+                    ),
+                )
+            )
+
+            tile_dir = Path(
+                tmp_ctx.name
+            )
 
         try:
+
             rr, cc = np.meshgrid(
-                np.arange(global_row0, global_row0 + rows, dtype=np.int32),
-                np.arange(global_col0, global_col0 + cols, dtype=np.int32),
+                np.arange(
+                    global_row0,
+                    global_row0 + rows,
+                    dtype=np.int32,
+                ),
+                np.arange(
+                    global_col0,
+                    global_col0 + cols,
+                    dtype=np.int32,
+                ),
                 indexing="ij",
             )
-            # IPTA plist order is range, azimuth.
-            plist_arr = np.column_stack((cc.ravel(), rr.ravel())).astype(">i4", copy=False)
-            plist = tile_dir / "plist"
-            plist_arr.tofile(plist)
-            phgt = tile_dir / "phgt"
-            pmask = tile_dir / "pmask"
-            psim = tile_dir / "psim_unw"
-            tile_log = self.scratch_dir / "gamma.log"
 
-            t0 = perf_counter()
-            _run_command(
-                [
-                    self._commands["data2pt"],
-                    str(assets.height_path),
-                    str(assets.height_geometry_par),
-                    str(plist),
-                    str(assets.reference_par),
-                    str(phgt),
-                    "1",
-                    "2",
-                ],
-                log_file=tile_log,
-                label=f"data2pt:{label}",
-            )
-            height_seconds = perf_counter() - t0
-            h = np.fromfile(phgt, dtype=">f4")
-            if h.size != npoints:
-                raise PhaseCorrectionError(
-                    f"data2pt produced {h.size} heights; expected {npoints} for tile {label}"
+            # IPTA plist order:
+            # range, azimuth.
+            plist_arr = np.column_stack(
+                (
+                    cc.ravel(),
+                    rr.ravel(),
                 )
-            h_native = h.astype(np.float32)
-            finite = np.isfinite(h_native)
-            if self.zero_height_is_valid:
-                valid = finite
-                h_native[finite & (h_native == 0.0)] = self.zero_height_epsilon_m
-                h_native.astype(">f4").tofile(phgt)
-            else:
-                valid = finite & (h_native != 0.0)
-            valid.astype(np.uint8).tofile(pmask)
+            ).astype(
+                ">i4",
+                copy=False,
+            )
 
-            sim_full = np.zeros(
-                (ndate, npoints),
+            plist = (
+                tile_dir
+                /
+                "plist"
+            )
+
+            plist_arr.tofile(
+                plist
+            )
+
+            phgt = (
+                tile_dir
+                /
+                "phgt"
+            )
+
+            pmask = (
+                tile_dir
+                /
+                "pmask"
+            )
+
+            psim = (
+                tile_dir
+                /
+                "psim_unw"
+            )
+
+            tile_log = (
+                self.scratch_dir
+                /
+                "gamma.log"
+            )
+
+            # ----------------------------------------------------
+            # Geometry / height sampling.
+            # ----------------------------------------------------
+
+            (
+                phgt,
+                pmask,
+                valid,
+                height_seconds,
+                geometry_cache_hit,
+            ) = self._prepare_cached_geometry(
+                assets=assets,
+                global_row0=global_row0,
+                global_col0=global_col0,
+                rows=rows,
+                cols=cols,
+                plist=plist,
+                label=label,
+            )
+
+            # ----------------------------------------------------
+            # Build only the phase records requested by this block.
+            #
+            # selected_pairs:
+            #   local output row,
+            #   global stack secondary index
+            # ----------------------------------------------------
+
+            selected_pairs = tuple(
+                (
+                    local_pos,
+                    global_idx,
+                )
+                for (
+                    local_pos,
+                    global_idx,
+                )
+                in enumerate(
+                    selected_indices
+                )
+                if (
+                    global_idx
+                    !=
+                    assets.reference_index
+                )
+            )
+
+            sim_selected = np.zeros(
+                (
+                    local_ndate,
+                    npoints,
+                ),
                 dtype=np.float32,
             )
 
             simulation_seconds = 0.0
 
             if (
-                assets.pair_secondary_indices
+                selected_pairs
                 and
                 np.any(valid)
             ):
 
                 n_pairs = len(
-                    assets.pair_secondary_indices
+                    selected_pairs
                 )
 
                 sim_workers = (
@@ -545,11 +1343,60 @@ class GammaPointPhaseCorrectionProvider:
                     )
                 )
 
+                ref_one_based = (
+                    assets.reference_index
+                    +
+                    1
+                )
+
                 # ------------------------------------------------
-                # Exact legacy serial path remains available.
+                # Serial route.
+                #
+                # For exact all-date legacy operation retain the
+                # already validated original assets.itab.
+                #
+                # For a subset create an equivalent local-record
+                # ITAB containing only requested pairs.
                 # ------------------------------------------------
 
                 if sim_workers == 1:
+
+                    if legacy_all_dates:
+
+                        active_itab = (
+                            assets.itab
+                        )
+
+                    else:
+
+                        active_itab = (
+                            tile_dir
+                            /
+                            "requested_dates.itab"
+                        )
+
+                        with active_itab.open(
+                            "w",
+                            encoding="utf-8",
+                        ) as f:
+
+                            for (
+                                rec,
+                                (
+                                    _local_pos,
+                                    global_sec,
+                                ),
+                            ) in enumerate(
+                                selected_pairs,
+                                1,
+                            ):
+
+                                f.write(
+                                    f"{ref_one_based} "
+                                    f"{global_sec + 1} "
+                                    f"{rec} "
+                                    "1\n"
+                                )
 
                     t0 = perf_counter()
 
@@ -565,7 +1412,7 @@ class GammaPointPhaseCorrectionProvider:
                             ),
                             "-",
                             str(
-                                assets.itab
+                                active_itab
                             ),
                             "-",
                             str(phgt),
@@ -603,9 +1450,11 @@ class GammaPointPhaseCorrectionProvider:
                     if raw.size != expected:
 
                         raise PhaseCorrectionError(
-                            f"phase_sim_orb_pt output size mismatch "
-                            f"for {label}: {raw.size} FLOAT values "
-                            f"!= expected {expected}. "
+                            "phase_sim_orb_pt "
+                            "output size mismatch "
+                            f"for {label}: "
+                            f"{raw.size} != "
+                            f"{expected}. "
                             f"Full log: {tile_log}"
                         )
 
@@ -622,27 +1471,28 @@ class GammaPointPhaseCorrectionProvider:
 
                     for (
                         rec,
-                        sec_idx,
+                        (
+                            local_pos,
+                            _global_sec,
+                        ),
                     ) in enumerate(
-                        assets.pair_secondary_indices
+                        selected_pairs
                     ):
 
-                        sim_full[
-                            sec_idx
-                        ] = pair_phase[
-                            rec
-                        ]
+                        sim_selected[
+                            local_pos
+                        ] = (
+                            pair_phase[
+                                rec
+                            ]
+                        )
 
                 # ------------------------------------------------
-                # Pair-parallel phase_sim_orb_pt.
+                # Pair-parallel route.
                 #
-                # Each process receives:
-                #   same plist
-                #   same pmask
-                #   same heights
-                #   disjoint reference-secondary pair subset
-                #
-                # The benchmark demonstrated bit-exact output.
+                # Same GAMMA command and pair convention as the
+                # validated production implementation.  Only the
+                # selected pair set is partitioned.
                 # ------------------------------------------------
 
                 else:
@@ -654,7 +1504,8 @@ class GammaPointPhaseCorrectionProvider:
 
                     chunks = [
                         x
-                        for x in np.array_split(
+                        for x
+                        in np.array_split(
                             pair_positions,
                             sim_workers,
                         )
@@ -670,12 +1521,6 @@ class GammaPointPhaseCorrectionProvider:
                     chunk_root.mkdir(
                         parents=True,
                         exist_ok=True,
-                    )
-
-                    ref_one_based = (
-                        assets.reference_index
-                        +
-                        1
                     )
 
                     def run_chunk(
@@ -725,25 +1570,22 @@ class GammaPointPhaseCorrectionProvider:
                                 1,
                             ):
 
-                                sec_idx = (
-                                    assets
-                                    .pair_secondary_indices[
+                                (
+                                    _local_pos,
+                                    global_sec,
+                                ) = (
+                                    selected_pairs[
                                         int(
                                             pair_pos
                                         )
                                     ]
                                 )
 
-                                # GAMMA acquisition numbering
-                                # is one-based.
-                                #
-                                # Output record numbering is
-                                # deliberately local 1..Nchunk.
                                 f.write(
                                     f"{ref_one_based} "
-                                    f"{sec_idx + 1} "
+                                    f"{global_sec + 1} "
                                     f"{local_rec} "
-                                    f"1\n"
+                                    "1\n"
                                 )
 
                         elapsed = _run_command(
@@ -777,13 +1619,16 @@ class GammaPointPhaseCorrectionProvider:
                             label=(
                                 f"phase_sim_orb_pt:"
                                 f"{label}:"
-                                f"chunk{chunk_id:03d}"
+                                f"chunk"
+                                f"{chunk_id:03d}"
                             ),
                         )
 
-                        raw_chunk = np.fromfile(
-                            chunk_psim,
-                            dtype=">f4",
+                        raw_chunk = (
+                            np.fromfile(
+                                chunk_psim,
+                                dtype=">f4",
+                            )
                         )
 
                         expected_chunk = (
@@ -800,11 +1645,15 @@ class GammaPointPhaseCorrectionProvider:
                             expected_chunk
                         ):
 
-                            raise PhaseCorrectionError(
-                                f"phase_sim_orb_pt chunk "
-                                f"{chunk_id} output size "
-                                f"{raw_chunk.size} != "
-                                f"{expected_chunk}"
+                            raise (
+                                PhaseCorrectionError(
+                                    "phase_sim_orb_pt "
+                                    f"chunk {chunk_id} "
+                                    "output size "
+                                    f"{raw_chunk.size} "
+                                    "!= "
+                                    f"{expected_chunk}"
+                                )
                             )
 
                         arr = (
@@ -848,7 +1697,8 @@ class GammaPointPhaseCorrectionProvider:
                             for (
                                 chunk_id,
                                 positions,
-                            ) in enumerate(
+                            )
+                            in enumerate(
                                 chunks
                             )
                         ]
@@ -874,20 +1724,24 @@ class GammaPointPhaseCorrectionProvider:
                                 positions
                             ):
 
-                                sec_idx = (
-                                    assets
-                                    .pair_secondary_indices[
+                                (
+                                    local_pos,
+                                    _global_sec,
+                                ) = (
+                                    selected_pairs[
                                         int(
                                             pair_pos
                                         )
                                     ]
                                 )
 
-                                sim_full[
-                                    sec_idx
-                                ] = arr[
-                                    local_rec
-                                ]
+                                sim_selected[
+                                    local_pos
+                                ] = (
+                                    arr[
+                                        local_rec
+                                    ]
+                                )
 
                     simulation_seconds = (
                         perf_counter()
@@ -896,37 +1750,118 @@ class GammaPointPhaseCorrectionProvider:
                     )
 
                     log(
-                        f"phase_sim_orb_pt parallel "
+                        "phase_sim_orb_pt "
+                        "parallel "
                         f"{label}: "
+                        f"requested_dates="
+                        f"{local_ndate}, "
                         f"pairs={n_pairs}, "
                         f"workers={len(chunks)}, "
-                        f"wall={simulation_seconds:.2f}s, "
+                        f"wall="
+                        f"{simulation_seconds:.2f}s, "
                         f"max_worker="
                         f"{max(worker_seconds):.2f}s"
                     )
 
-            sim3 = sim_full.reshape(ndate, rows, cols)
-            corrected = (
-                block.astype(np.complex64, copy=False)
-                * np.exp(1j * self.sign * sim3).astype(np.complex64)
+            sim3 = sim_selected.reshape(
+                local_ndate,
+                rows,
+                cols,
             )
-            valid2 = valid.reshape(rows, cols)
-            corrected[:, ~valid2] = np.complex64(np.nan + 1j * np.nan)
 
-            finite_phase = sim_full[:, valid] if np.any(valid) else np.empty(0, np.float32)
-            phase_min = float(np.nanmin(finite_phase)) if finite_phase.size else float("nan")
-            phase_max = float(np.nanmax(finite_phase)) if finite_phase.size else float("nan")
+            corrected = (
+                block.astype(
+                    np.complex64,
+                    copy=False,
+                )
+                *
+                np.exp(
+                    1j
+                    *
+                    self.sign
+                    *
+                    sim3
+                ).astype(
+                    np.complex64
+                )
+            )
+
+            valid2 = valid.reshape(
+                rows,
+                cols,
+            )
+
+            corrected[
+                :,
+                ~valid2
+            ] = np.complex64(
+                np.nan
+                +
+                1j
+                *
+                np.nan
+            )
+
+            finite_phase = (
+                sim_selected[
+                    :,
+                    valid,
+                ]
+                if np.any(valid)
+                else np.empty(
+                    0,
+                    np.float32,
+                )
+            )
+
+            phase_min = (
+                float(
+                    np.nanmin(
+                        finite_phase
+                    )
+                )
+                if finite_phase.size
+                else float("nan")
+            )
+
+            phase_max = (
+                float(
+                    np.nanmax(
+                        finite_phase
+                    )
+                )
+                if finite_phase.size
+                else float("nan")
+            )
+
             stats = CorrectionTileStats(
                 n_points=npoints,
-                n_valid_height=int(valid.sum()),
-                height_seconds=height_seconds,
-                simulation_seconds=simulation_seconds,
-                total_seconds=perf_counter() - t_total,
+                n_valid_height=int(
+                    valid.sum()
+                ),
+                height_seconds=(
+                    height_seconds
+                ),
+                simulation_seconds=(
+                    simulation_seconds
+                ),
+                total_seconds=(
+                    perf_counter()
+                    -
+                    t_total
+                ),
                 phase_min=phase_min,
                 phase_max=phase_max,
             )
-            return corrected, valid2, stats
+
+            return (
+                corrected,
+                valid2,
+                stats,
+            )
+
         finally:
+
             if tmp_ctx is not None:
                 tmp_ctx.cleanup()
 

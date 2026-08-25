@@ -1,0 +1,177 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-authoritative-gacos-contract",
+  "authoritative_source": {
+    "path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/gacos.py",
+    "sha256": "785a545075895859ad4a7a8cc0274a94e3dabf5102800cb9c9c04a5813382e43",
+    "functions": [
+      "par_scalar",
+      "read_rsc",
+      "normalize_dates",
+      "discover_phase_dates",
+      "sample_dlos_block",
+      "apply_phase_block"
+    ]
+  },
+  "frozen_output": {
+    "path": "/home/ubuntu/Downloads/psds/output/processing/gacos_corrected_phase/acquisition_phase_gacos_corrected_rad.npy",
+    "shape": [
+      881315,
+      38
+    ],
+    "dtype": "float32",
+    "file_sha256": "0c250a21e987ad8b7eca07a760b3af7125c4b0e87534c7560365c7995d0fc372",
+    "array_sha256": "b5b697e8769f8a0a8cad4f89ef315a49834471af6c221b95986e8f2b82028d14",
+    "finite": 33489970,
+    "total": 33489970,
+    "min_rad": -12.755175590515137,
+    "median_rad": -0.34412452578544617,
+    "max_rad": 9.292969703674316
+  },
+  "geometry_substitution": {
+    "historical": "/home/ubuntu/Downloads/psds/output/processing/gacos_geometry",
+    "production": "/home/ubuntu/Downloads/psds/output/processing/point_geometry",
+    "checks": {
+      "longitude_deg": {
+        "shape_equal": true,
+        "dtype_equal": true,
+        "exact": true
+      },
+      "latitude_deg": {
+        "shape_equal": true,
+        "dtype_equal": true,
+        "exact": true
+      },
+      "radar_row": {
+        "shape_equal": true,
+        "dtype_equal": true,
+        "exact": true
+      },
+      "radar_col": {
+        "shape_equal": true,
+        "dtype_equal": true,
+        "exact": true
+      },
+      "incidence_rad": {
+        "shape_equal": true,
+        "dtype_equal": true,
+        "exact": true
+      },
+      "height_m": {
+        "shape_equal": true,
+        "dtype_equal": true,
+        "exact": true
+      }
+    },
+    "all_exact": true
+  },
+  "strict_point_lineage": {
+    "current_count": 881315,
+    "historical_present": true,
+    "exact": true
+  },
+  "gacos_products": {
+    "directory": "/home/ubuntu/Downloads/GACOS",
+    "discovered_dates": 38,
+    "coverage": {
+      "date_source": "/home/ubuntu/Downloads/psds/output/processing/gacos_corrected_phase/gacos_correction_manifest.json",
+      "required_count": 38,
+      "available_required_count": 38,
+      "missing": [],
+      "extra_count": 0
+    }
+  },
+  "historical_manifest": {
+    "status": "PASS_GACOS_CORRECTED_REFERENCED_PHASE",
+    "product_role": "atmosphere-corrected referenced phase; NOT final geodetic LOS",
+    "source_phase": "/home/ubuntu/Downloads/psds/output/processing/referenced_timeseries/acquisition_phase_referenced_rad.npy",
+    "source_phase_immutable": true,
+    "output_phase": "/home/ubuntu/Downloads/psds/output/processing/gacos_corrected_phase/acquisition_phase_gacos_corrected_rad.npy",
+    "output_dtype": "float32",
+    "output_shape": [
+      881315,
+      38
+    ],
+    "acquisition_dates": [
+      "20141006",
+      "20141018",
+      "20141030",
+      "20141111",
+      "20141123",
+      "20141205",
+      "20141217",
+      "20141229",
+      "20150110",
+      "20150122",
+      "20150203",
+      "20150215",
+      "20150227",
+      "20150311",
+      "20150323",
+      "20150404",
+      "20150416",
+      "20150428",
+      "20150627",
+      "20150709",
+      "20150721",
+      "20150802",
+      "20150814",
+      "20150826",
+      "20150907",
+      "20150919",
+      "20151001",
+      "20151025",
+      "20151212",
+      "20151224",
+      "20160105",
+      "20160117",
+      "20160129",
+      "20160210",
+      "20160305",
+      "20160317",
+      "20160329",
+      "20160410"
+    ],
+    "date_order_sources": [
+      "/home/ubuntu/Downloads/psds/output/processing/cache/phase_source_checkpoint_token.json:dates",
+      "/home/ubuntu/Downloads/psds/output/processing/network/network_manifest.json:dates"
+    ],
+    "reference_date": "20141006",
+    "reference_points": 607,
+    "gacos_grid": {
+      "width": 241,
+      "length": 241,
+      "x_first": 23.6,
+      "y_first": 38.2,
+      "x_step": 0.00083333333,
+      "y_step": -0.00083333333
+    },
+    "incidence": {
+      "source": "/home/ubuntu/Downloads/psds/output/processing/gacos_geometry/incidence_gamma_compatible_fast_rad.npy",
+      "mapping": "ZTD / cos(theta)"
+    },
+    "phase_convention": {
+      "correction_sign": "PLUS",
+      "formula": "phi_corr = phi_obs + (4*pi/lambda)*dL_ref, followed by exact same-region phase re-reference",
+      "wavelength_m": 0.055465759531382094,
+      "phase_factor_rad_per_m": 226.56086783142703
+    },
+    "performance": {
+      "chunk_points": 262144,
+      "gacos_read_seconds": 0.031032630940899253,
+      "production_seconds": 4.479417636059225,
+      "point_epochs_per_second": 7476411.605474425
+    },
+    "qa": {
+      "source_ref_median_max_abs_rad": 0.0,
+      "source_first_epoch_max_abs_rad": 0.0,
+      "corrected_ref_median_max_abs_rad": 2.1218929391331187e-10,
+      "corrected_first_epoch_max_abs_rad": 0.0,
+      "reference_dlos_epoch0_m": 0.0,
+      "final_reref_offset_epoch0_rad": 0.0
+    },
+    "intermediate_atmospheric_matrix_persisted": false,
+    "next": "P15-5B_RESIDUAL_DEM_SCLA_ESTIMATION"
+  },
+  "historical_stats_present": true,
+  "pass": true
+}

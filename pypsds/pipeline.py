@@ -201,6 +201,10 @@ STAGES = [
         "invert_timeseries.py",
     ),
     Stage(
+        "point_geometry",
+        "build_point_geometry.py",
+    ),
+    Stage(
         "reference",
         "apply_reference.py",
     ),
@@ -243,6 +247,30 @@ STAGE_CONTRACTS = {
 #
 # Cache remains disabled independently of contract validation.
 # ------------------------------------------------------------
+
+STAGE_CONTRACTS["point_geometry"] = StageContract(
+    name="point_geometry",
+
+    required_inputs=(
+        "processing/network_inversion/strict_point_ids.npy",
+        "processing/point_phase_stack/rows.npy",
+        "processing/point_phase_stack/cols.npy",
+    ),
+
+    required_outputs=(
+        "processing/point_geometry/radar_row.npy",
+        "processing/point_geometry/radar_col.npy",
+        "processing/point_geometry/longitude_deg.npy",
+        "processing/point_geometry/latitude_deg.npy",
+        "processing/point_geometry/height_m.npy",
+        "processing/point_geometry/incidence_rad.npy",
+        "processing/point_geometry/point_geometry_manifest.json",
+    ),
+
+    validated=True,
+    cacheable=False,
+)
+
 
 STAGE_CONTRACTS["reference"] = StageContract(
     name="reference",
@@ -675,7 +703,7 @@ def _stage_args(
                 cfg_get(
                     cfg,
                     "runtime.support_cache_tile_rows",
-                    512,
+                    runtime.support_cache_tile_rows,
                 )
             ),
 
@@ -684,7 +712,7 @@ def _stage_args(
                 cfg_get(
                     cfg,
                     "runtime.support_cache_tile_cols",
-                    1024,
+                    runtime.support_cache_tile_cols,
                 )
             ),
 
@@ -693,7 +721,7 @@ def _stage_args(
                 cfg_get(
                     cfg,
                     "runtime.support_cache_batch_size",
-                    32000,
+                    runtime.support_cache_batch_size,
                 )
             ),
 
@@ -702,7 +730,7 @@ def _stage_args(
                 cfg_get(
                     cfg,
                     "runtime.support_cache_support_block",
-                    1024,
+                    runtime.support_cache_support_block,
                 )
             ),
         ]
@@ -823,6 +851,33 @@ def _stage_args(
                     cfg,
                     "runtime.phase_link_chunk_size",
                     runtime.phase_link_chunk_size,
+                )
+            ),
+
+            "--tile-rows",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.phase_link_tile_rows",
+                    runtime.phase_link_tile_rows,
+                )
+            ),
+
+            "--tile-cols",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.phase_link_tile_cols",
+                    runtime.phase_link_tile_cols,
+                )
+            ),
+
+            "--support-block",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.phase_link_support_block",
+                    runtime.support_cache_support_block,
                 )
             ),
         ]
@@ -1426,6 +1481,41 @@ def run_pipeline(
         else int(requested_cpu_raw)
     )
 
+    _runtime_strategy = str(
+        cfg_get(
+            cfg,
+            "phase_linking.temporal.strategy",
+            "full_scm",
+        )
+    ).strip().lower()
+
+    if _runtime_strategy == "sequential":
+
+        _runtime_solver_size = min(
+            len(stack.dates),
+            int(
+                cfg_get(
+                    cfg,
+                    "phase_linking.temporal.ministack_size",
+                    19,
+                )
+            )
+            +
+            int(
+                cfg_get(
+                    cfg,
+                    "phase_linking.temporal.max_num_compressed",
+                    5,
+                )
+            ),
+        )
+
+    else:
+
+        _runtime_solver_size = len(
+            stack.dates
+        )
+
     runtime = build_runtime_plan(
         ndate=len(
             stack.dates
@@ -1438,6 +1528,9 @@ def run_pipeline(
             )
         ),
         requested_cpu=requested_cpu,
+        max_solver_size=(
+            _runtime_solver_size
+        ),
     )
 
     # --------------------------------------------------------
@@ -1529,6 +1622,43 @@ def run_pipeline(
     print(
         f"usable RAM    : "
         f"{runtime.usable_memory_bytes/1024**3:.2f} GiB"
+    )
+
+    print(
+        f"PL solver dim : "
+        f"{runtime.phase_link_solver_size}"
+    )
+
+    print(
+        f"PL tile       : "
+        f"{runtime.phase_link_tile_rows} x "
+        f"{runtime.phase_link_tile_cols}"
+    )
+
+    print(
+        f"PL workers    : "
+        f"{runtime.phase_link_workers}"
+    )
+
+    print(
+        f"PL chunk      : "
+        f"{runtime.phase_link_chunk_size}"
+    )
+
+    print(
+        f"PL batch      : "
+        f"{runtime.phase_link_batch_size}"
+    )
+
+    print(
+        f"SHP tile      : "
+        f"{runtime.support_cache_tile_rows} x "
+        f"{runtime.support_cache_tile_cols}"
+    )
+
+    print(
+        f"SHP batch     : "
+        f"{runtime.support_cache_batch_size}"
     )
 
     print(

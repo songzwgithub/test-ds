@@ -1,0 +1,42 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-gacos-core",
+  "status": "PASS",
+  "authoritative_source": {
+    "path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/docs/release_v1_1/authoritative_sources/production/corrections/gacos.py",
+    "sha256": "785a545075895859ad4a7a8cc0274a94e3dabf5102800cb9c9c04a5813382e43"
+  },
+  "production_module": {
+    "path": "/home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/corrections/gacos.py",
+    "sha256": "3918afdf83b2e4e5ff1cb8a802e0a555480e5deabd00ba8d84ae8685f2110ac7"
+  },
+  "migration": {
+    "unchanged_functions": [
+      "par_scalar",
+      "read_rsc",
+      "normalize_dates",
+      "sample_dlos_block",
+      "apply_phase_block"
+    ],
+    "portable_adaptation": {
+      "function": "discover_phase_dates",
+      "change": "global PROC replaced by explicit proc argument",
+      "algorithm_change": false,
+      "production_behavior_parity": "EXACT"
+    }
+  },
+  "geometry": {
+    "owner": "point_geometry",
+    "modified": false,
+    "historical_gacos_geometry": "regression reference only"
+  },
+  "pipeline": {
+    "modified": false,
+    "production_stage_count": 33
+  },
+  "historical_full_scene_target": {
+    "point_count": 881315,
+    "acquisitions": 38,
+    "output": "/home/ubuntu/Downloads/psds/output/processing/gacos_corrected_phase/acquisition_phase_gacos_corrected_rad.npy"
+  },
+  "next": "build portable GACOS stage orchestration and run full-scene exact parity"
+}

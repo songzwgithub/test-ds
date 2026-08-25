@@ -1,0 +1,662 @@
+============================================================================================================
+pyPSDS-GAMMA v1.1 FINAL WRAPPER IMPLEMENTATION INTERFACE
+============================================================================================================
+repo     : /home/ubuntu/software/pyPSDS-GAMMA-v1.0
+pipeline : UNCHANGED
+
+
+============================================================================================================
+1. CURRENT PIPELINE
+============================================================================================================
+stage count : 33
+01 ds_statistics                        build_ds_statistics.py
+02 phase_cache                          build_phase_cache.py
+03 exact_support_cache                  build_exact_support_cache.py
+04 phase_linking                        run_phase_linking.py
+05 ds_selection                         select_ds.py
+06 ps_finalize                          finalize_ps_geometry.py
+07 point_stack                          build_point_phase_stack.py
+08 network_prepare                      prepare_temporal_network.py
+09 network_build                        build_temporal_network.py
+10 network_cycle_quality                assess_network_cycle_quality.py
+11 network_finalize                     finalize_temporal_network.py
+12 virtual_ifg_quality                  assess_virtual_ifg_quality.py
+13 spatial_graph_quality                assess_spatial_graph_quality.py
+14 spatial_bridge_quality               assess_spatial_bridge_quality.py
+15 spatial_component_quality            assess_spatial_components.py
+16 spatial_anchor_quality               assess_spatial_anchor_quality.py
+17 spatial_anchor_summary               summarize_spatial_anchor_quality.py
+18 spatial_local_graph_quality          assess_local_spatial_graph.py
+19 spatial_graph                        build_spatial_graph.py
+20 spatial_gradient_quality             assess_spatial_phase_gradient.py
+21 unwrap_policy                        finalize_unwrap_policy.py
+22 unwrap                               unwrap_all_ifgs.py
+23 unwrap_severity_quality              assess_unwrap_severity.py
+24 unwrap_conflict_quality              assess_unwrap_conflicts.py
+25 unwrap_acquisition_quality           assess_unwrap_acquisition_quality.py
+26 temporal_closure                     assess_temporal_integer_closure.py
+27 temporal_integer_candidate           build_temporal_integer_candidates.py
+28 temporal_candidate_spatial_quality   validate_temporal_integer_candidates.py
+29 unwrap_signature_quality             assess_unwrap_signature_feasibility.py
+30 unwrap_finalize                      finalize_unwrap_solution.py
+31 timeseries_inversion                 invert_timeseries.py
+32 point_geometry                       build_point_geometry.py
+33 reference                            apply_reference.py
+
+Stage        : (name: 'str', script: 'str') -> None
+StageContract: (name: 'str', required_inputs: 'tuple[str, ...]' = (), required_outputs: 'tuple[str, ...]' = (), validated: 'bool' = False, cacheable: 'bool' = False) -> None
+current tail : unwrap_signature_quality -> unwrap_finalize -> timeseries_inversion -> point_geometry -> reference
+
+============================================================================================================
+2. PIPELINE DISPATCH
+============================================================================================================
+def _stage_args(
+    stage: Stage,
+    *,
+    cfg,
+    config_path: Path,
+    paths,
+    runtime,
+    force: bool,
+):
+
+    args = [
+        "--config",
+        str(config_path),
+    ]
+
+    if stage.name == "ds_statistics":
+
+        args += [
+            "--adi-max",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "selection.ps.amplitude_dispersion_max",
+                    0.25,
+                )
+            ),
+
+            "--tile-rows",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.ds_statistics_tile_rows",
+                    0,
+                )
+            ),
+
+            "--tile-cols",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.ds_statistics_tile_cols",
+                    0,
+                )
+            ),
+        ]
+
+        if not force:
+            args.append(
+                "--resume"
+            )
+
+    elif stage.name == "phase_cache":
+
+        args += [
+            "--tile-rows",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.phase_cache_tile_rows",
+                    runtime.tile_rows,
+                )
+            ),
+            "--tile-cols",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.phase_cache_tile_cols",
+                    runtime.tile_cols,
+                )
+            ),
+            "--workers",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.phase_cache_workers",
+                    runtime.io_workers,
+                )
+            ),
+        ]
+
+        if force:
+            args.append(
+                "--overwrite"
+            )
+
+    elif stage.name == "exact_support_cache":
+
+        args += [
+            "--half-row",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "selection.shp.half_row",
+                    5,
+                )
+            ),
+
+            "--half-col",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "selection.shp.half_col",
+                    11,
+                )
+            ),
+
+            "--alpha",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "selection.shp.alpha",
+                    0.005,
+                )
+            ),
+
+            "--tile-rows",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.support_cache_tile_rows",
+                    runtime.support_cache_tile_rows,
+                )
+            ),
+
+            "--tile-cols",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.support_cache_tile_cols",
+                    runtime.support_cache_tile_cols,
+                )
+            ),
+
+            "--batch",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.support_cache_batch_size",
+                    runtime.support_cache_batch_size,
+                )
+            ),
+
+            "--support-block",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.support_cache_support_block",
+                    runtime.support_cache_support_block,
+                )
+            ),
+        ]
+
+        if not force:
+            args.append(
+                "--resume"
+            )
+
+    elif stage.name == "phase_linking":
+
+        # Preserve validated numerical execution settings for first-release parity
+        # for validated production parity. They are benchmarked and
+        # auto-tuned only after parity is frozen.
+        args += [
+            "--center-mode",
+            str(
+                cfg_get(
+                    cfg,
+                    "selection.ds.center_mode",
+                    "all",
+                )
+            ),
+
+            "--half-row",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "selection.shp.half_row",
+                    5,
+                )
+            ),
+
+            "--half-col",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "selection.shp.half_col",
+                    11,
+                )
+            ),
+
+            "--alpha",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "selection.shp.alpha",
+                    0.005,
+                )
+            ),
+
+            "--min-shp",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "selection.shp.min_count",
+                    48,
+                )
+            ),
+
+            "--adi-max",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "selection.ps.amplitude_dispersion_max",
+                    0.25,
+                )
+            ),
+
+            "--beta",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "phase_linking.beta",
+                    0.0,
+                )
+            ),
+
+            "--gamma-jitter",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "phase_linking.gamma_jitter",
+                    1e-6,
+                )
+            ),
+
+            "--emi-mu",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "phase_linking.target_eigenvalue",
+                    0.99,
+                )
+            ),
+
+            "--batch-size",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.phase_link_batch_size",
+                    runtime.phase_link_batch_size,
+                )
+            ),
+
+            "--pl-workers",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.phase_link_workers",
+                    runtime.phase_link_workers,
+                )
+            ),
+
+            "--pl-chunk-size",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.phase_link_chunk_size",
+                    runtime.phase_link_chunk_size,
+                )
+            ),
+
+            "--tile-rows",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.phase_link_tile_rows",
+                    runtime.phase_link_tile_rows,
+                )
+            ),
+
+            "--tile-cols",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.phase_link_tile_cols",
+                    runtime.phase_link_tile_cols,
+                )
+            ),
+
+            "--support-block",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.phase_link_support_block",
+                    runtime.support_cache_support_block,
+                )
+            ),
+        ]
+
+        temporal_strategy = str(
+            cfg_get(
+                cfg,
+                "phase_linking.temporal.strategy",
+                "full_scm",
+            )
+        ).lower()
+
+        if (
+            not force
+            and
+            temporal_strategy == "full_scm"
+        ):
+            args.append(
+                "--resume"
+            )
+
+    elif stage.name == "ds_selection":
+
+        args += [
+            "--tc-min",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "selection.ds.temporal_coherence_min",
+                    0.80,
+                )
+            ),
+
+            "--pair-min",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "selection.ds.pair_coherence_min",
+                    0.0,
+                )
+            ),
+        ]
+
+        if bool(
+            cfg_get(
+                cfg,
+                "selection.ds.accept_evd",
+                True,
+            )
+        ):
+            args.append(
+                "--accept-evd"
+            )
+
+    elif stage.name == "point_stack":
+
+        tc = float(
+            cfg_get(
+                cfg,
+                "selection.ds.temporal_coherence_min",
+                0.80,
+            )
+        )
+
+        pc = float(
+            cfg_get(
+                cfg,
+                "selection.ds.pair_coherence_min",
+                0.0,
+            )
+        )
+
+        evd = bool(
+            cfg_get(
+                cfg,
+                "selection.ds.accept_evd",
+                True,
+            )
+        )
+
+        tag = (
+            f"tc{tc:.3f}_"
+            f"pc{pc:.3f}_"
+            + (
+                "evd"
+                if evd
+                else "emi"
+            )
+        )
+
+        ds_mask = (
+            Path(paths.output_dir)
+            / "processing"
+            / f"final_ds_{tag}.npy"
+        )
+
+        args += [
+            "--ds-mask",
+            str(ds_mask),
+        ]
+
+    elif stage.name == "unwrap":
+
+        if force:
+            args.append(
+                "--force"
+            )
+
+    elif stage.name == "reference":
+
+        method = str(
+            cfg_get(
+                cfg,
+                "reference.method",
+                "radar_window",
+            )
+        ).strip().lower()
+
+        min_points = int(
+            cfg_get(
+                cfg,
+                "reference.min_points",
+                100,
+            )
+        )
+
+        if method == "point_ids":
+            value = cfg_get(
+                cfg,
+                "reference.point_ids_path",
+                None,
+            )
+
+            if value in (
+                None,
+                "",
+            ):
+                raise ValueError(
+                    "reference.method=point_ids requires "
+                    "reference.point_ids_path"
+                )
+
+            point_ids_path = Path(
+                value
+            ).expanduser()
+
+            if not point_ids_path.is_absolute():
+                point_ids_path = (
+                    Path(paths.work_dir)
+                    /
+                    point_ids_path
+                ).resolve()
+
+            args += [
+                "--point-ids-file",
+                str(
+                    point_ids_path
+                ),
+                "--min-points",
+                _fmt(
+                    min_points
+                ),
+            ]
+
+        elif method == "radar_window":
+            center_row = cfg_get(
+                cfg,
+                "reference.radar_window.center_row",
+                None,
+            )
+
+            center_col = cfg_get(
+                cfg,
+                "reference.radar_window.center_col",
+                None,
+            )
+
+            if (
+                center_row is None
+                or
+                center_col is None
+            ):
+                raise ValueError(
+                    "reference.method=radar_window requires "
+                    "reference.radar_window.center_row and center_col"
+                )
+
+            args += [
+                "--center-row",
+                _fmt(
+                    center_row
+                ),
+                "--center-col",
+                _fmt(
+                    center_col
+                ),
+                "--half-row",
+                _fmt(
+                    cfg_get(
+                        cfg,
+                        "reference.radar_window.half_row",
+                        10,
+                    )
+                ),
+                "--half-col",
+                _fmt(
+                    cfg_get(
+                        cfg,
+                        "reference.radar_window.half_col",
+                        15,
+                    )
+                ),
+                "--min-points",
+                _fmt(
+                    min_points
+                ),
+            ]
+
+        else:
+            raise ValueError(
+                f"Unsupported reference.method: {method!r}"
+            )
+
+    return args
+
+
+============================================================================================================
+3. PUBLIC NUMERICAL CORE APIs
+============================================================================================================
+
+------------------------------------------------------------------------------------------------------------
+pypsds.corrections.gacos
+path   : /home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/corrections/gacos.py
+sha256 : 3918afdf83b2e4e5ff1cb8a802e0a555480e5deabd00ba8d84ae8685f2110ac7
+------------------------------------------------------------------------------------------------------------
+par_scalar(path, key)
+read_rsc(path)
+normalize_dates(x)
+discover_phase_dates(proc, expected_dates)
+
+------------------------------------------------------------------------------------------------------------
+pypsds.corrections.scla_baseline
+path   : /home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/corrections/scla_baseline.py
+sha256 : 8451d92c15a28ce3b76d67c673bd86b9f3a4655c5ecc6fdfa39cc9f55c029d09
+------------------------------------------------------------------------------------------------------------
+sha256(path)
+parse_vector(text, labels)
+parse_base(path)
+source_path_from_entry(entry)
+
+------------------------------------------------------------------------------------------------------------
+pypsds.corrections.scla_k
+path   : /home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/corrections/scla_k.py
+sha256 : 9d210116bf9496d80e93a2cf775d9d5d71f2463d62e4f8be5d155f86503bee9e
+------------------------------------------------------------------------------------------------------------
+read_par(path)
+scalar_from_par(d, keys)
+parse_vector(text, labels)
+parse_base(path)
+path_from_source_entry(entry)
+pair_orientation(path, date_i, date_j)
+geometry_factors(row_chunk, col_chunk, *, azimuth_looks, earth_radius, mean_azimuth, near_range, prf, range_looks, range_spacing, sar_to_earth)
+
+------------------------------------------------------------------------------------------------------------
+pypsds.corrections.scla_c
+path   : /home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/corrections/scla_c.py
+sha256 : 76a28a13e50e02044434fdc7a7ff2e4a3f274a43dbe096670917728acc847ded
+------------------------------------------------------------------------------------------------------------
+read_par(path)
+par_scalar(pars, keys)
+gls_projector(A, covariance)
+geometry_factors(rr, cc, *, azimuth_looks, earth_radius, mean_azimuth, near_range, prf, range_looks, range_spacing, sar_to_earth)
+baseline_c_projection(rr, cc, *, CW_C, CW_CR, CW_N, CW_NR, azimuth_looks, earth_radius, mean_azimuth, near_range, prf, range_looks, range_spacing, sar_to_earth)
+
+------------------------------------------------------------------------------------------------------------
+pypsds.corrections.pre_scn
+path   : /home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/corrections/pre_scn.py
+sha256 : 43199c56bb23265689f23b37972daabe992a45be90677f25f7ce444c10e0b99f
+------------------------------------------------------------------------------------------------------------
+read_par(path)
+par_scalar(pars, names)
+parse_vector(text, labels)
+parse_base(path)
+geometry_factors(rr, cc, azimuth_looks, earth_radius, mean_azimuth, near_range, prf, range_looks, range_spacing, sar_to_earth)
+fast_bsm(rr, cc, CR_SM, C_SM, NR_SM, N_SM, azimuth_looks, earth_radius, mean_azimuth, near_range, prf, range_looks, range_spacing, sar_to_earth)
+
+------------------------------------------------------------------------------------------------------------
+pypsds.corrections.scn
+path   : /home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/corrections/scn.py
+sha256 : 59bc1a3b7fc666d4629b44609a0ec045fb38b0e653402f63d2582777c72b5869
+------------------------------------------------------------------------------------------------------------
+temporal_weight_matrix(day, master0, time_win)
+build_cell_index(coords, cell_size)
+build_safe_offsets(cell_size, radius)
+
+------------------------------------------------------------------------------------------------------------
+pypsds.inversion.los_timeseries
+path   : /home/ubuntu/software/pyPSDS-GAMMA-v1.0/pypsds/inversion/los_timeseries.py
+sha256 : 2c7d4d484f80bfbd8578e03e1ae9f5e29893d9e1d317253b9c348b3dd50df402
+------------------------------------------------------------------------------------------------------------
+read_par(path)
+par_scalar(pars, keys)
+Traceback (most recent call last):
+  File "<stdin>", line 83, in <module>
+  File "/home/ubuntu/software/miniconda3/envs/pypsds-fast/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'pypsds.products'

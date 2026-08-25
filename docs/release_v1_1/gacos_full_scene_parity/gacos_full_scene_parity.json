@@ -1,0 +1,21 @@
+{
+  "contract": "pyPSDS-GAMMA-v1.1-gacos-full-scene-parity",
+  "status": "PASS",
+  "point_count": 881315,
+  "acquisitions": 38,
+  "shape_exact": true,
+  "dtype_exact": true,
+  "array_exact": true,
+  "file_bytes_exact": true,
+  "difference_count": 0,
+  "max_abs_error_rad": 0.0,
+  "historical_file_sha256": "0c250a21e987ad8b7eca07a760b3af7125c4b0e87534c7560365c7995d0fc372",
+  "new_file_sha256": "0c250a21e987ad8b7eca07a760b3af7125c4b0e87534c7560365c7995d0fc372",
+  "manifest_science_exact": true,
+  "provenance_note": "Runtime provenance fields such as date_order_sources and output paths are not required to be byte-identical. The resolved 38-date acquisition order and all scientific parameters are exact.",
+  "geometry_owner": "processing/point_geometry",
+  "historical_geometry_owner": "processing/gacos_geometry",
+  "geometry_modified": false,
+  "pipeline_modified": false,
+  "production_stage_count": 33
+}
