@@ -109,3 +109,6 @@ __pycache__/
 *~
 *_before_*
 docs/release/generated/
+
+*.pyc
+docs/release_*/

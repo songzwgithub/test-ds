@@ -113,25 +113,10 @@ corrections:
     wavelength_m: 100.0
     radius_factor: 4.0
     cell_size_m: 200.0
-adaptive_filter:
-  enabled: false
-  domain: wrapped_virtual_interferogram
-  method: goldstein_werner_adaptive
-  alpha: null
-  planned_position: after_unwrap_policy_before_unwrap
-  preserve_unfiltered: true
-  benchmark_required: true
-  patch_size: 32
-  use_for_integer_estimation_only: true
-  remove_filter_after_unwrap: true
-  status: experimental_rejected_as_default_after_P10B
-  production_mode: raw_unfiltered_point_graph_unwrap
 products:
   point:
     enabled: true
     formats:
-    - parquet
-    - geopackage
     - csv
     crs: EPSG:4326
   quicklook:

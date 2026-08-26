@@ -5,7 +5,7 @@ from pathlib import Path
 import json
 import numpy as np
 
-from pypsds.stages._v11_common import (
+from pypsds.stages._stage_common import (
     atomic_copy,
     cfg_get,
     ensure_gacos_cache,

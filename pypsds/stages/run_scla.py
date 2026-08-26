@@ -10,15 +10,16 @@ import sys
 
 import numpy as np
 
-from pypsds.stages._v11_common import (
+from pypsds.stages._stage_common import (
     atomic_copy,
     cfg_get,
     load_context,
+    derive_multilook_factors,
     public_env,
     runtime_path,
     write_json,
 )
-from pypsds.runtime_v11.scla_support import prepare
+from pypsds.runtime_backend.scla_support import prepare
 
 
 def _count_contract(payload, token):
@@ -220,6 +221,11 @@ def main():
             ).resolve(),
         )
 
+        range_looks, azimuth_looks = derive_multilook_factors(
+            ctx["rslc_par"], ctx["geometry_par"]
+        )
+        print("SCLA multilook factors       :", f"{range_looks}:{azimuth_looks}")
+
         env = public_env(ctx)
         env.update({
             "PYPSDS_SCLA_PROJECT": str(Path(ctx["paths"].work_dir).resolve()),
@@ -234,6 +240,9 @@ def main():
             "PYPSDS_SCLA_MISSING_COUNT": str(missing),
             "PYPSDS_SCLA_ORIGINAL_COUNT": str(original),
             "PYPSDS_SCLA_GEOMETRIC_MASTER": str(ctx["master_date"]),
+            "PYPSDS_SCLA_RSLC_PAR": str(ctx["rslc_par"]),
+            "PYPSDS_SCLA_RANGE_LOOKS": str(range_looks),
+            "PYPSDS_SCLA_AZIMUTH_LOOKS": str(azimuth_looks),
         })
 
         for name in (

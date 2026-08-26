@@ -6,7 +6,7 @@ import shutil
 
 import numpy as np
 
-from pypsds.stages._v11_common import (
+from pypsds.stages._stage_common import (
     cfg_get,
     ensure_geometry_compat,
     load_context,
@@ -59,7 +59,7 @@ def main():
 
         master0 = ctx["dates"].index(ctx["master_date"])
         write_json(manifest, {
-            "status": "PASS_STAMPS_STAGE8_SCN",
+            "status": "PASS_SCN",
             "mode": "disabled",
             "scientific_contract": {
                 "geometric_master_date": ctx["master_date"],
@@ -193,14 +193,7 @@ def main():
         support = outdir / "support"
         _locate_support(outdir, "stamps_xy_exact_float32_m.npy")
         _locate_support(outdir, "stamps_sort_index.npy")
-        # Historical producer name -> public semantic name.
-        old_count = _locate_support(outdir, "stage8_neighbor_count_r400m.npy") \
-            if any(outdir.rglob("stage8_neighbor_count_r400m.npy")) else None
-        public_count = support / "neighbor_count_r400m.npy"
-        if old_count is not None and not public_count.is_file():
-            shutil.copyfile(old_count, public_count)
-        if not public_count.is_file():
-            _locate_support(outdir, "neighbor_count_r400m.npy")
+        _locate_support(outdir, "neighbor_count.npy")
 
         run_runtime("scn_runtime.py", ctx, extra)
 

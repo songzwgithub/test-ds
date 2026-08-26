@@ -109,7 +109,7 @@ def build_runtime_plan(
 
     max_solver_size
         Maximum dense phase-linking matrix dimension actually solved
-        in one sequential stage.  For the frozen M19 + max-compressed-5
+        in one sequential stage.  For the sequential ministack
         production path this is normally <= 24 even when the full stack
         contains many more acquisitions.
 
@@ -371,59 +371,11 @@ def build_runtime_plan(
         support_batch = 32768
 
     # Keep the validated exact-GLRT internal support block unchanged
-    # in P11A.  P11B can benchmark larger/vectorized packed blocks.
+    # in production.  production can benchmark larger/vectorized packed blocks.
     support_block = 1024
 
 
     # ---------------------------------------------------------
-    # P11D-4 calibrated sequential EMI schedule.
-    #
-    # Production benchmark on this CPU for the sequential
-    # threshold-Cholesky EMI regime:
-    #
-    #   solver ~20
-    #   B = 8k, 16k, 32k, 65k
-    #
-    # 4 workers / 512 centers was bit-exact at every tested B,
-    # with:
-    #
-    #   geometric-mean EMI speedup = 1.358x
-    #   worst tested speedup        = 1.109x
-    #
-    # This changes scheduling only. EMI mathematics, chunk
-    # arithmetic and BLAS/LAPACK thread count are unchanged.
-    #
-    # Restrict the calibration to the validated small sequential
-    # solver family. Larger solver sizes retain the generic P11A
-    # memory-derived planner.
-    # ---------------------------------------------------------
-
-    _p11d_solver_size = int(
-        solver_n
-    )
-
-    if (
-        _p11d_solver_size <= 24
-        and
-        cpu >= 4
-    ):
-
-        pl_workers = 4
-
-        chunk = 512
-
-        batch = max(
-            chunk,
-            pl_workers
-            *
-            chunk,
-        )
-
-        batch = min(
-            batch,
-            65536,
-        )
-
     return RuntimePlan(
         cpu_count=cpu,
         available_memory_bytes=available,

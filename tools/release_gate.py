@@ -81,7 +81,7 @@ def check_wheel():
             names = set(zf.namelist())
         required = {
             "pypsds/resources/default_config.yaml",
-            "pypsds/resources/ds_production_policy_v1.json",
+            "pypsds/resources/ds_production_policy.json",
             "pypsds/stages/run_phase_linking.py",
             "pypsds/stages/build_exact_support_cache.py",
             "pypsds/stages/apply_reference.py",
@@ -92,10 +92,10 @@ def check_wheel():
             "pypsds/stages/build_final_los.py",
             "pypsds/stages/build_point_products.py",
             "pypsds/products/point_metrics.py",
-            "pypsds/runtime_v11/gacos_runtime.py",
-            "pypsds/runtime_v11/scn_runtime.py",
-            "pypsds/runtime_v11/final_los_runtime.py",
-            "pypsds/runtime_v11/point_metrics_runtime.py",
+            "pypsds/runtime_backend/gacos_runtime.py",
+            "pypsds/runtime_backend/scn_runtime.py",
+            "pypsds/runtime_backend/final_los_runtime.py",
+            "pypsds/runtime_backend/point_metrics_runtime.py",
         }
         missing = sorted(required - names)
         if missing:

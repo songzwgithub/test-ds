@@ -7,7 +7,7 @@ import warnings
 
 import numpy as np
 
-from pypsds.stages._v11_common import cfg_get, load_context, run_runtime, write_json
+from pypsds.stages._stage_common import cfg_get, load_context, run_runtime, write_json
 
 
 def _table_columns(ctx):

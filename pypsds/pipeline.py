@@ -176,7 +176,7 @@ STAGE_CONTRACTS["reference"] = StageContract(
 
 
 # ------------------------------------------------------------
-# pyPSDS-GAMMA v1.1 validated public tail contracts
+# Validated production tail contracts
 # ------------------------------------------------------------
 
 STAGE_CONTRACTS['atmosphere_correction'] = StageContract(
