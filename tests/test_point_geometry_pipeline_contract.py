@@ -12,7 +12,7 @@ def test_point_geometry_pipeline_order():
         for stage in STAGES
     ]
 
-    assert len(names) == 33
+    assert len(names) == 38
 
     i = names.index(
         "point_geometry"

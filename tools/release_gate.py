@@ -25,10 +25,42 @@ def check_contract(config):
         text = td / "inventory.txt"
         snapshot = td / "snapshot.json"
         run([sys.executable, str(ROOT / "tools" / "build_stage_contract_inventory.py"), "--config", str(config), "--json", str(inventory), "--text", str(text)], cwd=ROOT)
+
+        from pypsds.pipeline import STAGE_CONTRACTS
+
+        inventory_data = json.loads(inventory.read_text(encoding="utf-8"))
+        enriched = []
+
+        for stage_name, contract in STAGE_CONTRACTS.items():
+            if not contract.validated or not contract.required_outputs:
+                continue
+
+            stage_info = inventory_data.get("stages", {}).get(stage_name)
+            if stage_info is None:
+                raise RuntimeError(
+                    "validated StageContract missing from inventory: "
+                    f"{stage_name}"
+                )
+
+            outputs = set(stage_info.get("exact_output_outputs", []))
+            outputs.update(str(x) for x in contract.required_outputs)
+            stage_info["exact_output_outputs"] = sorted(outputs)
+            enriched.append((stage_name, len(contract.required_outputs)))
+
+        inventory.write_text(
+            json.dumps(inventory_data, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+
+        print(
+            "validated StageContract inventory enrichment:",
+            ", ".join(f"{name}={count}" for name, count in enriched),
+        )
+
         run([sys.executable, str(ROOT / "tools" / "freeze_stage_output_contracts.py"), "--config", str(config), "--inventory", str(inventory), "--snapshot", str(snapshot)], cwd=ROOT)
         run([sys.executable, str(ROOT / "tools" / "freeze_stage_output_contracts.py"), "--config", str(config), "--inventory", str(inventory), "--snapshot", str(snapshot), "--audit-only"], cwd=ROOT)
         data = json.loads(snapshot.read_text(encoding="utf-8"))
-        if data["stage_count"] != 33:
+        if data["stage_count"] != 38:
             raise RuntimeError(f"unexpected production stage count: {data['stage_count']}")
     print("DYNAMIC OUTPUT CONTRACT GATE: PASS")
 
@@ -47,27 +79,48 @@ def check_wheel():
         wheel = wheels[0]
         with zipfile.ZipFile(wheel) as zf:
             names = set(zf.namelist())
-        required = {"pypsds/resources/default_config.yaml", "pypsds/resources/ds_production_policy_v1.json", "pypsds/stages/run_phase_linking.py", "pypsds/stages/build_exact_support_cache.py", "pypsds/stages/apply_reference.py", "pypsds/stages/build_point_geometry.py"}
+        required = {
+            "pypsds/resources/default_config.yaml",
+            "pypsds/resources/ds_production_policy_v1.json",
+            "pypsds/stages/run_phase_linking.py",
+            "pypsds/stages/build_exact_support_cache.py",
+            "pypsds/stages/apply_reference.py",
+            "pypsds/stages/build_point_geometry.py",
+            "pypsds/stages/apply_atmosphere_correction.py",
+            "pypsds/stages/run_scla.py",
+            "pypsds/stages/run_scn.py",
+            "pypsds/stages/build_final_los.py",
+            "pypsds/stages/build_point_products.py",
+            "pypsds/products/point_metrics.py",
+            "pypsds/runtime_v11/gacos_runtime.py",
+            "pypsds/runtime_v11/scn_runtime.py",
+            "pypsds/runtime_v11/final_los_runtime.py",
+            "pypsds/runtime_v11/point_metrics_runtime.py",
+        }
         missing = sorted(required - names)
         if missing:
             raise RuntimeError("wheel missing production resources: " + ", ".join(missing))
         vdir = td / "venv"
         venv.EnvBuilder(with_pip=True, system_site_packages=True).create(vdir)
         py = _venv_python(vdir)
-        run([py, "-m", "pip", "install", "--no-deps", str(wheel)])
+        run([py, "-m", "pip", "install", "--force-reinstall", "--no-deps", str(wheel)])
         smoke = td / "smoke"
         smoke.mkdir()
         code = '''from pathlib import Path
-import importlib, pypsds
+import importlib, sys, pypsds
+pkg = Path(pypsds.__file__).resolve()
+prefix = Path(sys.prefix).resolve()
+assert pkg.is_relative_to(prefix), (pkg, prefix)
+print(f'installed pypsds source: {pkg}')
 from pypsds.pipeline import STAGES
-assert pypsds.__version__ == "1.0.0"
-assert len(STAGES) == 33
+assert pypsds.__version__ == "1.1.0"
+assert len(STAGES) == 38
 for stage in STAGES:
     importlib.import_module("pypsds.stages." + Path(stage.script).stem)
 print("installed stage imports: PASS")
 '''
-        run([py, "-c", code], cwd=smoke)
-        run([py, "-m", "pypsds.cli", "init", str(smoke / "project")], cwd=smoke)
+        run([py, "-I", "-c", code], cwd=smoke)
+        run([py, "-I", "-m", "pypsds.cli", "init", str(smoke / "project")], cwd=smoke)
         text = (smoke / "project" / "pypsds.yaml").read_text(encoding="utf-8")
         if "/home/" in text or "/mnt/" in text:
             raise RuntimeError("generated project config contains machine-specific paths")

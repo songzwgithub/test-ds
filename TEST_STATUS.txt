@@ -1,8 +1,8 @@
-pyPSDS-GAMMA 1.0.0 production validation
+pyPSDS-GAMMA 1.1.0 production validation
 
 Source tests: PASS
 Installed wheel smoke: PASS
-Production stages: 32 package-contained semantic stages, PASS
+Production stages: 38 package-contained semantic stages, PASS
 Portability: no machine paths, fixed acquisition count, or fixed study-area reference coordinates, PASS
 Reference-case scientific regression:
   formal DS           : 1077566
@@ -11,6 +11,6 @@ Reference-case scientific regression:
   phase-linking valid : 1077566
   final DS TC >= 0.80 : 863969
   portability-refactor phase-linking arrays: EXACT, PASS
-Dynamic 32-stage output contract: PASS
+Dynamic 38-stage output contract: PASS
 
 Bitwise identity across arbitrary CPU/BLAS implementations is not claimed; reproducibility is enforced by explicit project configuration, frozen scientific defaults, source/wheel tests and numerical regression gates.

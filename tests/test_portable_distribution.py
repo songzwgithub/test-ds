@@ -9,7 +9,7 @@ from pypsds.pipeline import STAGES
 def test_all_production_stages_are_packaged():
     import pypsds
     stage_root = Path(pypsds.__file__).resolve().parent / "stages"
-    assert len(STAGES) == 33
+    assert len(STAGES) == 38
     for stage in STAGES:
         assert (stage_root / stage.script).is_file()
 

@@ -44,7 +44,7 @@ Study-area paths, co-registration dates, acquisition counts and reference coordi
 
 See `docs/REPRODUCIBILITY.md`.
 
-A normal wheel contains all 32 production stages. Bitwise identity across every CPU/BLAS implementation is not claimed; numerical reproducibility is validated by explicit configuration and regression gates.
+A normal v1.1 wheel contains all 38 production stages. Bitwise identity across every CPU/BLAS implementation is not claimed; numerical reproducibility is validated by explicit configuration and regression gates.
 
 
 ## DS production policy after P9

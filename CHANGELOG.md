@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.0
+
+- Added the validated public tail stages: atmospheric correction, SCLA, SCN, final LOS, and point products.
+- Promoted the production pipeline from 33 to 38 package-contained stages.
+- Kept atmospheric correction optional with a canonical corrected-phase ownership contract.
+- Migrated the validated dynamic SCLA/SCN/final-LOS/point-metric runtime adapters without changing the frozen numerical cores.
+- Added full-resolution point products as the primary scientific delivery format.
+- Added permanent v1.1 stage-contract, wheel-content, and installed-package release gates.
+- Updated the public package version to 1.1.0.
+
 ## 1.0.0
 
 - Started the formal pyPSDS-GAMMA production release.
