@@ -17,7 +17,7 @@ from pypsds.runtime import (
 
 
 CONFIG = Path(
-    "config/pypsds.yaml"
+    "pypsds/resources/default_config.yaml"
 )
 
 

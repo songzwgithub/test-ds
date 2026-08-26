@@ -31,7 +31,7 @@ def test_no_current_project_hardcoding_in_active_source():
         'P10B',
         'P9F',
     )
-    for base in (ROOT/'pypsds',ROOT/'config',ROOT/'tools'):
+    for base in (ROOT/'pypsds',ROOT/'tools'):
         for p in base.rglob('*'):
             if (
                 p.is_file()
@@ -48,10 +48,6 @@ def test_no_current_project_hardcoding_in_active_source():
 
 def test_temporal_reference_contract():
     import yaml
-    for p in (
-        ROOT/'config/pypsds.yaml',
-        ROOT/'config/pypsds_template.yaml',
-        ROOT/'pypsds/resources/default_config.yaml',
-    ):
-        cfg=yaml.safe_load(p.read_text())
-        assert int(cfg['phase_linking']['temporal_reference_index'])==0
+    p=ROOT/'pypsds/resources/default_config.yaml'
+    cfg=yaml.safe_load(p.read_text())
+    assert int(cfg['phase_linking']['temporal_reference_index'])==0

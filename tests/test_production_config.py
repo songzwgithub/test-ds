@@ -11,8 +11,9 @@ def test_production_config_schema():
         Path(__file__)
         .resolve()
         .parents[1]
-        / "config"
-        / "pypsds.yaml"
+        / "pypsds"
+        / "resources"
+        / "default_config.yaml"
     )
 
     cfg, _ = load_config(p)
@@ -47,8 +48,9 @@ def test_production_sequential_production_config():
         Path(__file__)
         .resolve()
         .parents[1]
-        / "config"
-        / "pypsds.yaml"
+        / "pypsds"
+        / "resources"
+        / "default_config.yaml"
     )
 
     cfg, _ = load_config(p)

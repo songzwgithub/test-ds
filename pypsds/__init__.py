@@ -1,10 +1,5 @@
-"""pyPSDS-GAMMA: CPU/RAM-oriented PS/DS InSAR processing for GAMMA."""
+"""pyPSDS-GAMMA: portable PS/DS InSAR processing for GAMMA RSLC stacks."""
 
-from importlib.metadata import PackageNotFoundError, version
-
-try:
-    __version__ = version("pypsds-gamma")
-except PackageNotFoundError:
-    __version__ = "1.1.0.dev0"
+from ._version import __version__
 
 __all__ = ["__version__"]

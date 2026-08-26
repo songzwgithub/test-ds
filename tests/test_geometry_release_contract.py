@@ -6,8 +6,6 @@ from pypsds.pipeline import STAGES
 
 
 PUBLIC_CONFIGS = (
-    Path("config/pypsds.yaml"),
-    Path("config/pypsds_template.yaml"),
     Path("pypsds/resources/default_config.yaml"),
 )
 
@@ -44,25 +42,40 @@ def _contract(path):
 
 def test_public_geometry_contract_is_consistent():
 
-    values = [
-        _contract(path)
-        for path in PUBLIC_CONFIGS
-    ]
-
-    assert (
-        values[0]
-        ==
-        values[1]
-        ==
-        values[2]
+    assert PUBLIC_CONFIGS == (
+        Path("pypsds/resources/default_config.yaml"),
     )
+
+    path = PUBLIC_CONFIGS[0]
+
+    assert path.is_file()
+
+    assert _contract(path) == {
+        "dem_dir":
+            None,
+
+        "reference_date":
+            None,
+
+        "geometry_par":
+            None,
+
+        "longitude_raster":
+            None,
+
+        "latitude_raster":
+            None,
+
+        "height_raster":
+            None,
+    }
 
 
 def test_public_geometry_contract_is_portable():
 
     expected = {
         "dem_dir":
-            "DEM_prep",
+            None,
 
         "reference_date":
             None,
@@ -109,13 +122,15 @@ def test_release_contract_has_point_geometry():
         "point_products",
     ]
 
-    text = Path(
-        "tools/release_gate.py"
-    ).read_text(
-        encoding="utf-8"
+    point_geometry = next(
+        stage
+        for stage in STAGES
+        if stage.name == "point_geometry"
     )
 
-    assert (
-        "build_point_geometry.py"
-        in text
+    stage_file = (
+        Path("pypsds/stages")
+        / point_geometry.script
     )
+
+    assert stage_file.is_file()

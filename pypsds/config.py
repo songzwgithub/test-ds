@@ -57,7 +57,7 @@ def load_config(
     if schema != 1:
         raise ValueError(
             f"Unsupported schema_version={schema!r}; "
-            "pyPSDS-GAMMA v1.0 requires schema_version: 1"
+            "pyPSDS-GAMMA requires schema_version: 1"
         )
 
     return raw, p

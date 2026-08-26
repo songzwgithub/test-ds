@@ -6,7 +6,7 @@ from pypsds.project import ProjectPaths
 from pypsds.runtime import build_runtime_plan
 
 
-CONFIG = Path("config/pypsds.yaml")
+CONFIG = Path("pypsds/resources/default_config.yaml")
 
 
 def _stage(name):

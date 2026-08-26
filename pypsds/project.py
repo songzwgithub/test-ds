@@ -272,16 +272,29 @@ def resolve_project_paths(
         else:
 
             hits = sorted(
-                data_dir.glob(
+                path.resolve()
+                for path in data_dir.glob(
                     "*RSLC*tab*"
                 )
+                if path.is_file()
             )
 
-            if hits:
+            if len(hits) == 1:
 
-                rslc_tab = (
-                    hits[0]
-                    .resolve()
+                rslc_tab = hits[0]
+
+            elif len(hits) > 1:
+
+                formatted = "\\n".join(
+                    f"  - {path}"
+                    for path in hits
+                )
+
+                raise RuntimeError(
+                    "Ambiguous RSLC_tab discovery; "
+                    f"{len(hits)} candidates found below "
+                    f"{data_dir}:\\n{formatted}\\n"
+                    "Set paths.rslc_tab explicitly."
                 )
 
     if (

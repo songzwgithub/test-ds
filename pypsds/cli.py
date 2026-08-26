@@ -103,7 +103,12 @@ def cmd_init(args):
     target.write_text(template, encoding="utf-8")
     print("pyPSDS-GAMMA project initialized")
     print(f"config : {target}")
-    print("Next: configure paths.dem_dir, the Geometry/GAMMA reference date, and the study-area reference window, then run doctor.")
+    print(
+        "Next: place the RSLC/DEM inputs under conventional project "
+        "names or configure paths explicitly; then set the actual "
+        "Geometry/GAMMA reference date and study-area reference "
+        "definition before running doctor."
+    )
 
 
 def cmd_config_check(args):

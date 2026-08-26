@@ -2,11 +2,11 @@ schema_version: 1
 paths:
   work_dir: .
   data_dir: .
-  rslc_dir: RSLC
-  rslc_tab: RSLC_tab
+  rslc_dir: null
+  rslc_tab: null
   output_dir: output
-  dem_dir: DEM_prep
-  gacos_dir: GACOS
+  dem_dir: null
+  gacos_dir: null
   scratch_dir: output/.scratch
   products_dir: output/products
 gamma:
@@ -91,6 +91,8 @@ network:
   target_connections_each_side: 3
 reference:
   method: radar_window
+  point_ids_path: null
+  min_points: 100
   radar_window:
     center_row: null
     center_col: null

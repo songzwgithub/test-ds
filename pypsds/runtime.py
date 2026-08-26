@@ -2,13 +2,256 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 import os
+from pathlib import Path
 
 
 MiB = 1024 ** 2
 GiB = 1024 ** 3
 
+# These defaults work on ordinary Linux hosts, Docker/Podman
+# containers, systemd scopes and Slurm cgroup jobs.
+#
+# Environment overrides are intentionally supported for unusual
+# mount namespaces and deterministic tests.
+_PROC_ROOT = Path(
+    os.environ.get(
+        "PYPSDS_PROC_ROOT",
+        "/proc",
+    )
+)
 
-def logical_cpu_count() -> int:
+_CGROUP_ROOT = Path(
+    os.environ.get(
+        "PYPSDS_CGROUP_ROOT",
+        "/sys/fs/cgroup",
+    )
+)
+
+# Linux cgroup-v1 often represents "unlimited" memory with a
+# very large integer close to LONG_MAX.
+_CGROUP_UNLIMITED_THRESHOLD = 1 << 60
+
+
+def _read_text(
+    path: Path,
+) -> str | None:
+
+    try:
+        return path.read_text(
+            encoding="utf-8",
+        ).strip()
+
+    except (
+        OSError,
+        UnicodeError,
+    ):
+        return None
+
+
+def _read_int(
+    path: Path,
+) -> int | None:
+
+    text = _read_text(path)
+
+    if text is None:
+        return None
+
+    try:
+        return int(text)
+
+    except ValueError:
+        return None
+
+
+def _self_cgroup_membership():
+    """
+    Return the current process cgroup membership.
+
+    Returns
+    -------
+    tuple
+        (v2_relative_path, v1_controller_paths)
+    """
+
+    text = _read_text(
+        _PROC_ROOT
+        / "self"
+        / "cgroup"
+    )
+
+    if not text:
+        return None, {}
+
+    v2_path = None
+    v1_paths: dict[str, str] = {}
+
+    for line in text.splitlines():
+
+        parts = line.split(
+            ":",
+            2,
+        )
+
+        if len(parts) != 3:
+            continue
+
+        _hierarchy, controllers, path = parts
+
+        path = (
+            path.strip()
+            or "/"
+        )
+
+        if controllers == "":
+            v2_path = path
+            continue
+
+        for controller in controllers.split(","):
+
+            controller = controller.strip()
+
+            if controller:
+                v1_paths[
+                    controller
+                ] = path
+
+    return v2_path, v1_paths
+
+
+def _join_cgroup_path(
+    root: Path,
+    relative: str,
+) -> Path:
+
+    relative = (
+        relative
+        .strip()
+        .lstrip("/")
+    )
+
+    if not relative:
+        return root
+
+    return (
+        root
+        / relative
+    )
+
+
+def _v2_cgroup_dir() -> Path | None:
+
+    v2_path, _ = (
+        _self_cgroup_membership()
+    )
+
+    if v2_path is None:
+        return None
+
+    candidate = _join_cgroup_path(
+        _CGROUP_ROOT,
+        v2_path,
+    )
+
+    if candidate.is_dir():
+        return candidate
+
+    return None
+
+
+def _v1_controller_dir(
+    controller: str,
+    probe: str,
+) -> Path | None:
+
+    _, membership = (
+        _self_cgroup_membership()
+    )
+
+    relative = membership.get(
+        controller
+    )
+
+    if relative is None:
+        return None
+
+    candidates = (
+        _join_cgroup_path(
+            _CGROUP_ROOT
+            / controller,
+            relative,
+        ),
+        _join_cgroup_path(
+            _CGROUP_ROOT,
+            relative,
+        ),
+    )
+
+    for candidate in candidates:
+
+        if (
+            candidate
+            / probe
+        ).is_file():
+
+            return candidate
+
+    return None
+
+
+def _parse_cpuset_count(
+    text: str | None,
+) -> int | None:
+
+    if not text:
+        return None
+
+    total = 0
+
+    try:
+
+        for field in text.split(","):
+
+            field = field.strip()
+
+            if not field:
+                continue
+
+            if "-" in field:
+
+                left, right = (
+                    field.split(
+                        "-",
+                        1,
+                    )
+                )
+
+                first = int(left)
+                last = int(right)
+
+                if last < first:
+                    return None
+
+                total += (
+                    last
+                    - first
+                    + 1
+                )
+
+            else:
+                int(field)
+                total += 1
+
+    except ValueError:
+        return None
+
+    if total < 1:
+        return None
+
+    return total
+
+
+def _affinity_cpu_count() -> int:
 
     try:
         return max(
@@ -17,7 +260,9 @@ def logical_cpu_count() -> int:
                 os.sched_getaffinity(0)
             ),
         )
+
     except Exception:
+
         return max(
             1,
             int(
@@ -27,11 +272,194 @@ def logical_cpu_count() -> int:
         )
 
 
-def available_memory_bytes() -> int:
+def _cgroup_cpu_quota_count() -> int | None:
+    """
+    Return conservative CPU capacity imposed by cgroup quota.
+
+    Supports:
+      cgroup v2 : cpu.max
+      cgroup v1 : cpu.cfs_quota_us / cpu.cfs_period_us
+    """
+
+    directory = (
+        _v2_cgroup_dir()
+    )
+
+    if directory is not None:
+
+        text = _read_text(
+            directory
+            / "cpu.max"
+        )
+
+        if text:
+
+            parts = text.split()
+
+            if len(parts) >= 2:
+
+                quota_text = parts[0]
+
+                if quota_text != "max":
+
+                    try:
+                        quota = int(
+                            quota_text
+                        )
+
+                        period = int(
+                            parts[1]
+                        )
+
+                    except ValueError:
+                        pass
+
+                    else:
+
+                        if (
+                            quota > 0
+                            and period > 0
+                        ):
+                            return max(
+                                1,
+                                quota
+                                // period,
+                            )
+
+    directory = (
+        _v1_controller_dir(
+            "cpu",
+            "cpu.cfs_quota_us",
+        )
+    )
+
+    if directory is None:
+
+        directory = (
+            _v1_controller_dir(
+                "cpuacct",
+                "cpu.cfs_quota_us",
+            )
+        )
+
+    if directory is not None:
+
+        quota = _read_int(
+            directory
+            / "cpu.cfs_quota_us"
+        )
+
+        period = _read_int(
+            directory
+            / "cpu.cfs_period_us"
+        )
+
+        if (
+            quota is not None
+            and period is not None
+            and quota > 0
+            and period > 0
+        ):
+            return max(
+                1,
+                quota
+                // period,
+            )
+
+    return None
+
+
+def _cgroup_cpuset_count() -> int | None:
+
+    directory = (
+        _v2_cgroup_dir()
+    )
+
+    if directory is not None:
+
+        for name in (
+            "cpuset.cpus.effective",
+            "cpuset.cpus",
+        ):
+
+            count = (
+                _parse_cpuset_count(
+                    _read_text(
+                        directory
+                        / name
+                    )
+                )
+            )
+
+            if count is not None:
+                return count
+
+    directory = (
+        _v1_controller_dir(
+            "cpuset",
+            "cpuset.cpus",
+        )
+    )
+
+    if directory is not None:
+
+        return (
+            _parse_cpuset_count(
+                _read_text(
+                    directory
+                    / "cpuset.cpus"
+                )
+            )
+        )
+
+    return None
+
+
+def logical_cpu_count() -> int:
+    """
+    Effective CPU count available to this process.
+
+    The result is bounded by all detected constraints:
+      * Linux scheduler affinity
+      * cgroup CPU quota
+      * cgroup cpuset
+
+    This prevents a container/job from using the host CPU count
+    when only a smaller allocation was granted.
+    """
+
+    counts = [
+        _affinity_cpu_count()
+    ]
+
+    quota = (
+        _cgroup_cpu_quota_count()
+    )
+
+    if quota is not None:
+        counts.append(quota)
+
+    cpuset = (
+        _cgroup_cpuset_count()
+    )
+
+    if cpuset is not None:
+        counts.append(cpuset)
+
+    return max(
+        1,
+        min(counts),
+    )
+
+
+def _host_available_memory_bytes() -> int:
 
     try:
-        with open(
-            "/proc/meminfo",
+
+        with (
+            _PROC_ROOT
+            / "meminfo"
+        ).open(
             "r",
             encoding="utf-8",
         ) as f:
@@ -41,6 +469,7 @@ def available_memory_bytes() -> int:
                 if line.startswith(
                     "MemAvailable:"
                 ):
+
                     return (
                         int(
                             line.split()[1]
@@ -48,11 +477,211 @@ def available_memory_bytes() -> int:
                         * 1024
                     )
 
-    except OSError:
+    except (
+        OSError,
+        ValueError,
+        IndexError,
+    ):
         pass
 
     return 0
 
+
+def _finite_cgroup_limit(
+    value: int | None,
+) -> int | None:
+
+    if value is None:
+        return None
+
+    if value <= 0:
+        return None
+
+    if (
+        value
+        >=
+        _CGROUP_UNLIMITED_THRESHOLD
+    ):
+        return None
+
+    return value
+
+
+def _cgroup_memory_remaining_bytes() -> int | None:
+    """
+    Return remaining memory under the active cgroup limit.
+
+    Supports:
+      cgroup v2 : memory.max / memory.current
+      cgroup v1 : memory.limit_in_bytes / memory.usage_in_bytes
+
+    None means no finite cgroup memory limit was detected.
+    """
+
+    directory = (
+        _v2_cgroup_dir()
+    )
+
+    if directory is not None:
+
+        limit_text = _read_text(
+            directory
+            / "memory.max"
+        )
+
+        if (
+            limit_text
+            and limit_text != "max"
+        ):
+
+            try:
+                limit = int(
+                    limit_text
+                )
+
+            except ValueError:
+                limit = None
+
+            limit = (
+                _finite_cgroup_limit(
+                    limit
+                )
+            )
+
+            current = _read_int(
+                directory
+                / "memory.current"
+            )
+
+            if (
+                limit is not None
+                and current is not None
+                and current >= 0
+            ):
+                return max(
+                    0,
+                    limit
+                    - current,
+                )
+
+    directory = (
+        _v1_controller_dir(
+            "memory",
+            "memory.limit_in_bytes",
+        )
+    )
+
+    if directory is not None:
+
+        limit = (
+            _finite_cgroup_limit(
+                _read_int(
+                    directory
+                    / "memory.limit_in_bytes"
+                )
+            )
+        )
+
+        current = _read_int(
+            directory
+            / "memory.usage_in_bytes"
+        )
+
+        if (
+            limit is not None
+            and current is not None
+            and current >= 0
+        ):
+            return max(
+                0,
+                limit
+                - current,
+            )
+
+    return None
+
+
+def available_memory_bytes() -> int:
+    """
+    Effective currently available RAM.
+
+    On an unrestricted host this is MemAvailable.
+
+    Under a finite cgroup limit it is bounded by:
+        min(host MemAvailable,
+            cgroup limit - cgroup current usage)
+
+    This prevents runtime planning against RAM that the process
+    is not actually allowed to allocate.
+    """
+
+    host = (
+        _host_available_memory_bytes()
+    )
+
+    cgroup = (
+        _cgroup_memory_remaining_bytes()
+    )
+
+    if cgroup is None:
+        return host
+
+    if host > 0:
+        return min(
+            host,
+            cgroup,
+        )
+
+    return cgroup
+
+
+def runtime_resource_snapshot() -> dict:
+    """
+    Human-readable resource diagnostics for doctor/release checks.
+    """
+
+    host_memory = (
+        _host_available_memory_bytes()
+    )
+
+    cgroup_memory = (
+        _cgroup_memory_remaining_bytes()
+    )
+
+    affinity = (
+        _affinity_cpu_count()
+    )
+
+    quota = (
+        _cgroup_cpu_quota_count()
+    )
+
+    cpuset = (
+        _cgroup_cpuset_count()
+    )
+
+    return {
+        "affinity_cpu_count":
+            affinity,
+
+        "cgroup_cpu_quota_count":
+            quota,
+
+        "cgroup_cpuset_count":
+            cpuset,
+
+        "effective_cpu_count":
+            logical_cpu_count(),
+
+        "host_available_memory_bytes":
+            host_memory,
+
+        "cgroup_memory_remaining_bytes":
+            cgroup_memory,
+
+        "effective_available_memory_bytes":
+            available_memory_bytes(),
+    }
 
 @dataclass(frozen=True, slots=True)
 class RuntimePlan:

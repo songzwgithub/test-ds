@@ -30,7 +30,7 @@ pip install ".[products]"
 
 ```bash
 cd /path/to/pyPSDS-GAMMA
-python -m pip install -e .
+python -m pip install .
 ```
 
 Development/tests:
@@ -63,7 +63,7 @@ my_project/
 └── output/
 ```
 
-All names above are defaults; configure `paths:` when your layout differs.
+The conventional project names above are auto-discovered. Set `paths:` explicitly only when the project uses a different layout.
 
 ## Input contract
 
@@ -87,11 +87,11 @@ Portable path defaults:
 paths:
   work_dir: .
   data_dir: .
-  rslc_dir: RSLC
-  rslc_tab: RSLC_tab
+  rslc_dir: null       # auto-discover RSLC_cropped or RSLC
+  rslc_tab: null       # auto-discover RSLC_tab or one matching *RSLC*tab*
   output_dir: output
-  dem_dir: DEM_prep
-  gacos_dir: GACOS
+  dem_dir: null        # auto-discover DEM_prep, DEM, or dem
+  gacos_dir: null      # optional; auto-discover GACOS or gacos
   scratch_dir: output/.scratch
   products_dir: output/products
 ```
@@ -302,15 +302,31 @@ The pipeline does not assume a fixed acquisition count. Final LOS wavelength is 
 
 ## Move to another server
 
-Install Python/package and GAMMA, copy/mount data, update only filesystem paths if needed, and run `doctor`/`plan`. `cpu: auto` follows process CPU affinity and the runtime planner uses available memory. No source edit is required.
+Install Python/package and GAMMA, copy/mount data, update only filesystem paths if needed, and run `doctor`/`plan`. `cpu: auto` follows the CPU resources available to the process, including detected affinity/cgroup restrictions; memory planning is bounded by host and detected cgroup availability. No source edit is required.
 
 ## Release validation
+
+Inspect the release identity resolved from the package:
+
+```bash
+python tools/release_gate.py identity
+```
+
+Run the complete release gate:
+
+```bash
+python tools/release_gate.py all --config /path/to/project/pypsds.yaml
+```
+
+Individual gates remain available:
 
 ```bash
 python tools/release_gate.py tests
 python tools/release_gate.py wheel
 python tools/release_gate.py contract --config /path/to/project/pypsds.yaml
 ```
+
+The release gate derives the package version and complete production-stage sequence from the authoritative package sources. Version numbers and stage counts are not duplicated in the gate.
 
 ## Troubleshooting
 

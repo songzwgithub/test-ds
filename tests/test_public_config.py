@@ -12,14 +12,6 @@ ROOT = (
 
 CONFIGS = (
     ROOT
-    / "config"
-    / "pypsds.yaml",
-
-    ROOT
-    / "config"
-    / "pypsds_template.yaml",
-
-    ROOT
     / "pypsds"
     / "resources"
     / "default_config.yaml",
@@ -47,26 +39,22 @@ def test_public_config_contract():
 
         assert (
             paths["rslc_dir"]
-            ==
-            "RSLC"
+            is None
         )
 
         assert (
             paths["rslc_tab"]
-            ==
-            "RSLC_tab"
+            is None
         )
 
         assert (
             paths["dem_dir"]
-            ==
-            "DEM_prep"
+            is None
         )
 
         assert (
             paths["gacos_dir"]
-            ==
-            "GACOS"
+            is None
         )
 
         assert (
