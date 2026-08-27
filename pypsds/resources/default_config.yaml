@@ -96,7 +96,7 @@ network:
   max_perpendicular_baseline_m: 200.0
   target_connections_each_side: 3
 reference:
-  method: radar_window
+  method: auto
   point_ids_path: null
   min_points: 100
   radar_window:
@@ -106,6 +106,14 @@ reference:
     half_col: 15
     min_points: 100
   statistic: median
+  auto:
+    radius_m: 500.0
+    cell_size_m: 500.0
+    min_points: 100
+    rate_weight: 0.6
+    residual_weight: 0.3
+    density_weight: 0.1
+    scene_median_sample: 100000
 corrections:
   scla:
     mode: disabled
@@ -130,3 +138,23 @@ products:
   quicklook:
     enabled: false
     scientific_product: false
+  monitoring:
+    enabled: true
+    annual_velocity: true
+    annual_min_obs: 6
+    annual_min_span_days: 180.0
+    figures: true
+    geotiff: true
+    grid_resolution_m: 100.0
+    geojson: false
+    shapefile: false
+  vertical:
+    enabled: false
+    positive: down
+    timeseries: true
+timeseries:
+  inversion:
+    method: weighted_l2
+    min_auto_sigma_rad: 0.0001
+    weight_clip_min: 0.5
+    weight_clip_max: 2.0

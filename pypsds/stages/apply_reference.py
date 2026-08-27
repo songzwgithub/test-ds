@@ -98,24 +98,77 @@ def main():
         args.config
     )
 
+    # PYPSDS_AUTO_REFERENCE_V130
+    reference_method = str(
+        cfg_get(cfg, "reference.method", "auto")
+    ).strip().lower()
+
+    configured_point_ids = cfg_get(
+        cfg,
+        "reference.point_ids_path",
+        None,
+    )
+
+    if args.point_ids_file is None and configured_point_ids not in (None, ""):
+        args.point_ids_file = str(configured_point_ids)
+
     if args.center_row is None:
-        args.center_row = cfg_get(cfg, "reference.radar_window.center_row", None)
-    if args.center_col is None:
-        args.center_col = cfg_get(cfg, "reference.radar_window.center_col", None)
-    if args.center_row is None or args.center_col is None:
-        raise RuntimeError(
-            "reference.radar_window.center_row and center_col must be set for this study area."
+        args.center_row = cfg_get(
+            cfg,
+            "reference.radar_window.center_row",
+            None,
         )
-    args.center_row = int(args.center_row)
-    args.center_col = int(args.center_col)
+
+    if args.center_col is None:
+        args.center_col = cfg_get(
+            cfg,
+            "reference.radar_window.center_col",
+            None,
+        )
+
+    explicit_window = (
+        args.center_row is not None
+        and args.center_col is not None
+    )
+
+    if args.point_ids_file is None and not explicit_window:
+        if reference_method in {"auto", "auto_stable"}:
+            from pypsds.monitoring.reference import select_auto_reference
+            args.point_ids_file = str(
+                select_auto_reference(args.config)
+            )
+        else:
+            raise RuntimeError(
+                "No explicit reference is configured. "
+                "Set reference.point_ids_path, radar-window coordinates, "
+                "or reference.method: auto."
+            )
+
+    if explicit_window:
+        args.center_row = int(args.center_row)
+        args.center_col = int(args.center_col)
+
     if args.half_row is None:
-        args.half_row = int(cfg_get(cfg, "reference.radar_window.half_row", 10))
+        args.half_row = int(
+            cfg_get(cfg, "reference.radar_window.half_row", 10)
+        )
+
     if args.half_col is None:
-        args.half_col = int(cfg_get(cfg, "reference.radar_window.half_col", 15))
+        args.half_col = int(
+            cfg_get(cfg, "reference.radar_window.half_col", 15)
+        )
+
     if args.min_points is None:
-        args.min_points = int(cfg_get(cfg, "reference.radar_window.min_points", 100))
+        args.min_points = int(
+            cfg_get(
+                cfg,
+                "reference.radar_window.min_points",
+                cfg_get(cfg, "reference.min_points", 100),
+            )
+        )
+
     if args.min_points < 1:
-        raise ValueError("reference.radar_window.min_points must be >= 1")
+        raise ValueError("reference minimum point count must be >= 1")
 
     root = (
         Path(paths.output_dir)

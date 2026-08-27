@@ -956,7 +956,7 @@ def _stage_args(
             cfg_get(
                 cfg,
                 "reference.method",
-                "radar_window",
+                "auto",
             )
         ).strip().lower()
 
@@ -1059,6 +1059,12 @@ def _stage_args(
                     min_points
                 ),
             ]
+
+        # PYPSDS_REFERENCE_V130_AUTO
+        elif method in {"auto", "auto_stable"}:
+            # No CLI reference coordinates.  The reference stage
+            # performs automatic stable-region selection.
+            pass
 
         else:
             raise ValueError(

@@ -116,6 +116,11 @@ def main():
 
     created = _write_tables(ctx)
 
+    # PYPSDS_MONITORING_PRODUCTS_HOOK
+    from pypsds.monitoring.products import build_monitoring_products
+
+    monitoring = build_monitoring_products(args.config)
+
     print("=" * 88)
     print("POINT PRODUCTS STATUS: PASS")
     print("primary directory :", ctx["products_dir"])

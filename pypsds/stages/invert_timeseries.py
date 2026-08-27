@@ -1185,5 +1185,8 @@ def main():
     )
 
 
+# PYPSDS_MONITORING_INVERSION_HOOK
 if __name__ == "__main__":
     main()
+    from pypsds.monitoring.inversion import upgrade_from_argv
+    upgrade_from_argv()

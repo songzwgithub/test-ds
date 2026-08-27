@@ -1,3 +1,15 @@
+## 1.3.0
+
+- Added conservative feasible weighted-L2 temporal-network inversion with
+  numerical-floor fallback to the exact ordinary-L2 result.
+- Added formal temporal/network/reference velocity uncertainty components.
+- Added automatic stable relative reference-region selection.
+- Added annual velocity, QA JSON/HTML, engineering figures and optional
+  non-interpolated GeoTIFF/GIS products.
+- Added optional per-point LOS-to-vertical monitoring products.
+- Added `pypsds-decompose` for matched ascending/descending East/Up velocity.
+- Kept the frozen PS/DS Phase-Linking and graph-unwrapping core unchanged.
+
 ## 1.2.0
 
 - Made one-ahead GAMMA Phase-Linking prefetch opt-in (production default off); timeout protection, resource budgeting, and post-PL fusion remain active.

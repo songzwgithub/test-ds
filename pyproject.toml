@@ -19,9 +19,10 @@ dependencies = [
 ]
 [project.optional-dependencies]
 dev = ["pytest>=8"]
-products = ["pandas>=2.1,<3", "pyarrow>=14,<24", "geopandas>=0.14,<2"]
+products = ["pandas>=2.1,<3", "pyarrow>=14,<24", "geopandas>=0.14,<2", "rasterio>=1.3,<2", "pyproj>=3.6,<4", "pyshp>=2.3,<3"]
 [project.scripts]
 pypsds = "pypsds.cli:main"
+pypsds-decompose = "pypsds.monitoring.decompose:main"
 [tool.setuptools.packages.find]
 include = ["pypsds*"]
 [tool.setuptools.package-data]
