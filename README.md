@@ -1,6 +1,6 @@
 # pyPSDS-GAMMA
 
-pyPSDS-GAMMA is a portable PS/DS-InSAR production pipeline for GAMMA-coregistered RSLC stacks. It integrates PS/DS selection, statistically homogeneous pixel (SHP) identification, robust Phase Linking, temporal/spatial network quality control, point-graph phase unwrapping, time-series inversion, optional atmospheric/SCLA/SCN corrections, final LOS displacement, and full-resolution point products.
+pyPSDS-GAMMA is a portable PS/DS-InSAR production pipeline for GAMMA-coregistered RSLC stacks. It integrates PS/DS selection, statistically homogeneous pixel (SHP) identification, robust Phase Linking, temporal/spatial network quality control, point-graph phase unwrapping, time-series inversion, optional atmospheric/SCLA/SCN corrections, final LOS displacement, and ground-deformation monitoring products.
 
 The public production workflow is organized into **9 logical modules**. Internally, the package retains **38 checkpoint/output-contract stages** for resumability, failure isolation, and reproducible release validation.
 
@@ -26,26 +26,26 @@ products
 
 Acquisition count, IFG count, point count, geometric reference, radar wavelength, multilook factors, spatial extent, CPU count, and available memory are resolved from the current project. Moving to another region, stack, or Linux server does not require editing Python source.
 
-## Version 1.2.0
+## Version 1.3.0
 
-v1.2.0 keeps the validated scientific path while consolidating the user-facing workflow and reducing redundant Phase-Linking computation.
+v1.3.0 adds the formal ground-deformation monitoring layer while preserving the frozen PS/DS, Phase-Linking, and graph-unwrapping scientific core.
 
-Key production changes include:
+Key additions include:
 
-- 9 public logical processing modules while retaining 38 internal stages;
-- cgroup-aware CPU/RAM planning and machine-local Phase-Linking autotuning;
-- exact packed Rayleigh-GLRT SHP support caching;
-- sequential robust EMI Phase Linking with threshold-Cholesky fast path and conservative EVD fallback;
-- specialized all-pairs full-span coherence;
-- allocation-light temporal-coherence evaluation;
-- temporal canonical-cell reuse across sequential ministacks;
-- fused post-Phase-Linking row-band processing;
-- GAMMA subprocess timeout and resource budgeting;
-- one-ahead GAMMA prefetch retained as an **opt-in** feature, with the production default **disabled**.
+- conservative feasible weighted-L2 temporal-network inversion;
+- automatic fallback to the exact ordinary-L2 result when strict-network residuals are below the numerical floor;
+- per-IFG residual scales, WLS weights, acquisition-phase covariance, and formal network-inversion uncertainty;
+- automatic stable **relative** reference-region selection when no explicit point set or radar window is supplied;
+- composite formal velocity uncertainty with temporal-regression, network-inversion, and reference-datum components reported separately;
+- annual LOS velocity products;
+- monitoring point CSV, QA JSON, and self-contained QA HTML;
+- optional engineering figures, GeoJSON, Shapefile, and non-interpolated GeoTIFF products;
+- optional LOS-to-vertical products using per-point incidence angles;
+- `pypsds-decompose` for matched ascending/descending East/Up velocity decomposition.
 
-The frozen reference Phase-Linking workload (`600 × 2000 × 38`) decreased from approximately **438.4 s** to **302.5 s** while preserving the frozen science counts. Further eigensolver-level optimization is intentionally deferred for v1.2.0.
+The public workflow remains **9 logical modules / 38 internal stages**. The validated Phase-Linking and graph-unwrapping implementation is unchanged from the frozen v1.2 scientific core.
 
-See `RELEASE_NOTES_v1.2.0.md` and `PERFORMANCE_BASELINE_v1.2.0.md` for the frozen release baseline.
+See `RELEASE_NOTES_v1.3.0.md` for the monitoring-product assumptions and uncertainty interpretation. The Phase-Linking performance baseline remains documented in `PERFORMANCE_BASELINE_v1.2.0.md` because that scientific core is unchanged in v1.3.0.
 
 ## Scientific conventions
 
@@ -55,29 +55,75 @@ See `RELEASE_NOTES_v1.2.0.md` and `PERFORMANCE_BASELINE_v1.2.0.md` for the froze
 - The canonical temporal datum is the first acquisition of the finalized acquisition order.
 - The GAMMA geometric/coregistration reference is independent of the temporal datum.
 - Spatial referencing uses the configured reference-point set and epoch-wise median.
+- Automatic reference selection establishes a relative InSAR datum; it does **not** prove zero physical deformation.
+- LOS-to-vertical products assume negligible horizontal deformation.
+- Two-track East/Up decomposition assumes the North component is zero.
+- Reported formal monitoring uncertainty is not a complete bound on correlated/systematic atmospheric, orbital, geocoding, or deformation-model error.
 
 ## Requirements
 
 - Linux; Ubuntu 22.04/24.04 recommended.
-- Python >= 3.11.
+- Python >= 3.11. Python 3.12 is used for the validated production environment.
 - Licensed GAMMA installation for GAMMA-backed operations.
 - Required GAMMA commands must be available in `PATH` when their stages are used, including `SLC2pt`, `data2pt`, `phase_sim_orb_pt`, `base_calc`, and `base_orbit`.
 
-Core dependencies are installed with the package.
+Core Python dependencies are installed with the package.
 
-Optional product dependencies:
+The optional `products` extra installs the full monitoring/export stack:
 
-```bash
-pip install ".[products]"
-```
+- pandas;
+- pyarrow;
+- geopandas;
+- rasterio;
+- pyproj;
+- pyshp.
 
-The `products` extra provides pandas/Parquet/GeoPackage support. CSV remains the dependency-light tabular output.
+CSV remains the dependency-light tabular output. Parquet, GeoPackage, GeoTIFF, coordinate projection, and Shapefile export require the corresponding optional product dependencies.
 
 ## Installation
 
+### Recommended: clean Conda environment + GitHub clone
+
 ```bash
-cd /path/to/pyPSDS-GAMMA
+conda create -n pypsds python=3.12 pip -y
+conda activate pypsds
+
+git clone https://github.com/songzwgithub/test-ds.git pyPSDS-GAMMA
+cd pyPSDS-GAMMA
+```
+
+Core installation:
+
+```bash
 python -m pip install .
+```
+
+Complete ground-deformation monitoring installation, including Parquet/GeoPackage/GeoTIFF/Shapefile support:
+
+```bash
+python -m pip install ".[products]"
+```
+
+Verify the installed package:
+
+```bash
+python -m pip check
+
+python - <<'PY'
+import importlib.metadata as md
+import pypsds
+
+print("runtime version :", pypsds.__version__)
+print("metadata version:", md.version("pypsds-gamma"))
+print("source          :", pypsds.__file__)
+PY
+```
+
+Expected formal release identity:
+
+```text
+runtime version : 1.3.0
+metadata version: 1.3.0
 ```
 
 Development/tests:
@@ -117,6 +163,8 @@ The conventional names above are auto-discovered. Configure `paths:` explicitly 
 ### RSLC stack
 
 `RSLC_tab` defines the current coregistered stack. Each acquisition must have readable RSLC data and a matching GAMMA parameter file. Acquisition dates and raster dimensions are resolved from the current project rather than hard-coded in the package.
+
+Sensor-specific preprocessing required to create a GAMMA-compatible coregistered RSLC stack remains outside pyPSDS-GAMMA.
 
 ### Geometry
 
@@ -231,21 +279,88 @@ network:
   target_connections_each_side: 3
 ```
 
+### Time-series inversion
+
+v1.3.0 defaults to conservative weighted-L2 inversion:
+
+```yaml
+timeseries:
+  inversion:
+    method: weighted_l2
+    min_auto_sigma_rad: 1.0e-4
+    weight_clip_min: 0.5
+    weight_clip_max: 2.0
+```
+
+The strict-domain ordinary-L2 solution is first used to estimate one global residual scale per IFG. If the median residual is at or below `min_auto_sigma_rad`, the ordinary-L2 acquisition phase is preserved exactly. Otherwise clipped relative WLS weights are applied.
+
 ### Spatial reference
+
+The v1.3.0 default is automatic stable **relative** reference selection:
 
 ```yaml
 reference:
-  method: radar_window
+  method: auto
+  point_ids_path: null
+  min_points: 100
+
   radar_window:
-    center_row: 1000
-    center_col: 2000
+    center_row: null
+    center_col: null
     half_row: 10
     half_col: 15
     min_points: 100
+
   statistic: median
+
+  auto:
+    radius_m: 500.0
+    cell_size_m: 500.0
+    min_points: 100
+    rate_weight: 0.6
+    residual_weight: 0.3
+    density_weight: 0.1
+    scene_median_sample: 100000
 ```
 
-Choose a physically stable reference region.
+Reference precedence is:
+
+1. explicit point IDs;
+2. explicit radar window;
+3. automatic stable relative region.
+
+For scientific monitoring, an externally validated stable reference remains preferable when available.
+
+### Monitoring products
+
+```yaml
+products:
+  point:
+    enabled: true
+    formats:
+      - csv
+    crs: EPSG:4326
+
+  monitoring:
+    enabled: true
+    annual_velocity: true
+    annual_min_obs: 6
+    annual_min_span_days: 180.0
+    figures: true
+    geotiff: true
+    grid_resolution_m: 100.0
+    geojson: false
+    shapefile: false
+
+  vertical:
+    enabled: false
+    positive: down
+    timeseries: true
+```
+
+GeoTIFF monitoring rasters are **non-interpolated**. Measurements falling in the same occupied projected grid cell are aggregated; empty cells remain nodata. pyPSDS-GAMMA does not invent deformation values between measurement points.
+
+`products.vertical.enabled: true` creates derived vertical products using the per-point incidence angle and the explicit zero-horizontal-motion approximation. It does not alter the primary LOS solution.
 
 ## Optional corrections
 
@@ -316,13 +431,13 @@ pypsds run --config pypsds.yaml --list-stages
 
 ## Run
 
-### Complete pipeline
+Complete pipeline:
 
 ```bash
 pypsds run --config pypsds.yaml
 ```
 
-### Run one logical module
+One logical module:
 
 ```bash
 pypsds run \
@@ -330,7 +445,7 @@ pypsds run \
   --module phase_linking
 ```
 
-### Run a logical module interval
+Logical module interval:
 
 ```bash
 pypsds run \
@@ -364,7 +479,7 @@ Do not mix module selectors and stage selectors in the same command.
 | `unwrap` | 9 | unwrapping and post-unwrap closure/conflict/integer-candidate validation |
 | `timeseries` | 1 | acquisition-domain time-series inversion |
 | `corrections` | 5 | geometry, reference, atmosphere, SCLA, SCN |
-| `products` | 2 | final LOS solution and point-product export |
+| `products` | 2 | final LOS solution and monitoring/product export |
 
 Detailed mapping: `docs/PIPELINE_MODULES.md`.
 
@@ -460,13 +575,13 @@ runtime:
   phase_link_prefetch_tiles: 0
 ```
 
-The queue depth is fixed to one when enabled. Repeated real-data tests showed that the asynchronous canonical streaming path could stall non-deterministically after GAMMA subprocess completion, so synchronous streaming remains the default for v1.2.0.
+The queue depth is fixed to one when enabled. Repeated real-data tests showed that the asynchronous canonical streaming path could stall non-deterministically after GAMMA subprocess completion, so synchronous streaming remains the production default.
 
 GAMMA timeout protection, CPU/process budgeting, canonical caching, and post-PL fusion remain active regardless of the prefetch default.
 
-## Full production validation
+## Reference validation baseline
 
-The v1.2.0 production tree completed the full `data_ps → products` workflow on the reference `600 × 2000 × 38` workload.
+The frozen scientific core completed the full `data_ps → products` workflow on the reference `600 × 2000 × 38` workload with:
 
 ```text
 formal DS                    : 1,077,566
@@ -479,14 +594,27 @@ strict-mask bad occurrences  : 0
 Tree vs full-L2 RMS diff     : 1.108e-06 rad
 final LOS                    : PASS
 point products               : PASS
-full run manifest            : created
 ```
 
 The sparse temporal integer candidate remains quality-controlled: a candidate that removes temporal closure residuals is not applied when counterfactual spatial validation would create new SAFE spatial conflicts.
 
+For the same reference workload, the v1.3 monitoring layer passed with:
+
+```text
+effective temporal inversion : ordinary_l2
+floor dominated              : True
+monitoring points            : 881,315
+acquisitions                 : 38
+reference points             : 607
+monitoring outputs           : PASS
+full release gate            : PASS
+```
+
+The `ordinary_l2` result is expected here because the strict network residual is orders of magnitude below the default WLS numerical floor; v1.3 therefore preserves the already self-consistent ordinary-L2 solution instead of introducing artificial weighting.
+
 ## Performance baseline
 
-Frozen v1.2.0 Phase-Linking reference:
+Frozen Phase-Linking reference:
 
 ```text
 stage seconds       : 232.158
@@ -497,7 +625,7 @@ module wall         : 304.61
 
 Earlier reference wall time was approximately `438.432 s`, corresponding to roughly a **31% reduction** while preserving the frozen scientific counts.
 
-Performance optimization is frozen for v1.2.0. The remaining dominant numerical cost is the EMI fast-path eigensolver and is intentionally left unchanged in this release.
+The remaining dominant numerical cost is the EMI fast-path eigensolver. The validated Phase-Linking performance path is intentionally unchanged in v1.3.0.
 
 ## Main outputs
 
@@ -511,7 +639,7 @@ output/processing/final_los/
 └── final_los_manifest.json
 ```
 
-Point products:
+Primary LOS point products:
 
 ```text
 output/products/
@@ -520,22 +648,82 @@ output/products/
 ├── linear_residual_rms_mm.npy
 ├── velocity_slope_standard_error_mm_per_year.npy
 ├── time_axis_contract.npz
-├── point_products_manifest.json
-├── point_products.csv
-└── point_products.parquet
+└── point_products_manifest.json
 ```
 
-CSV and Parquet are the primary point tables in the validated production workflow.
+v1.3 monitoring and uncertainty products include:
 
-### Optional GeoPackage export
+```text
+output/processing/network_inversion/
+├── ifg_residual_sigma_rad.npy
+├── ifg_weights.npy
+├── acquisition_phase_standard_error_rad.npy
+├── acquisition_phase_covariance_rad2.npy
+└── monitoring_inversion_manifest.json
 
-GeoPackage export is optional and requires `geopandas`. If `geopandas` is not installed, pyPSDS-GAMMA skips only the GeoPackage export; CSV/Parquet and the point-products stage remain valid.
+output/products/
+├── network_velocity_standard_error_mm_per_year.npy
+├── reference_velocity_standard_error_mm_per_year.npy
+├── velocity_formal_uncertainty_mm_per_year.npy
+├── annual_velocity_years.npy
+├── annual_velocity_toward_satellite_mm_per_year.npy
+├── monitoring_points.csv
+├── monitoring_quality.json
+├── monitoring_quality.html
+└── monitoring_products_manifest.json
+```
 
-The velocity-slope standard error is the temporal OLS regression standard error, not total InSAR/geodetic uncertainty.
+With the corresponding options/dependencies enabled, engineering products can also include:
+
+```text
+output/products/
+├── point_products.parquet
+├── point_products.gpkg
+├── figures/
+│   ├── velocity_map.png
+│   ├── cumulative_map.png
+│   └── velocity_uncertainty_map.png
+├── rasters/
+│   ├── velocity_mm_per_year.tif
+│   ├── cumulative_mm.tif
+│   ├── residual_rms_mm.tif
+│   └── velocity_formal_uncertainty_mm_per_year.tif
+└── gis/
+    ├── monitoring_points.geojson
+    └── monitoring_points.shp
+```
+
+When vertical products are enabled:
+
+```text
+output/products/
+├── vertical_velocity_mm_per_year.npy
+├── vertical_cumulative_mm.npy
+├── vertical_displacement_mm.npy
+└── vertical_velocity_formal_uncertainty_mm_per_year.npy
+```
+
+The original `velocity_slope_standard_error_mm_per_year.npy` remains the temporal OLS regression component. The v1.3 `velocity_formal_uncertainty_mm_per_year.npy` additionally incorporates formal network-inversion and reference-datum components under the documented approximation.
+
+## Ascending/descending East-Up decomposition
+
+`pypsds-decompose` performs matched ascending/descending LOS velocity decomposition into East and Up components under the explicit `North = 0` model.
+
+```bash
+pypsds-decompose \
+  --ascending-output /path/to/ascending/output \
+  --descending-output /path/to/descending/output \
+  --ascending-heading-deg <heading> \
+  --descending-heading-deg <heading> \
+  --max-distance-m 100 \
+  --output-dir decomposition
+```
+
+The decomposition propagates the per-track formal velocity uncertainties under an independence approximation. Use it only when the two tracks have compatible spatial/temporal interpretation and the North-component assumption is acceptable.
 
 ## Move to another region
 
-Do not edit source code. Create a new project, provide the new RSLC stack and DEM/radar geometry, set the actual geometric reference, choose a stable spatial reference region, optionally provide GACOS, then run `config-check`, `doctor`, `plan`, and the production workflow.
+Do not edit source code. Create a new project, provide the new RSLC stack and DEM/radar geometry, set the actual geometric reference, choose or validate the spatial reference, optionally provide GACOS, then run `config-check`, `doctor`, `plan`, and the production workflow.
 
 ## Move to another stack or sensor
 
@@ -578,9 +766,9 @@ python tools/release_gate.py contract --config /path/to/project/pypsds.yaml
 - **Multiple geometry candidates:** configure the desired geometry explicitly.
 - **SCLA baseline missing:** verify network dates and that `base_orbit` is available.
 - **GACOS date mismatch:** provide products for every required acquisition or intentionally disable strict correction.
-- **Too few reference points:** choose or enlarge a physically stable reference region.
+- **Too few automatic reference points:** increase the auto-reference radius/minimum support or configure an externally validated reference region.
 - **Out of memory:** reduce CPU cap/memory fraction; do not change scientific PS/DS thresholds merely to fit hardware.
-- **GeoPackage skipped:** install `.[products]` or `geopandas`; CSV/Parquet remain valid.
+- **Parquet/GeoPackage/GeoTIFF/Shapefile skipped:** install `.[products]` and rerun the product stage.
 
 ## License
 
