@@ -181,24 +181,160 @@ def _which(name_or_path: str) -> str:
     return found
 
 
-def _run_command(cmd: list[str], *, log_file: Path, label: str) -> float:
+def _run_command(
+    cmd: list[str],
+    *,
+    log_file: Path,
+    label: str,
+) -> float:
     t0 = perf_counter()
     command_text = " ".join(cmd)
-    log(f"GAMMA START {label}: {command_text}")
-    proc = subprocess.run(cmd, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    elapsed = perf_counter() - t0
-    log_file.parent.mkdir(parents=True, exist_ok=True)
-    with log_file.open("a", encoding="utf-8") as f:
-        f.write(f"\n===== {label} =====\n$ {command_text}\n")
-        f.write(proc.stdout or "")
-        f.write(f"\nreturncode={proc.returncode} elapsed={elapsed:.3f}s\n")
-    if proc.returncode != 0:
-        tail = "\n".join((proc.stdout or "").splitlines()[-30:])
-        raise PhaseCorrectionError(
-            f"GAMMA command failed ({label}, returncode={proc.returncode}).\n"
-            f"Command: {command_text}\nLast output:\n{tail}\nFull log: {log_file}"
+
+    raw_timeout = os.environ.get(
+        "PYPSDS_GAMMA_COMMAND_TIMEOUT_SECONDS",
+        "300",
+    )
+
+    try:
+        timeout_seconds = float(
+            raw_timeout
         )
-    log(f"GAMMA END   {label}: elapsed={elapsed:.2f}s")
+    except ValueError as exc:
+        raise PhaseCorrectionError(
+            "invalid "
+            "PYPSDS_GAMMA_COMMAND_TIMEOUT_SECONDS="
+            f"{raw_timeout!r}"
+        ) from exc
+
+    if timeout_seconds <= 0:
+        timeout_seconds = None
+
+    log(
+        f"GAMMA START {label}: "
+        f"{command_text}"
+    )
+
+    try:
+        proc = subprocess.run(
+            cmd,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=timeout_seconds,
+        )
+
+    except subprocess.TimeoutExpired as exc:
+        elapsed = (
+            perf_counter()
+            -
+            t0
+        )
+
+        log_file.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        output = (
+            exc.stdout
+            or exc.output
+            or ""
+        )
+
+        if isinstance(
+            output,
+            bytes,
+        ):
+            output = output.decode(
+                "utf-8",
+                errors="replace",
+            )
+
+        with log_file.open(
+            "a",
+            encoding="utf-8",
+        ) as f:
+            f.write(
+                "\n===== "
+                f"{label} TIMEOUT =====\n"
+            )
+            f.write(
+                f"$ {command_text}\n"
+            )
+            f.write(str(output))
+            f.write(
+                "\ntimeout_seconds="
+                f"{timeout_seconds} "
+                f"elapsed={elapsed:.3f}s\n"
+            )
+
+        log(
+            "GAMMA TIMEOUT "
+            f"{label}: "
+            f"elapsed={elapsed:.2f}s "
+            f"limit={timeout_seconds}s"
+        )
+
+        raise PhaseCorrectionError(
+            "GAMMA command timeout "
+            f"({label}) after "
+            f"{elapsed:.1f}s "
+            f"(limit={timeout_seconds}s).\n"
+            f"Command: {command_text}\n"
+            f"Full log: {log_file}"
+        ) from exc
+
+    elapsed = (
+        perf_counter()
+        -
+        t0
+    )
+
+    log_file.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    with log_file.open(
+        "a",
+        encoding="utf-8",
+    ) as f:
+        f.write(
+            f"\n===== {label} =====\n"
+            f"$ {command_text}\n"
+        )
+        f.write(
+            proc.stdout
+            or ""
+        )
+        f.write(
+            "\nreturncode="
+            f"{proc.returncode} "
+            f"elapsed={elapsed:.3f}s\n"
+        )
+
+    if proc.returncode != 0:
+        tail = "\n".join(
+            (
+                proc.stdout
+                or ""
+            ).splitlines()[-30:]
+        )
+
+        raise PhaseCorrectionError(
+            "GAMMA command failed "
+            f"({label}, "
+            f"returncode={proc.returncode}).\n"
+            f"Command: {command_text}\n"
+            f"Last output:\n{tail}\n"
+            f"Full log: {log_file}"
+        )
+
+    log(
+        f"GAMMA END   {label}: "
+        f"elapsed={elapsed:.2f}s"
+    )
+
     return elapsed
 
 
@@ -218,6 +354,30 @@ class GammaPointPhaseCorrectionProvider:
         self.enabled = bool(cfg_get(cfg, "phase_correction.enabled", True))
         self.sign = float(cfg_get(cfg, "phase_correction.apply_sign", 1.0))
         self.keep_tile_files = bool(cfg_get(cfg, "phase_correction.keep_tile_files", False))
+
+        self.command_timeout_seconds = float(
+            cfg_get(
+                cfg,
+                "phase_correction.command_timeout_seconds",
+                300.0,
+            )
+        )
+
+        if (
+            self.command_timeout_seconds
+            <
+            0.0
+        ):
+            raise PhaseCorrectionError(
+                "phase_correction.command_timeout_seconds "
+                "must be >= 0"
+            )
+
+        os.environ[
+            "PYPSDS_GAMMA_COMMAND_TIMEOUT_SECONDS"
+        ] = str(
+            self.command_timeout_seconds
+        )
         self.zero_height_is_valid = bool(
             cfg_get(cfg, "phase_correction.radar_height.zero_height_is_valid", False)
         )

@@ -28,6 +28,11 @@ runtime:
   cpu: auto
   memory_fraction: 0.85
   io_workers: auto
+  autotune:
+    enabled: true
+    sample_points: 16384
+    repeats: 2
+  phase_link_prefetch_tiles: 0
 selection:
   ps:
     amplitude_dispersion_max: 0.25
@@ -85,6 +90,7 @@ phase_correction:
     geometry_par: null
     zero_height_is_valid: false
     zero_height_epsilon_m: 0.001
+  command_timeout_seconds: 300.0
 network:
   max_temporal_baseline_days: 72
   max_perpendicular_baseline_m: 200.0

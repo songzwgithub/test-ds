@@ -9,12 +9,16 @@ import shutil
 from . import __version__
 from .config import cfg_get, load_config
 from .project import resolve_project_paths
+from .modules import MODULES
 from .geometry import (
     resolve_data2pt,
     resolve_geometry_inputs,
     resolve_height_raster,
 )
-from .runtime import build_runtime_plan
+from .runtime_tuning import (
+    resolve_runtime_plan,
+    tune_runtime_profile,
+)
 
 
 def _requested_cpu(cfg):
@@ -142,15 +146,27 @@ def cmd_plan(args):
         else:
             _, stack = _open_stack(cfg, path)
             ndate = len(stack.dates)
-    plan = build_runtime_plan(
-        ndate=ndate,
-        memory_fraction=float(cfg_get(cfg, "runtime.memory_fraction", 0.85)),
-        requested_cpu=_requested_cpu(cfg),
-        max_solver_size=_runtime_solver_size(cfg, ndate),
+    paths = resolve_project_paths(
+        cfg,
+        path,
     )
+
+    plan, profile = resolve_runtime_plan(
+        cfg,
+        paths,
+        ndate=ndate,
+    )
+
     payload = plan.as_dict()
     payload["ndate"] = int(ndate)
-    print(json.dumps(payload, indent=2))
+    payload["runtime_profile"] = profile
+
+    print(
+        json.dumps(
+            payload,
+            indent=2,
+        )
+    )
 
 
 def _validate_project_choices(cfg, stack):
@@ -179,13 +195,11 @@ def cmd_doctor(args):
     )
 
     geometry_data2pt = resolve_data2pt()
-    plan = build_runtime_plan(
-        ndate=len(stack.dates),
-        memory_fraction=float(cfg_get(cfg, "runtime.memory_fraction", 0.85)),
-        requested_cpu=_requested_cpu(cfg),
-        max_solver_size=_runtime_solver_size(
-            cfg,
-            len(stack.dates),
+    plan, runtime_profile = resolve_runtime_plan(
+        cfg,
+        paths,
+        ndate=len(
+            stack.dates
         ),
     )
     print("=" * 80)
@@ -209,6 +223,10 @@ def cmd_doctor(args):
     print(f"PL chunk         : {plan.phase_link_chunk_size}")
     print(f"PL batch         : {plan.phase_link_batch_size}")
     print(f"PL solver dim    : {plan.phase_link_solver_size}")
+    print(
+        "Runtime profile :",
+        runtime_profile["status"],
+    )
     print(
         f"PL tile          : "
         f"{plan.phase_link_tile_rows} x "
@@ -234,14 +252,64 @@ def cmd_doctor(args):
     print("doctor           : PASS")
 
 
+def cmd_tune(args):
+    payload = tune_runtime_profile(
+        args.config,
+        sample_points=args.sample,
+        repeats=args.repeats,
+        force=args.force,
+    )
+
+    print(
+        json.dumps(
+            {
+                "selected_schedule":
+                    payload[
+                        "selected_schedule"
+                    ],
+
+                "throughput_point_fits_per_second":
+                    payload[
+                        "selected_throughput_point_fits_per_second"
+                    ],
+
+                "sample_points":
+                    payload[
+                        "sample_points"
+                    ],
+
+                "numerical_parity":
+                    payload[
+                        "numerical_parity"
+                    ],
+            },
+            indent=2,
+        )
+    )
+
+
+def cmd_modules(args):
+    for i, module in enumerate(MODULES, start=1):
+        print(
+            f"{i:02d}  "
+            f"{module.name:16s} "
+            f"[{len(module.stage_names):2d} internal stages]  "
+            f"{module.title}"
+        )
+
+
 def cmd_run(args):
     from .pipeline import run_pipeline
     return run_pipeline(
         config=args.config,
+        module=args.module,
+        from_module=args.from_module,
+        to_module=args.to_module,
         from_stage=args.from_stage,
         to_stage=args.to_stage,
         dry_run=args.dry_run,
         force=args.force,
+        list_modules=args.list_modules,
         list_stages=args.list_stages,
     )
 
@@ -264,13 +332,84 @@ def build_parser():
     q = sub.add_parser("doctor")
     q.add_argument("--config", required=True)
     q.set_defaults(func=cmd_doctor)
+
+    q = sub.add_parser(
+        "tune",
+        help=(
+            "Calibrate the production Phase Linking "
+            "runtime schedule on a bounded real-data sample."
+        ),
+    )
+    q.add_argument("--config", required=True)
+    q.add_argument("--sample", type=int, default=None)
+    q.add_argument("--repeats", type=int, default=None)
+    q.add_argument("--force", action="store_true")
+    q.set_defaults(func=cmd_tune)
+
+    q = sub.add_parser(
+        "modules",
+        help="List the public production-processing modules.",
+    )
+    q.set_defaults(func=cmd_modules)
+
     q = sub.add_parser("run", help="Run the production InSAR processing pipeline.")
     q.add_argument("--config", required=True)
-    q.add_argument("--from-stage", default=None)
-    q.add_argument("--to-stage", default=None)
+
+    module_choices = tuple(
+        module.name
+        for module in MODULES
+    )
+
+    q.add_argument(
+        "--module",
+        choices=module_choices,
+        default=None,
+        help="Run exactly one public processing module.",
+    )
+
+    q.add_argument(
+        "--from-module",
+        choices=module_choices,
+        default=None,
+        help="Start from this public processing module.",
+    )
+
+    q.add_argument(
+        "--to-module",
+        choices=module_choices,
+        default=None,
+        help="Stop after this public processing module.",
+    )
+
+    q.add_argument(
+        "--from-stage",
+        default=None,
+        help=(
+            "Advanced/internal checkpoint selector. "
+            "Do not combine with module selectors."
+        ),
+    )
+
+    q.add_argument(
+        "--to-stage",
+        default=None,
+        help=(
+            "Advanced/internal checkpoint selector. "
+            "Do not combine with module selectors."
+        ),
+    )
+
     q.add_argument("--dry-run", action="store_true")
     q.add_argument("--force", action="store_true")
-    q.add_argument("--list-stages", action="store_true")
+    q.add_argument("--list-modules", action="store_true")
+    q.add_argument(
+        "--list-stages",
+        action="store_true",
+        help=(
+            "List internal checkpoint stages. "
+            "Normally use `pypsds modules` instead."
+        ),
+    )
     q.set_defaults(func=cmd_run)
     return p
 

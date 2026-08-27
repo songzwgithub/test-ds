@@ -5,6 +5,7 @@ from contextlib import nullcontext
 import os
 
 import numpy as np
+from numba import njit
 
 try:
     from threadpoolctl import threadpool_limits
@@ -278,3 +279,55 @@ def temporal_coherence(
 
 def median_pair_coherence(coh: np.ndarray) -> np.ndarray:
     return np.nanmedian(np.abs(coh), axis=1).astype(np.float32)
+
+@njit(cache=True, nogil=True)
+def temporal_coherence_fused(
+    coh: np.ndarray,
+    phase: np.ndarray,
+    pairs: np.ndarray,
+) -> np.ndarray:
+    B = coh.shape[0]
+    Q = coh.shape[1]
+    out = np.empty(B, dtype=np.float32)
+
+    for p in range(B):
+        total = np.complex64(0.0 + 0.0j)
+        count = 0
+
+        for q in range(Q):
+            z = coh[p, q]
+            zr = z.real
+            zi = z.imag
+
+            if not (np.isfinite(zr) and np.isfinite(zi)):
+                continue
+
+            mag = np.float32(np.sqrt(zr * zr + zi * zi))
+            if not (mag > 0.0):
+                continue
+
+            i = pairs[q, 0]
+            j = pairs[q, 1]
+            a = phase[p, i]
+            b = phase[p, j]
+
+            predicted = np.complex64(a * np.conj(b))
+            if not (
+                np.isfinite(predicted.real)
+                and np.isfinite(predicted.imag)
+            ):
+                continue
+
+            observed = np.complex64(z / mag)
+            residual = np.complex64(observed * np.conj(predicted))
+            total = np.complex64(total + residual)
+            count += 1
+
+        if count > 0:
+            value = np.complex64(total / np.float32(count))
+            out[p] = np.float32(np.abs(value))
+        else:
+            out[p] = np.nan
+
+    return out
+

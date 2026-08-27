@@ -340,3 +340,21 @@ The release gate derives the package version and complete production-stage seque
 ## License
 
 Apache-2.0.
+
+
+## Runtime autotuning
+
+The cgroup-aware runtime planner defines a safe CPU/RAM envelope. The runtime autotuner then benchmarks the actual sequential threshold-Cholesky EMI solver on a bounded real-data sample and selects the fastest worker/chunk/batch schedule inside that envelope.
+
+Autotuning is enabled by default. A normal production run creates or refreshes the runtime profile immediately before Phase Linking, after the exact SHP support cache is available. The profile is reused only when software, CPU, NumPy/BLAS backend and solver dimension match.
+
+Explicit calibration is also available:
+
+```bash
+pypsds tune --config /path/to/project/pypsds.yaml
+```
+
+Manual `runtime.phase_link_workers`, `runtime.phase_link_chunk_size` or `runtime.phase_link_batch_size` values take precedence.
+
+Runtime tuning changes scheduling only. Rayleigh-GLRT, SHP support, sequential plan, EMI/EVD mathematics and DS selection thresholds are unchanged.
+

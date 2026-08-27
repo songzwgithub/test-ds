@@ -75,3 +75,210 @@ def compressed_coherence(
                 out[p, q] = np.nan + 1j * np.nan
 
     return out
+
+
+
+@njit(cache=True, parallel=True, nogil=True)
+def compressed_coherence_all_pairs(
+    rslc_yxt,
+    rows,
+    cols,
+    support,
+):
+    # Specialized full-span kernel for np.triu_indices(N, k=1)
+    # ordering. Scientific arithmetic/output dtype are unchanged;
+    # only pair_i/pair_j indirection is removed.
+
+    H, W, N = rslc_yxt.shape
+    B = rows.size
+
+    wh = support.shape[1]
+    ww = support.shape[2]
+
+    hr = wh // 2
+    hc = ww // 2
+
+    npair = (
+        N
+        *
+        (
+            N - 1
+        )
+        //
+        2
+    )
+
+    out = np.empty(
+        (
+            B,
+            npair,
+        ),
+        dtype=np.complex64,
+    )
+
+    for p in prange(B):
+
+        numer = np.zeros(
+            npair,
+            dtype=np.complex64,
+        )
+
+        power = np.zeros(
+            N,
+            dtype=np.float64,
+        )
+
+        zvec = np.empty(
+            N,
+            dtype=np.complex64,
+        )
+
+        K = 0
+
+        cr = rows[p]
+        cc = cols[p]
+
+        for ky in range(wh):
+
+            rr = (
+                cr
+                -
+                hr
+                +
+                ky
+            )
+
+            if (
+                rr < 0
+                or
+                rr >= H
+            ):
+                continue
+
+            for kx in range(ww):
+
+                if not support[
+                    p,
+                    ky,
+                    kx,
+                ]:
+                    continue
+
+                rc = (
+                    cc
+                    -
+                    hc
+                    +
+                    kx
+                )
+
+                if (
+                    rc < 0
+                    or
+                    rc >= W
+                ):
+                    continue
+
+                K += 1
+
+                for m in range(N):
+
+                    z = rslc_yxt[
+                        rr,
+                        rc,
+                        m,
+                    ]
+
+                    zvec[m] = z
+
+                    power[m] += (
+                        z.real * z.real
+                        +
+                        z.imag * z.imag
+                    )
+
+                q = 0
+
+                for i in range(
+                    N - 1
+                ):
+
+                    zi = zvec[i]
+
+                    for j in range(
+                        i + 1,
+                        N,
+                    ):
+
+                        numer[q] += (
+                            zi
+                            *
+                            np.conj(
+                                zvec[j]
+                            )
+                        )
+
+                        q += 1
+
+        if K <= 0:
+
+            for q in range(
+                npair
+            ):
+                out[
+                    p,
+                    q,
+                ] = (
+                    np.nan
+                    +
+                    1j
+                    *
+                    np.nan
+                )
+
+            continue
+
+        q = 0
+
+        for i in range(
+            N - 1
+        ):
+
+            for j in range(
+                i + 1,
+                N,
+            ):
+
+                den = math.sqrt(
+                    power[i]
+                    *
+                    power[j]
+                )
+
+                if den > 0:
+
+                    out[
+                        p,
+                        q,
+                    ] = (
+                        numer[q]
+                        /
+                        den
+                    )
+
+                else:
+
+                    out[
+                        p,
+                        q,
+                    ] = (
+                        np.nan
+                        +
+                        1j
+                        *
+                        np.nan
+                    )
+
+                q += 1
+
+    return out

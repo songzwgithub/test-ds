@@ -12,8 +12,18 @@ import time
 
 from .config import cfg_get, load_config
 from .manifest import build_stage_signature
+from .modules import (
+    MODULES,
+    resolve_module_bounds,
+    selected_modules,
+    validate_module_registry,
+)
 from .project import resolve_project_paths
-from .runtime import build_runtime_plan
+from . import __version__
+from .runtime_tuning import (
+    ensure_runtime_profile,
+    resolve_runtime_plan,
+)
 
 
 ROOT = (
@@ -689,9 +699,7 @@ def _stage_args(
 
     elif stage.name == "phase_linking":
 
-        # Preserve validated numerical execution settings for first-release parity
-        # for validated production parity. They are benchmarked and
-        # auto-tuned only after parity is frozen.
+        # Runtime scheduling is independent from scientific settings.
         args += [
             "--center-mode",
             str(
@@ -825,6 +833,15 @@ def _stage_args(
                     cfg,
                     "runtime.phase_link_support_block",
                     runtime.support_cache_support_block,
+                )
+            ),
+
+            "--prefetch-tiles",
+            _fmt(
+                cfg_get(
+                    cfg,
+                    "runtime.phase_link_prefetch_tiles",
+                    1,
                 )
             ),
         ]
@@ -1367,14 +1384,32 @@ def _run_stage(
 def run_pipeline(
     *,
     config,
+    module=None,
+    from_module=None,
+    to_module=None,
     from_stage=None,
     to_stage=None,
     dry_run=False,
     force=False,
+    list_modules=False,
     list_stages=False,
 ):
 
     validate_stage_contract_registry()
+
+    validate_module_registry(
+        [stage.name for stage in STAGES]
+    )
+
+    if list_modules:
+        for i, module_def in enumerate(MODULES, start=1):
+            print(
+                f"{i:02d}  "
+                f"{module_def.name:16s} "
+                f"[{len(module_def.stage_names):2d} internal stages]  "
+                f"{module_def.title}"
+            )
+        return 0
 
     if list_stages:
 
@@ -1463,21 +1498,10 @@ def run_pipeline(
             stack.dates
         )
 
-    runtime = build_runtime_plan(
-        ndate=len(
-            stack.dates
-        ),
-        memory_fraction=float(
-            cfg_get(
-                cfg,
-                "runtime.memory_fraction",
-                0.85,
-            )
-        ),
-        requested_cpu=requested_cpu,
-        max_solver_size=(
-            _runtime_solver_size
-        ),
+    runtime, runtime_profile_info = resolve_runtime_plan(
+        cfg,
+        paths,
+        ndate=len(stack.dates),
     )
 
     # --------------------------------------------------------
@@ -1497,51 +1521,73 @@ def run_pipeline(
         )
     )
 
-    first = (
-        0
-        if from_stage is None
-        else STAGE_INDEX.get(
-            from_stage,
-            -1,
-        )
+    module_selector_active = (
+        module is not None
+        or from_module is not None
+        or to_module is not None
     )
 
-    last = (
-        len(STAGES) - 1
-        if to_stage is None
-        else STAGE_INDEX.get(
-            to_stage,
-            -1,
-        )
+    stage_selector_active = (
+        from_stage is not None
+        or to_stage is not None
     )
 
-    if first < 0:
+    if module is not None and (
+        from_module is not None
+        or to_module is not None
+    ):
         raise ValueError(
-            f"Unknown from-stage: "
-            f"{from_stage}"
+            "--module cannot be combined with --from-module/--to-module"
         )
 
-    if last < 0:
+    if module_selector_active and stage_selector_active:
         raise ValueError(
-            f"Unknown to-stage: "
-            f"{to_stage}"
+            "module selectors cannot be combined with internal stage selectors"
         )
 
-    if first > last:
-        raise ValueError(
-            "from-stage occurs after "
-            "to-stage"
+    if module is not None:
+        from_module = module
+        to_module = module
+
+    if module_selector_active:
+        if from_module is None:
+            from_module = MODULES[0].name
+        if to_module is None:
+            to_module = MODULES[-1].name
+
+        first, last = resolve_module_bounds(
+            from_module=from_module,
+            to_module=to_module,
+            stage_index=STAGE_INDEX,
+        )
+    else:
+        first = (
+            0
+            if from_stage is None
+            else STAGE_INDEX.get(from_stage, -1)
+        )
+        last = (
+            len(STAGES) - 1
+            if to_stage is None
+            else STAGE_INDEX.get(to_stage, -1)
         )
 
-    selected = (
-        STAGES[
-            first:last + 1
-        ]
+        if first < 0:
+            raise ValueError(f"Unknown from-stage: {from_stage}")
+        if last < 0:
+            raise ValueError(f"Unknown to-stage: {to_stage}")
+        if first > last:
+            raise ValueError("from-stage occurs after to-stage")
+
+    selected = STAGES[first:last + 1]
+
+    selected_module_names = selected_modules(
+        [stage.name for stage in selected]
     )
 
     print("=" * 96)
     print(
-        "pyPSDS-GAMMA 1.1 "
+        f"pyPSDS-GAMMA {__version__} "
         "production processing"
     )
     print("=" * 96)
@@ -1598,6 +1644,11 @@ def run_pipeline(
     )
 
     print(
+        "Runtime profile:",
+        runtime_profile_info["status"],
+    )
+
+    print(
         f"SHP tile      : "
         f"{runtime.support_cache_tile_rows} x "
         f"{runtime.support_cache_tile_cols}"
@@ -1609,17 +1660,32 @@ def run_pipeline(
     )
 
     print(
-        f"stages        : "
+        f"modules       : "
+        f"{len(selected_module_names)}"
+    )
+
+    print(
+        f"module from   : "
+        f"{selected_module_names[0]}"
+    )
+
+    print(
+        f"module to     : "
+        f"{selected_module_names[-1]}"
+    )
+
+    print(
+        f"internal stage: "
         f"{len(selected)}"
     )
 
     print(
-        f"from          : "
+        f"stage from    : "
         f"{selected[0].name}"
     )
 
     print(
-        f"to            : "
+        f"stage to      : "
         f"{selected[-1].name}"
     )
 
@@ -1654,6 +1720,46 @@ def run_pipeline(
     )
 
     for stage in selected:
+
+        if (
+            stage.name
+            ==
+            "phase_linking"
+            and
+            not dry_run
+        ):
+            (
+                runtime,
+                runtime_profile_info,
+            ) = ensure_runtime_profile(
+                cfg,
+                config_path,
+                paths,
+                ndate=len(
+                    stack.dates
+                ),
+            )
+
+            print(
+                "Phase Linking runtime profile:",
+                runtime_profile_info[
+                    "status"
+                ],
+            )
+
+            print(
+                "Phase Linking schedule:",
+                {
+                    "workers":
+                        runtime.phase_link_workers,
+
+                    "chunk_size":
+                        runtime.phase_link_chunk_size,
+
+                    "batch_size":
+                        runtime.phase_link_batch_size,
+                },
+            )
 
         (
             stage_signature,
@@ -1786,7 +1892,7 @@ def run_pipeline(
                 "pyPSDS-GAMMA",
 
             "version":
-                "1.0.0",
+                __version__,
 
             "run_id":
                 run_id,
@@ -1820,6 +1926,18 @@ def run_pipeline(
             "to_stage":
                 selected[-1].name,
 
+            "selected_module_count":
+                len(selected_module_names),
+
+            "selected_modules":
+                list(selected_module_names),
+
+            "from_module":
+                selected_module_names[0],
+
+            "to_module":
+                selected_module_names[-1],
+
             "selected_stage_count":
                 len(selected),
 
@@ -1831,6 +1949,9 @@ def run_pipeline(
 
             "runtime":
                 runtime.as_dict(),
+
+            "runtime_profile":
+                runtime_profile_info,
 
             "results":
                 results,

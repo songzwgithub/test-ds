@@ -95,6 +95,8 @@ def run_sequential_plan(
     pl_workers: int = 16,
     pl_chunk_size: int = 512,
 
+    prefetch_tiles: int = 1,
+
     formula_audit_points: int = 5000,
 ) -> SequentialPlanResult:
     """
@@ -370,6 +372,10 @@ def run_sequential_plan(
 
             pl_chunk_size=(
                 pl_chunk_size
+            ),
+
+            prefetch_tiles=(
+                prefetch_tiles
             ),
 
             formula_audit_points=(

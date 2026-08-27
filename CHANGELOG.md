@@ -1,3 +1,21 @@
+## 1.2.0
+
+- Made one-ahead GAMMA Phase-Linking prefetch opt-in (production default off); timeout protection, resource budgeting, and post-PL fusion remain active.
+
+- Fused GAMMA post-Phase-Linking row-band processing so full-span quality, full-SCM fallback, and PS phase fill share one full-date corrected PhaseTile per band instead of repeating phase-source reads.
+
+- Added bounded one-ahead GAMMA tile prefetch for sequential Phase Linking, overlapping next-tile I/O/phase correction with current SHP/coherence/EMI/compression while keeping at most one extra real-acquisition tile in memory.
+
+- Added the nine-module production workflow interface (`data_ps`, `shp`, `phase_linking`, `ps_ds`, `network_qc`, `unwrap`, `timeseries`, `corrections`, `products`) while retaining internal stage checkpoints.
+
+- Added bounded real-data runtime autotuning for sequential threshold-Cholesky EMI.
+- Runtime tuning selects Phase Linking worker/chunk/batch scheduling without changing scientific parameters.
+- Runtime profiles are hardware/BLAS/solver-dimension keyed and clamped by the cgroup-aware safe resource plan.
+- Production runs automatically create or reuse the runtime profile before Phase Linking.
+- Added the public `pypsds tune --config ...` command.
+- Removed stale hard-coded pipeline/run-manifest version strings.
+- The validated DS scientific defaults remain unchanged.
+
 # Changelog
 
 ## 1.1.0

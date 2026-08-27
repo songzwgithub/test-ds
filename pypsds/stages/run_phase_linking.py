@@ -671,6 +671,17 @@ def main():
     ap.add_argument("--tile-rows", type=int, default=0)
     ap.add_argument("--tile-cols", type=int, default=0)
     ap.add_argument("--support-block", type=int, default=0)
+    ap.add_argument(
+        "--prefetch-tiles",
+        type=int,
+        choices=(0, 1),
+        default=1,
+        help=(
+            "One-ahead GAMMA tile prefetch. "
+            "0 disables prefetch; 1 overlaps the next tile read "
+            "with current CPU processing."
+        ),
+    )
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--max-centers", type=int, default=0)
     args = ap.parse_args()
@@ -747,7 +758,7 @@ def main():
     )
 
     print("=" * 80)
-    print("pyPSDS-GAMMA v1.0 - CPU production dispatcher")
+    print("pyPSDS-GAMMA - CPU production dispatcher")
     print("=" * 80)
     print(f"config          : {config_path}")
     print(f"scene           : {H} x {W}")
@@ -769,6 +780,7 @@ def main():
         f"{args.tile_rows} x {args.tile_cols}"
     )
     print(f"support block   : {args.support_block}")
+    print(f"prefetch tiles  : {args.prefetch_tiles}")
     print(f"Numba threads   : {os.environ.get('NUMBA_NUM_THREADS', 'runtime-default')}")
     print(f"resume          : {args.resume}")
 

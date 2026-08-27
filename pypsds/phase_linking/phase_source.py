@@ -20,7 +20,190 @@ from pypsds.progress import log
 
 from pypsds.runtime import (
     available_memory_bytes,
+    logical_cpu_count,
 )
+
+
+
+
+def _plan_temporal_piece_cache_cells(
+    *,
+    H: int,
+    W: int,
+    canonical_rows: int,
+    canonical_cols: int,
+    ndate: int,
+    temporal_parts: int,
+    available_bytes: int,
+    memory_fraction: float = 0.10,
+):
+    H = max(1, int(H))
+    W = max(1, int(W))
+    cr = max(1, int(canonical_rows))
+    cc = max(1, int(canonical_cols))
+    ndate = max(1, int(ndate))
+    temporal_parts = max(1, int(temporal_parts))
+
+    fraction = min(
+        0.25,
+        max(
+            0.01,
+            float(memory_fraction),
+        ),
+    )
+
+    scene_rows = (H + cr - 1) // cr
+    scene_cols = (W + cc - 1) // cc
+    scene_cells = scene_rows * scene_cols
+
+    nominal_piece_dates = max(
+        1,
+        (ndate + temporal_parts - 1)
+        //
+        temporal_parts,
+    )
+
+    nominal_piece_bytes = (
+        cr
+        *
+        cc
+        *
+        nominal_piece_dates
+        *
+        np.dtype(np.complex64).itemsize
+        +
+        cr
+        *
+        cc
+    )
+
+    desired_entries = scene_cells * temporal_parts
+
+    if int(available_bytes) > 0:
+        budget_bytes = int(
+            int(available_bytes)
+            *
+            fraction
+        )
+
+        memory_entries = max(
+            1,
+            budget_bytes
+            //
+            max(
+                1,
+                nominal_piece_bytes,
+            ),
+        )
+    else:
+        memory_entries = 32
+        budget_bytes = memory_entries * nominal_piece_bytes
+
+    target_entries = max(
+        1,
+        min(
+            desired_entries,
+            memory_entries,
+        ),
+    )
+
+    return {
+        "scene_rows": int(scene_rows),
+        "scene_cols": int(scene_cols),
+        "scene_cells": int(scene_cells),
+        "temporal_parts": int(temporal_parts),
+        "desired_entries": int(desired_entries),
+        "nominal_piece_dates": int(nominal_piece_dates),
+        "nominal_piece_bytes": int(nominal_piece_bytes),
+        "memory_budget_bytes": int(budget_bytes),
+        "memory_entries": int(memory_entries),
+        "target_entries": int(target_entries),
+    }
+
+
+def _plan_fullspan_cache_cells(
+    *,
+    H: int,
+    W: int,
+    canonical_rows: int,
+    canonical_cols: int,
+    ndate: int,
+    available_bytes: int,
+    memory_fraction: float = 0.10,
+):
+    H = max(1, int(H))
+    W = max(1, int(W))
+    cr = max(1, int(canonical_rows))
+    cc = max(1, int(canonical_cols))
+    ndate = max(1, int(ndate))
+
+    fraction = min(
+        0.25,
+        max(
+            0.01,
+            float(memory_fraction),
+        ),
+    )
+
+    scene_rows = (H + cr - 1) // cr
+    scene_cols = (W + cc - 1) // cc
+    scene_cells = scene_rows * scene_cols
+
+    nominal_cell_bytes = (
+        cr
+        *
+        cc
+        *
+        ndate
+        *
+        np.dtype(np.complex64).itemsize
+        +
+        cr
+        *
+        cc
+    )
+
+    if int(available_bytes) > 0:
+        budget_bytes = int(
+            int(available_bytes)
+            *
+            fraction
+        )
+
+        memory_cells = max(
+            1,
+            budget_bytes
+            //
+            max(
+                1,
+                nominal_cell_bytes,
+            ),
+        )
+    else:
+        memory_cells = 32
+        budget_bytes = (
+            memory_cells
+            *
+            nominal_cell_bytes
+        )
+
+    target_cells = max(
+        1,
+        min(
+            scene_cells,
+            memory_cells,
+        ),
+    )
+
+    return {
+        "scene_rows": int(scene_rows),
+        "scene_cols": int(scene_cols),
+        "scene_cells": int(scene_cells),
+        "nominal_cell_bytes": int(nominal_cell_bytes),
+        "memory_budget_bytes": int(budget_bytes),
+        "memory_cells": int(memory_cells),
+        "target_cells": int(target_cells),
+    }
 
 
 @dataclass(slots=True)
@@ -37,6 +220,7 @@ class PhaseTile:
     canonical_cells: int = 0
     cache_hits: int = 0
     cache_misses: int = 0
+    cache_composed_hits: int = 0
 
 
 @dataclass(slots=True)
@@ -63,6 +247,79 @@ class _CanonicalCell:
                 self.geometry_valid.nbytes
             )
         )
+
+
+def bounded_prefetch_gamma_parallelism(
+    *,
+    cpu_count: int,
+    pl_workers: int,
+    spatial_workers: int,
+    pair_workers: int,
+    reserve_cpus: int = 4,
+):
+    cpu = max(1, int(cpu_count))
+    pl = max(1, int(pl_workers))
+
+    reserve = max(
+        1,
+        min(
+            int(reserve_cpus),
+            max(1, cpu - 1),
+        ),
+    )
+
+    gamma_budget = max(
+        1,
+        cpu
+        -
+        min(
+            pl,
+            max(1, cpu - 1),
+        )
+        -
+        reserve,
+    )
+
+    pair = max(
+        1,
+        min(
+            int(pair_workers),
+            gamma_budget,
+        ),
+    )
+
+    spatial = max(
+        1,
+        min(
+            int(spatial_workers),
+            max(
+                1,
+                gamma_budget // pair,
+            ),
+        ),
+    )
+
+    while (
+        spatial * pair > gamma_budget
+        and spatial > 1
+    ):
+        spatial -= 1
+
+    while (
+        spatial * pair > gamma_budget
+        and pair > 1
+    ):
+        pair -= 1
+
+    return {
+        "cpu_count": cpu,
+        "pl_workers": pl,
+        "reserve_cpus": reserve,
+        "gamma_process_budget": gamma_budget,
+        "spatial_workers": spatial,
+        "pair_workers": pair,
+        "max_gamma_processes": spatial * pair,
+    }
 
 
 class CachedPhaseSource:
@@ -490,6 +747,150 @@ class GammaStreamingPhaseSource:
             f"io_workers={self.stack.io_workers}"
         )
 
+    def configure_prefetch_concurrency(
+        self,
+        *,
+        pl_workers: int,
+    ):
+        budget = bounded_prefetch_gamma_parallelism(
+            cpu_count=logical_cpu_count(),
+            pl_workers=pl_workers,
+            spatial_workers=self.spatial_workers,
+            pair_workers=self.pair_workers,
+            reserve_cpus=4,
+        )
+
+        self.spatial_workers = int(
+            budget["spatial_workers"]
+        )
+
+        self.pair_workers = int(
+            budget["pair_workers"]
+        )
+
+        self.provider._phase_sim_workers_override = (
+            self.pair_workers
+        )
+
+        log(
+            "Prefetch GAMMA CPU budget: "
+            f"cpu={budget['cpu_count']}, "
+            f"PL={budget['pl_workers']}, "
+            f"reserve={budget['reserve_cpus']}, "
+            f"gamma_budget={budget['gamma_process_budget']}, "
+            f"spatial_workers={budget['spatial_workers']}, "
+            f"pair_workers={budget['pair_workers']}, "
+            f"max_gamma_processes={budget['max_gamma_processes']}"
+        )
+
+        return budget
+
+
+
+
+    def configure_sequential_temporal_cache(
+        self,
+        *,
+        local_H: int,
+        local_W: int,
+        temporal_parts: int,
+        memory_fraction: float = 0.10,
+    ):
+        plan = _plan_temporal_piece_cache_cells(
+            H=local_H,
+            W=local_W,
+            canonical_rows=self.canonical_rows,
+            canonical_cols=self.canonical_cols,
+            ndate=self.ndate,
+            temporal_parts=temporal_parts,
+            available_bytes=available_memory_bytes(),
+            memory_fraction=memory_fraction,
+        )
+
+        old_cells = int(self.cache_max_cells)
+
+        self.cache_max_cells = max(
+            old_cells,
+            int(plan["target_entries"]),
+        )
+
+        log(
+            "Sequential temporal phase cache: "
+            f"ROI={int(local_H)}x{int(local_W)}, "
+            f"scene_cells={plan['scene_cells']}, "
+            f"temporal_parts={plan['temporal_parts']}, "
+            f"desired={plan['desired_entries']}, "
+            f"LRU={old_cells}->{self.cache_max_cells}, "
+            f"budget={plan['memory_budget_bytes'] / (1024**3):.2f} GiB"
+        )
+
+        return {
+            **plan,
+            "old_cache_max_cells": old_cells,
+            "cache_max_cells": int(self.cache_max_cells),
+        }
+
+
+    def configure_postphase_fullspan_cache(
+        self,
+        *,
+        local_H: int,
+        local_W: int,
+        memory_fraction: float = 0.10,
+        clear_stage_cache: bool = True,
+    ):
+        plan = _plan_fullspan_cache_cells(
+            H=local_H,
+            W=local_W,
+            canonical_rows=self.canonical_rows,
+            canonical_cols=self.canonical_cols,
+            ndate=self.ndate,
+            available_bytes=available_memory_bytes(),
+            memory_fraction=memory_fraction,
+        )
+
+        old_cells = int(self.cache_max_cells)
+        old_entries = len(self._cache)
+
+        if clear_stage_cache:
+            self._cache.clear()
+
+        self.cache_max_cells = max(
+            int(
+                self.cache_max_cells
+            ),
+            int(
+                plan[
+                    "target_cells"
+                ]
+            ),
+        )
+
+        log(
+            "Post-PL fullspan phase cache: "
+            f"ROI={int(local_H)}x{int(local_W)}, "
+            f"canonical={self.canonical_rows}x{self.canonical_cols}, "
+            f"scene_cells={plan['scene_cells']}, "
+            f"LRU={old_cells}->{self.cache_max_cells}, "
+            f"cleared={old_entries if clear_stage_cache else 0}, "
+            f"budget={plan['memory_budget_bytes'] / (1024**3):.2f} GiB"
+        )
+
+        return {
+            **plan,
+            "old_cache_max_cells": old_cells,
+            "old_cache_entries": int(old_entries),
+            "cache_max_cells": int(self.cache_max_cells),
+            "cleared_entries": int(
+                old_entries
+                if
+                clear_stage_cache
+                else
+                0
+            ),
+        }
+
+
     # --------------------------------------------------------
     # Canonical geometry
     # --------------------------------------------------------
@@ -630,6 +1031,152 @@ class GammaStreamingPhaseSource:
         self.cache_hits_total += 1
 
         return cell
+
+
+    def _cache_compose_temporal_cell(
+        self,
+        *,
+        spatial_key,
+        date_indices,
+    ):
+        requested = tuple(
+            int(x)
+            for x in date_indices
+        )
+
+        if not requested:
+            return None
+
+        r0 = int(spatial_key[0])
+        c0 = int(spatial_key[1])
+
+        candidates = []
+
+        for cache_key, cell in self._cache.items():
+            if (
+                len(cache_key) != 3
+                or
+                int(cache_key[0]) != r0
+                or
+                int(cache_key[1]) != c0
+            ):
+                continue
+
+            dates = tuple(
+                int(x)
+                for x in cache_key[2]
+            )
+
+            if not dates:
+                continue
+
+            if dates == requested:
+                continue
+
+            candidates.append((dates, cell))
+
+        if not candidates:
+            return None
+
+        pieces = []
+        offset = 0
+
+        while offset < len(requested):
+            best = None
+            remaining = requested[offset:]
+
+            for dates, cell in candidates:
+                n = len(dates)
+
+                if (
+                    n <= len(remaining)
+                    and
+                    dates == remaining[:n]
+                ):
+                    if (
+                        best is None
+                        or
+                        n > len(best[0])
+                    ):
+                        best = (dates, cell)
+
+            if best is None:
+                return None
+
+            pieces.append(best)
+            offset += len(best[0])
+
+        first = pieces[0][1]
+
+        for _dates, cell in pieces[1:]:
+            if (
+                cell.row0 != first.row0
+                or
+                cell.row1 != first.row1
+                or
+                cell.col0 != first.col0
+                or
+                cell.col1 != first.col1
+            ):
+                return None
+
+            if not np.array_equal(
+                cell.geometry_valid,
+                first.geometry_valid,
+            ):
+                return None
+
+        yxt = np.ascontiguousarray(
+            np.concatenate(
+                [
+                    cell.yxt
+                    for _dates, cell
+                    in pieces
+                ],
+                axis=2,
+            ),
+            dtype=np.complex64,
+        )
+
+        if yxt.shape[2] != len(requested):
+            return None
+
+        mins = [
+            float(cell.phase_min)
+            for _dates, cell
+            in pieces
+            if np.isfinite(cell.phase_min)
+        ]
+
+        maxs = [
+            float(cell.phase_max)
+            for _dates, cell
+            in pieces
+            if np.isfinite(cell.phase_max)
+        ]
+
+        return _CanonicalCell(
+            row0=first.row0,
+            row1=first.row1,
+            col0=first.col0,
+            col1=first.col1,
+            yxt=yxt,
+            geometry_valid=np.ascontiguousarray(
+                first.geometry_valid,
+                dtype=np.bool_,
+            ),
+            phase_min=(
+                min(mins)
+                if mins
+                else float("nan")
+            ),
+            phase_max=(
+                max(maxs)
+                if maxs
+                else float("nan")
+            ),
+        )
+
 
     def _cache_put(
         self,
@@ -1065,6 +1612,7 @@ class GammaStreamingPhaseSource:
         missing = []
 
         hits = 0
+        composed_hits = 0
 
         for key in spatial_keys:
 
@@ -1080,9 +1628,28 @@ class GammaStreamingPhaseSource:
 
             if cell is None:
 
-                missing.append(
-                    key
+                cell = (
+                    self
+                    ._cache_compose_temporal_cell(
+                        spatial_key=key,
+                        date_indices=date_indices,
+                    )
                 )
+
+                if cell is None:
+
+                    missing.append(
+                        key
+                    )
+
+                else:
+
+                    hits += 1
+                    composed_hits += 1
+
+                    cells[
+                        key
+                    ] = cell
 
             else:
 
@@ -1290,6 +1857,7 @@ class GammaStreamingPhaseSource:
             f"{date_indices[-1]}], "
             f"cells={len(spatial_keys)}, "
             f"hits={hits}, "
+            f"composed={composed_hits}, "
             f"misses={misses}, "
             f"read={read_seconds:.2f}s, "
             f"correction="
@@ -1316,6 +1884,9 @@ class GammaStreamingPhaseSource:
             ),
             cache_hits=hits,
             cache_misses=misses,
+            cache_composed_hits=(
+                composed_hits
+            ),
         )
 
 

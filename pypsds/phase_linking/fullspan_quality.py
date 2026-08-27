@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from time import perf_counter
 
 import numpy as np
+
 
 from ..progress import ProgressReporter
 
 from .coherence import (
     compressed_coherence,
+    compressed_coherence_all_pairs,
 )
 from .emi import (
     ESTIMATOR_EVD,
@@ -178,6 +181,8 @@ def evaluate_fullspan_quality_points(
     batch: int = 4096,
     support_block: int = 1024,
     static_support_cache=None,
+    support_rows=None,
+    support_cols=None,
 ) -> FullspanQualityResult:
     """
     Re-evaluate final sequential phase histories against the
@@ -233,6 +238,47 @@ def evaluate_fullspan_quality_points(
         raise ValueError(
             "rows/cols must be equal-length 1-D arrays"
         )
+
+    if (
+        support_rows is None
+        and
+        support_cols is None
+    ):
+        support_rr = rr
+        support_cc = cc
+
+    elif (
+        support_rows is None
+        or
+        support_cols is None
+    ):
+        raise ValueError(
+            "support_rows/support_cols must be provided together"
+        )
+
+    else:
+        support_rr = np.asarray(
+            support_rows,
+            dtype=np.int32,
+        )
+
+        support_cc = np.asarray(
+            support_cols,
+            dtype=np.int32,
+        )
+
+        if (
+            support_rr.ndim != 1
+            or
+            support_cc.ndim != 1
+            or
+            support_rr.size != rr.size
+            or
+            support_cc.size != cc.size
+        ):
+            raise ValueError(
+                "support_rows/support_cols must match rows/cols"
+            )
 
     if rr.size:
 
@@ -428,6 +474,10 @@ def evaluate_fullspan_quality_points(
         dtype=np.bool_,
     )
 
+    fullspan_total_t0 = perf_counter()
+    fullspan_coherence_seconds = 0.0
+    fullspan_temporal_seconds = 0.0
+
     for b0 in range(
         0,
         n,
@@ -467,8 +517,12 @@ def evaluate_fullspan_quality_points(
             # losslessly packed into the static cache.
             support = (
                 static_support_cache.support(
-                    br,
-                    bc,
+                    support_rr[
+                        b0:b1
+                    ],
+                    support_cc[
+                        b0:b1
+                    ],
                 )
             )
 
@@ -521,14 +575,6 @@ def evaluate_fullspan_quality_points(
                 f"expected={int(expected[k])}"
             )
 
-        coh = compressed_coherence(
-            yxt,
-            br,
-            bc,
-            support,
-            pi,
-            pj,
-        )
 
         # ----------------------------------------------------
         # Read only this batch of phase histories.
@@ -572,6 +618,23 @@ def evaluate_fullspan_quality_points(
             b0:b1
         ] = complete
 
+        _t_kernel = perf_counter()
+
+        coh = compressed_coherence_all_pairs(
+            yxt,
+            br,
+            bc,
+            support,
+        )
+
+        fullspan_coherence_seconds += (
+            perf_counter()
+            -
+            _t_kernel
+        )
+
+        _t_kernel = perf_counter()
+
         tc_b, pair_b = (
             temporal_quality_streaming(
                 coh,
@@ -579,6 +642,12 @@ def evaluate_fullspan_quality_points(
                 pi,
                 pj,
             )
+        )
+
+        fullspan_temporal_seconds += (
+            perf_counter()
+            -
+            _t_kernel
         )
 
         tc_b = np.asarray(
@@ -616,6 +685,29 @@ def evaluate_fullspan_quality_points(
 
     progress.finish(
         n
+    )
+
+    fullspan_total_seconds = (
+        perf_counter()
+        -
+        fullspan_total_t0
+    )
+
+    fullspan_other_seconds = max(
+        0.0,
+        fullspan_total_seconds
+        -
+        fullspan_coherence_seconds
+        -
+        fullspan_temporal_seconds,
+    )
+
+    print(
+        "fullspan split timing    : "
+        f"coherence={fullspan_coherence_seconds:.3f}s "
+        f"temporal={fullspan_temporal_seconds:.3f}s "
+        f"other={fullspan_other_seconds:.3f}s "
+        f"total={fullspan_total_seconds:.3f}s"
     )
 
     return FullspanQualityResult(

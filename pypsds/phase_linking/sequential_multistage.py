@@ -21,9 +21,13 @@ from .emi import (
     image_pairs,
     robust_emi_threaded,
     temporal_coherence,
+    temporal_coherence_fused,
 )
 from .emi_threshold import (
     robust_emi_threshold_threaded,
+)
+from .tile_prefetch import (
+    OneAheadTilePrefetcher,
 )
 
 from .shp_vectorized_exact import (
@@ -1151,6 +1155,8 @@ def run_sequential_stage(
     pl_workers: int = 16,
     pl_chunk_size: int = 512,
 
+    prefetch_tiles: int = 1,
+
     formula_audit_points: int = 5000,
 
     phase_sink=None,
@@ -1167,6 +1173,18 @@ def run_sequential_stage(
         )
 
     H, W, ndate = yxt.shape
+
+    prefetch_tiles = int(
+        prefetch_tiles
+    )
+
+    if prefetch_tiles not in (
+        0,
+        1,
+    ):
+        raise ValueError(
+            "prefetch_tiles must be 0 or 1"
+        )
 
     real_indices = tuple(
         int(x)
@@ -1752,6 +1770,154 @@ def run_sequential_stage(
 
     print()
 
+    # Bounded one-ahead GAMMA streaming.
+    #
+    # The current tile remains the only compute tile. At most one
+    # additional real-acquisition tile is read/corrected in a background
+    # thread while the current tile performs SHP/coherence/EMI/compression.
+    #
+    # NPY/memmap phase caches keep their existing synchronous path.
+    prefetch_enabled = (
+        prefetch_tiles == 1
+        and
+        bool(
+            getattr(
+                yxt,
+                "is_phase_source_proxy",
+                False,
+            )
+        )
+    )
+
+    prefetch_budget = None
+
+    if prefetch_enabled:
+        phase_source = getattr(
+            yxt,
+            "phase_source",
+            None,
+        )
+
+        if (
+            phase_source is not None
+            and hasattr(
+                phase_source,
+                "configure_prefetch_concurrency",
+            )
+        ):
+            prefetch_budget = (
+                phase_source.configure_prefetch_concurrency(
+                    pl_workers=pl_workers,
+                )
+            )
+
+            print(
+                "prefetch CPU budget    :",
+                prefetch_budget[
+                    "gamma_process_budget"
+                ],
+            )
+
+            print(
+                "prefetch GAMMA layout  :",
+                (
+                    f"{prefetch_budget['spatial_workers']} spatial x "
+                    f"{prefetch_budget['pair_workers']} pair = "
+                    f"{prefetch_budget['max_gamma_processes']} processes"
+                ),
+            )
+
+    active_prefetch_positions = tuple(
+        position
+        for position, (
+            _r0,
+            _r1,
+            _c0,
+            _c1,
+        )
+        in enumerate(
+            tiles
+        )
+        if (
+            position + 1
+            >
+            checkpoint_prefix
+            and
+            bool(
+                np.any(
+                    state_core[
+                        _r0:_r1,
+                        _c0:_c1,
+                    ]
+                )
+            )
+        )
+    )
+
+    def load_real_tile(
+        position: int,
+    ):
+        (
+            _r0,
+            _r1,
+            _c0,
+            _c1,
+        ) = tiles[
+            int(
+                position
+            )
+        ]
+
+        _ir0 = max(
+            0,
+            _r0 - half_row,
+        )
+
+        _ir1 = min(
+            H,
+            _r1 + half_row,
+        )
+
+        _ic0 = max(
+            0,
+            _c0 - half_col,
+        )
+
+        _ic1 = min(
+            W,
+            _c1 + half_col,
+        )
+
+        return np.ascontiguousarray(
+            yxt[
+                _ir0:_ir1,
+                _ic0:_ic1,
+                start_real:stop_real,
+            ],
+            dtype=np.complex64,
+        )
+
+    tile_prefetcher = (
+        OneAheadTilePrefetcher(
+            positions=(
+                active_prefetch_positions
+            ),
+            loader=load_real_tile,
+            enabled=prefetch_enabled,
+        )
+    )
+
+    tile_prefetcher.start()
+
+    print(
+        "tile prefetch          :",
+        (
+            "gamma one-ahead"
+            if prefetch_enabled
+            else "disabled"
+        ),
+    )
+
     for tile_index, (
         r0,
         r1,
@@ -1870,15 +2036,51 @@ def run_sequential_stage(
                 ic0:ic1,
             ]
 
+        if prefetch_enabled:
+
+            real_tile = (
+                tile_prefetcher.get(
+                    tile_index - 1
+                )
+            )
+
+        else:
+
+            real_tile = (
+                np.ascontiguousarray(
+                    yxt[
+                        ir0:ir1,
+                        ic0:ic1,
+                        start_real:stop_real,
+                    ],
+                    dtype=np.complex64,
+                )
+            )
+
+        expected_real_shape = (
+            th,
+            tw,
+            len(
+                real_indices
+            ),
+        )
+
+        if (
+            real_tile.shape
+            !=
+            expected_real_shape
+        ):
+            raise RuntimeError(
+                "prefetched real-tile shape mismatch: "
+                f"{real_tile.shape} != "
+                f"{expected_real_shape}"
+            )
+
         stage_tile[
             :,
             :,
             first_real_idx:
-        ] = yxt[
-            ir0:ir1,
-            ic0:ic1,
-            start_real:stop_real,
-        ]
+        ] = real_tile
 
         # A sample may participate in this stage covariance
         # only if every stage layer is finite at that sample.
@@ -2244,7 +2446,7 @@ def run_sequential_stage(
                 chunk_size=pl_chunk_size,
             )
 
-            tc = temporal_coherence(
+            tc = temporal_coherence_fused(
                 coh,
                 ph,
                 pairs,
@@ -2695,6 +2897,56 @@ def run_sequential_stage(
 
             checkpoint_pending.clear()
 
+
+    tile_prefetcher.close()
+
+    if prefetch_enabled:
+
+        print(
+            "prefetch reads         :",
+            tile_prefetcher.completed,
+        )
+
+        print(
+            "prefetch read seconds  :",
+            f"{tile_prefetcher.read_seconds:.3f}",
+        )
+
+        print(
+            "prefetch wait seconds  :",
+            f"{tile_prefetcher.wait_seconds:.3f}",
+        )
+
+        print(
+            "prefetch block seconds :",
+            f"{tile_prefetcher.blocking_seconds:.3f}",
+        )
+
+        print(
+            "prefetch sched overhead:",
+            f"{tile_prefetcher.scheduler_overhead_seconds:.3f}",
+        )
+
+        print(
+            "prefetch overlap sec   :",
+            f"{tile_prefetcher.overlap_seconds:.3f}",
+        )
+
+        if (
+            tile_prefetcher.read_seconds
+            >
+            0.0
+        ):
+            hidden_fraction = (
+                tile_prefetcher.overlap_seconds
+                /
+                tile_prefetcher.read_seconds
+            )
+
+            print(
+                "prefetch hidden I/O   :",
+                f"{100.0 * hidden_fraction:.1f}%",
+            )
 
     # ------------------------------------------------------------------
     # Rebuild status counts from persistent stage maps.
