@@ -5,6 +5,12 @@ from .gamma_par import (
     read_gamma_par,
 )
 
+from .lonlat import (
+    RadarLonLatAssets,
+    RadarLonLatError,
+    ensure_radar_lonlat,
+)
+
 from .inputs import (
     GeometryInputError,
     GeometryInputs,
@@ -39,6 +45,9 @@ from .incidence import (
 
 
 __all__ = [
+    "ensure_radar_lonlat",
+    "RadarLonLatError",
+    "RadarLonLatAssets",
     "sample_height_m",
     "resolve_height_raster",
     "HeightGeometryError",

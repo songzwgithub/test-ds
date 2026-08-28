@@ -18,6 +18,17 @@ geometry:
   longitude_raster: null
   latitude_raster: null
   height_raster: null
+  lonlat:
+    # Reuse existing radar-coordinate lon/lat when available.
+    # If missing, generate them in the current auxiliary MLI/DEM
+    # radar geometry. Single-look PS/DS rows/cols are sampled later
+    # through GAMMA data2pt; no full-scene 1x1 lon/lat raster is made.
+    auto_generate: true
+    lookup_table: null
+    dem_parameter_file: null
+    output_dir: null
+    dem_coord_command: dem_coord
+    geocode_command: geocode
 processing:
   roi:
     row0: 0
