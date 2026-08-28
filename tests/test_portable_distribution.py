@@ -17,7 +17,18 @@ def test_default_config_has_no_study_area_paths_or_coordinates():
     text = resources.files("pypsds.resources").joinpath("default_config.yaml").read_text(encoding="utf-8")
     assert "/home/" not in text and "/mnt/" not in text and "20000101" not in text
     cfg = yaml.safe_load(text)
-    assert cfg["phase_correction"]["geometric_reference_date"] is None
+
+    # One public project-level GAMMA reference acquisition.
+    assert cfg["reference_date"] is None
+
+    # Legacy duplicate reference-date fields are no longer exposed
+    # in the public configuration template.
+    assert "reference_date" not in cfg["geometry"]
+    assert (
+        "geometric_reference_date"
+        not in cfg["phase_correction"]
+    )
+
     assert cfg["reference"]["radar_window"]["center_row"] is None
     assert cfg["reference"]["radar_window"]["center_col"] is None
 

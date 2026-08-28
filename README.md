@@ -259,16 +259,26 @@ phase_linking:
 
 The solver-aware SHP policy distinguishes numerical support required by the sequential state from formal DS eligibility. Performance scheduling does not change these scientific definitions.
 
+### Global reference acquisition
+
+Configure the actual GAMMA co-registration/geometric reference acquisition once at project level:
+
+```yaml
+reference_date: YYYYMMDD
+```
+
+`reference_date` is required and must be present in `RSLC_tab`. pyPSDS-GAMMA does not silently substitute the first acquisition. The same project-level value is used for geometry discovery, GAMMA geometric phase correction, and baseline calculation.
+
+This acquisition reference is independent of `phase_linking.temporal_reference_index`, which is only the mathematical temporal phase gauge, and independent of the final spatial deformation reference region.
+
 ### Geometric phase correction
 
 ```yaml
 phase_correction:
   enabled: true
-  geometric_reference_date: YYYYMMDD
+  backend: gamma_phase_sim_orb_pt
   command_timeout_seconds: 300.0
 ```
-
-Use `geometric_reference_date: auto` only when the first temporal acquisition genuinely matches the GAMMA coregistration reference.
 
 ### Temporal network
 

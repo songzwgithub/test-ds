@@ -1,95 +1,115 @@
+# =============================================================================
+# pyPSDS-GAMMA v1.3 production configuration
+# =============================================================================
+
+# =============================================================================
+# 0. CONFIGURATION / GLOBAL REFERENCE
+# =============================================================================
+
+# Configuration schema.
+# Options: 1
 schema_version: 1
+
+# REQUIRED.
+# GAMMA co-registration / geometric reference acquisition.
+# Format: YYYYMMDD, e.g. 20151212.
+# Must exist in RSLC_tab.
+# Used globally for geometry discovery, GAMMA geometric phase correction,
+# and GAMMA baseline calculation.
+# This is NOT the Phase-Linking phase gauge or final spatial reference region.
+# No automatic first-acquisition fallback is used.
+reference_date: null
+
+# =============================================================================
+# 1. PROJECT PATHS
+# =============================================================================
 paths:
+  # Options: "." | relative path | absolute path
   work_dir: .
   data_dir: .
+  # null = auto-discover conventional RSLC directory.
   rslc_dir: null
+  # null = auto-discover conventional RSLC_tab.
   rslc_tab: null
   output_dir: output
+  # null = auto-discover conventional DEM_prep directory.
   dem_dir: null
+  # null = no explicit GACOS directory.
   gacos_dir: null
   scratch_dir: output/.scratch
   products_dir: output/products
+
+# =============================================================================
+# 2. GAMMA RSLC INPUT
+# =============================================================================
 gamma:
+  # Options: auto | fcomplex | scomplex
   rslc_dtype: auto
+  # Options: big | little | native
   byte_order: big
-geometry:
-  reference_date: null
-  geometry_par: null
-  longitude_raster: null
-  latitude_raster: null
-  height_raster: null
-  lonlat:
-    # Reuse existing radar-coordinate lon/lat when available.
-    # If missing, generate them in the current auxiliary MLI/DEM
-    # radar geometry. Single-look PS/DS rows/cols are sampled later
-    # through GAMMA data2pt; no full-scene 1x1 lon/lat raster is made.
-    auto_generate: true
-    lookup_table: null
-    dem_parameter_file: null
-    output_dir: null
-    dem_coord_command: dem_coord
-    geocode_command: geocode
+
+# =============================================================================
+# 3. PROCESSING EXTENT
+# =============================================================================
 processing:
   roi:
+    # Zero-based first azimuth row / range column.
     row0: 0
     col0: 0
+    # null = process to scene end.
     rows: null
     cols: null
+
+# =============================================================================
+# 4. RUNTIME / HARDWARE
+# =============================================================================
 runtime:
+  # Options: auto | positive integer
   cpu: auto
+  # Range: 0 < value < 1
   memory_fraction: 0.85
+  # Options: auto | positive integer
   io_workers: auto
   autotune:
+    # Options: true | false
     enabled: true
     sample_points: 16384
     repeats: 2
+  # 0 = disabled; positive integer = bounded prefetch.
   phase_link_prefetch_tiles: 0
-selection:
-  ps:
-    amplitude_dispersion_max: 0.25
-  center_prior:
-    enabled: false
-    method: moraine_ks
-    half_row: 5
-    half_col: 5
-    p_max: 0.05
-    min_count: 50
-  shp:
-    method: rayleigh_glrt
-    alpha: 0.005
-    half_row: 5
-    half_col: 11
-    min_count: 48
-    exclude_ps: true
-    policy: solver_aware
-    rank_guard: true
-    adaptive_window:
-      enabled: true
-  ds:
-    center_mode: all
-    temporal_coherence_min: 0.8
-    pair_coherence_min: 0.0
-    accept_evd: true
-phase_linking:
-  method: robust_emi
-  beta: 0.0
-  gamma_jitter: 1.0e-06
-  target_eigenvalue: 0.99
-  evd_fallback: true
-  temporal_reference_index: 0
-  temporal:
-    strategy: sequential
-    ministack_size: 19
-    max_num_compressed: 5
-    state_min_shp: 24
-    full_scm_fallback: true
-    fullspan_batch_size: 16384
-    emi_backend: threshold_cholesky
-    use_exact_support_cache: true
+
+# =============================================================================
+# 5. RADAR / DEM GEOMETRY
+# =============================================================================
+geometry:
+  # null = discover using global reference_date.
+  geometry_par: null
+  # null = discover existing raster or auto-generate.
+  longitude_raster: null
+  latitude_raster: null
+  # null = discover matching height raster.
+  height_raster: null
+  lonlat:
+    # Options: true | false
+    auto_generate: true
+    # null = prefer *.<reference_date>.lt_fine, then *.lt
+    lookup_table: null
+    # null = infer from selected lookup table.
+    dem_parameter_file: null
+    # null = <output_dir>/processing/geometry_assets
+    output_dir: null
+    dem_coord_command: dem_coord
+    geocode_command: geocode
+
+# =============================================================================
+# 6. GEOMETRIC / TOPOGRAPHIC PHASE CORRECTION
+# =============================================================================
 phase_correction:
+  # Options: true | false
   enabled: true
+  # Supported: gamma_phase_sim_orb_pt
   backend: gamma_phase_sim_orb_pt
-  geometric_reference_date: null
+  # Validated production convention: 1.0
   apply_sign: 1.0
   scratch_dir: phase_correction
   commands:
@@ -97,16 +117,111 @@ phase_correction:
     data2pt: data2pt
     phase_sim_orb_pt: phase_sim_orb_pt
   radar_height:
+    # null = automatic discovery.
     path: null
     geometry_par: null
+    # Options: true | false
     zero_height_is_valid: false
+    # Unit: metres; value >= 0
     zero_height_epsilon_m: 0.001
+  # Unit: seconds; 0 = no timeout.
   command_timeout_seconds: 300.0
+
+# =============================================================================
+# 7. PS / SHP / DS SELECTION
+# =============================================================================
+selection:
+  ps:
+    # Non-negative float; lower = stricter.
+    amplitude_dispersion_max: 0.25
+  center_prior:
+    # Options: true | false
+    enabled: false
+    # Current supported diagnostic method: moraine_ks
+    method: moraine_ks
+    half_row: 5
+    half_col: 5
+    # Range: 0 < p_max < 1
+    p_max: 0.05
+    min_count: 50
+  shp:
+    # Production method: rayleigh_glrt
+    method: rayleigh_glrt
+    # Range: 0 < alpha < 1
+    alpha: 0.005
+    half_row: 5
+    half_col: 11
+    # Formal DS support threshold.
+    min_count: 48
+    # Options: true | false
+    exclude_ps: true
+    # Production policy: solver_aware
+    policy: solver_aware
+    rank_guard: true
+    adaptive_window:
+      enabled: true
+  ds:
+    # Options: all | current
+    center_mode: all
+    # Range: 0...1
+    temporal_coherence_min: 0.8
+    pair_coherence_min: 0.0
+    # Options: true | false
+    accept_evd: true
+
+# =============================================================================
+# 8. PHASE LINKING
+# =============================================================================
+phase_linking:
+  # Production method: robust_emi
+  method: robust_emi
+  beta: 0.0
+  gamma_jitter: 1.0e-06
+  target_eigenvalue: 0.99
+  evd_fallback: true
+  # Mathematical temporal phase gauge; NOT global reference_date.
+  temporal_reference_index: 0
+  temporal:
+    # Options: sequential | full_scm
+    strategy: sequential
+    ministack_size: 19
+    max_num_compressed: 5
+    state_min_shp: 24
+    full_scm_fallback: true
+    fullspan_batch_size: 16384
+    # Production backend: threshold_cholesky
+    emi_backend: threshold_cholesky
+    use_exact_support_cache: true
+
+# =============================================================================
+# 9. TEMPORAL NETWORK
+# =============================================================================
 network:
+  # Unit: days
   max_temporal_baseline_days: 72
+  # Unit: metres
   max_perpendicular_baseline_m: 200.0
   target_connections_each_side: 3
+
+# =============================================================================
+# 10. TIME-SERIES INVERSION
+# =============================================================================
+timeseries:
+  inversion:
+    # Options: weighted_l2 | ordinary_l2
+    method: weighted_l2
+    # Unit: radians
+    min_auto_sigma_rad: 0.0001
+    # Constraint: 0 < value <= 1
+    weight_clip_min: 0.5
+    # Constraint: value >= 1
+    weight_clip_max: 2.0
+
+# =============================================================================
+# 11. SPATIAL DEFORMATION REFERENCE
+# =============================================================================
 reference:
+  # Options: auto | auto_stable | radar_window | point_ids
   method: auto
   point_ids_path: null
   min_points: 100
@@ -116,8 +231,10 @@ reference:
     half_row: 10
     half_col: 15
     min_points: 100
+  # Production statistic: median
   statistic: median
   auto:
+    # Units: metres
     radius_m: 500.0
     cell_size_m: 500.0
     min_points: 100
@@ -125,47 +242,60 @@ reference:
     residual_weight: 0.3
     density_weight: 0.1
     scene_median_sample: 100000
+
+# =============================================================================
+# 12. OPTIONAL CORRECTIONS
+# =============================================================================
 corrections:
-  scla:
-    mode: disabled
-    backend: stamps
   atmosphere:
+    # Options: disabled | gacos
     mode: disabled
     backend: gacos
     strict_dates: true
-  scn:
+  scla:
+    # Options: disabled | stamps
     mode: disabled
     backend: stamps
+  scn:
+    # Options: disabled | stamps
+    mode: disabled
+    backend: stamps
+    # Unit: days
     temporal_window_days: 365.0
+    # Unit: metres
     wavelength_m: 100.0
     radius_factor: 4.0
+    # Unit: metres
     cell_size_m: 200.0
+
+# =============================================================================
+# 13. FINAL PRODUCTS
+# =============================================================================
 products:
   point:
     enabled: true
+    # Options: csv | parquet | geopackage | gpkg
     formats:
-    - csv
+      - csv
     crs: EPSG:4326
   quicklook:
     enabled: false
+    # Production default must remain false.
     scientific_product: false
   monitoring:
     enabled: true
     annual_velocity: true
     annual_min_obs: 6
+    # Unit: days
     annual_min_span_days: 180.0
     figures: true
     geotiff: true
+    # Unit: metres
     grid_resolution_m: 100.0
     geojson: false
     shapefile: false
   vertical:
     enabled: false
+    # Options: down | up
     positive: down
     timeseries: true
-timeseries:
-  inversion:
-    method: weighted_l2
-    min_auto_sigma_rad: 0.0001
-    weight_clip_min: 0.5
-    weight_clip_max: 2.0

@@ -24,7 +24,7 @@ def _contract(path):
             cfg["paths"]["dem_dir"],
 
         "reference_date":
-            g["reference_date"],
+            cfg["reference_date"],
 
         "geometry_par":
             g["geometry_par"],
