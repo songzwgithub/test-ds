@@ -18,7 +18,6 @@ dist/
 *.egg-info/
 .eggs/
 pip-wheel-metadata/
-__pycache__/
 
 # ============================================================
 # Virtual environments
@@ -95,13 +94,8 @@ temp/
 Thumbs.db
 
 # pyPSDS-GAMMA release hygiene
-__pycache__/
-*.py[cod]
 *.nbc
 *.nbi
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
 *.before_*
 *.bak
 *.backup

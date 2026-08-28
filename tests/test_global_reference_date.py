@@ -74,3 +74,56 @@ def test_load_config_projects_global_reference(tmp_path: Path):
     assert cfg["reference_date"] == "20151212"
     assert cfg["geometry"]["reference_date"] == "20151212"
     assert cfg["phase_correction"]["geometric_reference_date"] == "20151212"
+
+def test_doctor_validator_uses_global_reference_date():
+    from types import SimpleNamespace
+    from pypsds.cli import _validate_project_choices
+
+    cfg = {
+        "schema_version": 1,
+        "reference_date": "20151212",
+        "reference": {
+            "method": "auto",
+        },
+    }
+
+    stack = SimpleNamespace(
+        dates=(
+            "20141006",
+            "20151212",
+            "20160410",
+        )
+    )
+
+    _validate_project_choices(
+        cfg,
+        stack,
+    )
+
+
+def test_doctor_validator_reports_public_reference_name():
+    from types import SimpleNamespace
+    from pypsds.cli import _validate_project_choices
+
+    cfg = {
+        "schema_version": 1,
+        "reference": {
+            "method": "auto",
+        },
+    }
+
+    stack = SimpleNamespace(
+        dates=(
+            "20141006",
+            "20151212",
+        )
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match="reference_date",
+    ):
+        _validate_project_choices(
+            cfg,
+            stack,
+        )

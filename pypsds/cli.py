@@ -7,7 +7,11 @@ from pathlib import Path
 import shutil
 
 from . import __version__
-from .config import cfg_get, load_config
+from .config import (
+    cfg_get,
+    load_config,
+    resolve_reference_date,
+)
 from .project import resolve_project_paths
 from .modules import MODULES
 from .geometry import (
@@ -110,7 +114,7 @@ def cmd_init(args):
     print(
         "Next: place the RSLC/DEM inputs under conventional project "
         "names or configure paths explicitly; then set the actual "
-        "Geometry/GAMMA reference date and study-area reference "
+        "top-level reference_date and study-area spatial reference "
         "definition before running doctor."
     )
 
@@ -128,7 +132,7 @@ def cmd_config_check(args):
     print(f"RSLC tab   : {paths.rslc_tab}")
     print(f"output dir : {paths.output_dir}")
     print(f"DEM dir    : {paths.dem_dir}")
-    print(f"geometry ref: {geometry.reference_date}")
+    print(f"reference date: {geometry.reference_date}")
     print(f"geometry par: {geometry.geometry_par}")
     print(f"longitude  : {geometry.longitude_raster}")
     print(f"latitude   : {geometry.latitude_raster}")
@@ -171,11 +175,15 @@ def cmd_plan(args):
 
 def _validate_project_choices(cfg, stack):
     errors = []
-    geometric_ref = cfg_get(cfg, "phase_correction.geometric_reference_date", None)
-    if geometric_ref in (None, ""):
-        errors.append("phase_correction.geometric_reference_date is not set")
-    elif str(geometric_ref).lower() != "auto" and str(geometric_ref) not in stack.dates:
-        errors.append("phase_correction.geometric_reference_date is not present in RSLC_tab")
+
+    try:
+        resolve_reference_date(
+            cfg,
+            available_dates=stack.dates,
+            required=True,
+        )
+    except ValueError as exc:
+        errors.append(str(exc))
     if str(cfg_get(cfg, "reference.method", "radar_window")) == "radar_window":
         row = cfg_get(cfg, "reference.radar_window.center_row", None)
         col = cfg_get(cfg, "reference.radar_window.center_col", None)
@@ -209,7 +217,7 @@ def cmd_doctor(args):
     print(f"config           : {path}")
     print(f"RSLC stack       : {stack.shape}")
     print(f"acquisitions     : {len(stack.dates)}")
-    print(f"Geometry ref     : {geometry.reference_date}")
+    print(f"Reference date   : {geometry.reference_date}")
     print(f"Geometry par     : {geometry.geometry_par}")
     print(f"Geometry lon     : {geometry.longitude_raster}")
     print(f"Geometry lat     : {geometry.latitude_raster}")
