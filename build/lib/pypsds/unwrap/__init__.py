@@ -1,1 +1,0 @@
-"""pyPSDS-GAMMA production module."""

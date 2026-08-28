@@ -18,6 +18,7 @@ dist/
 *.egg-info/
 .eggs/
 pip-wheel-metadata/
+__pycache__/
 
 # ============================================================
 # Virtual environments

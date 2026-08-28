@@ -1,1 +1,0 @@
-"""Packaged project configuration resources."""
