@@ -876,6 +876,15 @@ def main():
         strict_valid,
     )
 
+    # Canonical strict-point ordering for all post-unwrap stages.
+    np.save(
+        outdir
+        / "strict_point_ids.npy",
+        strict_ids.astype(
+            np.int32
+        ),
+    )
+
     gauge_csv = (
         outdir
         / "global_ifg_integer_gauge.csv"

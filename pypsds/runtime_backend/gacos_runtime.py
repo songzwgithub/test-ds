@@ -50,7 +50,7 @@ MANIFEST = PUBLIC_ATM / 'atmosphere_correction_manifest.json'
 REF_DATE = PUBLIC_REF_DATE
 C0 = 299792458.0
 CHUNK = int(os.environ.get('P15_CHUNK_POINTS', '262144'))
-FORCE = os.environ.get('P15_FORCE', '0') == '1'
+FORCE = (os.environ.get('PYPSDS_FORCE', '0') == '1' or os.environ.get('P15_FORCE', '0') == '1')
 DATE_RE = re.compile('^\\d{8}$')
 
 def par_scalar(path, key):
@@ -142,7 +142,7 @@ for p in (CACHE / 'base.npy', CACHE / 'fx.npy', CACHE / 'fy.npy', CACHE / 'sec_i
     if not p.is_file():
         raise FileNotFoundError(p)
 if FINAL.exists() and (not FORCE):
-    raise RuntimeError(f'\nRefusing to overwrite existing product:\n{FINAL}\n\nSet P15_FORCE=1 only for an intentional rebuild.')
+    raise RuntimeError(f'\nRefusing to overwrite existing product:\n{FINAL}\n\nUse `pypsds run --force` for an intentional rebuild (legacy P15_FORCE=1 is also accepted).')
 if TMP.exists():
     TMP.unlink()
 src = np.load(SRC_PHASE, mmap_mode='r')

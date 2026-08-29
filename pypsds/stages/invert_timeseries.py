@@ -7,7 +7,9 @@ from pathlib import Path
 
 import numpy as np
 
+from pypsds.config import cfg_get
 from pypsds.context import open_from_config
+from pypsds.corrections.residual_ramp import local_xy_m
 
 
 TWOPI = 2.0 * np.pi
@@ -211,6 +213,16 @@ def main():
         / "final_unwrap"
     )
 
+    ramp_dir = (
+        root
+        / "residual_ramp"
+    )
+
+    geom_dir = (
+        root
+        / "point_geometry"
+    )
+
     outdir = (
         root
         / "network_inversion"
@@ -274,19 +286,136 @@ def main():
             "global gauge size mismatch"
         )
 
-    strict_ids = np.where(
+    strict_ids = np.asarray(
+        np.load(
+            final_dir
+            / "strict_point_ids.npy"
+        ),
+        dtype=np.int32,
+    )
+
+    expected_strict_ids = np.where(
         strict
     )[0].astype(
         np.int32
     )
 
+    if not np.array_equal(
+        strict_ids,
+        expected_strict_ids,
+    ):
+        raise RuntimeError(
+            "final_unwrap strict_point_ids.npy does not match "
+            "strict_unwrap_valid_mask.npy"
+        )
+
     nstrict = strict_ids.size
+
+    inversion_method = str(
+        cfg_get(
+            cfg,
+            "timeseries.inversion.method",
+            "ordinary_l2",
+        )
+    ).strip().lower()
+
+    if inversion_method != "ordinary_l2":
+        raise RuntimeError(
+            "Production timeseries inversion currently supports "
+            "method=ordinary_l2 only."
+        )
+
+    ramp_mode = str(
+        cfg_get(
+            cfg,
+            "corrections.residual_ramp.mode",
+            "disabled",
+        )
+    ).strip().lower()
+
+    ramp_enabled = ramp_mode not in (
+        "disabled",
+        "none",
+        "off",
+        "false",
+        "0",
+    )
+
+    if ramp_enabled:
+        acq_ramp_coeff = np.asarray(
+            np.load(
+                ramp_dir
+                / "acquisition_ramp_coefficients_rad_per_km.npy"
+            ),
+            dtype=np.float64,
+        )
+
+        lon = np.asarray(
+            np.load(
+                geom_dir
+                / "longitude_deg.npy",
+                mmap_mode="r",
+            ),
+            dtype=np.float64,
+        )
+        lat = np.asarray(
+            np.load(
+                geom_dir
+                / "latitude_deg.npy",
+                mmap_mode="r",
+            ),
+            dtype=np.float64,
+        )
+
+        coords_m, _, _ = local_xy_m(
+            lon,
+            lat,
+        )
+        x_km = coords_m[:, 0] / 1000.0
+        y_km = coords_m[:, 1] / 1000.0
+
+        if acq_ramp_coeff.shape != (
+            ndate,
+            2,
+        ):
+            raise RuntimeError(
+                "acquisition residual-ramp coefficient shape mismatch"
+            )
+
+        if x_km.size != nstrict:
+            raise RuntimeError(
+                "residual-ramp geometry / strict-domain mismatch"
+            )
+    else:
+        acq_ramp_coeff = np.zeros(
+            (ndate, 2),
+            dtype=np.float64,
+        )
+        x_km = np.zeros(
+            nstrict,
+            dtype=np.float64,
+        )
+        y_km = np.zeros(
+            nstrict,
+            dtype=np.float64,
+        )
 
     # ========================================================
     # Temporal design matrix
     # ========================================================
 
-    reference_idx = 0
+    reference_idx = int(
+        cfg_get(
+            cfg,
+            "phase_linking.temporal_reference_index",
+            0,
+        )
+    )
+
+    if not (0 <= reference_idx < ndate):
+        raise RuntimeError(
+            f"Invalid temporal reference index: {reference_idx}"
+        )
 
     A = build_design_matrix(
         edges,
@@ -374,13 +503,25 @@ def main():
             f"{stack.dates[j]}"
         )
 
-        path = (
-            unwrap_dir
-            / (
-                f"{tag}_"
-                "unwrapped_phase_rad.npy"
+        if ramp_enabled:
+            path = (
+                ramp_dir
+                / "ifgs"
+                / (
+                    f"{tag}_"
+                    "unwrapped_phase_rad.npy"
+                )
             )
-        )
+            expected_size = nstrict
+        else:
+            path = (
+                unwrap_dir
+                / (
+                    f"{tag}_"
+                    "unwrapped_phase_rad.npy"
+                )
+            )
+            expected_size = npoint
 
         if not path.exists():
             raise FileNotFoundError(
@@ -392,10 +533,10 @@ def main():
             mmap_mode="r",
         )
 
-        if arr.size != npoint:
+        if arr.size != expected_size:
             raise RuntimeError(
-                f"{path.name}: "
-                "point count mismatch"
+                f"{path.name}: point count mismatch "
+                f"{arr.size} != {expected_size}"
             )
 
         ifg_maps.append(
@@ -567,13 +708,23 @@ def main():
             nifg
         ):
 
-            Y[:, e] = (
-                np.asarray(
+            if ramp_enabled:
+                obs = np.asarray(
+                    ifg_maps[e][
+                        b0:b1
+                    ],
+                    dtype=np.float64,
+                )
+            else:
+                obs = np.asarray(
                     ifg_maps[e][
                         ids
                     ],
                     dtype=np.float64,
                 )
+
+            Y[:, e] = (
+                obs
                 +
                 TWOPI
                 *
@@ -748,9 +899,15 @@ def main():
             dtype=np.float64,
         )
 
+        unknown_dates = [
+            t
+            for t in range(ndate)
+            if t != reference_idx
+        ]
+
         theta_full[
             :,
-            1:
+            unknown_dates
         ] = theta_l2
 
         # Save candidate L2 acquisition phase.
@@ -776,10 +933,26 @@ def main():
             dtype=np.float64,
         )
 
+        expected_pl = (
+            original_pl
+            -
+            (
+                x_km[b0:b1, None]
+                *
+                acq_ramp_coeff[None, :, 0]
+            )
+            -
+            (
+                y_km[b0:b1, None]
+                *
+                acq_ramp_coeff[None, :, 1]
+            )
+        )
+
         parity = wrap(
             theta_full
             -
-            original_pl
+            expected_pl
         )
 
         abs_parity = np.abs(
@@ -964,12 +1137,12 @@ def main():
     print("=" * 96)
 
     print(
-        f"RMS wrap(theta_L2 - PL)    : "
+        f"RMS wrap(theta_L2 - corrected PL): "
         f"{wrap_parity_rms:.3e} rad"
     )
 
     print(
-        f"max wrap(theta_L2 - PL)    : "
+        f"max wrap(theta_L2 - corrected PL): "
         f"{global_wrap_parity_max:.3e} rad"
     )
 
@@ -1044,6 +1217,15 @@ def main():
 
         "status":
             status,
+
+        "inversion_method":
+            inversion_method,
+
+        "residual_ramp_mode":
+            ramp_mode,
+
+        "residual_ramp_domain":
+            ("ifg" if ramp_enabled else "disabled"),
 
         "reference_acquisition_index":
             int(

@@ -71,10 +71,13 @@ Covariance/coherence estimation is fused with Phase Linking in bounded memory. N
 - unwrap_finalize
 
 ### timeseries
+- point_geometry
+- residual_ramp
 - timeseries_inversion
 
+Residual ramp is estimated in the final unwrapped IFG domain. All final strict PS participate with equal total base weight per 2-km metric cell. Degree-1 IFG slopes are fitted with Huber IRLS and projected onto the connected acquisition network before subtraction. The fitted intercept is not removed.
+
 ### corrections
-- point_geometry
 - reference
 - atmosphere_correction
 - scla

@@ -14,7 +14,7 @@ import matplotlib.dates as mdates
 
 from pypsds.config import cfg_get
 from pypsds.context import open_from_config
-from pypsds.monitoring.stage_visualization_v7 import render_override
+from pypsds.monitoring.visualization import render_override
 
 
 STAGES = [
@@ -28,8 +28,8 @@ STAGES = [
     "unwrap_severity_quality","unwrap_conflict_quality",
     "unwrap_acquisition_quality","temporal_closure",
     "temporal_integer_candidate","temporal_candidate_spatial_quality",
-    "unwrap_signature_quality","unwrap_finalize","timeseries_inversion",
-    "point_geometry","residual_ramp","reference","atmosphere_correction",
+    "unwrap_signature_quality","unwrap_finalize","point_geometry",
+    "residual_ramp","timeseries_inversion","reference","atmosphere_correction",
     "scla","scn","final_los","point_products",
 ]
 NUM = {s: i for i, s in enumerate(STAGES, 1)}
@@ -140,11 +140,15 @@ def _point_xy_for_length(output: Path, n: int):
     full = _full_point_xy(output)
     if full is not None and full[0].size == n:
         return full
-    sid = output / "processing" / "network_inversion" / "strict_point_ids.npy"
-    if full is not None and sid.is_file():
-        ids = np.asarray(np.load(sid), dtype=np.int64)
-        if ids.size == n and ids.max(initial=-1) < full[0].size:
-            return (full[0][ids], full[1][ids], full[2], full[3])
+    sid_candidates = [
+        output / "processing" / "final_unwrap" / "strict_point_ids.npy",
+        output / "processing" / "network_inversion" / "strict_point_ids.npy",
+    ]
+    for sid in sid_candidates:
+        if full is not None and sid.is_file():
+            ids = np.asarray(np.load(sid), dtype=np.int64)
+            if ids.size == n and ids.max(initial=-1) < full[0].size:
+                return (full[0][ids], full[1][ids], full[2], full[3])
     return None
 
 def _point_map(ax, output: Path, values, title, max_points=300000, categorical=False):
@@ -1480,6 +1484,7 @@ def all_stages(config):
         counts[r["status"]] = counts.get(r["status"], 0) + 1
 
     audit = {
+        "visualization_profile": "scientific_final_v1",
         "stage_count": len(STAGES),
         "status_counts": counts,
         "review_count": counts.get("REVIEW", 0),
@@ -1492,7 +1497,7 @@ def all_stages(config):
     report.write_text(json.dumps(audit, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     print("=" * 96)
-    print("39-STAGE SCIENTIFIC QA VISUALIZATION V3")
+    print("39-STAGE SCIENTIFIC QA VISUALIZATION — FINAL")
     print("=" * 96)
     print("status counts :", counts)
     print("index         :", index)
@@ -1500,9 +1505,9 @@ def all_stages(config):
         print("page          :", p)
     print("report        :", report)
     if counts.get("REVIEW", 0):
-        print(f"QA VISUALIZATION V3: REVIEW REQUIRED — {counts['REVIEW']} stage(s)")
+        print(f"QA VISUALIZATION: REVIEW REQUIRED — {counts['REVIEW']} stage(s)")
     else:
-        print("QA VISUALIZATION V3: PASS")
+        print("QA VISUALIZATION: PASS")
     return results
 
 def audit_all(config):

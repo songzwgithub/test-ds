@@ -72,6 +72,19 @@ UNWRAP_FILESETS = (
 )
 
 
+# Residual-ramp corrected IFGs are a dynamic persistent fileset rather
+# than one exact file output. Release freeze requires exactly one
+# corrected IFG per final temporal-network edge.
+RESIDUAL_RAMP_FILESETS = (
+    (
+        "corrected_unwrapped_phase",
+        "processing/residual_ramp/ifgs/"
+        "pair*_*_*_unwrapped_phase_rad.npy",
+    ),
+)
+
+
+
 # Canonical persistent products of scripts/build_exact_support_cache.py.
 # The stage script is a thin runpy wrapper around tools/build_exact_support_cache.py,
 # so the generic AST inventory cannot discover these writes from the wrapper.
@@ -297,6 +310,38 @@ def freeze(
 
             for label, pattern in (
                 UNWRAP_FILESETS
+            ):
+
+                matches = sorted(
+                    p.relative_to(
+                        output_root
+                    ).as_posix()
+                    for p in output_root.glob(
+                        pattern
+                    )
+                    if p.is_file()
+                )
+
+                filesets.append({
+                    "label":
+                        label,
+
+                    "pattern":
+                        pattern,
+
+                    "expected_count":
+                        edge_count,
+
+                    "frozen_count":
+                        len(matches),
+                })
+
+        # residual_ramp produces one corrected IFG per network edge.
+        # Treat these as a fileset, not as one exact directory output.
+        if name == "residual_ramp":
+
+            for label, pattern in (
+                RESIDUAL_RAMP_FILESETS
             ):
 
                 matches = sorted(

@@ -60,7 +60,7 @@ def main() -> None:
 
     strict_ids_path = (
         proc
-        / "network_inversion"
+        / "final_unwrap"
         / "strict_point_ids.npy"
     )
     rows_path = (

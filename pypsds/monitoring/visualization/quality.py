@@ -3,9 +3,9 @@ from __future__ import annotations
 from pathlib import Path
 import numpy as np
 import matplotlib.dates as mdates
-from pypsds.monitoring.stage_visualization_v6 import render_override as render_v6
-from pypsds.monitoring.stage_visualization_v6 import _find_files
-from pypsds.monitoring.stage_visualization_v5 import _read_numeric_csv
+from pypsds.monitoring.visualization.extended import render_override as render_extended
+from pypsds.monitoring.visualization.extended import _find_files
+from pypsds.monitoring.visualization.base import _read_numeric_csv
 
 def _virtual_ifg_v7(ax, output, stack, base):
     files = _find_files(
@@ -18,7 +18,7 @@ def _virtual_ifg_v7(ax, output, stack, base):
     )
 
     if not files:
-        return render_v6(
+        return render_extended(
             "virtual_ifg_quality",
             ax,
             None,
@@ -271,7 +271,7 @@ def _unwrap_conflict_v7(ax, output, stack, base):
     )
 
     if p is None or g is None:
-        return render_v6(
+        return render_extended(
             "unwrap_conflict_quality",
             ax,
             None,
@@ -393,7 +393,7 @@ def _unwrap_acquisition_v7(ax, output, stack, base):
     )
 
     if p is None or g is None:
-        return render_v6(
+        return render_extended(
             "unwrap_acquisition_quality",
             ax,
             None,
@@ -557,4 +557,4 @@ def render_override(stage, ax, cfg, output, stack, max_points, base):
         return _unwrap_conflict_v7(ax, output, stack, base)
     if stage == "unwrap_acquisition_quality":
         return _unwrap_acquisition_v7(ax, output, stack, base)
-    return render_v6(stage, ax, cfg, output, stack, max_points, base)
+    return render_extended(stage, ax, cfg, output, stack, max_points, base)

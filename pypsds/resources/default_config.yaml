@@ -208,8 +208,8 @@ network:
 # =============================================================================
 timeseries:
   inversion:
-    # Options: weighted_l2 | ordinary_l2
-    method: weighted_l2
+    # Production implementation: ordinary_l2
+    method: ordinary_l2
     # Unit: radians
     min_auto_sigma_rad: 0.0001
     # Constraint: 0 < value <= 1
@@ -248,22 +248,23 @@ reference:
 # =============================================================================
 corrections:
   residual_ramp:
-    # Residual degree-1 orbital / long-wavelength spatial ramp.
+    # Residual orbital / long-wavelength degree-1 phase ramp.
     # Options: disabled | robust_huber_balanced
     mode: robust_huber_balanced
-    adi_tile_rows: 96
-    anchor_weighting: equal
-    anchor_rank_metric: amplitude_dispersion_index
+    # Production estimation domain.
+    domain: ifg
+    # All final strict PS participate; no top-N/ADI re-ranking.
     anchor_source: ps
+    # Equal TOTAL base weight per occupied metric cell.
+    spatial_balance: equal_cell_total_weight
+    # Unit: metres
     cell_size_m: 2000.0
-    anchors_per_cell: 8
     min_anchors: 30
+    min_occupied_cells: 6
     huber_delta: 1.345
     huber_iterations: 5
-    ps_quality: 1.0
-    quality_floor: 0.05
-    quality_power: 2.0
-    chunk_points: 131072
+    # Fitted intercept is diagnostic only and is not removed.
+    subtract_intercept: false
 
   atmosphere:
     # Options: disabled | gacos

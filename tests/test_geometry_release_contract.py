@@ -111,10 +111,11 @@ def test_release_contract_has_point_geometry():
 
     assert len(names) == 39
 
-    assert names[-9:] == [
-        "timeseries_inversion",
+    assert names[-10:] == [
+        "unwrap_finalize",
         "point_geometry",
         "residual_ramp",
+        "timeseries_inversion",
         "reference",
         "atmosphere_correction",
         "scla",

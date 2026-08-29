@@ -73,7 +73,7 @@ class StageContract:
     cacheable: bool = False
 
 
-STAGES = [Stage('ds_statistics', 'build_ds_statistics.py'), Stage('phase_cache', 'build_phase_cache.py'), Stage('exact_support_cache', 'build_exact_support_cache.py'), Stage('phase_linking', 'run_phase_linking.py'), Stage('ds_selection', 'select_ds.py'), Stage('ps_finalize', 'finalize_ps_geometry.py'), Stage('point_stack', 'build_point_phase_stack.py'), Stage('network_prepare', 'prepare_temporal_network.py'), Stage('network_build', 'build_temporal_network.py'), Stage('network_cycle_quality', 'assess_network_cycle_quality.py'), Stage('network_finalize', 'finalize_temporal_network.py'), Stage('virtual_ifg_quality', 'assess_virtual_ifg_quality.py'), Stage('spatial_graph_quality', 'assess_spatial_graph_quality.py'), Stage('spatial_bridge_quality', 'assess_spatial_bridge_quality.py'), Stage('spatial_component_quality', 'assess_spatial_components.py'), Stage('spatial_anchor_quality', 'assess_spatial_anchor_quality.py'), Stage('spatial_anchor_summary', 'summarize_spatial_anchor_quality.py'), Stage('spatial_local_graph_quality', 'assess_local_spatial_graph.py'), Stage('spatial_graph', 'build_spatial_graph.py'), Stage('spatial_gradient_quality', 'assess_spatial_phase_gradient.py'), Stage('unwrap_policy', 'finalize_unwrap_policy.py'), Stage('unwrap', 'unwrap_all_ifgs.py'), Stage('unwrap_severity_quality', 'assess_unwrap_severity.py'), Stage('unwrap_conflict_quality', 'assess_unwrap_conflicts.py'), Stage('unwrap_acquisition_quality', 'assess_unwrap_acquisition_quality.py'), Stage('temporal_closure', 'assess_temporal_integer_closure.py'), Stage('temporal_integer_candidate', 'build_temporal_integer_candidates.py'), Stage('temporal_candidate_spatial_quality', 'validate_temporal_integer_candidates.py'), Stage('unwrap_signature_quality', 'assess_unwrap_signature_feasibility.py'), Stage('unwrap_finalize', 'finalize_unwrap_solution.py'), Stage('timeseries_inversion', 'invert_timeseries.py'), Stage('point_geometry', 'build_point_geometry.py'), Stage('residual_ramp', 'run_residual_ramp.py'), Stage('reference', 'apply_reference.py'), Stage('atmosphere_correction', 'apply_atmosphere_correction.py'), Stage('scla', 'run_scla.py'), Stage('scn', 'run_scn.py'), Stage('final_los', 'build_final_los.py'), Stage('point_products', 'build_point_products.py')]
+STAGES = [Stage('ds_statistics', 'build_ds_statistics.py'), Stage('phase_cache', 'build_phase_cache.py'), Stage('exact_support_cache', 'build_exact_support_cache.py'), Stage('phase_linking', 'run_phase_linking.py'), Stage('ds_selection', 'select_ds.py'), Stage('ps_finalize', 'finalize_ps_geometry.py'), Stage('point_stack', 'build_point_phase_stack.py'), Stage('network_prepare', 'prepare_temporal_network.py'), Stage('network_build', 'build_temporal_network.py'), Stage('network_cycle_quality', 'assess_network_cycle_quality.py'), Stage('network_finalize', 'finalize_temporal_network.py'), Stage('virtual_ifg_quality', 'assess_virtual_ifg_quality.py'), Stage('spatial_graph_quality', 'assess_spatial_graph_quality.py'), Stage('spatial_bridge_quality', 'assess_spatial_bridge_quality.py'), Stage('spatial_component_quality', 'assess_spatial_components.py'), Stage('spatial_anchor_quality', 'assess_spatial_anchor_quality.py'), Stage('spatial_anchor_summary', 'summarize_spatial_anchor_quality.py'), Stage('spatial_local_graph_quality', 'assess_local_spatial_graph.py'), Stage('spatial_graph', 'build_spatial_graph.py'), Stage('spatial_gradient_quality', 'assess_spatial_phase_gradient.py'), Stage('unwrap_policy', 'finalize_unwrap_policy.py'), Stage('unwrap', 'unwrap_all_ifgs.py'), Stage('unwrap_severity_quality', 'assess_unwrap_severity.py'), Stage('unwrap_conflict_quality', 'assess_unwrap_conflicts.py'), Stage('unwrap_acquisition_quality', 'assess_unwrap_acquisition_quality.py'), Stage('temporal_closure', 'assess_temporal_integer_closure.py'), Stage('temporal_integer_candidate', 'build_temporal_integer_candidates.py'), Stage('temporal_candidate_spatial_quality', 'validate_temporal_integer_candidates.py'), Stage('unwrap_signature_quality', 'assess_unwrap_signature_feasibility.py'), Stage('unwrap_finalize', 'finalize_unwrap_solution.py'), Stage('point_geometry', 'build_point_geometry.py'), Stage('residual_ramp', 'run_residual_ramp.py'), Stage('timeseries_inversion', 'invert_timeseries.py'), Stage('reference', 'apply_reference.py'), Stage('atmosphere_correction', 'apply_atmosphere_correction.py'), Stage('scla', 'run_scla.py'), Stage('scn', 'run_scn.py'), Stage('final_los', 'build_final_los.py'), Stage('point_products', 'build_point_products.py')]
 
 
 STAGE_INDEX = {
@@ -117,7 +117,7 @@ STAGE_CONTRACTS["point_geometry"] = StageContract(
     name="point_geometry",
 
     required_inputs=(
-        "processing/network_inversion/strict_point_ids.npy",
+        "processing/final_unwrap/strict_point_ids.npy",
         "processing/point_phase_stack/rows.npy",
         "processing/point_phase_stack/cols.npy",
     ),
@@ -136,52 +136,43 @@ STAGE_CONTRACTS["point_geometry"] = StageContract(
     cacheable=False,
 )
 
-
 STAGE_CONTRACTS["residual_ramp"] = StageContract(
     name="residual_ramp",
 
     required_inputs=(
-        "processing/network_inversion/strict_point_ids.npy",
-        "processing/network_inversion/"
-        "acquisition_phase_l2_candidate_rad.npy",
+        "processing/final_unwrap/strict_point_ids.npy",
+        "processing/final_unwrap/strict_unwrap_valid_mask.npy",
+        "processing/network/network.itab",
         "processing/point_geometry/longitude_deg.npy",
         "processing/point_geometry/latitude_deg.npy",
         "processing/point_phase_stack/point_type.npy",
-        "processing/point_phase_stack/temporal_coherence.npy",
     ),
 
     required_outputs=(
         "processing/residual_ramp/"
-        "acquisition_phase_deramped_rad.npy",
-
+        "ifg_ramp_direct_coefficients_rad_per_km.npy",
         "processing/residual_ramp/"
-        "ramp_coefficients_rad_per_km.npy",
-
+        "ifg_ramp_projected_coefficients_rad_per_km.npy",
         "processing/residual_ramp/"
-        "anchor_strict_indices.npy",
-
-        "processing/residual_ramp/"
-        "anchor_point_ids.npy",
-
-        "processing/residual_ramp/"
-        "residual_ramp_epoch_stats.csv",
-
-        "processing/residual_ramp/"
-        "residual_ramp_manifest.json",
+        "acquisition_ramp_coefficients_rad_per_km.npy",
+        "processing/residual_ramp/anchor_strict_indices.npy",
+        "processing/residual_ramp/anchor_point_ids.npy",
+        "processing/residual_ramp/anchor_base_weight.npy",
+        "processing/residual_ramp/residual_ramp_ifg_stats.csv",
+        "processing/residual_ramp/residual_ramp_manifest.json",
     ),
 
     validated=True,
     cacheable=False,
 )
 
-
 STAGE_CONTRACTS["reference"] = StageContract(
     name="reference",
 
     required_inputs=(
         "processing/network_inversion/strict_point_ids.npy",
-        "processing/residual_ramp/"
-        "acquisition_phase_deramped_rad.npy",
+        "processing/network_inversion/"
+        "acquisition_phase_l2_candidate_rad.npy",
         "processing/point_phase_stack/rows.npy",
         "processing/point_phase_stack/cols.npy",
     ),
@@ -1348,6 +1339,10 @@ def _run_stage(
     )
 
     env = os.environ.copy()
+
+    # Public rebuild contract: propagate `pypsds run --force`
+    # to nested scientific runtime backends.
+    env["PYPSDS_FORCE"] = "1" if force else "0"
 
     env[
         "OPENBLAS_NUM_THREADS"

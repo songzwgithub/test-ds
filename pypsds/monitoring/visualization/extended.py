@@ -8,8 +8,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-from pypsds.monitoring.stage_visualization_v5 import render_override as render_v5
-from pypsds.monitoring.stage_visualization_v5 import (
+from pypsds.monitoring.visualization.base import render_override as render_base
+from pypsds.monitoring.visualization.base import (
     _read_numeric_csv,
     _best_numeric_column,
     _network_state,
@@ -127,7 +127,7 @@ def _network_cycle_v6(ax, output, stack, base):
     csv_path = files[0] if files else None
 
     if csv_path is None:
-        return render_v5(
+        return render_base(
             "network_cycle_quality",
             ax,
             None,
@@ -1026,7 +1026,7 @@ def render_override(stage, ax, cfg, output, stack, max_points, base):
         if out is not None:
             return out
 
-    return render_v5(
+    return render_base(
         stage,
         ax,
         cfg,

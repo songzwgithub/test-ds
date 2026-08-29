@@ -108,24 +108,27 @@ MODULES = (
     ),
     PipelineModule(
         name="timeseries",
-        title="Time-series inversion",
+        title="Residual-ramp correction and time-series inversion",
         description=(
-            "Invert the validated unwrapped network into acquisition-domain time series."
+            "Attach strict-point geometry, estimate network-consistent "
+            "degree-1 residual ramps in the final unwrapped IFG domain, "
+            "then invert the corrected temporal network into acquisition "
+            "time series."
         ),
         stage_names=(
+            "point_geometry",
+            "residual_ramp",
             "timeseries_inversion",
         ),
     ),
     PipelineModule(
         name="corrections",
-        title="Reference and error corrections",
+        title="Reference and post-inversion corrections",
         description=(
-            "Attach point geometry, remove residual spatial ramp, apply the spatial reference, optional atmospheric "
+            "Apply the spatial deformation reference, atmospheric "
             "correction, SCLA and SCN corrections."
         ),
         stage_names=(
-            "point_geometry",
-            "residual_ramp",
             "reference",
             "atmosphere_correction",
             "scla",
