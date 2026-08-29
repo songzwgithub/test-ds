@@ -4,12 +4,15 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import subprocess
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import numpy as np
 
+from pypsds.config import cfg_get
 from pypsds.context import open_from_config
 
 
@@ -97,6 +100,20 @@ def run_script(
         str(pair_id),
     ]
 
+    child_env = os.environ.copy()
+
+    # IFG-level parallelism owns CPU scheduling. Prevent nested
+    # BLAS/Numba oversubscription inside each independent pair.
+    for key in (
+        "OPENBLAS_NUM_THREADS",
+        "MKL_NUM_THREADS",
+        "OMP_NUM_THREADS",
+        "NUMEXPR_NUM_THREADS",
+        "VECLIB_MAXIMUM_THREADS",
+        "NUMBA_NUM_THREADS",
+    ):
+        child_env[key] = "1"
+
     with log_path.open(
         "w"
     ) as log:
@@ -106,6 +123,7 @@ def run_script(
             stdout=log,
             stderr=subprocess.STDOUT,
             text=True,
+            env=child_env,
         )
 
     if p.returncode != 0:
@@ -115,6 +133,126 @@ def run_script(
             f"for pair {pair_id}. "
             f"See {log_path}"
         )
+
+
+# ============================================================
+# PYPSDS_UNWRAP_PAIR_PARALLEL_V1
+#
+# IFG-level production precompute.
+#
+# Scientific operations are unchanged. Only orchestration changes:
+# independent temporal-network IFGs are prepared concurrently,
+# while final QA/aggregation remains deterministic in pair_id order.
+# ============================================================
+
+def ensure_pair_products(
+    r,
+    *,
+    force,
+    config_path,
+    safe_fragment_script,
+    single_ifg_solution_script,
+    safe_fragment_quality_dir,
+    single_ifg_solution_dir,
+    logdir,
+):
+    pair_id = int(r["pair_id"])
+    tag = tag_of(r)
+
+    manifest_l = (
+        safe_fragment_quality_dir
+        / f"{tag}_manifest.json"
+    )
+    manifest_n = (
+        single_ifg_solution_dir
+        / f"{tag}_manifest.json"
+    )
+    group_csv = (
+        safe_fragment_quality_dir
+        / f"{tag}_fragment_pair_consensus.csv"
+    )
+    constraint_csv = (
+        single_ifg_solution_dir
+        / f"{tag}_fragment_constraint_status.csv"
+    )
+
+    actions = []
+
+    if (
+        force
+        or not manifest_l.exists()
+        or not group_csv.exists()
+    ):
+        run_script(
+            safe_fragment_script,
+            config_path,
+            pair_id,
+            logdir / f"{tag}_safe_fragment.log",
+        )
+        actions.append("safe")
+
+    if (
+        force
+        or not manifest_n.exists()
+        or not constraint_csv.exists()
+    ):
+        run_script(
+            single_ifg_solution_script,
+            config_path,
+            pair_id,
+            logdir / f"{tag}_single_ifg.log",
+        )
+        actions.append("solution")
+
+    return {
+        "pair_id": pair_id,
+        "tag": tag,
+        "actions": tuple(actions),
+    }
+
+
+def resolve_ifg_workers(
+    cfg,
+    *,
+    pair_count,
+):
+    raw_env = os.environ.get(
+        "PYPSDS_UNWRAP_IFG_WORKERS",
+        "",
+    ).strip()
+
+    raw_cfg = cfg_get(
+        cfg,
+        "runtime.unwrap_ifg_workers",
+        "auto",
+    )
+
+    raw = raw_env if raw_env else raw_cfg
+
+    if raw in (
+        None,
+        "",
+        "auto",
+    ):
+        workers = min(
+            8,
+            os.cpu_count() or 1,
+            pair_count,
+        )
+    else:
+        workers = int(raw)
+
+    if workers < 1:
+        raise ValueError(
+            "runtime.unwrap_ifg_workers / "
+            "PYPSDS_UNWRAP_IFG_WORKERS must be >=1"
+        )
+
+    return min(
+        workers,
+        pair_count,
+    )
+
 
 
 # ============================================================
@@ -578,6 +716,126 @@ def main():
         f"{args.force}"
     )
 
+    ifg_workers = resolve_ifg_workers(
+        cfg,
+        pair_count=len(pairs),
+    )
+
+    # --stop-on-red keeps legacy immediate-stop semantics.
+    effective_workers = (
+        1
+        if args.stop_on_red
+        else ifg_workers
+    )
+
+    print(
+        f"IFG parallel workers       : "
+        f"{effective_workers}"
+    )
+
+    if (
+        args.stop_on_red
+        and ifg_workers != 1
+    ):
+        print(
+            "stop-on-red               : "
+            "serial semantics preserved"
+        )
+
+    parallel_precompute_done = False
+
+    if effective_workers > 1:
+
+        pending_pairs = []
+
+        for r in pairs:
+            tag = tag_of(r)
+
+            manifest_l = (
+                safe_fragment_quality_dir
+                / f"{tag}_manifest.json"
+            )
+            manifest_n = (
+                single_ifg_solution_dir
+                / f"{tag}_manifest.json"
+            )
+            group_csv = (
+                safe_fragment_quality_dir
+                / f"{tag}_fragment_pair_consensus.csv"
+            )
+            constraint_csv = (
+                single_ifg_solution_dir
+                / f"{tag}_fragment_constraint_status.csv"
+            )
+
+            if (
+                args.force
+                or not manifest_l.exists()
+                or not group_csv.exists()
+                or not manifest_n.exists()
+                or not constraint_csv.exists()
+            ):
+                pending_pairs.append(r)
+
+        print(
+            f"parallel pending IFGs      : "
+            f"{len(pending_pairs)}/{len(pairs)}"
+        )
+
+        if pending_pairs:
+
+            completed = 0
+
+            with ThreadPoolExecutor(
+                max_workers=effective_workers,
+                thread_name_prefix="ifg",
+            ) as executor:
+
+                futures = {
+                    executor.submit(
+                        ensure_pair_products,
+                        r,
+                        force=args.force,
+                        config_path=config_path,
+                        safe_fragment_script=safe_fragment_script,
+                        single_ifg_solution_script=single_ifg_solution_script,
+                        safe_fragment_quality_dir=safe_fragment_quality_dir,
+                        single_ifg_solution_dir=single_ifg_solution_dir,
+                        logdir=logdir,
+                    ):
+                    int(r["pair_id"])
+                    for r in pending_pairs
+                }
+
+                for future in as_completed(futures):
+                    pair_id = futures[future]
+
+                    try:
+                        info = future.result()
+                    except Exception as exc:
+                        raise RuntimeError(
+                            "Parallel IFG precompute failed "
+                            f"for pair {pair_id}"
+                        ) from exc
+
+                    completed += 1
+
+                    action_text = (
+                        "+".join(info["actions"])
+                        if info["actions"]
+                        else "reuse"
+                    )
+
+                    print(
+                        f"[parallel {completed:3d}/"
+                        f"{len(pending_pairs):3d}] "
+                        f"pair {pair_id:3d} : "
+                        f"{action_text}",
+                        flush=True,
+                    )
+
+        parallel_precompute_done = True
+
     results = []
 
     for idx, r in enumerate(
@@ -632,7 +890,10 @@ def main():
         # ----------------------------------------------------
 
         if (
-            args.force
+            (
+                args.force
+                and not parallel_precompute_done
+            )
             or
             not manifest_l.exists()
             or
@@ -666,7 +927,10 @@ def main():
         # ----------------------------------------------------
 
         if (
-            args.force
+            (
+                args.force
+                and not parallel_precompute_done
+            )
             or
             not manifest_n.exists()
             or

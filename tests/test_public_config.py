@@ -70,15 +70,15 @@ def test_public_config_contract():
         )
 
 
-        # Public defaults must not silently enable
-        # optional scientific corrections.
+        # Public production defaults intentionally enable
+        # the validated scientific correction chain.
 
         assert (
             cfg["corrections"]
             ["scla"]
             ["mode"]
             ==
-            "disabled"
+            'stamps'
         )
 
         assert (
@@ -86,7 +86,7 @@ def test_public_config_contract():
             ["atmosphere"]
             ["mode"]
             ==
-            "disabled"
+            'gacos'
         )
 
         assert (
@@ -94,7 +94,7 @@ def test_public_config_contract():
             ["scn"]
             ["mode"]
             ==
-            "disabled"
+            'stamps'
         )
 
 

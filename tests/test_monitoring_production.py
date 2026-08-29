@@ -15,7 +15,7 @@ from pypsds.monitoring.decompose import (
 def test_formal_version_keeps_pipeline_shape():
     assert pypsds.__version__ == "1.3.0"
     assert len(MODULES) == 9
-    assert len(STAGES) == 38
+    assert len(STAGES) == 39
 
 
 def test_uniform_wls_equals_ols():

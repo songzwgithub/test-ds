@@ -109,11 +109,12 @@ def test_release_contract_has_point_geometry():
         for stage in STAGES
     ]
 
-    assert len(names) == 38
+    assert len(names) == 39
 
-    assert names[-8:] == [
+    assert names[-9:] == [
         "timeseries_inversion",
         "point_geometry",
+        "residual_ramp",
         "reference",
         "atmosphere_correction",
         "scla",

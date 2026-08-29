@@ -52,6 +52,47 @@ def main():
         exist_ok=True,
     )
 
+    graph_manifest_path = (
+        graphdir
+        / "spatial_graph_manifest.json"
+    )
+
+    if not graph_manifest_path.is_file():
+        raise FileNotFoundError(
+            graph_manifest_path
+        )
+
+    graph_manifest = json.loads(
+        graph_manifest_path.read_text(
+            encoding="utf-8"
+        )
+    )
+
+    graph_core = graph_manifest.get(
+        "core",
+        {},
+    )
+
+    core_radius = int(
+        graph_core[
+            "chebyshev_radius_pixels"
+        ]
+    )
+
+    selected_local_k = int(
+        graph_core[
+            "nearest_neighbors"
+        ]
+    )
+
+    expected_residual_components = int(
+        graph_manifest[
+            "residual_anchors"
+        ][
+            "components"
+        ]
+    )
+
     rows = np.load(
         outroot
         / "point_phase_stack"
@@ -461,11 +502,16 @@ def main():
             "Residual points missing tier."
         )
 
-    if len(component_rows) != 102:
-
-        print(
-            "WARNING: residual component count "
-            f"is {len(component_rows)}, not historical 102."
+    if (
+        len(component_rows)
+        !=
+        expected_residual_components
+    ):
+        raise RuntimeError(
+            "Residual component count does not match "
+            "spatial_graph_manifest.json: "
+            f"{len(component_rows)} != "
+            f"{expected_residual_components}"
         )
 
     print()
@@ -499,8 +545,8 @@ def main():
     )
 
     print(
-        "  1. Unwrap each R4-K8 local component "
-        "using LOCAL EDGES ONLY."
+        f"  1. Unwrap each R{core_radius}-K{selected_local_k} "
+        "local component using LOCAL EDGES ONLY."
     )
 
     print(
@@ -648,8 +694,22 @@ def main():
         },
 
         "policy": {
+            "core_radius_pixels":
+                int(core_radius),
+
+            "selected_local_k":
+                int(selected_local_k),
+
             "within_component_edges":
-                "R4-K8 local edges only",
+                (
+                    f"R{core_radius}-K{selected_local_k} "
+                    "local edges only"
+                ),
+
+            "spatial_graph_manifest":
+                str(
+                    graph_manifest_path
+                ),
 
             "anchors_used_during_core_unwrap":
                 False,

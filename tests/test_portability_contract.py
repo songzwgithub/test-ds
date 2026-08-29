@@ -8,7 +8,7 @@ def test_stable_runtime_names():
     assert (ROOT/'pypsds/stages/_stage_common.py').is_file()
 
 def test_pipeline_tail():
-    assert len(STAGES)==38
+    assert len(STAGES) == 39
     assert [x.name for x in STAGES[-5:]]==[
         'atmosphere_correction',
         'scla',

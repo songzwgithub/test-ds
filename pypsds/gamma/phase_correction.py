@@ -95,6 +95,84 @@ def _discover_height(cfg: dict[str, Any], paths, stack) -> tuple[Path, Path]:
         if d.is_dir() and d not in search_dirs:
             search_dirs.append(d)
 
+    # ------------------------------------------------------------
+    # Prefer the public Geometry height contract before broad
+    # legacy discovery.
+    #
+    # Priority:
+    #   1. phase_correction.radar_height.path
+    #   2. geometry.height_raster
+    #   3. <dem_dir>/<reference_date>.hgt
+    #   4. legacy broad discovery
+    #
+    # This prevents auxiliary products such as
+    # <reference_date>.pixel_area.hgt from being mistaken for
+    # the terrain-height raster.
+    # ------------------------------------------------------------
+
+    if path is None:
+        geometry_height = cfg_get(
+            cfg,
+            "geometry.height_raster",
+            None,
+        )
+
+        if geometry_height not in (None, "", "auto"):
+            dem_dir = getattr(paths, "dem_dir", None)
+
+            bases = []
+
+            if dem_dir is not None:
+                bases.append(Path(dem_dir))
+
+            bases.extend(
+                [
+                    Path(paths.work_dir),
+                    Path(paths.data_dir),
+                ]
+            )
+
+            path = _resolve_path(
+                geometry_height,
+                bases,
+            )
+
+    if path is None:
+        reference_date = cfg_get(
+            cfg,
+            "reference_date",
+            None,
+        )
+
+        if reference_date in (None, "", "auto"):
+            reference_date = cfg_get(
+                cfg,
+                "geometry.reference_date",
+                cfg_get(
+                    cfg,
+                    "phase_correction.geometric_reference_date",
+                    None,
+                ),
+            )
+
+        dem_dir = getattr(
+            paths,
+            "dem_dir",
+            None,
+        )
+
+        if (
+            reference_date not in (None, "", "auto")
+            and dem_dir is not None
+        ):
+            canonical = (
+                Path(dem_dir).resolve()
+                / f"{reference_date}.hgt"
+            )
+
+            if canonical.is_file():
+                path = canonical
+
     if path is None:
         candidates: list[Path] = []
         patterns = ("*hgt*", "*.hgt", "*dem*.rdc", "*height*")

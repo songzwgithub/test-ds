@@ -151,7 +151,9 @@ def select_auto_reference(config_path):
         dtype=np.int32,
     )
     phase = np.load(
-        inv / "acquisition_phase_l2_candidate_rad.npy",
+        proc
+        / "residual_ramp"
+        / "acquisition_phase_deramped_rad.npy",
         mmap_mode="r",
     )
     lon = np.asarray(

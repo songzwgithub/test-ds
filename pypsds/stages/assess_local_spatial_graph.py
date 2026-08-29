@@ -13,6 +13,7 @@ from numba import njit
 
 from pypsds.config import cfg_get
 from pypsds.context import open_from_config
+from pypsds.geometry.inputs import resolve_geometry_inputs
 
 
 def read_gamma_value(path: Path, key: str):
@@ -567,53 +568,48 @@ def main():
     )
 
     # ========================================================
-    # Physical radar-grid spacing
+    # Physical single-look radar-grid spacing
+    # ========================================================
+    #
+    # PointPhaseStack rows/cols are 1x1 RSLC coordinates.
+    # Use the canonical reference RSLC parameter file rather than
+    # an optional multilooked auxiliary geometry parameter.
     # ========================================================
 
-    geometry_par = cfg_get(
+    geometry = resolve_geometry_inputs(
         cfg,
-        "phase_correction.radar_height.geometry_par",
-        None,
+        paths,
     )
 
-    row_spacing = 1.0
-    col_spacing = 1.0
-    spacing_source = "pixel_units"
+    radar_par = Path(
+        geometry.reference_rslc_par
+    ).resolve()
 
-    if geometry_par:
+    rg = read_gamma_value(
+        radar_par,
+        "range_pixel_spacing",
+    )
 
-        gp = Path(
-            geometry_par
-        ).expanduser()
+    az = read_gamma_value(
+        radar_par,
+        "azimuth_pixel_spacing",
+    )
 
-        if gp.exists():
+    if (
+        rg is None
+        or az is None
+        or rg <= 0
+        or az <= 0
+    ):
+        raise RuntimeError(
+            "Cannot read positive single-look GAMMA pixel spacing "
+            f"from reference RSLC parameter file: {radar_par}"
+        )
 
-            rg = read_gamma_value(
-                gp,
-                "range_pixel_spacing",
-            )
-
-            az = read_gamma_value(
-                gp,
-                "azimuth_pixel_spacing",
-            )
-
-            if (
-                rg is not None
-                and
-                az is not None
-                and
-                rg > 0
-                and
-                az > 0
-            ):
-
-                # row = azimuth
-                # col = range
-                row_spacing = float(az)
-                col_spacing = float(rg)
-
-                spacing_source = str(gp)
+    # row = azimuth; col = range
+    row_spacing = float(az)
+    col_spacing = float(rg)
+    spacing_source = str(radar_par)
 
     drs, dcs, offset_dist = build_offsets(
         args.radius,

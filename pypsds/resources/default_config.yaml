@@ -247,18 +247,36 @@ reference:
 # 12. OPTIONAL CORRECTIONS
 # =============================================================================
 corrections:
+  residual_ramp:
+    # Residual degree-1 orbital / long-wavelength spatial ramp.
+    # Options: disabled | robust_huber_balanced
+    mode: robust_huber_balanced
+    adi_tile_rows: 96
+    anchor_weighting: equal
+    anchor_rank_metric: amplitude_dispersion_index
+    anchor_source: ps
+    cell_size_m: 2000.0
+    anchors_per_cell: 8
+    min_anchors: 30
+    huber_delta: 1.345
+    huber_iterations: 5
+    ps_quality: 1.0
+    quality_floor: 0.05
+    quality_power: 2.0
+    chunk_points: 131072
+
   atmosphere:
     # Options: disabled | gacos
-    mode: disabled
+    mode: gacos
     backend: gacos
     strict_dates: true
   scla:
     # Options: disabled | stamps
-    mode: disabled
+    mode: stamps
     backend: stamps
   scn:
     # Options: disabled | stamps
-    mode: disabled
+    mode: stamps
     backend: stamps
     # Unit: days
     temporal_window_days: 365.0
@@ -267,6 +285,18 @@ corrections:
     radius_factor: 4.0
     # Unit: metres
     cell_size_m: 200.0
+
+# =============================================================================
+# QA VISUALIZATION
+# =============================================================================
+visualization:
+  enabled: true
+  fail_on_error: false
+  dpi: 150
+  index_dpi: 100
+  max_points: 300000
+  save_json_summary: true
+  build_index: true
 
 # =============================================================================
 # 13. FINAL PRODUCTS

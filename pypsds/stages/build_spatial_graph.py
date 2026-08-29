@@ -12,6 +12,7 @@ from numba import njit
 
 from pypsds.config import cfg_get
 from pypsds.context import open_from_config
+from pypsds.geometry.inputs import resolve_geometry_inputs
 
 
 def read_gamma_value(path: Path, key: str):
@@ -249,33 +250,46 @@ def main():
     )
 
     # ---------------------------------------------------------
-    # GAMMA radar-grid spacing
+    # Single-look GAMMA radar-grid spacing
+    # ---------------------------------------------------------
+    #
+    # PointPhaseStack rows/cols are coordinates in the original
+    # 1x1 RSLC grid. Therefore physical neighbor ordering must use
+    # the reference RSLC parameter file, not the multilooked
+    # auxiliary height/MLI geometry.
+    #
+    # Resolve through the canonical Geometry contract so public
+    # geometry.geometry_par may remain null.
     # ---------------------------------------------------------
 
-    geometry_par = Path(
-        cfg_get(
-            cfg,
-            "phase_correction.radar_height.geometry_par",
-        )
+    geometry = resolve_geometry_inputs(
+        cfg,
+        paths,
     )
 
+    radar_par = Path(
+        geometry.reference_rslc_par
+    ).resolve()
+
     range_spacing = read_gamma_value(
-        geometry_par,
+        radar_par,
         "range_pixel_spacing",
     )
 
     azimuth_spacing = read_gamma_value(
-        geometry_par,
+        radar_par,
         "azimuth_pixel_spacing",
     )
 
     if (
         range_spacing is None
-        or
-        azimuth_spacing is None
+        or azimuth_spacing is None
+        or range_spacing <= 0
+        or azimuth_spacing <= 0
     ):
         raise RuntimeError(
-            "Cannot read GAMMA pixel spacing."
+            "Cannot read positive single-look GAMMA pixel spacing "
+            f"from reference RSLC parameter file: {radar_par}"
         )
 
     # rows = azimuth; cols = range

@@ -34,7 +34,7 @@ def test_production_config_schema():
         cfg["corrections"]
         ["scla"]
         ["mode"]
-        == "disabled"
+        == 'stamps'
     )
 
 

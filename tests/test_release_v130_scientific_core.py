@@ -14,7 +14,7 @@ def read(rel):
 def test_release_identity_and_topology():
     assert pypsds.__version__ == "1.3.0"
     assert len(MODULES) == 9
-    assert len(STAGES) == 38
+    assert len(STAGES) == 39
 
 
 def test_frozen_phase_linking_features_remain():

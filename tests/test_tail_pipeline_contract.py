@@ -21,7 +21,7 @@ def test_public_tail_is_packaged_and_validated():
 
     names = [stage.name for stage in STAGES]
 
-    assert len(names) == 38
+    assert len(names) == 39
     assert names[-5:] == EXPECTED_TAIL
 
     stage_by_name = {

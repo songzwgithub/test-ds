@@ -208,8 +208,9 @@ def main():
     )
 
     phase = np.load(
-        inversion_dir
-        / "acquisition_phase_l2_candidate_rad.npy",
+        root
+        / "residual_ramp"
+        / "acquisition_phase_deramped_rad.npy",
         mmap_mode="r",
     )
 
@@ -945,6 +946,7 @@ def main():
         " rad"
     )
 
+    # PYPSDS_AUTO_REFERENCE_MANIFEST_NONE_SAFE_V2
     # ========================================================
     # Manifest
     # ========================================================
@@ -963,25 +965,27 @@ def main():
             False,
 
         "reference_region": {
-            "center_row":
-                int(
-                    args.center_row
+            "reference_method":
+                reference_method,
+
+            "point_ids_file":
+                (
+                    str(args.point_ids_file)
+                    if args.point_ids_file is not None
+                    else None
                 ),
+
+            "center_row":
+                (None if args.center_row is None else int(args.center_row)),
 
             "center_col":
-                int(
-                    args.center_col
-                ),
+                (None if args.center_col is None else int(args.center_col)),
 
             "half_row":
-                int(
-                    args.half_row
-                ),
+                (None if args.point_ids_file is not None else int(args.half_row)),
 
             "half_col":
-                int(
-                    args.half_col
-                ),
+                (None if args.point_ids_file is not None else int(args.half_col)),
 
             "points":
                 int(

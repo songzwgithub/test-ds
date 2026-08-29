@@ -120,11 +120,12 @@ MODULES = (
         name="corrections",
         title="Reference and error corrections",
         description=(
-            "Attach point geometry, apply the spatial reference, optional atmospheric "
+            "Attach point geometry, remove residual spatial ramp, apply the spatial reference, optional atmospheric "
             "correction, SCLA and SCN corrections."
         ),
         stage_names=(
             "point_geometry",
+            "residual_ramp",
             "reference",
             "atmosphere_correction",
             "scla",
