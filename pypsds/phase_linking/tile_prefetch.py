@@ -95,7 +95,7 @@ class OneAheadTilePrefetcher(Generic[T]):
     def _timeout_seconds():
         raw = os.environ.get(
             "PYPSDS_PREFETCH_FUTURE_TIMEOUT_SECONDS",
-            "900",
+            "960",
         )
         try:
             timeout = float(raw)

@@ -8,7 +8,7 @@ post-inversion corrections, and final LOS deformation products.
 
 This README is the primary installation and user manual.
 
-Current package version: **1.3.1**.
+Current package version: **1.3.2**.
 
 ---
 
@@ -381,7 +381,9 @@ The canonical GAMMA phase cell remains:
 This is part of the validated numerical grouping and should not be enlarged
 simply for performance.
 
-Only execution scheduling is parallelized.
+Only execution scheduling is parallelized. Both automatic and explicit
+`spatial_workers × pair_workers` schedules are hard-capped by the effective
+`runtime.cpu` budget.
 
 On a validated 32-logical-CPU host, the performance fallback is:
 
@@ -396,7 +398,9 @@ If a parity-validated:
 output/processing/canonical_phase_parallel_autotune.json
 ```
 
-exists, its validated winner overrides the hardware fallback.
+exists, its validated winner overrides the hardware fallback. The autotune
+benchmark uses an independent `1×1` serial GAMMA run as the numerical parity
+reference; schedules exceeding `runtime.cpu` are not eligible.
 
 ### 10.2 Phase-Linking prefetch
 
@@ -413,7 +417,7 @@ performs SHP/coherence/EMI/compression work.
 This improves CPU overlap on large scenes.
 
 The production default is synchronous (`0`). The asynchronous path remains an
-opt-in performance mode and uses a fail-fast daemon-worker watchdog. Enable it
+opt-in performance mode and uses a fail-fast daemon-worker watchdog (960 s fallback timeout). Enable it
 only after real-data stability and wall-time validation on the target machine:
 
 ```yaml

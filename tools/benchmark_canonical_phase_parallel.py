@@ -43,6 +43,28 @@ def parse_candidates(text: str):
     return out
 
 
+def filter_candidates_by_cpu(candidates, effective_cpu: int):
+    # Reject benchmark schedules that violate runtime.cpu.
+    cpu = max(1, int(effective_cpu))
+    kept = []
+    rejected = []
+
+    for spatial, pair in candidates:
+        item = (int(spatial), int(pair))
+        if item[0] * item[1] <= cpu:
+            kept.append(item)
+        else:
+            rejected.append(item)
+
+    if not kept:
+        raise ValueError(
+            "all benchmark candidates exceed effective runtime.cpu="
+            f"{cpu}"
+        )
+
+    return kept, rejected
+
+
 def set_nested_phase_scratch(cfg: dict, scratch: Path):
     pc = cfg.setdefault("phase_correction", {})
     pc["scratch_dir"] = str(scratch.resolve())
@@ -211,7 +233,7 @@ def main():
     ap.add_argument("--io-workers", type=int, default=4)
     ap.add_argument(
         "--candidates",
-        default="1x16,2x12,3x8,4x6,6x4",
+        default="1x16,2x10,3x6,4x5,5x4,6x3",
     )
     ap.add_argument(
         "--mode",
@@ -255,7 +277,11 @@ def main():
         stack,
     )
 
-    candidates = parse_candidates(args.candidates)
+    requested_candidates = parse_candidates(args.candidates)
+    candidates, rejected_candidates = filter_candidates_by_cpu(
+        requested_candidates,
+        runtime_identity["effective_cpu_count"],
+    )
 
     if args.row0 < 0 or args.col0 < 0:
         raise ValueError("row0/col0 must be >= 0")
@@ -311,12 +337,19 @@ def main():
     print("effective CPUs   :", runtime_identity["effective_cpu_count"])
     print("io workers       :", args.io_workers)
     print("candidates       :", candidates)
+    if rejected_candidates:
+        print(
+            "CPU-rejected      :",
+            rejected_candidates,
+            "(exceed runtime.cpu)",
+        )
     print("mode             :", args.mode)
     print("scratch          :", scratch_root)
     print()
 
     all_results = []
-    reference_by_mode = {}
+    serial_reference_by_mode = {}
+    serial_reference_seconds = {}
 
     modes = (
         ("cold", "warm")
@@ -361,6 +394,48 @@ def main():
             del _tile
             print(f"Warm-up elapsed : {warm_s:.3f} s")
             print()
+
+        # Numerical truth is always an independent 1x1 serial run.
+        # Warm mode reuses the same geometry cache; cold mode builds a
+        # dedicated reference cache. Reference timing does not rank winners.
+        if mode == "warm":
+            reference_scratch = shared_scratch
+        else:
+            reference_scratch = (
+                scratch_root
+                / "reference_cold_1x1"
+            )
+            shutil.rmtree(
+                reference_scratch,
+                ignore_errors=True,
+            )
+
+        reference_cfg = copy.deepcopy(cfg)
+        set_nested_phase_scratch(
+            reference_cfg,
+            reference_scratch,
+        )
+
+        print("Serial parity reference: 1x1 ...")
+        serial_tile, serial_s = run_once(
+            cfg=reference_cfg,
+            paths=paths,
+            stack=stack,
+            base_row0=base_row0,
+            base_col0=base_col0,
+            io_workers=args.io_workers,
+            spatial_workers=1,
+            pair_workers=1,
+            row0=args.row0,
+            col0=args.col0,
+            rows=args.rows,
+            cols=args.cols,
+            date_indices=date_indices,
+        )
+        serial_reference_by_mode[mode] = serial_tile
+        serial_reference_seconds[mode] = float(serial_s)
+        print(f"Serial reference  : {serial_s:.3f} s")
+        print()
 
         for spatial_workers, pair_workers in candidates:
             timings = []
@@ -420,22 +495,11 @@ def main():
                 float(ncell) / median_s * 3600.0
             )
 
-            if mode not in reference_by_mode:
-                reference_by_mode[mode] = last_tile
-                cmp = {
-                    "geometry_mismatch": 0,
-                    "finite_pattern_equal": True,
-                    "complex_exact": True,
-                    "max_abs_complex_difference": 0.0,
-                    "max_abs_phase_difference_rad": 0.0,
-                }
-                parity = True
-            else:
-                cmp = compare(
-                    reference_by_mode[mode],
-                    last_tile,
-                )
-                parity = parity_pass(cmp)
+            cmp = compare(
+                serial_reference_by_mode[mode],
+                last_tile,
+            )
+            parity = parity_pass(cmp)
 
             row = {
                 "mode": mode,
@@ -526,6 +590,11 @@ def main():
         "runtime_identity": runtime_identity,
         "io_workers": int(args.io_workers),
         "preferred_mode": preferred_mode,
+        "parity_reference": {
+            "spatial_workers": 1,
+            "pair_workers": 1,
+            "seconds_by_mode": serial_reference_seconds,
+        },
         "baseline": baseline,
         "winner": {
             **winner,
@@ -582,6 +651,10 @@ def main():
             "format": FORMAT,
             "canonical_tile": [128, 256],
             "runtime_identity": runtime_identity,
+            "parity_reference": {
+                "spatial_workers": 1,
+                "pair_workers": 1,
+            },
             "winner": {
                 "parity": True,
                 "spatial_workers": int(

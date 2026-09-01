@@ -270,6 +270,30 @@ def _effective_runtime_cpu_count(cfg) -> int:
     return int(cpu)
 
 
+def _bounded_sync_gamma_schedule(
+    cfg,
+    *,
+    spatial_workers: int,
+    pair_workers: int,
+    n_pairs: int,
+) -> tuple[int, int, int]:
+    # Clamp synchronous GAMMA scheduling to effective runtime.cpu.
+    cpu = _effective_runtime_cpu_count(cfg)
+
+    pair = min(
+        max(1, int(pair_workers)),
+        cpu,
+        max(1, int(n_pairs)),
+    )
+
+    spatial = min(
+        max(1, int(spatial_workers)),
+        max(1, cpu // pair),
+    )
+
+    return int(spatial), int(pair), int(cpu)
+
+
 def _stack_dates_sha256(dates) -> str:
     raw = "\n".join(str(x) for x in dates).encode("utf-8")
     return hashlib.sha256(raw).hexdigest()
@@ -367,6 +391,13 @@ def _validated_canonical_autotune(
     pair = int(winner["pair_workers"])
     if spatial < 1 or pair < 1:
         raise ValueError("autotune worker counts must be >= 1")
+
+    cpu = _effective_runtime_cpu_count(cfg)
+    if spatial * pair > cpu:
+        raise ValueError(
+            "autotune GAMMA schedule exceeds runtime.cpu: "
+            f"{spatial}x{pair}={spatial * pair} > {cpu}"
+        )
 
     return spatial, pair
 
@@ -605,8 +636,8 @@ class GammaStreamingPhaseSource:
               |
               +---- misses:
               |       read RSLC canonical cells
-              |       8 spatial cells in parallel
-              |       x 4 phase_sim pair workers
+              |       hardware-bounded spatial workers
+              |       x hardware-bounded pair workers
               |
               v
         mosaic exact canonical cells
@@ -676,7 +707,7 @@ class GammaStreamingPhaseSource:
         self.canonical_rows = _CANONICAL_PHASE_ROWS
         self.canonical_cols = _CANONICAL_PHASE_COLS
 
-        # FASTPATCH: hardware-aware fallback. The canonical 128x256
+        # Hardware-aware fallback. The canonical 128x256
         # numerical grouping is unchanged; only execution scheduling changes.
         # On the validated 32-logical-CPU production host, 6 spatial x 3 pair
         # gave exact numerical parity and the best measured warm throughput.
@@ -791,6 +822,31 @@ class GammaStreamingPhaseSource:
                 ),
             ),
         )
+
+        requested_spatial = int(self.spatial_workers)
+        requested_pair = int(self.pair_workers)
+
+        (
+            self.spatial_workers,
+            self.pair_workers,
+            sync_cpu_budget,
+        ) = _bounded_sync_gamma_schedule(
+            self.cfg,
+            spatial_workers=requested_spatial,
+            pair_workers=requested_pair,
+            n_pairs=max(1, self.ndate - 1),
+        )
+
+        if (
+            self.spatial_workers != requested_spatial
+            or self.pair_workers != requested_pair
+        ):
+            log(
+                "GAMMA schedule clamped by runtime.cpu: "
+                f"requested={requested_spatial}x{requested_pair}, "
+                f"effective={self.spatial_workers}x{self.pair_workers}, "
+                f"cpu_budget={sync_cpu_budget}"
+            )
 
         # The provider's pair-parallel engine is now explicitly
         # controlled by the canonical scheduler.

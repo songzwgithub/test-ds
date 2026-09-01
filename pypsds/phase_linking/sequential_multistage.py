@@ -1155,7 +1155,7 @@ def run_sequential_stage(
     pl_workers: int = 16,
     pl_chunk_size: int = 512,
 
-    prefetch_tiles: int = 1,
+    prefetch_tiles: int = 0,
 
     formula_audit_points: int = 5000,
 
