@@ -12,6 +12,8 @@ from time import perf_counter
 
 import numpy as np
 
+from pypsds.config import cfg_get
+
 from pypsds.gamma.phase_correction import (
     GammaPointPhaseCorrectionProvider,
 )
@@ -554,13 +556,59 @@ class GammaStreamingPhaseSource:
         self.canonical_rows = 128
         self.canonical_cols = 256
 
-        self.spatial_workers = 1
-        self.pair_workers = min(
-            16,
-            max(
-                1,
-                self.ndate - 1,
+        # FASTPATCH: hardware-aware fallback. The canonical 128x256
+        # numerical grouping is unchanged; only execution scheduling changes.
+        # On the validated 32-logical-CPU production host, 6 spatial x 3 pair
+        # gave exact numerical parity and the best measured warm throughput.
+        cpu_for_gamma = max(
+            1,
+            int(
+                logical_cpu_count()
             ),
+        )
+
+        if cpu_for_gamma >= 28:
+            default_spatial_workers = 6
+            default_pair_workers = 3
+        elif cpu_for_gamma >= 20:
+            default_spatial_workers = 5
+            default_pair_workers = 3
+        elif cpu_for_gamma >= 14:
+            default_spatial_workers = 4
+            default_pair_workers = 3
+        elif cpu_for_gamma >= 8:
+            default_spatial_workers = 2
+            default_pair_workers = 3
+        else:
+            default_spatial_workers = 1
+            default_pair_workers = min(
+                3,
+                max(
+                    1,
+                    self.ndate - 1,
+                ),
+            )
+
+        raw_spatial_workers = cfg_get(
+            cfg,
+            "phase_correction.parallel.spatial_workers",
+            "auto",
+        )
+        raw_pair_workers = cfg_get(
+            cfg,
+            "phase_correction.parallel.pair_workers",
+            "auto",
+        )
+
+        self.spatial_workers = (
+            default_spatial_workers
+            if raw_spatial_workers in (None, "", "auto")
+            else int(raw_spatial_workers)
+        )
+        self.pair_workers = (
+            default_pair_workers
+            if raw_pair_workers in (None, "", "auto")
+            else int(raw_pair_workers)
         )
 
         tune_path = (

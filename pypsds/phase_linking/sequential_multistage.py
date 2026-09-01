@@ -1962,6 +1962,103 @@ def run_sequential_stage(
         )
 
         if sr.size == 0:
+
+            # FASTPATCH: an empty tile performs no numerical work, but it is
+            # still a completed tile and MUST participate in the contiguous
+            # checkpoint prefix.
+            checkpoint_pending.append(
+                (
+                    tile_index,
+                    (
+                        r0,
+                        r1,
+                        c0,
+                        c1,
+                    ),
+                    total_done,
+                )
+            )
+
+            checkpoint_due = (
+                len(
+                    checkpoint_pending
+                )
+                >=
+                checkpoint_every_tiles
+                or
+                tile_index
+                ==
+                len(
+                    tiles
+                )
+            )
+
+            if checkpoint_due:
+                checkpoint_flush_t0 = (
+                    perf_counter()
+                )
+
+                for checkpoint_arr in (
+                    compressed_out,
+                    state_valid_out,
+                    state_code_out,
+                    k_out,
+                    tc_out,
+                    est_out,
+                ):
+                    checkpoint_arr.flush()
+
+                if (
+                    phase_sink is not None
+                    and
+                    hasattr(
+                        phase_sink,
+                        "flush",
+                    )
+                ):
+                    phase_sink.flush()
+
+                for (
+                    pending_tile,
+                    pending_bounds,
+                    pending_done,
+                ) in checkpoint_pending:
+                    _commit_stage_checkpoint(
+                        root=checkpoint_root,
+                        fingerprint_sha256=(
+                            checkpoint_fp_hash
+                        ),
+                        tile_index=pending_tile,
+                        bounds=pending_bounds,
+                        total_done=pending_done,
+                    )
+
+                checkpoint_flush_seconds = (
+                    perf_counter()
+                    -
+                    checkpoint_flush_t0
+                )
+
+                print(
+                    f"stage {stage_index} "
+                    "checkpoint flush "
+                    f"tiles "
+                    f"{checkpoint_pending[0][0]}-"
+                    f"{checkpoint_pending[-1][0]} "
+                    f"{checkpoint_flush_seconds:.2f}s",
+                    flush=True,
+                )
+
+                checkpoint_pending.clear()
+
+            print(
+                f"stage {stage_index} "
+                f"tile {tile_index:2d}/"
+                f"{len(tiles):2d} "
+                "EMPTY CHECKPOINT",
+                flush=True,
+            )
+
             continue
 
         gr = (
@@ -2741,8 +2838,19 @@ def run_sequential_stage(
             t_all
         )
 
+        # FASTPATCH: historical checkpoint work must not be divided by
+        # only the elapsed time of this restarted process.
+        run_done = max(
+            0,
+            int(
+                total_done
+                -
+                checkpoint_resume_done
+            ),
+        )
+
         rate = (
-            total_done
+            run_done
             /
             elapsed
             if elapsed > 0

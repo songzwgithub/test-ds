@@ -11,6 +11,7 @@ import os
 import shutil
 import subprocess
 import tempfile
+import time
 
 import numpy as np
 
@@ -259,7 +260,7 @@ def _which(name_or_path: str) -> str:
     return found
 
 
-def _run_command(
+def _run_command_once(
     cmd: list[str],
     *,
     log_file: Path,
@@ -415,6 +416,85 @@ def _run_command(
 
     return elapsed
 
+def _run_command(
+    cmd: list[str],
+    *,
+    log_file: Path,
+    label: str,
+) -> float:
+    # FASTPATCH bounded retry wrapper around upstream GAMMA runner.
+    raw_retries = os.environ.get(
+        "PYPSDS_GAMMA_COMMAND_RETRIES",
+        "0",
+    )
+    raw_backoff = os.environ.get(
+        "PYPSDS_GAMMA_RETRY_BACKOFF_SECONDS",
+        "1.0",
+    )
+
+    try:
+        retries = max(
+            0,
+            int(raw_retries),
+        )
+        backoff = max(
+            0.0,
+            float(raw_backoff),
+        )
+    except ValueError as exc:
+        raise PhaseCorrectionError(
+            "invalid GAMMA retry configuration: "
+            f"retries={raw_retries!r}, "
+            f"backoff={raw_backoff!r}"
+        ) from exc
+
+    total_t0 = perf_counter()
+    last_exc = None
+
+    for attempt in range(
+        retries + 1
+    ):
+        try:
+            _run_command_once(
+                cmd,
+                log_file=log_file,
+                label=label,
+            )
+
+        except PhaseCorrectionError as exc:
+            last_exc = exc
+
+            if attempt >= retries:
+                raise
+
+            delay = (
+                backoff
+                *
+                (2 ** attempt)
+            )
+
+            log(
+                f"GAMMA RETRY {label}: "
+                f"attempt={attempt + 1}/"
+                f"{retries + 1} failed; "
+                f"sleep={delay:.2f}s"
+            )
+
+            if delay > 0:
+                time.sleep(
+                    delay
+                )
+
+        else:
+            return (
+                perf_counter()
+                -
+                total_t0
+            )
+
+    assert last_exc is not None
+    raise last_exc
+
 
 class GammaPointPhaseCorrectionProvider:
     """Tile-local GAMMA orbit/topography phase correction using IPTA point tools.
@@ -456,6 +536,40 @@ class GammaPointPhaseCorrectionProvider:
         ] = str(
             self.command_timeout_seconds
         )
+
+        # FASTPATCH: retry transient external GAMMA failures.
+        self.command_retries = max(
+            0,
+            int(
+                cfg_get(
+                    cfg,
+                    "phase_correction.command_retries",
+                    2,
+                )
+            ),
+        )
+        self.retry_backoff_seconds = max(
+            0.0,
+            float(
+                cfg_get(
+                    cfg,
+                    "phase_correction.retry_backoff_seconds",
+                    1.0,
+                )
+            ),
+        )
+
+        os.environ[
+            "PYPSDS_GAMMA_COMMAND_RETRIES"
+        ] = str(
+            self.command_retries
+        )
+        os.environ[
+            "PYPSDS_GAMMA_RETRY_BACKOFF_SECONDS"
+        ] = str(
+            self.retry_backoff_seconds
+        )
+
         self.zero_height_is_valid = bool(
             cfg_get(cfg, "phase_correction.radar_height.zero_height_is_valid", False)
         )
@@ -2097,6 +2211,49 @@ class GammaPointPhaseCorrectionProvider:
                 valid2,
                 stats,
             )
+
+        except Exception:
+
+            # FASTPATCH: preserve final failed TemporaryDirectory bundle.
+            if tmp_ctx is not None:
+                try:
+                    failed_root = (
+                        self.scratch_dir
+                        /
+                        "failed_tiles"
+                    )
+                    failed_root.mkdir(
+                        parents=True,
+                        exist_ok=True,
+                    )
+
+                    failed_dir = (
+                        failed_root
+                        /
+                        (
+                            f"{label}_pid{os.getpid()}_"
+                            f"{time.time_ns()}"
+                        )
+                    )
+
+                    if tile_dir.exists():
+                        shutil.copytree(
+                            tile_dir,
+                            failed_dir,
+                            dirs_exist_ok=False,
+                        )
+                        log(
+                            "Preserved failed GAMMA tile bundle: "
+                            f"{failed_dir}"
+                        )
+
+                except Exception as preserve_exc:
+                    log(
+                        "WARNING: failed to preserve GAMMA "
+                        f"crash bundle: {preserve_exc}"
+                    )
+
+            raise
 
         finally:
 

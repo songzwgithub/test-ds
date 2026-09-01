@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from concurrent.futures import (
     ThreadPoolExecutor,
+    TimeoutError as FutureTimeoutError,
 )
 from time import perf_counter
+import os
 from typing import Callable, Generic, TypeVar
 
 
@@ -246,10 +248,42 @@ class OneAheadTilePrefetcher(
 
         t0 = perf_counter()
 
-        (
-            value,
-            read_seconds,
-        ) = self._future.result()
+        # FASTPATCH: do not wait forever on the experimental
+        # asynchronous canonical streamer.
+        raw_timeout = os.environ.get(
+            "PYPSDS_PREFETCH_FUTURE_TIMEOUT_SECONDS",
+            "900",
+        )
+
+        try:
+            future_timeout = float(
+                raw_timeout
+            )
+        except ValueError as exc:
+            raise RuntimeError(
+                "invalid "
+                "PYPSDS_PREFETCH_FUTURE_TIMEOUT_SECONDS="
+                f"{raw_timeout!r}"
+            ) from exc
+
+        if future_timeout <= 0:
+            future_timeout = None
+
+        try:
+            (
+                value,
+                read_seconds,
+            ) = self._future.result(
+                timeout=future_timeout,
+            )
+
+        except FutureTimeoutError as exc:
+            raise RuntimeError(
+                "phase prefetch future timed out after "
+                f"{future_timeout}s "
+                f"at position={position}; "
+                "restart from the durable sequential checkpoint"
+            ) from exc
 
         blocked = (
             perf_counter()
