@@ -12,11 +12,14 @@ from pathlib import Path
 import numpy as np
 
 from pypsds.context import open_from_config
-from pypsds.phase_linking.phase_source import GammaStreamingPhaseSource
+from pypsds.phase_linking.phase_source import (
+    GammaStreamingPhaseSource,
+    canonical_autotune_runtime_identity,
+)
 from pypsds.runtime import logical_cpu_count
 
 
-FORMAT = "pyPSDS-GAMMA-canonical-phase-parallel-benchmark-v1"
+FORMAT = "pyPSDS-GAMMA-canonical-phase-parallel-benchmark-v2"
 
 
 def parse_candidates(text: str):
@@ -247,6 +250,11 @@ def main():
         (base_row0, base_col0, H, W),
     ) = open_from_config(args.config)
 
+    runtime_identity = canonical_autotune_runtime_identity(
+        cfg,
+        stack,
+    )
+
     candidates = parse_candidates(args.candidates)
 
     if args.row0 < 0 or args.col0 < 0:
@@ -300,6 +308,7 @@ def main():
         f"{d0}:{d1-1} ({len(date_indices)})",
     )
     print("logical CPUs     :", logical_cpu_count())
+    print("effective CPUs   :", runtime_identity["effective_cpu_count"])
     print("io workers       :", args.io_workers)
     print("candidates       :", candidates)
     print("mode             :", args.mode)
@@ -514,6 +523,7 @@ def main():
         ],
         "date_indices": list(date_indices),
         "logical_cpu_count": int(logical_cpu_count()),
+        "runtime_identity": runtime_identity,
         "io_workers": int(args.io_workers),
         "preferred_mode": preferred_mode,
         "baseline": baseline,
@@ -571,6 +581,7 @@ def main():
         install_payload = {
             "format": FORMAT,
             "canonical_tile": [128, 256],
+            "runtime_identity": runtime_identity,
             "winner": {
                 "parity": True,
                 "spatial_workers": int(

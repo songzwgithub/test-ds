@@ -675,9 +675,9 @@ def main():
         "--prefetch-tiles",
         type=int,
         choices=(0, 1),
-        default=1,
+        default=0,
         help=(
-            "One-ahead GAMMA tile prefetch. "
+            "One-ahead GAMMA tile prefetch (experimental, default off). "
             "0 disables prefetch; 1 overlaps the next tile read "
             "with current CPU processing."
         ),

@@ -6,7 +6,10 @@ from concurrent.futures import (
     as_completed,
 )
 from dataclasses import dataclass
+import hashlib
 import json
+import platform
+import shutil
 from pathlib import Path
 from time import perf_counter
 
@@ -249,6 +252,123 @@ class _CanonicalCell:
                 self.geometry_valid.nbytes
             )
         )
+
+
+_CANONICAL_PHASE_ROWS = 128
+_CANONICAL_PHASE_COLS = 256
+_CANONICAL_AUTOTUNE_FORMAT = (
+    "pyPSDS-GAMMA-canonical-phase-parallel-benchmark-v2"
+)
+
+
+def _effective_runtime_cpu_count(cfg) -> int:
+    # CPU visible to pyPSDS and capped by runtime.cpu.
+    cpu = max(1, int(logical_cpu_count()))
+    raw = cfg_get(cfg, "runtime.cpu", None)
+    if raw not in (None, "", "auto"):
+        cpu = min(cpu, max(1, int(raw)))
+    return int(cpu)
+
+
+def _stack_dates_sha256(dates) -> str:
+    raw = "\n".join(str(x) for x in dates).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _cpu_model_name() -> str:
+    try:
+        text = Path("/proc/cpuinfo").read_text(
+            encoding="utf-8",
+            errors="replace",
+        )
+        for line in text.splitlines():
+            if line.lower().startswith("model name"):
+                return line.split(":", 1)[1].strip()
+    except Exception:
+        pass
+    return platform.processor() or platform.machine() or "unknown"
+
+
+def _file_identity(path) -> dict | None:
+    if path in (None, ""):
+        return None
+    p = Path(str(path)).expanduser()
+    try:
+        p = p.resolve()
+    except Exception:
+        return None
+    if not p.is_file():
+        return None
+    st = p.stat()
+    return {
+        "path": str(p),
+        "size": int(st.st_size),
+        "mtime_ns": int(st.st_mtime_ns),
+    }
+
+
+def canonical_autotune_runtime_identity(
+    cfg,
+    stack,
+    *,
+    phase_sim_path=None,
+) -> dict:
+    # Identity required before a saved worker schedule can be reused.
+    if phase_sim_path is None:
+        raw_cmd = str(
+            cfg_get(
+                cfg,
+                "phase_correction.commands.phase_sim_orb_pt",
+                "phase_sim_orb_pt",
+            )
+        )
+        phase_sim_path = shutil.which(raw_cmd)
+
+    return {
+        "effective_cpu_count": _effective_runtime_cpu_count(cfg),
+        "cpu_model": _cpu_model_name(),
+        "ndate": int(len(stack.dates)),
+        "dates_sha256": _stack_dates_sha256(stack.dates),
+        "phase_sim_orb_pt": _file_identity(phase_sim_path),
+    }
+
+
+def _validated_canonical_autotune(
+    tune,
+    cfg,
+    stack,
+    *,
+    phase_sim_path=None,
+) -> tuple[int, int]:
+    # Validate schedule; canonical numerical grouping may never change.
+    if tune.get("format") != _CANONICAL_AUTOTUNE_FORMAT:
+        raise ValueError("autotune format is stale or unsupported")
+
+    canonical = tune.get("canonical_tile")
+    if canonical != [_CANONICAL_PHASE_ROWS, _CANONICAL_PHASE_COLS]:
+        raise ValueError(
+            "autotune canonical tile mismatch; "
+            "production canonical grouping is fixed at 128x256"
+        )
+
+    expected_identity = canonical_autotune_runtime_identity(
+        cfg,
+        stack,
+        phase_sim_path=phase_sim_path,
+    )
+    if tune.get("runtime_identity") != expected_identity:
+        raise ValueError("autotune runtime/stack/GAMMA identity is stale")
+
+    winner = tune.get("winner", {})
+    if winner.get("parity") is not True:
+        raise ValueError("autotune winner has no numerical-parity approval")
+
+    spatial = int(winner["spatial_workers"])
+    pair = int(winner["pair_workers"])
+    if spatial < 1 or pair < 1:
+        raise ValueError("autotune worker counts must be >= 1")
+
+    return spatial, pair
 
 
 def bounded_prefetch_gamma_parallelism(
@@ -553,18 +673,15 @@ class GammaStreamingPhaseSource:
         # Machine-autotuned canonical phase layout.
         # ----------------------------------------------------
 
-        self.canonical_rows = 128
-        self.canonical_cols = 256
+        self.canonical_rows = _CANONICAL_PHASE_ROWS
+        self.canonical_cols = _CANONICAL_PHASE_COLS
 
         # FASTPATCH: hardware-aware fallback. The canonical 128x256
         # numerical grouping is unchanged; only execution scheduling changes.
         # On the validated 32-logical-CPU production host, 6 spatial x 3 pair
         # gave exact numerical parity and the best measured warm throughput.
-        cpu_for_gamma = max(
-            1,
-            int(
-                logical_cpu_count()
-            ),
+        cpu_for_gamma = _effective_runtime_cpu_count(
+            cfg
         )
 
         if cpu_for_gamma >= 28:
@@ -624,58 +741,39 @@ class GammaStreamingPhaseSource:
         if tune_path.is_file():
 
             try:
-
                 tune = json.loads(
                     tune_path.read_text(
                         encoding="utf-8"
                     )
                 )
 
-                winner = tune.get(
-                    "winner",
+                phase_sim_path = getattr(
+                    self.provider,
+                    "_commands",
                     {},
+                ).get("phase_sim_orb_pt")
+
+                tuned_spatial, tuned_pair = (
+                    _validated_canonical_autotune(
+                        tune,
+                        cfg,
+                        stack,
+                        phase_sim_path=phase_sim_path,
+                    )
                 )
 
-                if (
-                    winner.get(
-                        "parity"
-                    )
-                    is True
-                ):
-
-                    canonical = tune.get(
-                        "canonical_tile",
-                        [
-                            128,
-                            256,
-                        ],
-                    )
-
-                    self.canonical_rows = int(
-                        canonical[0]
-                    )
-
-                    self.canonical_cols = int(
-                        canonical[1]
-                    )
-
-                    self.spatial_workers = int(
-                        winner[
-                            "spatial_workers"
-                        ]
-                    )
-
-                    self.pair_workers = int(
-                        winner[
-                            "pair_workers"
-                        ]
-                    )
-
-            except Exception as exc:
+                self.spatial_workers = int(tuned_spatial)
+                self.pair_workers = int(tuned_pair)
 
                 log(
-                    "WARNING: invalid canonical phase "
-                    f"autotune file ignored: {exc}"
+                    "Loaded validated canonical GAMMA autotune: "
+                    f"{self.spatial_workers}x{self.pair_workers}"
+                )
+
+            except Exception as exc:
+                log(
+                    "WARNING: canonical phase autotune ignored: "
+                    f"{exc}"
                 )
 
         self.spatial_workers = max(
@@ -801,7 +899,7 @@ class GammaStreamingPhaseSource:
         pl_workers: int,
     ):
         budget = bounded_prefetch_gamma_parallelism(
-            cpu_count=logical_cpu_count(),
+            cpu_count=_effective_runtime_cpu_count(self.cfg),
             pl_workers=pl_workers,
             spatial_workers=self.spatial_workers,
             pair_workers=self.pair_workers,

@@ -60,7 +60,7 @@ def test_init_contains_current_fast_runtime_defaults(tmp_path: Path):
 
     assert int(
         cfg["runtime"]["phase_link_prefetch_tiles"]
-    ) == 1
+    ) == 0
 
     phase = cfg["phase_correction"]
 

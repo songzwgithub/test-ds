@@ -1,5 +1,5 @@
 # =============================================================================
-# pyPSDS-GAMMA v1.3 production configuration
+# pyPSDS-GAMMA v1.3.1 production configuration
 # =============================================================================
 
 # =============================================================================
@@ -75,10 +75,9 @@ runtime:
     enabled: true
     sample_points: 16384
     repeats: 2
-  # FASTPATCH perf tree: one-ahead overlap of next-tile GAMMA with
-  # current-tile SHP/coherence/EMI/compression. Set 0 for the
-  # conservative synchronous path.
-  phase_link_prefetch_tiles: 1
+  # Production default: synchronous. Set 1 only after real-data
+  # prefetch stability/performance validation on the target machine.
+  phase_link_prefetch_tiles: 0
 
 # =============================================================================
 # 5. RADAR / DEM GEOMETRY
@@ -128,7 +127,7 @@ phase_correction:
     zero_height_epsilon_m: 0.001
   # Unit: seconds; 0 = no timeout.
   command_timeout_seconds: 300.0
-  # FASTPATCH: transient external GAMMA failures are retried in-place.
+  # Transient external GAMMA failures are retried in-place.
   command_retries: 2
   retry_backoff_seconds: 1.0
   parallel:

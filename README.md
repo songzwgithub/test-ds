@@ -8,6 +8,8 @@ post-inversion corrections, and final LOS deformation products.
 
 This README is the primary installation and user manual.
 
+Current package version: **1.3.1**.
+
 ---
 
 ## 1. Main workflow
@@ -245,8 +247,6 @@ project/
 ├── RSLC/
 │   ├── YYYYMMDD.rslc
 │   ├── YYYYMMDD.rslc.par
-│   ├── YYYYMMDD.rslc
-│   ├── YYYYMMDD.rslc.par
 │   └── ...
 ├── RSLC_tab
 ├── DEM_prep/
@@ -336,9 +336,9 @@ processing:
 
 ---
 
-## 10. Current performance-oriented runtime defaults
+## 10. Current production runtime defaults
 
-The performance build uses hardware-aware scheduling:
+The production runtime uses hardware-aware scheduling:
 
 ```yaml
 runtime:
@@ -351,7 +351,7 @@ runtime:
     sample_points: 16384
     repeats: 2
 
-  phase_link_prefetch_tiles: 1
+  phase_link_prefetch_tiles: 0
 ```
 
 Phase-correction runtime defaults:
@@ -412,12 +412,13 @@ performs SHP/coherence/EMI/compression work.
 
 This improves CPU overlap on large scenes.
 
-The asynchronous prefetch path includes a fail-fast watchdog. To use the
-conservative synchronous path:
+The production default is synchronous (`0`). The asynchronous path remains an
+opt-in performance mode and uses a fail-fast daemon-worker watchdog. Enable it
+only after real-data stability and wall-time validation on the target machine:
 
 ```yaml
 runtime:
-  phase_link_prefetch_tiles: 0
+  phase_link_prefetch_tiles: 1
 ```
 
 ### 10.3 GAMMA retry
@@ -518,6 +519,8 @@ full-scene full-SCM representation would be too expensive.
 
 ## 13. Reference, corrections and products
 
+The packaged production template preserves the validated correction chain: GACOS atmosphere correction, StaMPS-style SCLA, and StaMPS-style SCN are enabled by default. Disable an unavailable correction explicitly for projects that do not provide its required inputs.
+
 ### 13.1 Spatial reference
 
 Example automatic relative reference:
@@ -532,6 +535,8 @@ reference:
 An externally validated stable reference should be used when available.
 
 ### 13.2 Atmospheric correction
+
+The packaged production default is `mode: gacos`. Set `mode: disabled` when GACOS products are intentionally not used.
 
 Disabled:
 
@@ -841,7 +846,7 @@ Spatial workers   : 6
 Pair workers      : 3
 GAMMA max         : 18 processes
 PL workers        : hardware/runtime tuned
-Prefetch          : 1 in the performance configuration
+Prefetch          : 0 production default; 1 after target-machine validation
 ```
 
 Actual optimal settings depend on CPU, RAM, filesystem and stack size.

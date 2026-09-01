@@ -17,6 +17,7 @@ import numpy as np
 
 from pypsds.config import cfg_get
 from pypsds.progress import log
+from pypsds.runtime import logical_cpu_count
 from .par import first_int, parse_gamma_parameter_file
 
 
@@ -767,22 +768,18 @@ class GammaPointPhaseCorrectionProvider:
             "auto",
         )
 
+        cpu = max(1, int(logical_cpu_count()))
+        runtime_cpu = cfg_get(self.cfg, "runtime.cpu", None)
+        if runtime_cpu not in (None, "", "auto"):
+            cpu = min(cpu, max(1, int(runtime_cpu)))
+
         if raw in (
             None,
             "",
             "auto",
         ):
 
-            cpu = max(
-                1,
-                int(
-                    os.cpu_count()
-                    or
-                    1
-                ),
-            )
-
-            # Current benchmark optimum on 32 CPUs.
+            # Current benchmark optimum on a 32-CPU host.
             workers = min(
                 16,
                 cpu,
@@ -796,6 +793,7 @@ class GammaPointPhaseCorrectionProvider:
                     1,
                     int(raw),
                 ),
+                cpu,
                 n_pairs,
             )
 

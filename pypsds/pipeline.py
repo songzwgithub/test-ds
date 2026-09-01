@@ -870,7 +870,7 @@ def _stage_args(
                 cfg_get(
                     cfg,
                     "runtime.phase_link_prefetch_tiles",
-                    1,
+                    0,
                 )
             ),
         ]

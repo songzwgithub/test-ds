@@ -12,7 +12,7 @@ def read(rel):
 
 
 def test_release_identity_and_topology():
-    assert pypsds.__version__ == "1.3.0"
+    assert pypsds.__version__ == "1.3.1"
     assert len(MODULES) == 9
     assert len(STAGES) == 39
 

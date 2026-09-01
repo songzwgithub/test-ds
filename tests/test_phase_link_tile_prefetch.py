@@ -169,7 +169,7 @@ def test_disabled_prefetch_is_synchronous():
     assert p.completed == 1
 
 
-def test_packaged_perf_default_enables_bounded_prefetch():
+def test_packaged_production_default_keeps_prefetch_opt_in():
 
     cfg = yaml.safe_load(
         (
@@ -191,7 +191,7 @@ def test_packaged_perf_default_enables_bounded_prefetch():
         ][
             "phase_link_prefetch_tiles"
         ]
-    ) == 1
+    ) == 0
 
 
 def test_sequential_stage_contains_bounded_prefetch_path():
