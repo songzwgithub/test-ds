@@ -257,7 +257,7 @@ class _CanonicalCell:
 _CANONICAL_PHASE_ROWS = 128
 _CANONICAL_PHASE_COLS = 256
 _CANONICAL_AUTOTUNE_FORMAT = (
-    "pyPSDS-GAMMA-canonical-phase-parallel-benchmark-v2"
+    "pyPSDS-GAMMA-canonical-phase-parallel-benchmark-v3"
 )
 
 
@@ -386,6 +386,14 @@ def _validated_canonical_autotune(
     winner = tune.get("winner", {})
     if winner.get("parity") is not True:
         raise ValueError("autotune winner has no numerical-parity approval")
+
+    if tune.get("parity_reference") != {
+        "spatial_workers": 1,
+        "pair_workers": 1,
+    }:
+        raise ValueError(
+            "autotune parity reference must be independent 1x1 serial"
+        )
 
     spatial = int(winner["spatial_workers"])
     pair = int(winner["pair_workers"])

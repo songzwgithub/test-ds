@@ -192,6 +192,10 @@ def test_autotune_over_runtime_cpu_is_rejected(monkeypatch):
         "format": phase_source._CANONICAL_AUTOTUNE_FORMAT,
         "canonical_tile": [128, 256],
         "runtime_identity": identity,
+        "parity_reference": {
+            "spatial_workers": 1,
+            "pair_workers": 1,
+        },
         "winner": {
             "parity": True,
             "spatial_workers": 6,
@@ -222,4 +226,43 @@ def test_benchmark_source_uses_serial_parity_reference_and_cpu_filter():
     assert "Serial parity reference: 1x1" in text
     assert "serial_reference_by_mode[mode]" in text
     assert '"parity_reference": {' in text
+    assert "--install-winner requires full-stack dates" in text
 
+
+
+def test_autotune_requires_serial_parity_reference(monkeypatch):
+    monkeypatch.setattr(
+        phase_source,
+        "logical_cpu_count",
+        lambda: 32,
+    )
+    monkeypatch.setattr(
+        phase_source,
+        "_cpu_model_name",
+        lambda: "test-cpu",
+    )
+
+    identity = phase_source.canonical_autotune_runtime_identity(
+        _cfg(32),
+        _Stack(),
+        phase_sim_path=None,
+    )
+
+    tune = {
+        "format": phase_source._CANONICAL_AUTOTUNE_FORMAT,
+        "canonical_tile": [128, 256],
+        "runtime_identity": identity,
+        "winner": {
+            "parity": True,
+            "spatial_workers": 6,
+            "pair_workers": 3,
+        },
+    }
+
+    with pytest.raises(ValueError, match="1x1 serial"):
+        phase_source._validated_canonical_autotune(
+            tune,
+            _cfg(32),
+            _Stack(),
+            phase_sim_path=None,
+        )

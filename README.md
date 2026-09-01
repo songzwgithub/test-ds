@@ -8,7 +8,7 @@ post-inversion corrections, and final LOS deformation products.
 
 This README is the primary installation and user manual.
 
-Current package version: **1.3.2**.
+Current package version: **1.3.3**.
 
 ---
 
@@ -400,7 +400,8 @@ output/processing/canonical_phase_parallel_autotune.json
 
 exists, its validated winner overrides the hardware fallback. The autotune
 benchmark uses an independent `1×1` serial GAMMA run as the numerical parity
-reference; schedules exceeding `runtime.cpu` are not eligible.
+reference; schedules exceeding `runtime.cpu` are not eligible. Only a full-stack
+benchmark may be installed as the production autotune winner.
 
 ### 10.2 Phase-Linking prefetch
 

@@ -19,7 +19,7 @@ from pypsds.phase_linking.phase_source import (
 from pypsds.runtime import logical_cpu_count
 
 
-FORMAT = "pyPSDS-GAMMA-canonical-phase-parallel-benchmark-v2"
+FORMAT = "pyPSDS-GAMMA-canonical-phase-parallel-benchmark-v3"
 
 
 def parse_candidates(text: str):
@@ -298,6 +298,14 @@ def main():
         )
     date_indices = tuple(range(d0, d1))
 
+    if args.install_winner and (
+        d0 != 0
+        or d1 != len(stack.dates)
+    ):
+        raise ValueError(
+            "--install-winner requires full-stack dates"
+        )
+
     if args.scratch_root is None:
         scratch_root = (
             Path(paths.output_dir)
@@ -384,7 +392,11 @@ def main():
                 base_col0=base_col0,
                 io_workers=args.io_workers,
                 spatial_workers=1,
-                pair_workers=min(16, len(date_indices)),
+                pair_workers=min(
+                    16,
+                    int(runtime_identity["effective_cpu_count"]),
+                    len(date_indices),
+                ),
                 row0=args.row0,
                 col0=args.col0,
                 rows=args.rows,
