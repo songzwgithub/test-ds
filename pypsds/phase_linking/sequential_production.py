@@ -145,10 +145,11 @@ def _file_identity(
     path,
 ):
     """
-    File identity used for large immutable/mmap production inputs.
+    Lightweight identity for a pipeline-owned large mmap product.
 
-    Size + nanosecond mtime avoids a full reread of the several-
-    hundred-MiB corrected phase cube on every fast-resume attempt.
+    Volatile mtime is deliberately excluded here. Scientific source
+    provenance is supplied separately by the phase-source checkpoint
+    token produced upstream.
     """
 
     if path is None:
@@ -276,6 +277,24 @@ def _phase_linking_completion_fingerprint(
                 yxt_filename
             )
         )
+
+
+    phase_source_token = (
+        outdir
+        /
+        "cache"
+        /
+        "phase_source_checkpoint_token.json"
+    )
+
+
+    phase_source_token_sha = (
+        _sha256_file(
+            phase_source_token
+        )
+        if phase_source_token.is_file()
+        else None
+    )
 
 
     support_manifest = (
@@ -458,6 +477,9 @@ def _phase_linking_completion_fingerprint(
                         args.support_block
                     ),
             },
+
+        "phase_source_checkpoint_token_sha256":
+            phase_source_token_sha,
 
         "exact_support_manifest_sha256":
             support_manifest_sha,

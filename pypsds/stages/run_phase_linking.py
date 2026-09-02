@@ -191,6 +191,14 @@ def _phase_source_file_identity(
             int(
                 st.st_size
             ),
+
+        # External scientific inputs do not have a pyPSDS
+        # producer/checkpoint manifest. Detect in-place source
+        # replacement without hashing entire RSLC rasters.
+        "mtime_ns":
+            int(
+                st.st_mtime_ns
+            ),
     }
 
 

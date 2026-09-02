@@ -13,7 +13,7 @@ from pypsds.monitoring.decompose import (
 
 
 def test_formal_version_keeps_pipeline_shape():
-    assert pypsds.__version__ == "1.3.4"
+    assert pypsds.__version__ == "1.3.5"
     assert len(MODULES) == 9
     assert len(STAGES) == 39
 
