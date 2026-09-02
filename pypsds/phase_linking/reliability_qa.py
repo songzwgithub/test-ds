@@ -656,6 +656,12 @@ def sampled_phase_similarity(
             &
             np.isfinite(
                 center.imag
+            )
+            &
+            (
+                center
+                !=
+                np.complex64(0.0)
             ),
             axis=1,
         )
@@ -735,6 +741,12 @@ def sampled_phase_similarity(
                 &
                 np.isfinite(
                     neigh.imag
+                )
+                &
+                (
+                    neigh
+                    !=
+                    np.complex64(0.0)
                 ),
                 axis=1,
             )

@@ -8,7 +8,7 @@ post-inversion corrections, and final LOS deformation products.
 
 This README is the primary installation and user manual.
 
-Current package version: **1.3.3**.
+Current package version: **1.3.4**.
 
 ---
 

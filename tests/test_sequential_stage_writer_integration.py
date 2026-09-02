@@ -498,14 +498,18 @@ def test_two_stage_executor_to_linked_phase(
         )
     )
 
-    # Everything outside the route remains NaN.
-    assert np.isnan(
+    # Everything outside the route remains sparse zero.
+    np.testing.assert_array_equal(
         cube[
             :,
             0,
             0,
-        ].real
-    ).all()
+        ],
+        np.zeros(
+            N,
+            dtype=np.complex64,
+        ),
+    )
 
     # --------------------------------------------------------
     # Expected deterministic fake-EMI phases.

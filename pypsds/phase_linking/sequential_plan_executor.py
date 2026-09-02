@@ -450,19 +450,6 @@ def run_sequential_plan(
             result.elapsed_seconds
         )
 
-    # Flush final linked_phase writer, but deliberately
-    # do NOT close it: the caller may still write full-SCM
-    # fallback points into the same production cube.
-    if (
-        phase_sink is not None
-        and
-        hasattr(
-            phase_sink,
-            "flush",
-        )
-    ):
-        phase_sink.flush()
-
     return SequentialPlanResult(
         stage_results=tuple(
             results

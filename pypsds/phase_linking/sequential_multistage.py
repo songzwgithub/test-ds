@@ -199,11 +199,11 @@ def _path_token(
     path,
 ):
     """
-    Conservative source token.
+    Stable source token.
 
     Small files are content-hashed.
-    Large files use size+mtime to avoid repeatedly hashing
-    the complete full-scene phase cube.
+    Large internal pipeline products use path+size.
+    Volatile mtime is not part of checkpoint identity.
     """
 
     if path is None:
@@ -242,14 +242,6 @@ def _path_token(
             "sha256"
         ] = _sha256_file(
             path
-        )
-
-    else:
-
-        out[
-            "mtime_ns"
-        ] = int(
-            st.st_mtime_ns
         )
 
     return out
@@ -3120,16 +3112,18 @@ def run_sequential_stage(
     )
 
 
-    # Flush once per completed stage.
-    for arr in (
-        compressed_out,
-        state_valid_out,
-        state_code_out,
-        k_out,
-        tc_out,
-        est_out,
-    ):
-        arr.flush()
+    # Fully resumed stage performed no writes.
+    if checkpoint_prefix < len(tiles):
+
+        for arr in (
+            compressed_out,
+            state_valid_out,
+            state_code_out,
+            k_out,
+            tc_out,
+            est_out,
+        ):
+            arr.flush()
 
     elapsed = (
         perf_counter()

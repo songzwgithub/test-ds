@@ -317,6 +317,105 @@ def test_incomplete_phase_becomes_invalid(
     )
 
 
+def test_sparse_zero_phase_becomes_invalid(
+    monkeypatch,
+):
+
+    monkeypatch.setattr(
+        fq,
+        "prepare_glrt_window_context",
+        _fake_prepare,
+    )
+
+    monkeypatch.setattr(
+        fq,
+        "glrt_support_vectorized_exact",
+        _fake_glrt,
+    )
+
+    monkeypatch.setattr(
+        fq,
+        "compressed_coherence",
+        _fake_coherence,
+    )
+
+    H = 5
+    W = 5
+    N = 4
+
+    phase = np.ones(
+        (1, N),
+        dtype=np.complex64,
+    )
+
+    phase[
+        0,
+        2,
+    ] = np.complex64(
+        0.0
+    )
+
+    out = (
+        fq.evaluate_fullspan_quality_points(
+            yxt=np.ones(
+                (H, W, N),
+                dtype=np.complex64,
+            ),
+
+            phase_points=phase,
+
+            rows=np.array(
+                [2],
+                dtype=np.int32,
+            ),
+
+            cols=np.array(
+                [2],
+                dtype=np.int32,
+            ),
+
+            scale2=np.ones(
+                (H, W),
+                dtype=np.float32,
+            ),
+
+            valid=np.ones(
+                (H, W),
+                dtype=np.bool_,
+            ),
+
+            ps=np.zeros(
+                (H, W),
+                dtype=np.bool_,
+            ),
+
+            state_core=np.ones(
+                (H, W),
+                dtype=np.bool_,
+            ),
+
+            expected_effective_k=np.full(
+                (H, W),
+                9,
+                dtype=np.int16,
+            ),
+
+            half_row=1,
+            half_col=1,
+        )
+    )
+
+    assert not out.phase_complete[0]
+
+    assert np.isnan(
+        out.temporal_coherence[0]
+    )
+
+    assert np.isnan(
+        out.median_pair_coherence[0]
+    )
+
+
 def test_stage_estimator_aggregation():
 
     s0 = np.array(

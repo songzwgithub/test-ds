@@ -610,6 +610,12 @@ def evaluate_fullspan_quality_points(
             &
             np.isfinite(
                 phase_b.imag
+            )
+            &
+            (
+                phase_b
+                !=
+                np.complex64(0.0)
             ),
             axis=1,
         )

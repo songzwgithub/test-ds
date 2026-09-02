@@ -6,18 +6,6 @@ import numpy as np
 
 
 class SequentialPhaseWriter:
-    """
-    Write sequential phase-linking results directly into the
-    production phase cube:
-
-        [date, row, col]
-
-    The object is callable and therefore can be passed directly
-    as run_sequential_stage(..., phase_sink=writer).
-
-    Each sequential stage emits only its REAL acquisitions.
-    Compressed-SLC columns are never written to this cube.
-    """
 
     def __init__(
         self,
@@ -27,7 +15,6 @@ class SequentialPhaseWriter:
         rows: int,
         cols: int,
         overwrite: bool = False,
-        strict_no_overwrite: bool = True,
     ):
         self.path = Path(path)
 
@@ -35,16 +22,16 @@ class SequentialPhaseWriter:
         self.rows = int(rows)
         self.cols = int(cols)
 
-        self.strict_no_overwrite = bool(
-            strict_no_overwrite
-        )
-
         if self.ndate < 1:
             raise ValueError(
                 "ndate must be >= 1"
             )
 
-        if self.rows < 1 or self.cols < 1:
+        if (
+            self.rows < 1
+            or
+            self.cols < 1
+        ):
             raise ValueError(
                 "rows/cols must be >= 1"
             )
@@ -60,50 +47,23 @@ class SequentialPhaseWriter:
             self.cols,
         )
 
-        if self.path.exists():
+        if (
+            overwrite
+            or
+            not self.path.exists()
+        ):
 
-            if overwrite:
-                self._arr = (
-                    np.lib.format.open_memmap(
-                        self.path,
-                        mode="w+",
-                        dtype=np.complex64,
-                        shape=shape,
-                    )
-                )
-
-                self._arr[...] = np.complex64(
-                    np.nan
-                    +
-                    1j * np.nan
-                )
-
-                self._arr.flush()
-
-            else:
-                self._arr = np.load(
-                    self.path,
-                    mmap_mode="r+",
-                )
-
-                if self._arr.shape != shape:
-                    raise ValueError(
-                        "existing phase cube shape "
-                        f"{self._arr.shape} != {shape}"
-                    )
-
-                if (
-                    self._arr.dtype
-                    !=
-                    np.dtype(np.complex64)
-                ):
-                    raise ValueError(
-                        "existing phase cube dtype "
-                        f"{self._arr.dtype} "
-                        "!= complex64"
-                    )
-
-        else:
+            # --------------------------------------------------
+            # Sparse creation only.
+            #
+            # Do NOT bulk initialize:
+            #
+            #   self._arr[...] = NaN
+            #
+            # and do NOT scatter NaN into PS pixels.
+            #
+            # Filesystem holes read as 0+0j.
+            # --------------------------------------------------
 
             self._arr = (
                 np.lib.format.open_memmap(
@@ -114,17 +74,43 @@ class SequentialPhaseWriter:
                 )
             )
 
-            self._arr[...] = np.complex64(
-                np.nan
-                +
-                1j * np.nan
+        else:
+
+            self._arr = np.load(
+                self.path,
+                mmap_mode="r+",
+                allow_pickle=False,
             )
 
-            self._arr.flush()
+            if (
+                self._arr.shape
+                !=
+                shape
+            ):
+                raise ValueError(
+                    "existing phase cube shape "
+                    f"{self._arr.shape} "
+                    f"!= {shape}"
+                )
 
-        self.written_counts = np.zeros(
-            self.ndate,
-            dtype=np.int64,
+            if (
+                self._arr.dtype
+                !=
+                np.dtype(
+                    np.complex64
+                )
+            ):
+                raise ValueError(
+                    "existing phase cube dtype "
+                    f"{self._arr.dtype} "
+                    "!= complex64"
+                )
+
+        self.written_counts = (
+            np.zeros(
+                self.ndate,
+                dtype=np.int64,
+            )
         )
 
 
@@ -147,22 +133,6 @@ class SequentialPhaseWriter:
         cols,
         phase,
     ):
-        """
-        Phase-sink callback used by run_sequential_stage().
-
-        Parameters
-        ----------
-        stage_index
-            Sequential ministack stage number.
-        real_indices
-            Original acquisition indices represented by phase
-            columns.
-        rows, cols
-            Global center coordinates, shape [B].
-        phase
-            Referenced real-acquisition phase, shape
-            [B, len(real_indices)].
-        """
 
         del stage_index
 
@@ -170,6 +140,11 @@ class SequentialPhaseWriter:
             int(x)
             for x in real_indices
         )
+
+        if not real_indices:
+            raise ValueError(
+                "empty real_indices"
+            )
 
         rr = np.asarray(
             rows,
@@ -186,7 +161,11 @@ class SequentialPhaseWriter:
             dtype=np.complex64,
         )
 
-        if rr.ndim != 1 or cc.ndim != 1:
+        if (
+            rr.ndim != 1
+            or
+            cc.ndim != 1
+        ):
             raise ValueError(
                 "rows/cols must be 1-D"
             )
@@ -201,16 +180,15 @@ class SequentialPhaseWriter:
             len(real_indices),
         )
 
-        if ph.shape != expected_shape:
+        if (
+            ph.shape
+            !=
+            expected_shape
+        ):
             raise ValueError(
                 "phase shape mismatch: "
                 f"{ph.shape} != "
                 f"{expected_shape}"
-            )
-
-        if not real_indices:
-            raise ValueError(
-                "empty real_indices"
             )
 
         idx = np.asarray(
@@ -221,71 +199,66 @@ class SequentialPhaseWriter:
         if (
             np.any(idx < 0)
             or
-            np.any(idx >= self.ndate)
+            np.any(
+                idx >= self.ndate
+            )
         ):
             raise ValueError(
                 "real acquisition index "
                 "outside phase cube"
             )
 
-        if rr.size:
-
-            if (
+        if (
+            rr.size
+            and
+            (
                 np.any(rr < 0)
                 or
-                np.any(rr >= self.rows)
+                np.any(
+                    rr >= self.rows
+                )
                 or
                 np.any(cc < 0)
                 or
-                np.any(cc >= self.cols)
-            ):
-                raise ValueError(
-                    "row/col outside phase cube"
+                np.any(
+                    cc >= self.cols
                 )
-
-        finite = (
-            np.isfinite(ph.real)
-            &
-            np.isfinite(ph.imag)
-        )
-
-        if not np.all(finite):
+            )
+        ):
             raise ValueError(
-                "phase sink received "
-                "non-finite phase"
+                "row/col outside "
+                "phase cube"
             )
 
-        # ----------------------------------------------------
-        # Write one acquisition at a time.
-        #
-        # This preserves the existing [T,H,W] production
-        # linked_phase.npy contract.
-        # ----------------------------------------------------
+        # Phase-linking phase is a finite,
+        # non-zero complex phasor.
+        valid_phase = (
+            np.isfinite(
+                ph.real
+            )
+            &
+            np.isfinite(
+                ph.imag
+            )
+            &
+            (
+                ph
+                !=
+                np.complex64(0.0)
+            )
+        )
+
+        if not np.all(
+            valid_phase
+        ):
+            raise ValueError(
+                "phase sink received "
+                "invalid phase"
+            )
 
         for j, date_index in enumerate(
             real_indices
         ):
-
-            if self.strict_no_overwrite:
-
-                old = self._arr[
-                    date_index,
-                    rr,
-                    cc,
-                ]
-
-                old_finite = (
-                    np.isfinite(old.real)
-                    &
-                    np.isfinite(old.imag)
-                )
-
-                if np.any(old_finite):
-                    raise RuntimeError(
-                        "sequential phase writer "
-                        "would overwrite existing "
-                        f"date={date_index} phase"
-                    )
 
             self._arr[
                 date_index,
@@ -306,33 +279,17 @@ class SequentialPhaseWriter:
 
 
     def finite_counts(self):
-        """
-        Count finite phase pixels for each acquisition.
-        """
-
-        out = np.zeros(
-            self.ndate,
-            dtype=np.int64,
+        return (
+            self.written_counts.copy()
         )
-
-        for i in range(
-            self.ndate
-        ):
-            x = self._arr[i]
-
-            out[i] = np.count_nonzero(
-                np.isfinite(x.real)
-                &
-                np.isfinite(x.imag)
-            )
-
-        return out
 
 
     def close(self):
+
         self.flush()
 
         arr = self._arr
+
         self._arr = None
 
         del arr
@@ -348,6 +305,7 @@ class SequentialPhaseWriter:
         exc,
         tb,
     ):
+
         self.close()
 
         return False

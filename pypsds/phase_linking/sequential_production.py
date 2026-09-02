@@ -173,11 +173,6 @@ def _file_identity(
             int(
                 st.st_size
             ),
-
-        "mtime_ns":
-            int(
-                st.st_mtime_ns
-            ),
     }
 
 
@@ -2942,9 +2937,8 @@ def run_sequential_production(
     # --------------------------------------------------------
     # Final linked_phase writer.
     #
-    # strict_no_overwrite=False is intentional:
-    # full-SCM fallback must replace sequential state-phase
-    # values at fallback centers.
+    # Fresh creation is sparse.
+    # Unwritten phase remains 0+0j.
     # --------------------------------------------------------
 
     linked_path = (
@@ -3023,7 +3017,6 @@ def run_sequential_production(
             not checkpoint_phase_resume
         ),
 
-        strict_no_overwrite=False,
     )
 
     # --------------------------------------------------------

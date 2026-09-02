@@ -119,11 +119,65 @@ def main():
             f"{(len(stack.dates),H,W)}"
         )
 
-    phase_finite = np.all(
-        np.isfinite(phase.real)
-        & np.isfinite(phase.imag),
-        axis=0,
+    # Only PS completeness is needed here.
+    # Do not scan the complete [T,H,W] phase cube.
+
+    phase_finite = np.zeros(
+        (H, W),
+        dtype=np.bool_,
     )
+
+    ps_rows, ps_cols = np.where(
+        ps
+    )
+
+    batch_size = 100000
+
+    for p0 in range(
+        0,
+        ps_rows.size,
+        batch_size,
+    ):
+
+        p1 = min(
+            ps_rows.size,
+            p0 + batch_size,
+        )
+
+        rr = ps_rows[
+            p0:p1
+        ]
+
+        cc = ps_cols[
+            p0:p1
+        ]
+
+        z = phase[
+            :,
+            rr,
+            cc,
+        ]
+
+        phase_finite[
+            rr,
+            cc,
+        ] = np.all(
+            np.isfinite(
+                z.real
+            )
+            &
+            np.isfinite(
+                z.imag
+            )
+            &
+            (
+                z
+                !=
+                np.complex64(0.0)
+            ),
+            axis=0,
+        )
+
 
     ps_complete = (
         ps
@@ -283,12 +337,25 @@ def main():
             cc,
         ):
 
+            z = phase[
+                :,
+                r,
+                c,
+            ]
+
             good_t = (
                 np.isfinite(
-                    phase[:, r, c].real
+                    z.real
                 )
-                & np.isfinite(
-                    phase[:, r, c].imag
+                &
+                np.isfinite(
+                    z.imag
+                )
+                &
+                (
+                    z
+                    !=
+                    np.complex64(0.0)
                 )
             )
 

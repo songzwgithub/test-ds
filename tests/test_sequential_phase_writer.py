@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 
 from pypsds.phase_linking.sequential_phase_writer import (
     SequentialPhaseWriter,
@@ -147,13 +146,17 @@ def test_writer_m19_style_two_stages(
             atol=0,
         )
 
-    # Unwritten background stays NaN.
-    assert np.isnan(
-        got[:, 0, 0].real
-    ).all()
+    # Unwritten background stays sparse zero.
+    np.testing.assert_array_equal(
+        got[:, 0, 0],
+        np.zeros(
+            6,
+            dtype=np.complex64,
+        ),
+    )
 
 
-def test_writer_rejects_duplicate_write(
+def test_writer_fresh_background_is_sparse_zero(
     tmp_path,
 ):
 
@@ -163,49 +166,31 @@ def test_writer_rejects_duplicate_write(
         "linked_phase.npy"
     )
 
-    rr = np.array(
-        [1],
-        dtype=np.int32,
-    )
-
-    cc = np.array(
-        [1],
-        dtype=np.int32,
-    )
-
-    ph = _phase(
-        [[0.5]]
-    )
-
-    writer = SequentialPhaseWriter(
+    with SequentialPhaseWriter(
         path,
-        ndate=2,
-        rows=3,
-        cols=3,
+        ndate=3,
+        rows=4,
+        cols=5,
         overwrite=True,
-    )
-
-    writer(
-        stage_index=0,
-        real_indices=(0,),
-        rows=rr,
-        cols=cc,
-        phase=ph,
-    )
-
-    with pytest.raises(
-        RuntimeError,
-        match="overwrite",
     ):
-        writer(
-            stage_index=0,
-            real_indices=(0,),
-            rows=rr,
-            cols=cc,
-            phase=ph,
-        )
+        pass
 
-    writer.close()
+    got = np.load(
+        path,
+        mmap_mode="r",
+    )
+
+    np.testing.assert_array_equal(
+        got[
+            :,
+            0,
+            0,
+        ],
+        np.zeros(
+            3,
+            dtype=np.complex64,
+        ),
+    )
 
 
 def test_writer_resume_existing_cube(

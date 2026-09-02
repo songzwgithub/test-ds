@@ -847,12 +847,24 @@ def parity_check(
                 bph.imag
             )
             &
+            (
+                bph
+                !=
+                np.complex64(0.0)
+            )
+            &
             np.isfinite(
                 ph.real
             )
             &
             np.isfinite(
                 ph.imag
+            )
+            &
+            (
+                ph
+                !=
+                np.complex64(0.0)
             )
         )
 

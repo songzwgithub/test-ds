@@ -366,14 +366,28 @@ def main():
             cc,
         ]
 
+        phase_valid = (
+            np.isfinite(
+                z.real
+            )
+            &
+            np.isfinite(
+                z.imag
+            )
+            &
+            (
+                z
+                !=
+                np.complex64(0.0)
+            )
+        )
+
         if not np.all(
-            np.isfinite(z.real)
-            & np.isfinite(z.imag)
+            phase_valid
         ):
             bad = np.where(
                 ~np.all(
-                    np.isfinite(z.real)
-                    & np.isfinite(z.imag),
+                    phase_valid,
                     axis=0,
                 )
             )[0]

@@ -167,8 +167,16 @@ def main():
 
         ph = phase_slice(t)
 
-        finite = np.isfinite(
-            ph
+        finite = (
+            np.isfinite(
+                ph
+            )
+            &
+            (
+                ph
+                !=
+                np.complex64(0.0)
+            )
         )
 
         if t == 0:

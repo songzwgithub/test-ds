@@ -92,9 +92,18 @@ def open_or_create_npy(path: Path, *, shape, dtype, fill, resume: bool):
                 f"expected={shape}/{np.dtype(dtype)}"
             )
         return arr
-    arr = np.lib.format.open_memmap(path, mode="w+", dtype=dtype, shape=shape)
-    arr[...] = fill
-    arr.flush()
+
+    arr = np.lib.format.open_memmap(
+        path,
+        mode="w+",
+        dtype=dtype,
+        shape=shape,
+    )
+
+    if fill is not None:
+        arr[...] = fill
+        arr.flush()
+
     return arr
 
 
@@ -181,11 +190,6 @@ def _phase_source_file_identity(
         "size":
             int(
                 st.st_size
-            ),
-
-        "mtime_ns":
-            int(
-                st.st_mtime_ns
             ),
     }
 
@@ -1222,7 +1226,7 @@ def main():
         outdir / "linked_phase.npy",
         shape=(ndate, H, W),
         dtype=np.complex64,
-        fill=np.nan + 1j * np.nan,
+        fill=None,
         resume=args.resume,
     )
 
