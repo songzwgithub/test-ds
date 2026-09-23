@@ -1115,6 +1115,52 @@ def _run_stage(
 ):
 
 
+    # PYPSDS_STAMPS3D_LEGACY_STAGE_SKIP_V1
+    # The new backend owns spatial integer ambiguity and final-unwrap QA.
+    # Keep the legacy hierarchy available for A/B work, but do not spend
+    # production time constructing it unless explicitly requested.
+    _unwrap_backend = str(
+        cfg_get(cfg, "unwrap.backend", "legacy_hierarchical")
+    ).strip().lower()
+    _run_legacy_qa = bool(
+        cfg_get(cfg, "unwrap.stamps3d_snaphu.run_legacy_spatial_qa", False)
+    )
+    if (
+        _unwrap_backend in {"stamps3d_snaphu", "stamps_grid_snaphu"}
+        and not _run_legacy_qa
+        and stage.name in {
+            "spatial_graph_quality",
+            "spatial_bridge_quality",
+            "spatial_component_quality",
+            "spatial_anchor_quality",
+            "spatial_anchor_summary",
+            "spatial_local_graph_quality",
+            "spatial_graph",
+            "spatial_gradient_quality",
+            "unwrap_policy",
+            "unwrap_severity_quality",
+            "unwrap_conflict_quality",
+            "unwrap_acquisition_quality",
+            "temporal_closure",
+            "temporal_integer_candidate",
+            "temporal_candidate_spatial_quality",
+            "unwrap_signature_quality",
+            "unwrap_finalize",
+        }
+    ):
+        print()
+        print("=" * 96)
+        print(f"STAGE: {stage.name}")
+        print("=" * 96)
+        print("action          : SKIP")
+        print("unwrap backend  :", _unwrap_backend)
+        print("reason          : stamps3d backend supersedes legacy spatial-tree stage")
+        return {
+            "status": "SKIPPED",
+            "seconds": 0.0,
+            "reason": "stamps3d_backend_supersedes_legacy_spatial_tree",
+        }
+
     # ------------------------------------------------------------------
     # production PIPELINE PHASE-CACHE POLICY
     #

@@ -640,6 +640,21 @@ def main():
         args.config
     )
 
+    # PYPSDS_STAMPS3D_DISPATCH_V1
+    _backend = str(
+        cfg_get(cfg, "unwrap.backend", "legacy_hierarchical")
+    ).strip().lower()
+    if _backend in {"stamps3d_snaphu", "stamps_grid_snaphu"}:
+        from pypsds.stamps3d_backend import run_stamps3d_backend
+        run_stamps3d_backend(
+            cfg=cfg,
+            config_path=config_path,
+            paths=paths,
+            stack=stack,
+            force=bool(args.force),
+        )
+        return
+
     stage_dir = Path(__file__).resolve().parent
 
     safe_fragment_script = (

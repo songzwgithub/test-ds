@@ -228,7 +228,35 @@ network:
   target_connections_each_side: 3
 
 # =============================================================================
-# 10. TIME-SERIES INVERSION
+# 10. PHASE UNWRAPPING
+# =============================================================================
+unwrap:
+  # Options: legacy_hierarchical | stamps3d_snaphu
+  # Keep legacy as package default until a real-data A/B validation is accepted.
+  backend: legacy_hierarchical
+  stamps3d_snaphu:
+    # Metric coarse support, analogous to StaMPS grid-based unwrap support.
+    grid_size_m: 200.0
+    # Coarse empty-cell support receives exponentially reduced correlation.
+    gap_scale_m: 600.0
+    min_corr: 0.03
+    # External SNAPHU executable and IFG-level parallelism.
+    snaphu: snaphu
+    snaphu_workers: auto
+    keep_snaphu_scratch: false
+    # Redundant acquisition-network integer synchronization.
+    temporal_sync_batch: 8192
+    temporal_sync_iterations: 3
+    temporal_edge_bad_fraction: 0.10
+    strict_max_temporal_mismatch_fraction: 0.02
+    blas_threads: 8
+    # Full-resolution point restoration is streaming/memmap based.
+    point_batch: 131072
+    # Set true only for explicit A/B diagnostics of the old spatial tree.
+    run_legacy_spatial_qa: false
+
+# =============================================================================
+# 11. TIME-SERIES INVERSION
 # =============================================================================
 timeseries:
   inversion:

@@ -60,6 +60,20 @@ def main() -> None:
 
     cfg, config_path, paths, stack, _ = open_from_config(args.config)
 
+    # PYPSDS_STAMPS3D_RAMP_DISPATCH_V1
+    from pypsds.stamps3d_backend import (
+        is_stamps3d_backend,
+        run_stamps3d_residual_ramp,
+    )
+    if is_stamps3d_backend(cfg):
+        run_stamps3d_residual_ramp(
+            cfg=cfg,
+            config_path=config_path,
+            paths=paths,
+            stack=stack,
+        )
+        return
+
     root = Path(paths.output_dir) / "processing"
     final_dir = root / "final_unwrap"
     geom_dir = root / "point_geometry"

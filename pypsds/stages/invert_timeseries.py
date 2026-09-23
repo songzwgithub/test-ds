@@ -188,6 +188,21 @@ def main():
         args.config
     )
 
+    # PYPSDS_STAMPS3D_TIMESERIES_DISPATCH_V1
+    from pypsds.stamps3d_backend import (
+        is_stamps3d_backend,
+        run_stamps3d_timeseries_inversion,
+    )
+    if is_stamps3d_backend(cfg):
+        run_stamps3d_timeseries_inversion(
+            cfg=cfg,
+            config_path=config_path,
+            paths=paths,
+            stack=stack,
+            batch_size=int(args.batch_size),
+        )
+        return
+
     root = (
         Path(paths.output_dir)
         / "processing"
