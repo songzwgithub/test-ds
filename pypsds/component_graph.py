@@ -409,12 +409,53 @@ def build_component_forest(
         candidate_groups(comp_a, comp_b, radius, distance, ncomp)
     )
 
-    allowed = edge_radius <= int(max_radius)
+    # Scientific locality applies to every point-pair witness, not merely
+    # to the shortest representative of a component pair.  This matters for
+    # two-anchor registration: a pair may have one valid local witness and a
+    # second much longer witness that must not silently bypass max_radius.
+    witness_allowed = radius <= int(max_radius)
     if max_distance_m is not None:
-        allowed &= edge_distance <= float(max_distance_m)
+        witness_allowed &= distance <= float(max_distance_m)
+
+    effective_support = np.add.reduceat(
+        witness_allowed.astype(np.int32, copy=False),
+        starts,
+    )
+
+    # Find the first valid witness in every component-pair group. Candidates
+    # are already sorted by radius, physical distance and point ids.
+    valid_idx = np.flatnonzero(witness_allowed).astype(np.int64)
+    first_valid = np.full(starts.size, -1, dtype=np.int64)
+    if valid_idx.size:
+        valid_group = np.searchsorted(
+            starts,
+            valid_idx,
+            side="right",
+        ) - 1
+        first = np.ones(valid_idx.size, dtype=bool)
+        if valid_idx.size > 1:
+            first[1:] = valid_group[1:] != valid_group[:-1]
+        first_valid[valid_group[first]] = valid_idx[first]
+
+    allowed = first_valid >= 0
     allowed_ids = np.flatnonzero(allowed).astype(np.int64)
 
-    weak = support < 2
+    effective_edge_radius = np.full(
+        starts.size,
+        np.iinfo(np.int32).max,
+        dtype=np.int32,
+    )
+    effective_edge_distance = np.full(
+        starts.size,
+        np.inf,
+        dtype=np.float32,
+    )
+    effective_edge_radius[allowed] = radius[first_valid[allowed]]
+    effective_edge_distance[allowed] = distance[first_valid[allowed]]
+
+    # "weak" means fewer than two independent witnesses that both satisfy the
+    # production locality limits, not merely fewer than two raw candidates.
+    weak = effective_support < 2
     both_singleton = (
         (component_sizes[edge_a] == 1)
         & (component_sizes[edge_b] == 1)
@@ -428,10 +469,10 @@ def build_component_forest(
             (
                 edge_b[allowed_ids],
                 edge_a[allowed_ids],
-                edge_distance[allowed_ids],
+                effective_edge_distance[allowed_ids],
                 both_singleton[allowed_ids].astype(np.int8),
                 weak[allowed_ids].astype(np.int8),
-                edge_radius[allowed_ids],
+                effective_edge_radius[allowed_ids],
             )
         )
         edge_order = allowed_ids[order_local]
@@ -457,24 +498,40 @@ def build_component_forest(
     # Determine a deterministic root for each forest: largest point component,
     # with smallest component id as tie break.  The forest containing the global
     # largest R4 component is rooted at that exact component.
-    unique_uf = np.unique(roots_uf)
-    forest_roots = []
-    for uf_root0 in unique_uf:
-        members = np.flatnonzero(roots_uf == uf_root0)
-        if np.any(members == global_root):
-            root = int(global_root)
-        else:
-            sz = component_sizes[members]
-            max_sz = sz.max()
-            root = int(members[sz == max_sz].min())
-        forest_roots.append(root)
+    # Pick one deterministic orientation root per union-find forest in
+    # O(Ncomp log Ncomp), rather than repeatedly scanning all components for
+    # every detached forest. Sort by UF root, then descending component size,
+    # then ascending component id.
+    component_ids = np.arange(ncomp, dtype=np.int32)
+    root_order = np.lexsort(
+        (
+            component_ids,
+            -np.asarray(component_sizes, dtype=np.int64),
+            roots_uf,
+        )
+    )
+    sorted_uf = roots_uf[root_order]
+    first_in_forest = np.ones(ncomp, dtype=bool)
+    if ncomp > 1:
+        first_in_forest[1:] = sorted_uf[1:] != sorted_uf[:-1]
+    forest_roots = root_order[first_in_forest].astype(np.int32, copy=False)
+
+    # The global forest must be rooted at the exact global R4 component even
+    # if another member were larger under a future alternative size metric.
+    global_uf = int(roots_uf[global_root])
+    root_uf = roots_uf[forest_roots]
+    hit = np.flatnonzero(root_uf == global_uf)
+    if hit.size != 1:
+        raise RuntimeError("global component forest-root lookup failed")
+    forest_roots = forest_roots.copy()
+    forest_roots[int(hit[0])] = int(global_root)
 
     parent = np.full(ncomp, -2, dtype=np.int32)
     depth = np.full(ncomp, -1, dtype=np.int32)
     forest_root = np.full(ncomp, -1, dtype=np.int32)
     edge_group = np.full(ncomp, -1, dtype=np.int32)
 
-    for root in sorted(forest_roots):
+    for root in np.sort(forest_roots):
         parent[root] = -1
         depth[root] = 0
         forest_root[root] = root
@@ -509,7 +566,7 @@ def build_component_forest(
             edge_group_index=edge_group,
             selected_weak=selected_weak,
             selected_edge_count=int(selected.size),
-            forest_count=int(len(forest_roots)),
+            forest_count=int(forest_roots.size),
         ),
         (starts, stops, edge_a, edge_b, edge_radius, edge_distance, support),
     )
@@ -561,6 +618,7 @@ def select_forest_anchors(
     col_spacing=1.0,
     core_radius=4,
     max_anchor_radius=None,
+    max_anchor_distance_m=None,
 ):
     """Select two deterministic witnesses for every selected forest edge."""
     starts, stops, edge_a, edge_b, edge_radius, edge_distance, support = groups
@@ -581,10 +639,24 @@ def select_forest_anchors(
             b = int(comp_b[k])
             p = int(point_a[k])
             q = int(point_b[k])
+            rad = int(radius[k])
+            dist_m = float(distance[k])
+
+            # Apply the production locality contract to EVERY witness.
+            # Previously only the component-pair representative was capped,
+            # allowing anchor #2 to exceed Rmax.
+            if max_anchor_radius is not None and rad > int(max_anchor_radius):
+                continue
+            if (
+                max_anchor_distance_m is not None
+                and dist_m > float(max_anchor_distance_m)
+            ):
+                continue
+
             if a == child and b == parent:
-                anchors.append((p, q, int(radius[k]), float(distance[k]), False))
+                anchors.append((p, q, rad, dist_m, False))
             elif a == parent and b == child:
-                anchors.append((q, p, int(radius[k]), float(distance[k]), False))
+                anchors.append((q, p, rad, dist_m, False))
 
         uniq = []
         seen = set()
@@ -615,21 +687,22 @@ def select_forest_anchors(
                 dr = abs(int(rows[c2]) - int(rows[pp]))
                 dc = abs(int(cols[c2]) - int(cols[pp]))
                 rad2 = max(dr, dc)
-                if max_anchor_radius is None or rad2 <= int(max_anchor_radius):
-                    alts.append(
-                        (
-                            c2,
-                            pp,
-                            rad2,
-                            float(
-                                math.hypot(
-                                    dr * float(row_spacing),
-                                    dc * float(col_spacing),
-                                )
-                            ),
-                            True,
-                        )
+                dist2 = float(
+                    math.hypot(
+                        dr * float(row_spacing),
+                        dc * float(col_spacing),
                     )
+                )
+                radius_ok = (
+                    max_anchor_radius is None
+                    or rad2 <= int(max_anchor_radius)
+                )
+                distance_ok = (
+                    max_anchor_distance_m is None
+                    or dist2 <= float(max_anchor_distance_m)
+                )
+                if radius_ok and distance_ok:
+                    alts.append((c2, pp, rad2, dist2, True))
             p2 = find_same_component_neighbor(
                 pp,
                 parent,
@@ -643,21 +716,22 @@ def select_forest_anchors(
                 dr = abs(int(rows[cp]) - int(rows[p2]))
                 dc = abs(int(cols[cp]) - int(cols[p2]))
                 rad2 = max(dr, dc)
-                if max_anchor_radius is None or rad2 <= int(max_anchor_radius):
-                    alts.append(
-                        (
-                            cp,
-                            p2,
-                            rad2,
-                            float(
-                                math.hypot(
-                                    dr * float(row_spacing),
-                                    dc * float(col_spacing),
-                                )
-                            ),
-                            True,
-                        )
+                dist2 = float(
+                    math.hypot(
+                        dr * float(row_spacing),
+                        dc * float(col_spacing),
                     )
+                )
+                radius_ok = (
+                    max_anchor_radius is None
+                    or rad2 <= int(max_anchor_radius)
+                )
+                distance_ok = (
+                    max_anchor_distance_m is None
+                    or dist2 <= float(max_anchor_distance_m)
+                )
+                if radius_ok and distance_ok:
+                    alts.append((cp, p2, rad2, dist2, True))
             if alts:
                 alts.sort(key=lambda x: (x[2], x[3], x[0], x[1]))
                 anchors.append(alts[0])

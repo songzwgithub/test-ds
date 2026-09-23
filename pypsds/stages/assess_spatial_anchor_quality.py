@@ -110,6 +110,28 @@ def main():
     if max_distance_m is not None and max_distance_m <= 0:
         raise ValueError("component bridge max distance must be > 0")
 
+    raw_sweep = cfg_get(
+        cfg,
+        "runtime.component_bridge_radius_sweep",
+        [12, 20, 30, 40, 50, 60, 80, 100],
+    )
+    if raw_sweep in (None, "", "auto"):
+        raw_sweep = [12, 20, 30, 40, 50, 60, 80, 100]
+    elif isinstance(raw_sweep, str):
+        raw_sweep = [
+            x.strip()
+            for x in raw_sweep.split(",")
+            if x.strip()
+        ]
+    radius_sweep = sorted(
+        {
+            int(x)
+            for x in raw_sweep
+            if int(x) >= 1
+        }
+        | {int(max_radius)}
+    )
+
     H = int(rows.max()) + 1
     W = int(cols.max()) + 1
     grid_gib = H * W * 4 / (1024 ** 3)
@@ -186,8 +208,45 @@ def main():
         col_spacing=col_spacing,
         core_radius=4,
         max_anchor_radius=max_radius,
+        max_anchor_distance_m=max_distance_m,
     )
     t_tree = time.perf_counter() - t1
+
+    # Radius sensitivity reuses the already-built component candidate graph.
+    # It therefore avoids repeating the expensive full-scene Voronoi transform.
+    t_sweep0 = time.perf_counter()
+    radius_sensitivity = []
+    for sweep_radius in radius_sweep:
+        if int(sweep_radius) == int(max_radius):
+            sweep_forest = forest
+        else:
+            sweep_forest, _ = build_component_forest(
+                ca,
+                cb,
+                radius,
+                distance,
+                ncomp,
+                component_sizes,
+                root,
+                max_radius=int(sweep_radius),
+                max_distance_m=max_distance_m,
+            )
+
+        sweep_global = sweep_forest.forest_root == root
+        sweep_points = int(component_sizes[sweep_global].sum())
+        radius_sensitivity.append(
+            {
+                "max_radius_pixels": int(sweep_radius),
+                "forest_edges": int(sweep_forest.selected_edge_count),
+                "forest_count": int(sweep_forest.forest_count),
+                "global_components": int(np.count_nonzero(sweep_global)),
+                "global_points": sweep_points,
+                "global_point_fraction": float(sweep_points / npoint),
+                "maximum_depth": int(sweep_forest.depth.max()),
+            }
+        )
+
+    t_sweep = time.perf_counter() - t_sweep0
 
     if len(anchors) != forest.selected_edge_count:
         raise RuntimeError(
@@ -205,7 +264,14 @@ def main():
         eid = int(forest.edge_group_index[child])
         s0 = int(starts[eid])
         e0 = int(stops[eid])
-        pool_count = e0 - s0
+        pool_count_raw = e0 - s0
+
+        pool_valid = radius[s0:e0] <= int(max_radius)
+        if max_distance_m is not None:
+            pool_valid &= distance[s0:e0] <= float(max_distance_m)
+        pool_local = np.flatnonzero(pool_valid).astype(np.int64) + s0
+        pool_count = int(pool_local.size)
+
         if selected_weak:
             weak_edges += 1
 
@@ -222,7 +288,8 @@ def main():
 
         pool_parent_points = set()
         pool_child_points = set()
-        for k in range(s0, e0):
+        for k0 in pool_local:
+            k = int(k0)
             if int(ca[k]) == child and int(cb[k]) == parent:
                 pool_child_points.add(int(pa[k]))
                 pool_parent_points.add(int(pb[k]))
@@ -230,7 +297,7 @@ def main():
                 pool_child_points.add(int(pb[k]))
                 pool_parent_points.add(int(pa[k]))
 
-        r3 = int(radius[s0 + 2]) if pool_count >= 3 else -1
+        r3 = int(radius[int(pool_local[2])]) if pool_count >= 3 else -1
         duplicate = int(a1[0] == a2[0] and a1[1] == a2[1])
         row = {
             "component_label": int(child),
@@ -241,6 +308,7 @@ def main():
             "component_depth": int(depth),
             "tree_edge_weak": int(bool(selected_weak)),
             "candidate_pool_count": int(pool_count),
+            "candidate_pool_count_raw": int(pool_count_raw),
             # Backward-compatible names retained for visualizers/old readers.
             "crossing_edges_Rmax": int(pool_count),
             "distinct_main_anchors_Rmax": int(len(pool_parent_points)),
@@ -281,7 +349,8 @@ def main():
     fieldnames = list(out_rows[0].keys()) if out_rows else [
         "component_label", "component_size", "parent_component_label",
         "parent_component_size", "forest_root_component", "component_depth",
-        "tree_edge_weak", "candidate_pool_count", "crossing_edges_Rmax",
+        "tree_edge_weak", "candidate_pool_count", "candidate_pool_count_raw",
+        "crossing_edges_Rmax",
         "distinct_main_anchors_Rmax", "distinct_parent_anchors_pool",
         "distinct_child_anchors_pool", "min_radius_1_anchor",
         "min_radius_2_anchor", "min_radius_3_anchor", "duplicate_anchor_pair",
@@ -305,6 +374,25 @@ def main():
 
     edge_radii_arr = np.asarray(edge_radii, dtype=np.int32)
     edge_distance_arr = np.asarray(edge_distances, dtype=np.float32)
+
+    # Hard production invariant: no selected anchor may escape the configured
+    # scientific locality envelope.
+    if edge_radii_arr.size and int(edge_radii_arr.max()) > int(max_radius):
+        raise RuntimeError(
+            "selected anchor exceeds component_bridge_max_radius: "
+            f"{int(edge_radii_arr.max())} > {int(max_radius)}"
+        )
+    if (
+        max_distance_m is not None
+        and edge_distance_arr.size
+        and float(edge_distance_arr.max()) > float(max_distance_m) + 1.0e-4
+    ):
+        raise RuntimeError(
+            "selected anchor exceeds component_bridge_max_distance_m: "
+            f"{float(edge_distance_arr.max()):.6f} > "
+            f"{float(max_distance_m):.6f}"
+        )
+
     max_depth = int(forest.depth.max())
 
     summary = {
@@ -353,9 +441,11 @@ def main():
         },
         "bridge_radius_quantiles": _q(edge_radii_arr),
         "bridge_distance_m_quantiles": _q(edge_distance_arr),
+        "radius_sensitivity": radius_sensitivity,
         "runtime_seconds": {
             "voronoi_candidates": t_candidates,
             "tree_and_anchor_selection": t_tree,
+            "radius_sweep": t_sweep,
             "total": time.perf_counter() - t0,
         },
         "compatibility": {
@@ -384,6 +474,21 @@ def main():
     else:
         print("anchor R min/median/max     : none")
         print("bridge distance max         : none")
+
+    print()
+    print("Radius sensitivity (same candidate graph; no Voronoi rebuild)")
+    print(" Rmax | forests | global comps | global points | global frac | max depth")
+    print("-" * 82)
+    for rr in radius_sensitivity:
+        print(
+            f" {rr['max_radius_pixels']:4d} | "
+            f"{rr['forest_count']:7,d} | "
+            f"{rr['global_components']:12,d} | "
+            f"{rr['global_points']:13,d} | "
+            f"{100*rr['global_point_fraction']:10.3f}% | "
+            f"{rr['maximum_depth']:9,d}"
+        )
+    print(f"radius sweep seconds        : {t_sweep:.2f}")
     print(f"component table             : {csv_path}")
     print(f"manifest                    : {json_path}")
     print()

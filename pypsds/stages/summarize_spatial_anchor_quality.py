@@ -67,6 +67,22 @@ def main():
         f"{len(rows):,}"
     )
 
+    sensitivity = summary.get("radius_sensitivity", [])
+    if sensitivity:
+        print()
+        print("Radius sensitivity (same candidate graph)")
+        print(" Rmax | forests | global comps | global points | global frac | max depth")
+        print("-" * 82)
+        for rr in sensitivity:
+            print(
+                f" {int(rr['max_radius_pixels']):4d} | "
+                f"{int(rr['forest_count']):7,d} | "
+                f"{int(rr['global_components']):12,d} | "
+                f"{int(rr['global_points']):13,d} | "
+                f"{100*float(rr['global_point_fraction']):10.3f}% | "
+                f"{int(rr['maximum_depth']):9,d}"
+            )
+
     if maxr.size:
         q = np.quantile(maxr, [0, .25, .5, .75, .9, .95, .99, 1])
         print("bridge R min/p25/p50/p75/p90/p95/p99/max:")

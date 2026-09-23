@@ -116,3 +116,89 @@ def test_bridge_limit_creates_forest_instead_of_unsupported_long_edge():
     assert forest.forest_count > 1
     assert np.count_nonzero(forest.parent < 0) == forest.forest_count
     assert forest.parent[0] == -1
+
+
+def test_two_anchor_locality_cap_applies_to_every_witness():
+    # Candidate #1 is local; candidate #2 is deliberately far away.
+    # The far witness must not bypass Rmax as anchor #2.
+    rows = np.asarray([0, 0, 0, 0], dtype=np.int32)
+    cols = np.asarray([0, 1, 5, 100], dtype=np.int32)
+    labels = np.asarray([0, 0, 1, 1], dtype=np.int32)
+    sizes = np.bincount(labels, minlength=2)
+
+    ca = np.asarray([0, 0], dtype=np.int32)
+    cb = np.asarray([1, 1], dtype=np.int32)
+    pa = np.asarray([0, 1], dtype=np.int32)
+    pb = np.asarray([2, 3], dtype=np.int32)
+    radius = np.asarray([5, 99], dtype=np.int32)
+    distance = np.asarray([5.0, 99.0], dtype=np.float32)
+
+    forest, groups = build_component_forest(
+        ca,
+        cb,
+        radius,
+        distance,
+        2,
+        sizes,
+        global_root=0,
+        max_radius=30,
+    )
+
+    # Only one raw witness is scientifically valid.
+    assert forest.selected_weak[1]
+
+    index_grid = np.full((1, 101), -1, dtype=np.int32)
+    index_grid[rows, cols] = np.arange(rows.size, dtype=np.int32)
+
+    anchors, synthetic, duplicate = select_forest_anchors(
+        forest,
+        groups,
+        ca,
+        cb,
+        pa,
+        pb,
+        radius,
+        distance,
+        sizes,
+        index_grid,
+        rows,
+        cols,
+        labels,
+        row_spacing=1.0,
+        col_spacing=1.0,
+        core_radius=4,
+        max_anchor_radius=30,
+    )
+
+    assert len(anchors) == 1
+    assert synthetic == 1
+    assert duplicate == 0
+    selected = anchors[0][3]
+    assert len(selected) == 2
+    assert max(int(x[2]) for x in selected) <= 30
+
+
+def test_physical_distance_cap_can_skip_shortest_radius_witness():
+    # The smallest-radius witness violates the physical-distance cap, but the
+    # next candidate is valid. The component edge remains usable.
+    sizes = np.asarray([4, 4], dtype=np.int64)
+    ca = np.asarray([0, 0], dtype=np.int32)
+    cb = np.asarray([1, 1], dtype=np.int32)
+    radius = np.asarray([5, 6], dtype=np.int32)
+    distance = np.asarray([100.0, 6.0], dtype=np.float32)
+
+    forest, _ = build_component_forest(
+        ca,
+        cb,
+        radius,
+        distance,
+        2,
+        sizes,
+        global_root=0,
+        max_radius=30,
+        max_distance_m=50.0,
+    )
+
+    assert forest.forest_count == 1
+    assert forest.selected_edge_count == 1
+    assert forest.selected_weak[1]
