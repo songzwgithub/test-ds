@@ -720,7 +720,7 @@ def main():
 
     anchor_radius = np.asarray(
         anchor_radius,
-        dtype=np.uint8,
+        dtype=np.int32,
     )
 
     # 1 = ordinary <=12
@@ -925,21 +925,28 @@ def main():
         f"{n_final_components}"
     )
 
-    print(
-        f"anchor R min/med/max    : "
-        f"{anchor_radius.min()} / "
-        f"{np.median(anchor_radius):.1f} / "
-        f"{anchor_radius.max()}"
-    )
+    if anchor_radius.size:
+        print(
+            f"anchor R min/med/max    : "
+            f"{anchor_radius.min()} / "
+            f"{np.median(anchor_radius):.1f} / "
+            f"{anchor_radius.max()}"
+        )
 
-    print(
-        f"anchor distance max     : "
-        f"{anchor_distance_m.max():.2f} m"
-    )
+        print(
+            f"anchor distance max     : "
+            f"{anchor_distance_m.max():.2f} m"
+        )
+    else:
+        print("anchor R min/med/max    : none")
+        print("anchor distance max     : none")
 
-    if n_final_components != 1:
-        raise RuntimeError(
-            "Production spatial graph is not connected."
+    if n_final_components == 1:
+        print("component-forest status : globally connected")
+    else:
+        print(
+            f"component-forest status : {n_final_components} locality-supported forests; "
+            "detached forests are intentionally not force-bridged"
         )
 
     manifest = {
@@ -995,6 +1002,12 @@ def main():
             "edges":
                 int(anchor_u.size),
 
+            "anchored_components":
+                int(anchor_u.size // 2),
+
+            "detached_roots":
+                int(max(0, n_final_components - 1)),
+
             "normal_R_le_12":
                 n_normal,
 
@@ -1005,11 +1018,17 @@ def main():
                 n_long,
 
             "radius_max":
-                int(anchor_radius.max()),
+                (
+                    int(anchor_radius.max())
+                    if anchor_radius.size
+                    else None
+                ),
 
             "distance_max_m":
-                float(
-                    anchor_distance_m.max()
+                (
+                    float(anchor_distance_m.max())
+                    if anchor_distance_m.size
+                    else None
                 ),
         },
 

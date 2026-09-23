@@ -79,6 +79,19 @@ runtime:
   # prefetch stability/performance validation on the target machine.
   phase_link_prefetch_tiles: 0
 
+  # Hierarchical spatial-component bridge planner.
+  # Threads share the large Voronoi/index arrays; processes are deliberately
+  # avoided to prevent multi-GiB memory duplication.
+  component_bridge_workers: auto
+  component_bridge_block_rows: 128
+  component_bridge_anchor_pool: 8
+  # Preserve the historical scientific locality limit. Components that cannot
+  # be connected through a chain of bridges at or below this radius remain
+  # detached forests instead of receiving an unsupported long 2pi bridge.
+  component_bridge_max_radius: 30
+  # null = no additional physical-distance cap; the pixel-radius cap still applies.
+  component_bridge_max_distance_m: null
+
 # =============================================================================
 # 5. RADAR / DEM GEOMETRY
 # =============================================================================
