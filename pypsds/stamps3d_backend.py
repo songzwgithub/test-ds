@@ -346,6 +346,127 @@ def _run_one_snaphu(
     }
 
 
+
+# PYPSDS_STAMPS3D_PRINCIPAL_WRAP_CYCLE_FIX_V2
+def build_principal_wrap_cycle_matrix(
+    node_phase: np.ndarray,
+    edges,
+    *,
+    out_path: Path,
+    batch_size: int = 8192,
+) -> np.memmap:
+    # Return q[p,e] in:
+    #
+    #   raw_acquisition_difference = wrapped_ifg + 2*pi*q
+    #
+    # PointPhaseStack stores each acquisition independently in [-pi, pi).
+    # This q term must be removed before solving interferometric integer
+    # cycles as acquisition-node differences.
+    phase = node_phase
+    if phase.ndim != 2:
+        raise RuntimeError("node_phase must be [node, acquisition]")
+
+    nnode, ndate = phase.shape
+    edge_i = np.asarray([int(i) for i, _ in edges], dtype=np.int64)
+    edge_j = np.asarray([int(j) for _, j in edges], dtype=np.int64)
+
+    if edge_i.size == 0:
+        raise RuntimeError("temporal edge list is empty")
+    if np.any(edge_i < 0) or np.any(edge_j < 0):
+        raise RuntimeError("negative temporal edge index")
+    if np.any(edge_i >= ndate) or np.any(edge_j >= ndate):
+        raise RuntimeError("temporal edge index exceeds acquisition count")
+
+    q = np.lib.format.open_memmap(
+        out_path,
+        mode="w+",
+        dtype=np.int8,
+        shape=(nnode, edge_i.size),
+    )
+
+    batch_size = max(1, int(batch_size))
+
+    for b0 in range(0, nnode, batch_size):
+        b1 = min(nnode, b0 + batch_size)
+
+        ph = np.asarray(
+            phase[b0:b1, :],
+            dtype=np.float64,
+        )
+
+        raw = ph[:, edge_j] - ph[:, edge_i]
+
+        wrapped = (
+            (raw + np.pi)
+            % TWOPI
+            - np.pi
+        )
+
+        qb = np.rint(
+            (raw - wrapped)
+            / TWOPI
+        ).astype(np.int16)
+
+        qmax = int(np.max(np.abs(qb))) if qb.size else 0
+
+        # Each acquisition phase is already in [-pi, pi), so an edge
+        # difference can cross at most one principal-wrap boundary.
+        if qmax > 1:
+            raise RuntimeError(
+                "principal-wrap cycle outside {-1,0,1}: "
+                f"max_abs={qmax}"
+            )
+
+        q[b0:b1, :] = qb.astype(
+            np.int8,
+            copy=False,
+        )
+
+    q.flush()
+    return q
+
+
+def build_incidence_integer_cycles(
+    K: np.ndarray,
+    q: np.ndarray,
+    *,
+    out_path: Path,
+    batch_size: int = 8192,
+) -> np.memmap:
+    # Convert SNAPHU cycles relative to principal wrapped IFGs into the
+    # acquisition-incidence integer field:
+    #
+    #   K_ifg = q_principal + (n_j - n_i) + g_ifg
+    #   D     = K_ifg - q_principal
+    #
+    # g_ifg is the remaining spatially common IFG gauge handled by
+    # synchronize_temporal_integer_cycles().
+    if K.shape != q.shape:
+        raise RuntimeError(
+            f"K/q shape mismatch: {K.shape} != {q.shape}"
+        )
+
+    D = np.lib.format.open_memmap(
+        out_path,
+        mode="w+",
+        dtype=np.int16,
+        shape=K.shape,
+    )
+
+    batch_size = max(1, int(batch_size))
+
+    for b0 in range(0, K.shape[0], batch_size):
+        b1 = min(K.shape[0], b0 + batch_size)
+
+        D[b0:b1, :] = (
+            np.asarray(K[b0:b1, :], dtype=np.int16)
+            -
+            np.asarray(q[b0:b1, :], dtype=np.int16)
+        )
+
+    D.flush()
+    return D
+
 def _choose_temporal_edges(A: np.ndarray, bad_fraction: np.ndarray, threshold: float):
     n_unknown = A.shape[1]
     keep = np.asarray(bad_fraction <= float(threshold), dtype=bool)
@@ -794,9 +915,61 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
     K.flush()
     snaphu_seconds = time.perf_counter() - ts
 
+    # ------------------------------------------------------------
+    # Correct temporal integer convention:
+    #
+    # PointPhaseStack stores each acquisition independently in [-pi, pi).
+    # Therefore:
+    #
+    #   K_ifg = q_principal + (n_j - n_i) + g_ifg
+    #
+    # Synchronizing raw K_ifg is mathematically wrong whenever q_principal
+    # is non-zero.  Remove q before the incidence-matrix solve.
+    # ------------------------------------------------------------
     ti = time.perf_counter()
-    sync = synchronize_temporal_integer_cycles(
+
+    principal_q_path = (
+        outdir
+        / "coarse_ifg_principal_wrap_cycles.npy"
+    )
+    principal_q = build_principal_wrap_cycle_matrix(
+        node_phase,
+        edges,
+        out_path=principal_q_path,
+        batch_size=sync_batch,
+    )
+
+    incidence_K_path = (
+        outdir
+        / "coarse_ifg_incidence_integer_cycles.npy"
+    )
+    incidence_K = build_incidence_integer_cycles(
         K,
+        principal_q,
+        out_path=incidence_K_path,
+        batch_size=sync_batch,
+    )
+
+    q_values = np.asarray(principal_q)
+    q_nonzero_fraction = float(
+        np.count_nonzero(q_values)
+        / max(1, q_values.size)
+    )
+    q_counts = {
+        "-1": int(np.count_nonzero(q_values == -1)),
+        "0": int(np.count_nonzero(q_values == 0)),
+        "+1": int(np.count_nonzero(q_values == 1)),
+    }
+
+    print(
+        "principal-wrap q nonzero    : "
+        f"{100.0*q_nonzero_fraction:.3f}% "
+        f"{q_counts}",
+        flush=True,
+    )
+
+    sync = synchronize_temporal_integer_cycles(
+        incidence_K,
         edges,
         ndate=ndate,
         reference_idx=reference_idx,
@@ -915,8 +1088,27 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
     final_bad = np.asarray(sync["final_edge_bad_fraction"])
     bad_q = np.percentile(final_bad, [50, 90, 95, 99, 100]).tolist()
 
+    min_strict_coverage = float(
+        cfg_get(
+            cfg,
+            "unwrap.stamps3d_snaphu.min_strict_coverage",
+            0.80,
+        )
+    )
+    if not (0.0 <= min_strict_coverage <= 1.0):
+        raise RuntimeError(
+            "unwrap.stamps3d_snaphu.min_strict_coverage "
+            "must be within [0,1]"
+        )
+
+    scientific_pass = (
+        max_wrap_parity <= 1.0e-4
+        and
+        strict_fraction >= min_strict_coverage
+    )
+
     manifest = {
-        "status": "PASS" if max_wrap_parity <= 1.0e-4 else "REVIEW",
+        "status": "PASS" if scientific_pass else "REVIEW",
         "backend": "stamps3d_snaphu",
         "algorithm": (
             "StaMPS-inspired metric coarse grid + SNAPHU spatial unwrap + "
@@ -936,6 +1128,10 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
         "temporal_reference_index_0based": int(reference_idx),
         "temporal_reference_date": str(stack.dates[reference_idx]),
         "temporal_design_rank": int(sync["rank"]),
+        "principal_wrap_cycle_correction": True,
+        "principal_wrap_cycle_nonzero_fraction": q_nonzero_fraction,
+        "principal_wrap_cycle_counts": q_counts,
+        "minimum_strict_coverage_required": float(min_strict_coverage),
         "selected_temporal_edges": int(np.count_nonzero(sync["edge_keep"])),
         "temporal_edges_total": int(nifg),
         "node_temporal_mismatch_fraction_p50_p90_p95_p99_max": [float(x) for x in mismatch_q],
@@ -954,12 +1150,17 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
             "strict_mask": str(strict_path),
             "strict_point_ids": str(final_dir / "strict_point_ids.npy"),
             "coarse_integer_cycles": str(sync["cycles_path"]),
+            "raw_ifg_integer_cycles": str(K_path),
+            "principal_wrap_cycles": str(principal_q_path),
+            "incidence_integer_cycles": str(incidence_K_path),
         },
         "scientific_note": (
             "The coarse grid determines spatial integer ambiguity at a metric support scale. "
-            "Temporal redundancy is enforced through the full selected acquisition graph. "
-            "The final point phase remains congruent, modulo floating precision, with "
-            "PointPhaseStack."
+            "Before temporal graph synchronization, the principal-wrap cycle q created by "
+            "independently storing every acquisition in [-pi,pi) is removed from each IFG "
+            "integer cycle. Temporal redundancy is then enforced on the true acquisition-"
+            "incidence integer field. The final point phase remains congruent, modulo "
+            "floating precision, with PointPhaseStack."
         ),
     }
     atomic_json(outdir / "stamps3d_unwrap_manifest.json", manifest)
@@ -980,6 +1181,14 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
     if max_wrap_parity > 1.0e-4:
         raise RuntimeError(
             f"Point wrap-back error {max_wrap_parity} rad exceeds 1e-4"
+        )
+
+    if strict_fraction < min_strict_coverage:
+        raise RuntimeError(
+            "STAMPS3D scientific QA failed: strict coverage "
+            f"{100.0*strict_fraction:.3f}% < required "
+            f"{100.0*min_strict_coverage:.3f}%. "
+            "Outputs and manifest were retained for diagnosis."
         )
 
     return manifest

@@ -128,3 +128,84 @@ def test_temporal_sync_removes_common_nonintegrable_ifg_gauge(tmp_path):
     delta = cyc[:, 1:].astype(np.int32) - true_unknown.astype(np.int32)
     assert np.all(delta == delta[:1, :])
     assert np.all(out["node_valid"])
+
+
+def test_principal_wrap_cycles_are_removed_before_temporal_sync(tmp_path):
+    from pypsds.stamps3d_backend import (
+        build_incidence_integer_cycles,
+        build_principal_wrap_cycle_matrix,
+    )
+
+    edges = [
+        (0, 1),
+        (1, 2),
+        (2, 3),
+        (0, 2),
+        (1, 3),
+    ]
+    A = build_design_matrix(edges, 4, 0)
+
+    # Deliberately cross +/-pi in acquisition phase so q != 0.
+    node_phase = np.asarray(
+        [
+            [2.90, -2.80, 2.75, -2.95],
+            [-2.95, 2.85, -2.70, 2.90],
+            [2.70, -2.95, -2.85, 2.80],
+            [-2.80, 2.70, 2.95, -2.75],
+        ],
+        dtype=np.float32,
+    )
+
+    true_unknown = np.asarray(
+        [
+            [1, 2, 3],
+            [-1, -1, 0],
+            [0, 2, 1],
+            [3, 1, -2],
+        ],
+        dtype=np.int16,
+    )
+
+    q = build_principal_wrap_cycle_matrix(
+        node_phase,
+        edges,
+        out_path=tmp_path / "q.npy",
+        batch_size=2,
+    )
+
+    D_true = np.rint(
+        true_unknown.astype(np.float64)
+        @ A.T
+    ).astype(np.int16)
+
+    # What SNAPHU cycle counts look like relative to principal wrapped IFGs.
+    K = (
+        D_true
+        + np.asarray(q, dtype=np.int16)
+    ).astype(np.int16)
+
+    D = build_incidence_integer_cycles(
+        K,
+        q,
+        out_path=tmp_path / "D.npy",
+        batch_size=2,
+    )
+
+    assert np.array_equal(np.asarray(D), D_true)
+    assert np.count_nonzero(np.asarray(q)) > 0
+
+    result = synchronize_temporal_integer_cycles(
+        D,
+        edges,
+        ndate=4,
+        reference_idx=0,
+        batch_size=2,
+        iterations=3,
+        edge_bad_threshold=0.10,
+        strict_mismatch_fraction=0.0,
+        blas_threads=1,
+        work_dir=tmp_path,
+    )
+
+    assert np.all(result["node_valid"])
+    assert np.all(result["final_edge_bad_fraction"] == 0)
