@@ -25,6 +25,7 @@ def rank01(values):
     return out
 
 
+# PYPSDS_FAST_AUTO_REFERENCE_V1
 def choose_reference_region(
     xy_m,
     rate_abs,
@@ -37,86 +38,577 @@ def choose_reference_region(
     residual_weight=0.30,
     density_weight=0.10,
 ):
-    xy = np.asarray(xy_m, dtype=np.float64)
-    rate = np.asarray(rate_abs, dtype=np.float64)
-    rms = np.asarray(residual, dtype=np.float64)
+    """
+    Full-scene scalable automatic reference selector.
+
+    Scientific definition is unchanged:
+      1. partition valid points into cell_size_m cells;
+      2. use median XY of each sufficiently populated cell as candidate center;
+      3. select all points within radius_m;
+      4. rank by low |rate|, low residual, and high density.
+
+    Performance change:
+      - one O(N log N) cell sort instead of O(N * Ncell) repeated scans;
+      - one cKDTree for exact circular neighborhoods;
+      - batched parallel radius queries;
+      - only the winning candidate retains its full point-index vector.
+    """
+    import hashlib
+    import os
+    import time
+
+    xy = np.asarray(
+        xy_m,
+        dtype=np.float64,
+    )
+
+    rate = np.asarray(
+        rate_abs,
+        dtype=np.float64,
+    )
+
+    rms = np.asarray(
+        residual,
+        dtype=np.float64,
+    )
 
     valid = (
-        np.all(np.isfinite(xy), axis=1)
-        & np.isfinite(rate)
-        & np.isfinite(rms)
+        np.all(
+            np.isfinite(xy),
+            axis=1,
+        )
+        &
+        np.isfinite(rate)
+        &
+        np.isfinite(rms)
     )
-    valid_ids = np.flatnonzero(valid)
-    if valid_ids.size < min_points:
-        raise RuntimeError("Too few finite points for automatic reference")
 
-    vxy = xy[valid_ids]
-    tree = cKDTree(vxy)
-    x0 = float(np.min(vxy[:, 0]))
-    y0 = float(np.min(vxy[:, 1]))
-    cx = np.floor((vxy[:, 0] - x0) / cell_size_m).astype(np.int64)
-    cy = np.floor((vxy[:, 1] - y0) / cell_size_m).astype(np.int64)
-    cells, counts = np.unique(
-        np.column_stack((cx, cy)), axis=0, return_counts=True
+    valid_ids = np.flatnonzero(
+        valid
     )
+
+    if valid_ids.size < min_points:
+        raise RuntimeError(
+            "Too few finite points for automatic reference"
+        )
+
+    vxy = np.ascontiguousarray(
+        xy[valid_ids],
+        dtype=np.float64,
+    )
+
+    print(
+        "[AUTO REF] valid points:",
+        f"{valid_ids.size:,}",
+        flush=True,
+    )
+
+    # ================================================================
+    # Spatial index
+    # ================================================================
+
+    t0 = time.perf_counter()
+
+    print(
+        "[AUTO REF] building cKDTree ...",
+        flush=True,
+    )
+
+    tree = cKDTree(
+        vxy,
+        compact_nodes=True,
+        balanced_tree=True,
+    )
+
+    print(
+        "[AUTO REF] cKDTree ready:",
+        f"{time.perf_counter() - t0:.1f}s",
+        flush=True,
+    )
+
+    # ================================================================
+    # Cell grouping -- sort ONCE
+    # ================================================================
+
+    x0 = float(
+        np.min(
+            vxy[:, 0]
+        )
+    )
+
+    y0 = float(
+        np.min(
+            vxy[:, 1]
+        )
+    )
+
+    cx = np.floor(
+        (
+            vxy[:, 0]
+            -
+            x0
+        )
+        /
+        cell_size_m
+    ).astype(
+        np.int64
+    )
+
+    cy = np.floor(
+        (
+            vxy[:, 1]
+            -
+            y0
+        )
+        /
+        cell_size_m
+    ).astype(
+        np.int64
+    )
+
+    cx0 = int(
+        cx.min()
+    )
+
+    cy0 = int(
+        cy.min()
+    )
+
+    cy_span = (
+        int(
+            cy.max()
+        )
+        -
+        cy0
+        +
+        1
+    )
+
+    key = (
+        (
+            cx
+            -
+            cx0
+        )
+        *
+        cy_span
+        +
+        (
+            cy
+            -
+            cy0
+        )
+    )
+
+    print(
+        "[AUTO REF] sorting spatial cells ...",
+        flush=True,
+    )
+
+    order = np.argsort(
+        key,
+        kind="stable",
+    )
+
+    key_sorted = key[
+        order
+    ]
+
+    (
+        unique_keys,
+        starts,
+        counts,
+    ) = np.unique(
+        key_sorted,
+        return_index=True,
+        return_counts=True,
+    )
+
+    seed_min = max(
+        3,
+        min_points // 10,
+    )
+
+    eligible = np.flatnonzero(
+        counts
+        >=
+        seed_min
+    )
+
+    if eligible.size == 0:
+        raise RuntimeError(
+            "No sufficiently populated automatic-reference cells"
+        )
+
+    print(
+        "[AUTO REF] occupied cells:",
+        f"{unique_keys.size:,}",
+        "| candidate cells:",
+        f"{eligible.size:,}",
+        flush=True,
+    )
+
+    # ================================================================
+    # Exact original candidate-center definition:
+    # median XY of points inside each candidate cell
+    # ================================================================
+
+    centers = np.empty(
+        (
+            eligible.size,
+            2,
+        ),
+        dtype=np.float64,
+    )
+
+    for q, ui in enumerate(
+        eligible
+    ):
+        a = int(
+            starts[ui]
+        )
+
+        b = (
+            a
+            +
+            int(
+                counts[ui]
+            )
+        )
+
+        local = order[
+            a:b
+        ]
+
+        centers[
+            q,
+            :
+        ] = np.median(
+            vxy[
+                local,
+                :
+            ],
+            axis=0,
+        )
+
+        if (
+            q == 0
+            or
+            (q + 1) % 2000 == 0
+            or
+            q + 1 == eligible.size
+        ):
+            print(
+                "[AUTO REF CENTER]",
+                f"{q + 1:,}/{eligible.size:,}",
+                f"({100.0*(q+1)/eligible.size:.1f}%)",
+                flush=True,
+            )
+
+    # Large temporary cell arrays are no longer needed.
+    del (
+        key_sorted,
+        key,
+        cx,
+        cy,
+        order,
+    )
+
+    # ================================================================
+    # Exact circular region evaluation
+    # ================================================================
+
+    workers = min(
+        16,
+        max(
+            1,
+            os.cpu_count()
+            or
+            1,
+        ),
+    )
+
+    query_batch = 128
 
     candidates = []
     seen = set()
-    seed_min = max(3, min_points // 10)
 
-    for (cell_x, cell_y), count in zip(cells, counts):
-        if int(count) < seed_min:
-            continue
-        local = np.flatnonzero((cx == cell_x) & (cy == cell_y))
-        centre = np.median(vxy[local], axis=0)
-        region_local = np.asarray(
-            tree.query_ball_point(centre, r=radius_m),
-            dtype=np.int64,
+    print(
+        "[AUTO REF] evaluating exact 500-m regions",
+        f"with {workers} workers ...",
+        flush=True,
+    )
+
+    t_query = time.perf_counter()
+
+    for q0 in range(
+        0,
+        centers.shape[0],
+        query_batch,
+    ):
+        q1 = min(
+            centers.shape[0],
+            q0
+            +
+            query_batch,
         )
-        if region_local.size < min_points:
-            continue
-        region = np.sort(valid_ids[region_local])
-        signature = tuple(region.tolist())
-        if signature in seen:
-            continue
-        seen.add(signature)
-        candidates.append(
-            {
-                "indices": region,
-                "n_points": int(region.size),
-                "median_abs_rate": float(np.median(rate[region])),
-                "median_residual": float(np.median(rms[region])),
-            }
+
+        regions = tree.query_ball_point(
+            centers[
+                q0:q1
+            ],
+            r=radius_m,
+            workers=workers,
         )
+
+        for kk, region_list in enumerate(
+            regions
+        ):
+            if len(
+                region_list
+            ) < min_points:
+                continue
+
+            region_local = np.asarray(
+                region_list,
+                dtype=np.int64,
+            )
+
+            region = np.sort(
+                valid_ids[
+                    region_local
+                ]
+            )
+
+            # Same logical duplicate suppression as the old tuple(region)
+            # approach without retaining huge Python tuples.
+            digest = hashlib.blake2b(
+                memoryview(
+                    np.ascontiguousarray(
+                        region
+                    )
+                ),
+                digest_size=16,
+            ).digest()
+
+            if digest in seen:
+                continue
+
+            seen.add(
+                digest
+            )
+
+            centre = centers[
+                q0 + kk
+            ]
+
+            candidates.append(
+                {
+                    "center_x_m":
+                        float(
+                            centre[0]
+                        ),
+
+                    "center_y_m":
+                        float(
+                            centre[1]
+                        ),
+
+                    "n_points":
+                        int(
+                            region.size
+                        ),
+
+                    "median_abs_rate":
+                        float(
+                            np.median(
+                                rate[
+                                    region
+                                ]
+                            )
+                        ),
+
+                    "median_residual":
+                        float(
+                            np.median(
+                                rms[
+                                    region
+                                ]
+                            )
+                        ),
+                }
+            )
+
+        print(
+            "[AUTO REF REGION]",
+            f"{q1:,}/{centers.shape[0]:,}",
+            f"({100.0*q1/centers.shape[0]:.1f}%)",
+            "accepted=",
+            f"{len(candidates):,}",
+            flush=True,
+        )
+
+    print(
+        "[AUTO REF] region evaluation:",
+        f"{time.perf_counter() - t_query:.1f}s",
+        flush=True,
+    )
 
     if not candidates:
         raise RuntimeError(
-            "No automatic reference region satisfies radius/min_points constraints"
+            "No automatic reference region satisfies "
+            "radius/min_points constraints"
         )
 
-    q_rate = rank01(-np.asarray([x["median_abs_rate"] for x in candidates]))
-    q_rms = rank01(-np.asarray([x["median_residual"] for x in candidates]))
+    # ================================================================
+    # Original scoring definition
+    # ================================================================
+
+    q_rate = rank01(
+        -np.asarray(
+            [
+                x[
+                    "median_abs_rate"
+                ]
+                for x in candidates
+            ]
+        )
+    )
+
+    q_rms = rank01(
+        -np.asarray(
+            [
+                x[
+                    "median_residual"
+                ]
+                for x in candidates
+            ]
+        )
+    )
+
     q_den = rank01(
-        np.log1p(np.asarray([x["n_points"] for x in candidates], dtype=float))
+        np.log1p(
+            np.asarray(
+                [
+                    x[
+                        "n_points"
+                    ]
+                    for x in candidates
+                ],
+                dtype=float,
+            )
+        )
     )
 
     weights = np.asarray(
-        [rate_weight, residual_weight, density_weight],
+        [
+            rate_weight,
+            residual_weight,
+            density_weight,
+        ],
         dtype=np.float64,
     )
-    if np.any(weights < 0) or float(weights.sum()) <= 0:
-        raise ValueError("automatic-reference weights must be non-negative")
+
+    if (
+        np.any(
+            weights
+            <
+            0
+        )
+        or
+        float(
+            weights.sum()
+        )
+        <=
+        0
+    ):
+        raise ValueError(
+            "automatic-reference weights must be non-negative"
+        )
+
     weights /= weights.sum()
-    score = weights[0] * q_rate + weights[1] * q_rms + weights[2] * q_den
 
-    best = int(np.nanargmax(score))
-    for i, s in enumerate(score):
-        candidates[i]["score"] = float(s)
+    score = (
+        weights[0]
+        *
+        q_rate
+        +
+        weights[1]
+        *
+        q_rms
+        +
+        weights[2]
+        *
+        q_den
+    )
 
-    return candidates[best], sorted(
+    for i, value in enumerate(
+        score
+    ):
+        candidates[
+            i
+        ][
+            "score"
+        ] = float(
+            value
+        )
+
+    ranked = sorted(
         candidates,
-        key=lambda x: x["score"],
+        key=lambda x:
+            x[
+                "score"
+            ],
         reverse=True,
+    )
+
+    # Re-query only the winning region to retain its exact full-scene IDs.
+    best = dict(
+        ranked[0]
+    )
+
+    winner_local = np.asarray(
+        tree.query_ball_point(
+            np.asarray(
+                [
+                    best[
+                        "center_x_m"
+                    ],
+                    best[
+                        "center_y_m"
+                    ],
+                ],
+                dtype=np.float64,
+            ),
+            r=radius_m,
+        ),
+        dtype=np.int64,
+    )
+
+    best[
+        "indices"
+    ] = np.sort(
+        valid_ids[
+            winner_local
+        ]
+    )
+
+    print(
+        "[AUTO REF] winner:",
+        "points=",
+        f"{best['indices'].size:,}",
+        "rate=",
+        f"{best['median_abs_rate']:.6e}",
+        "rms=",
+        f"{best['median_residual']:.6e}",
+        "score=",
+        f"{best['score']:.6f}",
+        flush=True,
+    )
+
+    return (
+        best,
+        ranked,
     )
 
 
@@ -191,19 +683,119 @@ def select_auto_reference(config_path):
     rate = np.empty(n, dtype=np.float64)
     temporal_rms = np.empty(n, dtype=np.float64)
 
-    for b0 in range(0, n, 50000):
-        b1 = min(b0 + 50000, n)
-        Y = (
-            np.asarray(phase[b0:b1], dtype=np.float64)
-            - scene_epoch_median[None, :]
+    auto_batch = int(
+        cfg_get(
+            cfg,
+            "reference.auto.batch_size",
+            131072,
         )
-        ym = np.mean(Y, axis=1)
-        slope = ((Y - ym[:, None]) @ tc) / denom
-        intercept = ym - slope * float(np.mean(years))
-        fit = intercept[:, None] + slope[:, None] * years[None, :]
-        rr = Y - fit
-        rate[b0:b1] = np.abs(slope)
-        temporal_rms[b0:b1] = np.sqrt(np.mean(rr * rr, axis=1))
+    )
+
+    print(
+        "[AUTO REF] temporal metrics:",
+        f"{n:,} points",
+        f"batch={auto_batch:,}",
+        flush=True,
+    )
+
+    for b0 in range(0, n, auto_batch):
+        b1 = min(b0 + auto_batch, n)
+
+        Y = (
+            np.asarray(
+                phase[b0:b1],
+                dtype=np.float64,
+            )
+            -
+            scene_epoch_median[
+                None,
+                :
+            ]
+        )
+
+        ym = np.mean(
+            Y,
+            axis=1,
+        )
+
+        slope = (
+            (
+                Y
+                -
+                ym[
+                    :,
+                    None
+                ]
+            )
+            @
+            tc
+        ) / denom
+
+        intercept = (
+            ym
+            -
+            slope
+            *
+            float(
+                np.mean(
+                    years
+                )
+            )
+        )
+
+        fit = (
+            intercept[
+                :,
+                None
+            ]
+            +
+            slope[
+                :,
+                None
+            ]
+            *
+            years[
+                None,
+                :
+            ]
+        )
+
+        rr = (
+            Y
+            -
+            fit
+        )
+
+        rate[
+            b0:b1
+        ] = np.abs(
+            slope
+        )
+
+        temporal_rms[
+            b0:b1
+        ] = np.sqrt(
+            np.mean(
+                rr
+                *
+                rr,
+                axis=1,
+            )
+        )
+
+        if (
+            b1 == n
+            or
+            b1 // 1000000
+            !=
+            b0 // 1000000
+        ):
+            print(
+                "[AUTO REF METRIC]",
+                f"{b1:,}/{n:,}",
+                f"({100.0*b1/n:.2f}%)",
+                flush=True,
+            )
 
     network_rms_path = inv / "l2_network_residual_rms_rad.npy"
     if network_rms_path.is_file():

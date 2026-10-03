@@ -126,6 +126,11 @@ if plist.shape[0] != npoint:
 col = plist[:, 0].astype(np.float64)
 row = plist[:, 1].astype(np.float64)
 pars = read_par(RSLC_PAR)
+# PYPSDS_SCLA_RAW_COORDINATE_GATE_V1
+rslc_width = int(round(
+    par_scalar(pars, ('range_samples', 'width'))
+))
+
 rslc_length = int(round(par_scalar(pars, ('azimuth_lines', 'nlines'))))
 range_spacing = par_scalar(pars, ('range_pixel_spacing',))
 near_range = par_scalar(pars, ('near_range_slc', 'near_range'))
@@ -136,9 +141,22 @@ range_looks = PUBLIC_RANGE_LOOKS
 azimuth_looks = PUBLIC_AZIMUTH_LOOKS
 mean_azimuth = rslc_length / 2.0 - 0.5
 
+if (
+    np.any(col < 0)
+    or np.any(col >= rslc_width)
+    or np.any(row < 0)
+    or np.any(row >= rslc_length)
+):
+    raise RuntimeError(
+        'SCLA point-coordinate contract failed: '
+        'strict_points.plist must contain zero-based raw RSLC '
+        'range/azimuth coordinates'
+    )
+
+
 def geometry_factors(rr, cc):
-    range_original = cc * range_looks + (range_looks - 1) / 2.0
-    azimuth_original = rr * azimuth_looks + (azimuth_looks - 1) / 2.0
+    range_original = np.asarray(cc, dtype=np.float64)
+    azimuth_original = np.asarray(rr, dtype=np.float64)
     slant_range = near_range + range_original * range_spacing
     arg = (sar_to_earth ** 2 + slant_range ** 2 - earth_radius ** 2) / (2.0 * sar_to_earth * slant_range)
     look = np.arccos(np.clip(arg, -1.0, 1.0))
@@ -259,7 +277,7 @@ MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
 print('=' * 92)
 print('5B6 STAMPS SCLA -> PRE-SCN PHASE')
 print('=' * 92)
-print('points / images                 :', f'{npoint:,} / 38')
+print('points / images                 :', f'{npoint:,} / {PUBLIC_NIMAGE}')
 print('geometric master                :', f'{dates[master0]} (0b={master0})')
 print()
 print('Bperp float32 reference max diff m :', f'{bsm_float_max:.12e}')

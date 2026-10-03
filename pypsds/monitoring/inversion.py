@@ -81,6 +81,530 @@ def _observations(maps, ids, gauge):
     return Y
 
 
+
+# PYPSDS_STAMPS3D_DIRECT_MONITORING_V1
+def _upgrade_stamps3d_direct_monitoring(
+    *,
+    cfg,
+    paths,
+    stack,
+):
+    """
+    Monitoring/uncertainty contract for the stamps3d direct-acquisition
+    backend.
+
+    The stamps3d backend has already solved acquisition integer cycles
+    from the redundant temporal network.  Therefore it must NOT rebuild
+    acquisition phase from a materialized Npoint x Nifg archive.
+
+    Network covariance here represents the conservative numerical handoff
+    floor only.  It is not a complete physical deformation uncertainty.
+    """
+
+    root = (
+        Path(paths.output_dir)
+        /
+        "processing"
+    )
+
+    inv = (
+        root
+        /
+        "network_inversion"
+    )
+
+    net = (
+        root
+        /
+        "network"
+    )
+
+    final = (
+        root
+        /
+        "final_unwrap"
+    )
+
+    phase_path = (
+        inv
+        /
+        "acquisition_phase_l2_candidate_rad.npy"
+    )
+
+    strict_path = (
+        inv
+        /
+        "strict_point_ids.npy"
+    )
+
+    direct_manifest_path = (
+        inv
+        /
+        "stamps3d_direct_inversion_manifest.json"
+    )
+
+    parity_path = (
+        inv
+        /
+        "stamps3d_wrap_parity_max_abs_rad.npy"
+    )
+
+    for path in (
+        phase_path,
+        strict_path,
+        direct_manifest_path,
+        parity_path,
+        net / "network.itab",
+    ):
+        if not path.is_file():
+            raise FileNotFoundError(
+                path
+            )
+
+    direct = json.loads(
+        direct_manifest_path.read_text(
+            encoding="utf-8"
+        )
+    )
+
+    if direct.get("status") != "PASS":
+        raise RuntimeError(
+            "stamps3d direct acquisition handoff "
+            f"is not PASS: {direct.get('status')}"
+        )
+
+    phase = np.load(
+        phase_path,
+        mmap_mode="r",
+    )
+
+    strict_ids = np.asarray(
+        np.load(
+            strict_path
+        ),
+        dtype=np.int32,
+    )
+
+    strict_mask = np.asarray(
+        np.load(
+            final
+            /
+            "strict_unwrap_valid_mask.npy"
+        ),
+        dtype=bool,
+    )
+
+    expected_ids = np.flatnonzero(
+        strict_mask
+    ).astype(
+        np.int32
+    )
+
+    if not np.array_equal(
+        strict_ids,
+        expected_ids,
+    ):
+        raise RuntimeError(
+            "stamps3d direct monitoring strict-point "
+            "contract mismatch"
+        )
+
+    if phase.ndim != 2:
+        raise RuntimeError(
+            "direct acquisition phase must be 2-D"
+        )
+
+    nstrict, ndate = phase.shape
+
+    if strict_ids.size != nstrict:
+        raise RuntimeError(
+            "direct phase / strict-point count mismatch"
+        )
+
+    if len(stack.dates) != ndate:
+        raise RuntimeError(
+            "direct phase acquisition count mismatch"
+        )
+
+    edges = load_itab(
+        net
+        /
+        "network.itab",
+        ndate,
+    )
+
+    nifg = len(
+        edges
+    )
+
+    reference_idx = int(
+        cfg_get(
+            cfg,
+            "phase_linking.temporal_reference_index",
+            0,
+        )
+    )
+
+    if not (
+        0
+        <=
+        reference_idx
+        <
+        ndate
+    ):
+        raise RuntimeError(
+            "invalid temporal reference index"
+        )
+
+    A = build_design_matrix(
+        edges,
+        ndate,
+        reference_idx,
+    )
+
+    rank = int(
+        np.linalg.matrix_rank(
+            A
+        )
+    )
+
+    if rank != ndate - 1:
+        raise RuntimeError(
+            "stamps3d monitoring temporal "
+            f"design rank={rank}/{ndate - 1}"
+        )
+
+    parity_rms = float(
+        direct[
+            "wrapped_parity_rms_rad"
+        ]
+    )
+
+    parity_max = float(
+        direct[
+            "wrapped_parity_max_rad"
+        ]
+    )
+
+    if (
+        not np.isfinite(parity_rms)
+        or
+        not np.isfinite(parity_max)
+    ):
+        raise RuntimeError(
+            "non-finite stamps3d wrap parity"
+        )
+
+    if parity_max > 1.0e-4:
+        raise RuntimeError(
+            "stamps3d wrap parity exceeds "
+            f"production tolerance: {parity_max}"
+        )
+
+    parity_by_point = np.load(
+        parity_path,
+        mmap_mode="r",
+    )
+
+    if parity_by_point.shape != (
+        nstrict,
+    ):
+        raise RuntimeError(
+            "stamps3d parity-vector shape mismatch"
+        )
+
+    min_sigma = float(
+        cfg_get(
+            cfg,
+            "timeseries.inversion.min_auto_sigma_rad",
+            1.0e-4,
+        )
+    )
+
+    if min_sigma <= 0:
+        raise ValueError(
+            "timeseries.inversion.min_auto_sigma_rad "
+            "must be > 0"
+        )
+
+    # --------------------------------------------------------
+    # Direct backend uncertainty contract
+    #
+    # We do NOT invent 236 full-resolution IFG residual maps.
+    #
+    # The acquisition solution already satisfies the wrapped
+    # acquisition contract to parity_rms.  Use the existing
+    # production numerical floor as a conservative lower bound
+    # for the network covariance.
+    # --------------------------------------------------------
+
+    sigma_floor = max(
+        min_sigma,
+        parity_rms,
+    )
+
+    sigma = np.full(
+        nifg,
+        sigma_floor,
+        dtype=np.float64,
+    )
+
+    weights = np.ones(
+        nifg,
+        dtype=np.float64,
+    )
+
+    normal = (
+        A.T
+        @
+        A
+    )
+
+    cov_sub = (
+        sigma_floor
+        *
+        sigma_floor
+        *
+        np.linalg.inv(
+            normal
+        )
+    )
+
+    cov_full = np.zeros(
+        (
+            ndate,
+            ndate,
+        ),
+        dtype=np.float64,
+    )
+
+    nonref = [
+        i
+        for i in range(ndate)
+        if i != reference_idx
+    ]
+
+    cov_full[
+        np.ix_(
+            nonref,
+            nonref,
+        )
+    ] = cov_sub
+
+    se_full = np.sqrt(
+        np.maximum(
+            np.diag(
+                cov_full
+            ),
+            0.0,
+        )
+    )
+
+    np.save(
+        inv
+        /
+        "ifg_residual_sigma_rad.npy",
+        sigma.astype(
+            np.float32
+        ),
+    )
+
+    np.save(
+        inv
+        /
+        "ifg_weights.npy",
+        weights.astype(
+            np.float32
+        ),
+    )
+
+    np.save(
+        inv
+        /
+        "acquisition_phase_standard_error_rad.npy",
+        se_full.astype(
+            np.float32
+        ),
+    )
+
+    np.save(
+        inv
+        /
+        "acquisition_phase_covariance_rad2.npy",
+        cov_full,
+    )
+
+    requested = str(
+        cfg_get(
+            cfg,
+            "timeseries.inversion.method",
+            "ordinary_l2",
+        )
+    ).strip().lower()
+
+    manifest = {
+        "status":
+            "PASS_MONITORING_STAMPS3D_DIRECT",
+
+        "version":
+            "1.3.5",
+
+        "backend":
+            "stamps3d_snaphu",
+
+        "requested_method":
+            requested,
+
+        "effective_method":
+            "direct_acquisition_phase_handoff",
+
+        "ordinary_solution_preserved":
+            True,
+
+        "second_ifg_inversion_performed":
+            False,
+
+        "materialized_ifg_stack":
+            False,
+
+        "points":
+            int(nstrict),
+
+        "acquisitions":
+            int(ndate),
+
+        "ifgs":
+            int(nifg),
+
+        "reference_index_0based":
+            int(reference_idx),
+
+        "temporal_design_rank":
+            rank,
+
+        "wrapped_parity_rms_rad":
+            parity_rms,
+
+        "wrapped_parity_max_rad":
+            parity_max,
+
+        "min_auto_sigma_rad":
+            min_sigma,
+
+        "numerical_sigma_floor_rad":
+            sigma_floor,
+
+        "floor_dominated":
+            bool(
+                parity_rms
+                <=
+                min_sigma
+            ),
+
+        "relative_weights": {
+            "min":
+                1.0,
+
+            "median":
+                1.0,
+
+            "max":
+                1.0,
+
+            "interpretation":
+                (
+                    "No second weighted IFG inversion is "
+                    "performed for the direct acquisition backend."
+                ),
+        },
+
+        "max_abs_ordinary_vs_effective_phase_rad":
+            0.0,
+
+        "scientific_contract": (
+            "The stamps3d backend already solved acquisition "
+            "integer cycles using the redundant temporal network. "
+            "Monitoring therefore preserves the direct acquisition "
+            "phase exactly and does not reconstruct it from an "
+            "Npoint x Nifg archive."
+        ),
+
+        "formal_uncertainty_note": (
+            "Network covariance is a conservative numerical-handoff "
+            "floor derived from the validated wrapped-parity error "
+            "and min_auto_sigma_rad. It does not represent complete "
+            "physical uncertainty from atmosphere, orbit, geocoding, "
+            "deformation model, or unwrap ambiguity."
+        ),
+    }
+
+    manifest_path = (
+        inv
+        /
+        "monitoring_inversion_manifest.json"
+    )
+
+    manifest_path.write_text(
+        json.dumps(
+            manifest,
+            indent=2,
+        )
+        +
+        "\n",
+        encoding="utf-8",
+    )
+
+    print("=" * 96)
+    print(
+        "MONITORING NETWORK INVERSION "
+        "- STAMPS3D DIRECT"
+    )
+    print("=" * 96)
+
+    print(
+        "points / acquisitions / IFGs :",
+        f"{nstrict:,}",
+        "/",
+        ndate,
+        "/",
+        nifg,
+    )
+
+    print(
+        "wrapped parity RMS/max       :",
+        f"{parity_rms:.3e}",
+        "/",
+        f"{parity_max:.3e}",
+        "rad",
+    )
+
+    print(
+        "numerical sigma floor        :",
+        f"{sigma_floor:.3e}",
+        "rad",
+    )
+
+    print(
+        "second IFG inversion         : NO"
+    )
+
+    print(
+        "materialized IFG stack       : NO"
+    )
+
+    print(
+        "acquisition phase modified   : NO"
+    )
+
+    print(
+        "manifest                     :",
+        manifest_path,
+    )
+
+    print("=" * 96)
+
+    return manifest
+
 def upgrade_network_inversion(config_path, batch_size: int = 12000):
     """
     Conservative feasible WLS upgrade of the validated ordinary-L2 solution.
@@ -89,6 +613,19 @@ def upgrade_network_inversion(config_path, batch_size: int = 12000):
     ordinary-L2 acquisition phase is preserved bit-for-bit.
     """
     cfg, _, paths, stack, _ = open_from_config(config_path)
+
+    # PYPSDS_STAMPS3D_DIRECT_MONITORING_V1
+    from pypsds.stamps3d_backend import is_stamps3d_backend
+
+    if is_stamps3d_backend(
+        cfg
+    ):
+        return _upgrade_stamps3d_direct_monitoring(
+            cfg=cfg,
+            paths=paths,
+            stack=stack,
+        )
+
     root = Path(paths.output_dir) / "processing"
     inv = root / "network_inversion"
     net = root / "network"

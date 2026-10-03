@@ -129,7 +129,7 @@ for e, (_, d1, d2) in enumerate(network):
 Gbase = G[:, img0]
 rank_g = int(np.linalg.matrix_rank(Gbase))
 if rank_g != PUBLIC_NSLAVE:
-    raise RuntimeError(f'Gbase rank={rank_g}/37')
+    raise RuntimeError(f'Gbase rank={rank_g}/{PUBLIC_NSLAVE}')
 sm_cov_direct = np.linalg.inv(Gbase.T @ Gbase)
 sm_cov_from_pinv = Pbase @ Pbase.T
 smcov_internal_max = float(np.max(np.abs(sm_cov_direct - sm_cov_from_pinv)))
@@ -173,6 +173,11 @@ if plist.shape[0] != npoint:
 col = plist[:, 0].astype(np.float64)
 row = plist[:, 1].astype(np.float64)
 pars = read_par(RSLC_PAR)
+# PYPSDS_SCLA_RAW_COORDINATE_GATE_V1
+rslc_width = int(round(
+    par_scalar(pars, ('range_samples', 'width'))
+))
+
 rslc_length = int(round(par_scalar(pars, ('azimuth_lines', 'nlines'))))
 range_spacing = par_scalar(pars, ('range_pixel_spacing',))
 near_range = par_scalar(pars, ('near_range_slc', 'near_range'))
@@ -183,9 +188,22 @@ range_looks = PUBLIC_RANGE_LOOKS
 azimuth_looks = PUBLIC_AZIMUTH_LOOKS
 mean_azimuth = rslc_length / 2.0 - 0.5
 
+if (
+    np.any(col < 0)
+    or np.any(col >= rslc_width)
+    or np.any(row < 0)
+    or np.any(row >= rslc_length)
+):
+    raise RuntimeError(
+        'SCLA point-coordinate contract failed: '
+        'strict_points.plist must contain zero-based raw RSLC '
+        'range/azimuth coordinates'
+    )
+
+
 def geometry_factors(rr, cc):
-    range_original = cc * range_looks + (range_looks - 1) / 2.0
-    azimuth_original = rr * azimuth_looks + (azimuth_looks - 1) / 2.0
+    range_original = np.asarray(cc, dtype=np.float64)
+    azimuth_original = np.asarray(rr, dtype=np.float64)
     slant_range = near_range + range_original * range_spacing
     look_arg = (sar_to_earth ** 2 + slant_range ** 2 - earth_radius ** 2) / (2.0 * sar_to_earth * slant_range)
     look = np.arccos(np.clip(look_arg, -1.0, 1.0))
@@ -260,7 +278,7 @@ print('=' * 92)
 print('5B5 STAMPS FINAL PASS C_ps_uw')
 print('=' * 92)
 print('points                         :', f'{npoint:,}')
-print('Gbase rank                     :', f'{rank_g}/37')
+print('Gbase rank                     :', f'{rank_g}/{PUBLIC_NSLAVE}')
 print('network covariance model       :', 'ordinary L2 -> identity IFG covariance')
 print()
 print('sm_cov direct/pinv max diff    :', f'{smcov_internal_max:.12e}')
@@ -284,7 +302,7 @@ print('reference C mean               :', f'{ref_c_mean:.12e}')
 print('reference C median             :', f'{ref_c_median:.12e}')
 print('adjacent/random C ratio        :', f'{spatial_ratio:.6f}')
 print()
-print('37-column Bperp persisted      :', False)
+print(f'{PUBLIC_NSLAVE}-column Bperp persisted      :', False)
 print('ph_scla matrix persisted       :', False)
 print('production phase modified      :', False)
 print('C output                       :', C_OUT)

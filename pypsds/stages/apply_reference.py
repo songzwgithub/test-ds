@@ -275,33 +275,72 @@ def main():
                 "Reference point-ID file contains duplicates."
             )
 
-        strict_lookup = {
-            int(point_id): int(k)
-            for k, point_id in enumerate(
-                strict_ids.tolist()
+        # PYPSDS_FAST_REFERENCE_APPLY_V1
+        # Canonical strict_ids are sorted PointPhaseStack IDs.
+        # Avoid a ~24.5-million-entry Python dictionary.
+        strict_ids_i64 = strict_ids.astype(
+            np.int64,
+            copy=False,
+        )
+
+        if (
+            strict_ids_i64.size > 1
+            and
+            np.any(
+                strict_ids_i64[1:]
+                <=
+                strict_ids_i64[:-1]
             )
-        }
-
-        missing = [
-            int(point_id)
-            for point_id in requested_ids.tolist()
-            if int(point_id) not in strict_lookup
-        ]
-
-        if missing:
+        ):
             raise RuntimeError(
-                f"{len(missing)} requested reference point IDs "
+                "strict point IDs are not strictly increasing"
+            )
+
+        pos = np.searchsorted(
+            strict_ids_i64,
+            requested_ids,
+        )
+
+        matched = np.zeros(
+            requested_ids.size,
+            dtype=bool,
+        )
+
+        inside = (
+            pos
+            <
+            strict_ids_i64.size
+        )
+
+        matched[
+            inside
+        ] = (
+            strict_ids_i64[
+                pos[
+                    inside
+                ]
+            ]
+            ==
+            requested_ids[
+                inside
+            ]
+        )
+
+        if not np.all(
+            matched
+        ):
+            missing = requested_ids[
+                ~matched
+            ]
+
+            raise RuntimeError(
+                f"{missing.size} requested reference point IDs "
                 "are not in the current strict domain."
             )
 
-        region_idx = np.asarray(
-            [
-                strict_lookup[
-                    int(point_id)
-                ]
-                for point_id in requested_ids.tolist()
-            ],
-            dtype=np.int64,
+        region_idx = pos.astype(
+            np.int64,
+            copy=False,
         )
 
     else:
@@ -395,7 +434,7 @@ def main():
         ),
     )
 
-    batch = 20000
+    batch = 131072
 
     for b0 in range(
         0,
@@ -429,6 +468,20 @@ def main():
         ).astype(
             np.float32
         )
+
+        if (
+            b1 == nstrict
+            or
+            b1 // 1000000
+            !=
+            b0 // 1000000
+        ):
+            print(
+                "[REFERENCE APPLY]",
+                f"{b1:,}/{nstrict:,}",
+                f"({100.0*b1/nstrict:.2f}%)",
+                flush=True,
+            )
 
     output.flush()
 
@@ -641,6 +694,20 @@ def main():
         ] = rms.astype(
             np.float32
         )
+
+        if (
+            b1 == nstrict
+            or
+            b1 // 1000000
+            !=
+            b0 // 1000000
+        ):
+            print(
+                "[REFERENCE RATE]",
+                f"{b1:,}/{nstrict:,}",
+                f"({100.0*b1/nstrict:.2f}%)",
+                flush=True,
+            )
 
     rate.flush()
     rate_residual_rms.flush()

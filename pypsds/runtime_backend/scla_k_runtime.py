@@ -265,6 +265,11 @@ N_SM = Pbase @ B_N
 CR_SM = Pbase @ R_C
 NR_SM = Pbase @ R_N
 rpar = read_par(RSLC_PAR)
+# PYPSDS_SCLA_RAW_COORDINATE_GATE_V1
+rslc_width = int(round(
+    scalar_from_par(rpar, ('range_samples', 'width'))
+))
+
 rslc_length = int(round(scalar_from_par(rpar, ('azimuth_lines', 'nlines'))))
 range_spacing = scalar_from_par(rpar, ('range_pixel_spacing',))
 near_range = scalar_from_par(rpar, ('near_range_slc', 'near_range'))
@@ -276,9 +281,22 @@ azimuth_looks = PUBLIC_AZIMUTH_LOOKS
 looks_source = 'derived_from_current_geometry'
 mean_azimuth = rslc_length / 2.0 - 0.5
 
+if (
+    np.any(col < 0)
+    or np.any(col >= rslc_width)
+    or np.any(row < 0)
+    or np.any(row >= rslc_length)
+):
+    raise RuntimeError(
+        'SCLA point-coordinate contract failed: '
+        'strict_points.plist must contain zero-based raw RSLC '
+        'range/azimuth coordinates'
+    )
+
+
 def geometry_factors(row_chunk, col_chunk):
-    range_original = col_chunk * range_looks + (range_looks - 1) / 2.0
-    azimuth_original = row_chunk * azimuth_looks + (azimuth_looks - 1) / 2.0
+    range_original = np.asarray(col_chunk, dtype=np.float64)
+    azimuth_original = np.asarray(row_chunk, dtype=np.float64)
     slant_range = near_range + range_original * range_spacing
     look_arg = (sar_to_earth ** 2 + slant_range ** 2 - earth_radius ** 2) / (2.0 * sar_to_earth * slant_range)
     look_arg = np.clip(look_arg, -1.0, 1.0)
@@ -317,13 +335,36 @@ b_sm_fast = cs[:, None] * C_SM[None, :] - ss[:, None] * N_SM[None, :] + (dts * c
 bperp_parity_max = float(np.max(np.abs(b_sm_fast - b_sm_explicit)))
 bperp_parity_rms = float(np.sqrt(np.mean((b_sm_fast - b_sm_explicit) ** 2)))
 if bperp_parity_max > BPERP_PARITY_TOL_M:
-    raise RuntimeError(f'accelerated Bperp algebra does not match explicit 108->37 reconstruction: {bperp_parity_max}')
+    raise RuntimeError(f'accelerated Bperp algebra does not match explicit IFG->nonmaster reconstruction: {bperp_parity_max}')
 date_obj = [datetime.strptime(d, '%Y%m%d') for d in dates]
 day = np.asarray([(x - date_obj[0]).days for x in date_obj], dtype=np.float64)
 day_seq = np.diff(day[img0])
-if mean_dbperp.size != 36 or day_seq.size != 36:
-    raise RuntimeError('final-pass sequential design size mismatch')
-A2 = np.column_stack((np.ones(36, dtype=np.float64), mean_dbperp, day_seq))
+
+nseq = PUBLIC_NSLAVE - 1
+
+if nseq < 2:
+    raise RuntimeError(
+        f'insufficient non-master acquisitions for SCLA final pass: '
+        f'{PUBLIC_NSLAVE}'
+    )
+
+if (
+    mean_dbperp.size != nseq
+    or
+    day_seq.size != nseq
+):
+    raise RuntimeError(
+        'final-pass sequential design size mismatch: '
+        f'mean_dbperp={mean_dbperp.size}, '
+        f'day_seq={day_seq.size}, '
+        f'expected={nseq}'
+    )
+
+A2 = np.column_stack((
+    np.ones(nseq, dtype=np.float64),
+    mean_dbperp,
+    day_seq,
+))
 rank_A2 = int(np.linalg.matrix_rank(A2))
 if rank_A2 != 3:
     raise RuntimeError(f'StaMPS final-pass design rank deficient: {rank_A2}/3')
@@ -405,7 +446,7 @@ print('=' * 92)
 print('5B4 STAMPS FINAL PASS K_ps_uw')
 print('=' * 92)
 print('points                         :', f'{npoint:,}')
-print('images / IFGs                  :', f'{nimage} / 108')
+print('images / IFGs                  :', f'{nimage} / {PUBLIC_NIFG}')
 print('geometric master               :', f'{GEOMETRIC_MASTER} (0b={master0}, 1b={master1})')
 print('non-master images              :', img0.size)
 print('Gbase rank                     :', f'{rank_Gbase} / {img0.size}')
@@ -434,8 +475,8 @@ if diag_corr is not None:
 if global_baseline_maxdiff is not None:
     print('mean-point/global Bperp max d :', f'{global_baseline_maxdiff:.6f} m')
 print()
-print('108-column Bperp persisted     :', False)
-print('37-column Bperp persisted      :', False)
+print(f'{PUBLIC_NIFG}-column Bperp persisted     :', False)
+print(f'{PUBLIC_NSLAVE}-column Bperp persisted      :', False)
 print('production phase modified      :', False)
 print('K output                       :', K_OUT)
 print('coefficients                   :', COEFF_OUT)
