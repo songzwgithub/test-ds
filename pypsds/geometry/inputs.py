@@ -578,8 +578,9 @@ def resolve_geometry_inputs(
     # generated lon/lat follow geometry_par, e.g. 4x1.
     # They are NOT expanded into a full-scene 1x1 raster.
     #
-    # Single-look PS/DS rows/cols are sampled later by
-    # GAMMA data2pt.
+    # Single-look PS/DS rows/cols are sampled later by the
+    # full-resolution bilinear radar-geometry sampler. Nearest-cell data2pt
+    # sampling must not be used for multilooked geometry rasters.
     # --------------------------------------------------------
     if (
         longitude_raster is None

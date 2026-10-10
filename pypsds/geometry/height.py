@@ -90,9 +90,11 @@ def sample_height_m(
     data2pt: str | Path | None = None,
 ):
     """
-    Sample validated GAMMA terrain height at strict radar points.
+    Sample terrain height at strict single-look radar points.
 
-    Disk output follows data2pt (>f4); returned values are float64.
+    A multilooked height raster is evaluated continuously with the same
+    bilinear raw-to-MLI mapping used for longitude/latitude. The diagnostic
+    point file remains big-endian float32; returned values are float64.
     """
 
     return sample_radar_raster_at_points(

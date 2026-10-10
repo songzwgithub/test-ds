@@ -671,8 +671,24 @@ def compute_incidence_rad(
     if not np.all(
         valid
     ):
+        bad = np.flatnonzero(~valid)
+        sample = bad[:10]
+        sample_values = [
+            (
+                int(i),
+                float(lon[i]),
+                float(lat[i]),
+                float(hgt[i]),
+                int(row[i]),
+                float(incidence[i]),
+            )
+            for i in sample
+        ]
         raise IncidenceError(
-            "Computed incidence contains invalid values."
+            "Computed incidence contains invalid values: "
+            f"bad={bad.size}/{n}; "
+            "samples=(index,lon,lat,hgt,row,incidence_rad)="
+            f"{sample_values}"
         )
 
 

@@ -11,11 +11,10 @@ from pypsds.config import load_config
 from pypsds.project import resolve_project_paths
 from pypsds.geometry import (
     compute_incidence_rad,
-    geolocate_points,
-    resolve_data2pt,
     resolve_geometry_inputs,
     resolve_height_raster,
-    sample_height_m,
+    resolve_radar_look_factors,
+    sample_full_resolution_point_geometry,
 )
 
 
@@ -25,6 +24,94 @@ def sha256(path: Path) -> str:
         for block in iter(lambda: f.read(1024 * 1024), b""):
             h.update(block)
     return h.hexdigest()
+
+
+def geographic_collapse_qa(
+    longitude_deg,
+    latitude_deg,
+    *,
+    max_sample: int = 1_000_000,
+) -> dict:
+    """
+    Detect accidental many-to-one geolocation of full-resolution points.
+
+    The historical 10x2-nearest-cell bug produced a collapse ratio near 11
+    for Ningbo. A deterministic sample keeps this QA cheap on 20M+ points.
+    """
+
+    lon = np.asarray(
+        longitude_deg,
+        dtype=np.float64,
+    )
+    lat = np.asarray(
+        latitude_deg,
+        dtype=np.float64,
+    )
+
+    if lon.shape != lat.shape or lon.ndim != 1:
+        raise RuntimeError(
+            "longitude/latitude shape mismatch."
+        )
+
+    n = int(lon.size)
+
+    if n == 0:
+        return {
+            "sample_points": 0,
+            "unique_lonlat": 0,
+            "collapse_ratio": 1.0,
+        }
+
+    ns = min(
+        n,
+        int(max_sample),
+    )
+
+    if ns == n:
+        idx = np.arange(
+            n,
+            dtype=np.int64,
+        )
+    else:
+        idx = np.linspace(
+            0,
+            n - 1,
+            ns,
+            dtype=np.int64,
+        )
+
+    pairs = np.empty(
+        ns,
+        dtype=[
+            ("lon", "<f8"),
+            ("lat", "<f8"),
+        ],
+    )
+    pairs["lon"] = lon[idx]
+    pairs["lat"] = lat[idx]
+
+    unique = int(
+        np.unique(
+            pairs
+        ).size
+    )
+
+    ratio = (
+        float(ns) / float(unique)
+        if unique
+        else float("inf")
+    )
+
+    return {
+        "sample_points":
+            int(ns),
+
+        "unique_lonlat":
+            unique,
+
+        "collapse_ratio":
+            ratio,
+    }
 
 
 def main() -> None:
@@ -51,7 +138,13 @@ def main() -> None:
         paths,
         geometry,
     )
-    data2pt = resolve_data2pt()
+
+    range_looks, azimuth_looks = (
+        resolve_radar_look_factors(
+            geometry.geometry_par,
+            geometry.reference_rslc_par,
+        )
+    )
 
     proc = (
         Path(paths.output_dir)
@@ -138,27 +231,15 @@ def main() -> None:
         exist_ok=True,
     )
 
-    geo = geolocate_points(
+    geo = sample_full_resolution_point_geometry(
         rows=rows,
         cols=cols,
         geometry=geometry,
-        work_dir=out,
-        data2pt=data2pt,
-    )
-
-    height_gamma = (
-        out
-        / "height_m.gamma_pt"
-    )
-
-    height = sample_height_m(
         height_raster=height_raster,
-        geometry=geometry,
-        point_list=geo.point_list,
-        output_path=height_gamma,
-        expected_count=n,
-        data2pt=data2pt,
+        work_dir=out,
     )
+
+    height = geo.height_m
 
     incidence = compute_incidence_rad(
         longitude_deg=geo.longitude_deg,
@@ -170,8 +251,36 @@ def main() -> None:
     )
 
     if not geo.valid_mask.all():
+        bad = int(
+            np.count_nonzero(
+                ~geo.valid_mask
+            )
+        )
         raise RuntimeError(
-            "Invalid longitude/latitude in strict domain."
+            "Invalid longitude/latitude in strict domain: "
+            f"{bad:,}/{n:,}."
+        )
+
+    collapse = geographic_collapse_qa(
+        geo.longitude_deg,
+        geo.latitude_deg,
+    )
+
+    # Historical Ningbo failure:
+    # 24,537,124 raw points -> 2,224,092 lon/lat positions,
+    # sampled collapse ratio ~11 for a 10x2 MLI geometry.
+    if (
+        collapse["sample_points"] >= 10_000
+        and
+        collapse["collapse_ratio"] > 1.05
+    ):
+        raise RuntimeError(
+            "Full-resolution geometry collapse detected: "
+            f"sample={collapse['sample_points']:,}, "
+            f"unique={collapse['unique_lonlat']:,}, "
+            f"ratio={collapse['collapse_ratio']:.6f}. "
+            "Point geometry must not be quantized to the "
+            "multilook raster lattice."
         )
 
     np.save(
@@ -184,11 +293,17 @@ def main() -> None:
     )
     np.save(
         out / "longitude_deg.npy",
-        geo.longitude_deg,
+        np.asarray(
+            geo.longitude_deg,
+            dtype=np.float64,
+        ),
     )
     np.save(
         out / "latitude_deg.npy",
-        geo.latitude_deg,
+        np.asarray(
+            geo.latitude_deg,
+            dtype=np.float64,
+        ),
     )
     np.save(
         out / "height_m.npy",
@@ -204,13 +319,45 @@ def main() -> None:
 
     manifest = {
         "contract":
-            "pyPSDS-GAMMA-v1.1-point-geometry",
+            "pyPSDS-GAMMA-v1.2-fullres-point-geometry",
 
         "point_count":
             n,
 
         "reference_date":
             geometry.reference_date,
+
+        "sampling": {
+            "method":
+                "masked_joint_bilinear_multilook_raster_at_singlelook_points",
+
+            "range_looks":
+                int(range_looks),
+
+            "azimuth_looks":
+                int(azimuth_looks),
+
+            "continuous_coordinate":
+                "u=raw_col/range_looks; "
+                "v=raw_row/azimuth_looks",
+
+            "edge_policy":
+                "linear_extrapolation_from_last_two_mli_centers",
+
+            "downstream_geometry_dtype":
+                "float64",
+
+            "validity_policy":
+                "joint lon/lat/height validity; invalid MLI nodes excluded "
+                "and valid bilinear weights renormalized",
+
+            "support_counts": {
+                "full": int(geo.full_support_count),
+                "partial_2_or_3": int(geo.partial_support_count),
+                "single": int(geo.single_support_count),
+                "zero": int(geo.zero_support_count),
+            },
+        },
 
         "inputs": {
             "strict_point_ids":
@@ -246,11 +393,6 @@ def main() -> None:
                 str(
                     height_raster
                 ),
-
-            "data2pt":
-                str(
-                    data2pt
-                ),
         },
 
         "outputs": {
@@ -273,56 +415,98 @@ def main() -> None:
                 "incidence_rad.npy",
         },
 
+        "quality": {
+            "invalid_lonlat_points":
+                int(
+                    np.count_nonzero(
+                        ~geo.valid_mask
+                    )
+                ),
+
+            "geographic_collapse_sample_points":
+                int(
+                    collapse[
+                        "sample_points"
+                    ]
+                ),
+
+            "geographic_collapse_unique_lonlat":
+                int(
+                    collapse[
+                        "unique_lonlat"
+                    ]
+                ),
+
+            "geographic_collapse_ratio":
+                float(
+                    collapse[
+                        "collapse_ratio"
+                    ]
+                ),
+        },
+
         "statistics": {
+            "radar_row_min":
+                int(rows.min()) if n else None,
+
+            "radar_row_max":
+                int(rows.max()) if n else None,
+
+            "radar_col_min":
+                int(cols.min()) if n else None,
+
+            "radar_col_max":
+                int(cols.max()) if n else None,
+
             "longitude_min":
                 float(
                     geo.longitude_deg.min()
-                ),
+                ) if n else None,
 
             "longitude_max":
                 float(
                     geo.longitude_deg.max()
-                ),
+                ) if n else None,
 
             "latitude_min":
                 float(
                     geo.latitude_deg.min()
-                ),
+                ) if n else None,
 
             "latitude_max":
                 float(
                     geo.latitude_deg.max()
-                ),
+                ) if n else None,
 
             "height_min_m":
                 float(
                     height.min()
-                ),
+                ) if n else None,
 
             "height_median_m":
                 float(
                     np.median(height)
-                ),
+                ) if n else None,
 
             "height_max_m":
                 float(
                     height.max()
-                ),
+                ) if n else None,
 
             "incidence_min_rad":
                 float(
                     incidence.min()
-                ),
+                ) if n else None,
 
             "incidence_median_rad":
                 float(
                     np.median(incidence)
-                ),
+                ) if n else None,
 
             "incidence_max_rad":
                 float(
                     incidence.max()
-                ),
+                ) if n else None,
         },
     }
 
@@ -342,12 +526,38 @@ def main() -> None:
     print("=" * 88)
     print("POINT GEOMETRY")
     print("=" * 88)
-    print("strict points  :", n)
-    print("reference date :", geometry.reference_date)
-    print("height raster  :", height_raster)
-    print("data2pt        :", data2pt)
-    print("output         :", out)
-    print("manifest       :", manifest_path)
+    print("strict points       :", f"{n:,}")
+    print("reference date      :", geometry.reference_date)
+    print(
+        "geometry looks      :",
+        f"{range_looks} range x {azimuth_looks} azimuth",
+    )
+    print(
+        "sampling            :",
+        "bilinear MLI -> single-look points",
+    )
+    print(
+        "geometry support    :",
+        f"full={geo.full_support_count:,} "
+        f"partial={geo.partial_support_count:,} "
+        f"single={geo.single_support_count:,} "
+        f"zero={geo.zero_support_count:,}",
+    )
+    print(
+        "collapse sample     :",
+        f"{collapse['sample_points']:,}",
+    )
+    print(
+        "collapse unique     :",
+        f"{collapse['unique_lonlat']:,}",
+    )
+    print(
+        "collapse ratio      :",
+        f"{collapse['collapse_ratio']:.6f}",
+    )
+    print("height raster       :", height_raster)
+    print("output              :", out)
+    print("manifest            :", manifest_path)
     print("=" * 88)
     print("POINT GEOMETRY STATUS: PASS")
     print("=" * 88)

@@ -20,10 +20,13 @@ from .inputs import (
 from .geolocation import (
     GeolocationError,
     PointGeolocation,
+    FullResolutionPointGeometry,
     build_ipta_point_list,
     geolocate_points,
     read_gamma_point_values,
     resolve_data2pt,
+    resolve_radar_look_factors,
+    sample_full_resolution_point_geometry,
     sample_radar_raster_at_points,
 )
 
@@ -56,6 +59,7 @@ __all__ = [
     "GeometryInputs",
     "GeolocationError",
     "PointGeolocation",
+    "FullResolutionPointGeometry",
     "IncidenceError",
     "RowOrbitGeometry",
     "WGS84_A",
@@ -71,5 +75,7 @@ __all__ = [
     "read_gamma_point_values",
     "resolve_data2pt",
     "resolve_geometry_inputs",
+    "resolve_radar_look_factors",
+    "sample_full_resolution_point_geometry",
     "sample_radar_raster_at_points",
 ]

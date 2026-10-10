@@ -169,6 +169,75 @@ def build_representative_grid(
     }
 
 
+
+def build_complex_mean_node_phase(
+    phase,
+    rows,
+    cols,
+    grid,
+    *,
+    row_spacing_m,
+    col_spacing_m,
+    grid_size_m,
+    out_path,
+):
+    """StaMPS-style cell phase: angle(sum(exp(1j * point_phase)))."""
+    npoint, ndate = phase.shape
+    nnode = int(grid["rep_ids"].size)
+    ncol = int(grid["shape"][1])
+    flat = np.asarray(grid["node_grid"], dtype=np.int32).reshape(-1)
+
+    rr = np.asarray(rows, dtype=np.int64)
+    cc = np.asarray(cols, dtype=np.int64)
+    gr = np.floor(
+        (rr - grid["row0"]) * float(row_spacing_m) / float(grid_size_m)
+    ).astype(np.int64)
+    gc = np.floor(
+        (cc - grid["col0"]) * float(col_spacing_m) / float(grid_size_m)
+    ).astype(np.int64)
+
+    nid = flat[gr * ncol + gc]
+    if np.any(nid < 0):
+        raise RuntimeError("Point mapped to empty coarse cell")
+
+    order = np.argsort(nid, kind="stable").astype(np.int32, copy=False)
+    ns = nid[order]
+    starts = np.r_[0, np.flatnonzero(np.diff(ns)) + 1].astype(np.int64)
+    groups = ns[starts]
+
+    if starts.size != nnode or not np.array_equal(
+        groups, np.arange(nnode, dtype=groups.dtype)
+    ):
+        raise RuntimeError("Invalid coarse-node grouping")
+
+    support = np.diff(np.r_[starts, npoint]).astype(np.int32)
+    atomic_save(out_path.parent / "coarse_phase_support_count.npy", support)
+
+    out = np.lib.format.open_memmap(
+        out_path,
+        mode="w+",
+        dtype=np.float32,
+        shape=(nnode, ndate),
+    )
+
+    for t in range(ndate):
+        ph = np.asarray(phase[order, t], dtype=np.float32)
+        if not np.all(np.isfinite(ph)):
+            raise RuntimeError(f"Non-finite phase at acquisition {t}")
+
+        z = np.exp(
+            np.complex64(1j) * ph.astype(np.complex64, copy=False)
+        )
+        out[:, t] = np.angle(
+            np.add.reduceat(z, starts)
+        ).astype(np.float32)
+
+        if t == 0 or (t + 1) % 5 == 0 or t + 1 == ndate:
+            print(f"[COARSE COMPLEX MEAN] {t + 1}/{ndate}", flush=True)
+
+    out.flush()
+    return support
+
 def build_dense_support(
     node_grid: np.ndarray,
     node_quality: np.ndarray,
@@ -721,6 +790,13 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
 
     prefix = "unwrap.stamps3d_snaphu"
     grid_size_m = float(cfg_get(cfg, f"{prefix}.grid_size_m", 200.0))
+    coarse_phase_mode = str(
+        cfg_get(cfg, f"{prefix}.coarse_phase_mode", "representative")
+    ).strip().lower()
+    if coarse_phase_mode not in {"representative", "complex_mean"}:
+        raise RuntimeError(
+            "coarse_phase_mode must be representative or complex_mean"
+        )
     gap_scale_m = float(cfg_get(cfg, f"{prefix}.gap_scale_m", 600.0))
     min_corr = float(cfg_get(cfg, f"{prefix}.min_corr", 0.03))
     strict_mismatch = float(
@@ -758,6 +834,7 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
     print("points / acquisitions / IFGs:", f"{npoint:,}", "/", ndate, "/", nifg)
     print("radar spacing [m]          :", row_spacing_m, "/", col_spacing_m)
     print("coarse grid size [m]       :", grid_size_m)
+    print("coarse phase mode          :", coarse_phase_mode)
     print("SNAPHU workers             :", snaphu_workers)
     print("temporal sync BLAS threads :", blas_threads)
     print("force                      :", force)
@@ -798,19 +875,45 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
     atomic_save(outdir / "coarse_support_distance_m.npy", distance_m)
     atomic_save(outdir / "coarse_correlation.npy", corr)
 
-    node_phase_path = outdir / "representative_phase_rad.npy"
-    node_phase = np.lib.format.open_memmap(
-        node_phase_path,
-        mode="w+",
-        dtype=np.float32,
-        shape=(nnode, ndate),
-    )
-    node_copy_batch = max(4096, min(point_batch, 262144))
-    for b0 in range(0, nnode, node_copy_batch):
-        b1 = min(nnode, b0 + node_copy_batch)
-        node_phase[b0:b1, :] = np.asarray(phase[rep_ids[b0:b1], :], dtype=np.float32)
-    node_phase.flush()
-    del node_phase
+    if coarse_phase_mode == "representative":
+        node_phase_path = outdir / "representative_phase_rad.npy"
+        node_phase = np.lib.format.open_memmap(
+            node_phase_path,
+            mode="w+",
+            dtype=np.float32,
+            shape=(nnode, ndate),
+        )
+        node_copy_batch = max(4096, min(point_batch, 262144))
+        for b0 in range(0, nnode, node_copy_batch):
+            b1 = min(nnode, b0 + node_copy_batch)
+            node_phase[b0:b1, :] = np.asarray(
+                phase[rep_ids[b0:b1], :], dtype=np.float32
+            )
+        node_phase.flush()
+        del node_phase
+    else:
+        node_phase_path = outdir / "coarse_complex_mean_phase_rad.npy"
+        support = build_complex_mean_node_phase(
+            phase,
+            rows,
+            cols,
+            grid,
+            row_spacing_m=row_spacing_m,
+            col_spacing_m=col_spacing_m,
+            grid_size_m=grid_size_m,
+            out_path=node_phase_path,
+        )
+        print(
+            "coarse support p50/90/95/99:",
+            np.percentile(support, [50, 90, 95, 99]).tolist(),
+        )
+        print(
+            "coarse support min/max      :",
+            int(support.min()),
+            "/",
+            int(support.max()),
+        )
+
     node_phase = np.load(node_phase_path, mmap_mode="r")
 
     corr_path = outdir / "snaphu_correlation.f32"
@@ -827,6 +930,7 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
         "edges": [[int(i), int(j)] for i, j in edges],
         "npoint": int(npoint),
         "grid_size_m": grid_size_m,
+        "coarse_phase_mode": coarse_phase_mode,
         "row_spacing_m": row_spacing_m,
         "col_spacing_m": col_spacing_m,
         "gap_scale_m": gap_scale_m,

@@ -209,3 +209,44 @@ def test_principal_wrap_cycles_are_removed_before_temporal_sync(tmp_path):
 
     assert np.all(result["node_valid"])
     assert np.all(result["final_edge_bad_fraction"] == 0)
+
+
+
+def test_complex_mean_node_phase_uses_all_points(tmp_path):
+    from pypsds.stamps3d_backend import build_complex_mean_node_phase
+
+    rows = np.asarray([0, 1, 50], dtype=np.int32)
+    cols = np.asarray([0, 1, 50], dtype=np.int32)
+    typ = np.asarray([2, 1, 2], dtype=np.uint8)
+    tc = np.asarray([0.99, 0.95, 0.90], dtype=np.float32)
+    phase = np.asarray(
+        [[0.0, 0.0], [np.pi / 2, np.pi / 2], [-0.5, 0.5]],
+        dtype=np.float32,
+    )
+
+    g = build_representative_grid(
+        rows,
+        cols,
+        typ,
+        tc,
+        row_spacing_m=10.0,
+        col_spacing_m=10.0,
+        grid_size_m=100.0,
+    )
+
+    out = tmp_path / "mean.npy"
+    support = build_complex_mean_node_phase(
+        phase,
+        rows,
+        cols,
+        g,
+        row_spacing_m=10.0,
+        col_spacing_m=10.0,
+        grid_size_m=100.0,
+        out_path=out,
+    )
+
+    got = np.load(out)
+    np.testing.assert_allclose(got[0], [np.pi / 4, np.pi / 4], atol=1e-6)
+    np.testing.assert_allclose(got[1], phase[2], atol=1e-6)
+    assert support.tolist() == [2, 1]
