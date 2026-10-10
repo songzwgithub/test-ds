@@ -235,6 +235,11 @@ unwrap:
   # Keep legacy as package default until a real-data A/B validation is accepted.
   backend: legacy_hierarchical
   stamps3d_snaphu:
+    # Default preserves the previous production cost model.
+    # statistical: StaMPS-inspired temporal edge statistics + SNAPHU COSTINFILE.
+    spatial_cost_mode: correlation
+    spatial_time_window_days: 730.0
+    spatial_edge_batch: 4096
     # Metric coarse support, analogous to StaMPS grid-based unwrap support.
     grid_size_m: 200.0
     # Coarse empty-cell support receives exponentially reduced correlation.

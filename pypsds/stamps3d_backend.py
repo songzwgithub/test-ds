@@ -219,6 +219,12 @@ def build_complex_mean_node_phase(
         dtype=np.float32,
         shape=(nnode, ndate),
     )
+    resultant = np.lib.format.open_memmap(
+        out_path.parent / "coarse_phase_resultant_length.npy",
+        mode="w+",
+        dtype=np.float32,
+        shape=(nnode, ndate),
+    )
 
     for t in range(ndate):
         ph = np.asarray(phase[order, t], dtype=np.float32)
@@ -228,14 +234,17 @@ def build_complex_mean_node_phase(
         z = np.exp(
             np.complex64(1j) * ph.astype(np.complex64, copy=False)
         )
-        out[:, t] = np.angle(
-            np.add.reduceat(z, starts)
+        cell_sum = np.add.reduceat(z, starts)
+        out[:, t] = np.angle(cell_sum).astype(np.float32)
+        resultant[:, t] = (
+            np.abs(cell_sum) / support.astype(np.float32)
         ).astype(np.float32)
 
         if t == 0 or (t + 1) % 5 == 0 or t + 1 == ndate:
             print(f"[COARSE COMPLEX MEAN] {t + 1}/{ndate}", flush=True)
 
     out.flush()
+    resultant.flush()
     return support
 
 def build_dense_support(
@@ -301,6 +310,8 @@ def _run_one_snaphu(
     snaphu_exe: str,
     force: bool,
     keep_scratch: bool,
+    spatial_cost_mode: str = "correlation",
+    spatial_statistics: dict | None = None,
 ):
     i, j = edge
     tag = f"pair{pair_index + 1:03d}_{dates[i]}_{dates[j]}"
@@ -332,13 +343,35 @@ def _run_one_snaphu(
         np.asarray(nearest_node, dtype=np.int32).reshape(-1)
     ].reshape(nearest_node.shape)
 
-    in_path = pair_dir / "wrapped.f32"
     out_path = pair_dir / "unwrapped.f32"
     conf_path = pair_dir / "snaphu.conf"
     log_path = pair_dir / "snaphu.log"
+    cost_path = pair_dir / "snaphu.costinfile"
 
-    np.ascontiguousarray(dense, dtype=np.float32).tofile(in_path)
-    conf_path.write_text(_snaphu_config_text(corr_path), encoding="utf-8")
+    if spatial_cost_mode == "statistical":
+        if spatial_statistics is None:
+            raise RuntimeError("Missing statistical spatial-edge cost model")
+        from pypsds.unwrap.statistical_cost import (
+            write_cost_file, snaphu_config_text,
+        )
+        in_path = pair_dir / "wrapped.cpx"
+        z = np.exp(np.complex64(1j) * dense.astype(np.complex64))
+        np.ascontiguousarray(z, dtype=np.complex64).tofile(in_path)
+        write_cost_file(
+            cost_path, pair_index,
+            spatial_statistics["row_eid"],
+            spatial_statistics["row_sign"],
+            spatial_statistics["col_eid"],
+            spatial_statistics["col_sign"],
+            spatial_statistics["edge_sigsq"],
+            spatial_statistics["edge_offset"],
+            spatial_statistics["edge_bad"],
+        )
+        conf_path.write_text(snaphu_config_text(), encoding="utf-8")
+    else:
+        in_path = pair_dir / "wrapped.f32"
+        np.ascontiguousarray(dense, dtype=np.float32).tofile(in_path)
+        conf_path.write_text(_snaphu_config_text(corr_path), encoding="utf-8")
 
     cmd = [
         snaphu_exe,
@@ -397,7 +430,7 @@ def _run_one_snaphu(
     atomic_save(cycle_path, k64.astype(np.int16))
 
     if not keep_scratch:
-        for p in (in_path, out_path, conf_path):
+        for p in (in_path, out_path, conf_path, cost_path):
             try:
                 p.unlink()
             except FileNotFoundError:
@@ -790,6 +823,17 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
 
     prefix = "unwrap.stamps3d_snaphu"
     grid_size_m = float(cfg_get(cfg, f"{prefix}.grid_size_m", 200.0))
+    spatial_cost_mode = str(
+        cfg_get(cfg, f"{prefix}.spatial_cost_mode", "correlation")
+    ).strip().lower()
+    if spatial_cost_mode not in {"correlation", "statistical"}:
+        raise RuntimeError("spatial_cost_mode must be correlation or statistical")
+    spatial_time_window_days = float(
+        cfg_get(cfg, f"{prefix}.spatial_time_window_days", 730.0)
+    )
+    spatial_edge_batch = int(cfg_get(cfg, f"{prefix}.spatial_edge_batch", 4096))
+    if spatial_time_window_days <= 0 or spatial_edge_batch <= 0:
+        raise RuntimeError("Invalid statistical spatial-edge model parameters")
     coarse_phase_mode = str(
         cfg_get(cfg, f"{prefix}.coarse_phase_mode", "representative")
     ).strip().lower()
@@ -835,6 +879,7 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
     print("radar spacing [m]          :", row_spacing_m, "/", col_spacing_m)
     print("coarse grid size [m]       :", grid_size_m)
     print("coarse phase mode          :", coarse_phase_mode)
+    print("spatial cost mode          :", spatial_cost_mode)
     print("SNAPHU workers             :", snaphu_workers)
     print("temporal sync BLAS threads :", blas_threads)
     print("force                      :", force)
@@ -853,6 +898,47 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
     occupied = grid["occupied"]
     node_grid = grid["node_grid"]
     nnode = int(rep_ids.size)
+
+    signature_payload = {
+        "algorithm": "pypsds-stamps3d-snaphu-v1",
+        "dates": [str(x) for x in stack.dates],
+        "edges": [[int(i), int(j)] for i, j in edges],
+        "npoint": int(npoint),
+        "grid_size_m": grid_size_m,
+        "coarse_phase_mode": coarse_phase_mode,
+        **({
+            "spatial_cost_mode": "statistical",
+            "spatial_time_window_days": spatial_time_window_days,
+            "spatial_cost_model": "stamps_3dquick_temporal_edges",
+        } if spatial_cost_mode == "statistical" else {}),
+        "row_spacing_m": row_spacing_m,
+        "col_spacing_m": col_spacing_m,
+        "gap_scale_m": gap_scale_m,
+        "min_corr": min_corr,
+        "reference_idx": reference_idx,
+        "representative_sha256": hashlib.sha256(
+            np.asarray(rep_ids, dtype=np.int64).tobytes()
+        ).hexdigest(),
+    }
+    signature = _config_signature(signature_payload)
+
+    cycles_dir = outdir / "pair_cycles"
+    pair_root = outdir / "snaphu_work"
+    cycles_dir.mkdir(parents=True, exist_ok=True)
+    pair_root.mkdir(parents=True, exist_ok=True)
+
+    old_sig_path = outdir / "backend_signature.json"
+    if old_sig_path.is_file() and not force:
+        try:
+            old_sig = json.loads(old_sig_path.read_text()).get("signature")
+        except Exception:
+            old_sig = None
+        if old_sig != signature:
+            raise RuntimeError(
+                "Existing stamps3d pair-cycle cache has a different signature; "
+                "rerun unwrap with --force"
+            )
+    atomic_json(old_sig_path, {"signature": signature, "payload": signature_payload})
 
     rep_type = np.asarray(point_type[rep_ids], dtype=np.uint8)
     rep_tc = np.asarray(tc[rep_ids], dtype=np.float32)
@@ -915,6 +1001,13 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
         )
 
     node_phase = np.load(node_phase_path, mmap_mode="r")
+    low_resultant_fraction = None
+    if coarse_phase_mode == "complex_mean":
+        r = np.load(
+            outdir / "coarse_phase_resultant_length.npy", mmap_mode="r"
+        )
+        low_resultant_fraction = float(np.count_nonzero(r < 0.1) / r.size)
+        print("low circular-resultant fraction <0.1:", low_resultant_fraction)
 
     corr_path = outdir / "snaphu_correlation.f32"
     np.ascontiguousarray(corr, dtype=np.float32).tofile(corr_path)
@@ -924,41 +1017,46 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
     print("occupied coarse nodes      :", f"{nnode:,}")
     print("grid build seconds         :", f"{grid_seconds:.2f}")
 
-    signature_payload = {
-        "algorithm": "pypsds-stamps3d-snaphu-v1",
-        "dates": [str(x) for x in stack.dates],
-        "edges": [[int(i), int(j)] for i, j in edges],
-        "npoint": int(npoint),
-        "grid_size_m": grid_size_m,
-        "coarse_phase_mode": coarse_phase_mode,
-        "row_spacing_m": row_spacing_m,
-        "col_spacing_m": col_spacing_m,
-        "gap_scale_m": gap_scale_m,
-        "min_corr": min_corr,
-        "reference_idx": reference_idx,
-        "representative_sha256": hashlib.sha256(
-            np.asarray(rep_ids, dtype=np.int64).tobytes()
-        ).hexdigest(),
-    }
-    signature = _config_signature(signature_payload)
-
-    cycles_dir = outdir / "pair_cycles"
-    pair_root = outdir / "snaphu_work"
-    cycles_dir.mkdir(parents=True, exist_ok=True)
-    pair_root.mkdir(parents=True, exist_ok=True)
-
-    old_sig_path = outdir / "backend_signature.json"
-    if old_sig_path.is_file() and not force:
-        try:
-            old_sig = json.loads(old_sig_path.read_text()).get("signature")
-        except Exception:
-            old_sig = None
-        if old_sig != signature:
-            raise RuntimeError(
-                "Existing stamps3d pair-cycle cache has a different signature; "
-                "rerun unwrap with --force"
-            )
-    atomic_json(old_sig_path, {"signature": signature, "payload": signature_payload})
+    # Statistical-cost construction follows StaMPS uw_interp / 3D_QUICK and
+    # uw_stat_costs. The production cache signature above keeps the two cost
+    # models distinct and prevents reuse of stale IFG integer branches.
+    spatial_statistics = None
+    if spatial_cost_mode == "statistical":
+        from pypsds.unwrap.statistical_cost import (
+            build_stamps_interp_edges, build_temporal_operator,
+            build_statistical_edge_model,
+        )
+        interp = build_stamps_interp_edges(nearest_node)
+        _, temporal_operator, _ = build_temporal_operator(
+            edges, stack.dates, time_win_days=spatial_time_window_days,
+        )
+        stat_dir = outdir / "spatial_statistics"
+        stat_dir.mkdir(parents=True, exist_ok=True)
+        sig_path, off_path, bad_path = build_statistical_edge_model(
+            node_phase=node_phase,
+            temporal_edges=edges,
+            temporal_operator=temporal_operator,
+            spatial_edge_nodes=interp["edge_nodes"],
+            edge_occurrences=interp["edge_occurrences"],
+            outdir=stat_dir,
+            edge_batch=spatial_edge_batch,
+            force=force,
+        )
+        edge_bad = np.load(bad_path, mmap_mode="r")
+        print(
+            "spatial edges / bad-stats :",
+            len(edge_bad), "/", int(np.count_nonzero(edge_bad)),
+            flush=True,
+        )
+        spatial_statistics = {
+            "row_eid": interp["row_eid"],
+            "row_sign": interp["row_sign"],
+            "col_eid": interp["col_eid"],
+            "col_sign": interp["col_sign"],
+            "edge_sigsq": np.load(sig_path, mmap_mode="r"),
+            "edge_offset": np.load(off_path, mmap_mode="r"),
+            "edge_bad": edge_bad,
+        }
 
     ts = time.perf_counter()
     results = []
@@ -978,6 +1076,8 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
                 snaphu_exe=snaphu_exe,
                 force=force,
                 keep_scratch=keep_scratch,
+                spatial_cost_mode=spatial_cost_mode,
+                spatial_statistics=spatial_statistics,
             ): e
             for e, edge in enumerate(edges)
         }
@@ -1087,6 +1187,15 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
     integer_cycles = np.load(sync["cycles_path"], mmap_mode="r")
     node_valid = sync["node_valid"]
     sync_seconds = time.perf_counter() - ti
+
+    from pypsds.unwrap.statistical_cost import summarize_spatial_integer_gradients
+    spatial_integer_qa = summarize_spatial_integer_gradients(
+        node_grid, integer_cycles, stack.dates,
+    )
+    print(
+        "integer branch edge-gradient P50/90/95/99 [cycles/yr]:",
+        spatial_integer_qa["integer_gradient_cycles_per_year_p50_p90_p95_p99"],
+    )
 
     node_unw_path = outdir / "coarse_acquisition_phase_unwrapped_rad.npy"
     node_unw = np.lib.format.open_memmap(
@@ -1225,6 +1334,8 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
         "ifgs": int(nifg),
         "coarse_grid_shape": [int(x) for x in grid["shape"]],
         "coarse_grid_size_m": float(grid_size_m),
+        "spatial_cost_mode": spatial_cost_mode,
+        "spatial_time_window_days": spatial_time_window_days,
         "coarse_nodes": int(nnode),
         "coarse_node_fraction_valid": float(np.mean(node_valid)),
         "strict_points": int(strict_ids.size),
