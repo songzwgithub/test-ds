@@ -238,6 +238,10 @@ unwrap:
     # Default preserves the previous production cost model.
     # statistical: StaMPS-inspired temporal edge statistics + SNAPHU COSTINFILE.
     spatial_cost_mode: correlation
+    # nearest: compatibility baseline, including nearest-fill edges.
+    # occupied: only real occupied 4-neighbor edges; fails early
+    # when disconnected components lack a common integer reference.
+    spatial_edge_domain: nearest
     spatial_time_window_days: 730.0
     spatial_edge_batch: 4096
     # Metric coarse support, analogous to StaMPS grid-based unwrap support.

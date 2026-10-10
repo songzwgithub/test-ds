@@ -187,8 +187,11 @@ def write_cost_file(
     rowcost[..., 2] = MAXSHORT
     colcost[..., 2] = MAXSHORT
 
-    row_stats = row_eid < 0
-    col_stats = col_eid < 0
+    # -1 means the same observed node: zero-difference cost is valid.
+    # -2 means an unobserved edge (e.g. across an empty cell):
+    # it MUST NOT receive a synthetic statistical constraint.
+    row_stats = row_eid == -1
+    col_stats = col_eid == -1
     r_non = row_eid >= 0
     c_non = col_eid >= 0
 

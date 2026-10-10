@@ -828,6 +828,11 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
     ).strip().lower()
     if spatial_cost_mode not in {"correlation", "statistical"}:
         raise RuntimeError("spatial_cost_mode must be correlation or statistical")
+    spatial_edge_domain = str(
+        cfg_get(cfg, f"{prefix}.spatial_edge_domain", "nearest")
+    ).strip().lower()
+    if spatial_edge_domain not in {"nearest", "occupied"}:
+        raise RuntimeError("spatial_edge_domain must be nearest or occupied")
     spatial_time_window_days = float(
         cfg_get(cfg, f"{prefix}.spatial_time_window_days", 730.0)
     )
@@ -880,6 +885,7 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
     print("coarse grid size [m]       :", grid_size_m)
     print("coarse phase mode          :", coarse_phase_mode)
     print("spatial cost mode          :", spatial_cost_mode)
+    print("spatial edge domain        :", spatial_edge_domain)
     print("SNAPHU workers             :", snaphu_workers)
     print("temporal sync BLAS threads :", blas_threads)
     print("force                      :", force)
@@ -910,6 +916,7 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
             "spatial_cost_mode": "statistical",
             "spatial_time_window_days": spatial_time_window_days,
             "spatial_cost_model": "stamps_3dquick_temporal_edges",
+            "spatial_edge_domain": spatial_edge_domain,
         } if spatial_cost_mode == "statistical" else {}),
         "row_spacing_m": row_spacing_m,
         "col_spacing_m": col_spacing_m,
@@ -1026,7 +1033,31 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
             build_stamps_interp_edges, build_temporal_operator,
             build_statistical_edge_model,
         )
-        interp = build_stamps_interp_edges(nearest_node)
+        from pypsds.unwrap.spatial_topology import (
+            build_occupied_spatial_edges, summarize_spatial_topology,
+        )
+        topology = summarize_spatial_topology(node_grid, nearest_node)
+        atomic_json(outdir / "spatial_topology.json", topology)
+        print(
+            "occupied components / dominant fraction:",
+            topology["component_count"],
+            f"{topology['dominant_node_fraction']:.3%}",
+            flush=True,
+        )
+        if spatial_edge_domain == "occupied":
+            if topology["component_count"] != 1:
+                raise RuntimeError(
+                    "Occupied-grid spatial topology has "
+                    f"{topology['component_count']} disconnected components; "
+                    "their relative integer gauges are not identifiable "
+                    "from local occupied edges alone. Preflight report: "
+                    f"{outdir / 'spatial_topology.json'}. "
+                    "A validated cross-component registration stage "
+                    "is required before whole-scene production."
+                )
+            interp = build_occupied_spatial_edges(node_grid)
+        else:
+            interp = build_stamps_interp_edges(nearest_node)
         _, temporal_operator, _ = build_temporal_operator(
             edges, stack.dates, time_win_days=spatial_time_window_days,
         )
@@ -1335,6 +1366,7 @@ def run_stamps3d_backend(*, cfg, config_path: Path, paths, stack, force: bool = 
         "coarse_grid_shape": [int(x) for x in grid["shape"]],
         "coarse_grid_size_m": float(grid_size_m),
         "spatial_cost_mode": spatial_cost_mode,
+        "spatial_edge_domain": spatial_edge_domain,
         "spatial_time_window_days": spatial_time_window_days,
         "coarse_nodes": int(nnode),
         "coarse_node_fraction_valid": float(np.mean(node_valid)),
