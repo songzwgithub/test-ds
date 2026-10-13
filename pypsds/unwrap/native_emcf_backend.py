@@ -159,12 +159,144 @@ def build_triangle_islands(rows, cols, sy, sx, max_edge_m=40.0,
     return islands,report
 
 
+def build_hole_face_cycles(island: Island):
+    """Extract missing bounded planar faces using a half-edge rotation system.
+
+    Original Delaunay triangles are consistently counterclockwise. All links
+    are existing observed-point links. Each boundary half-edge, reversed from
+    its incident triangle, has a missing face on its LEFT. Follow these missing
+    half-edges by taking the first CLOCKWISE neighbor of the reverse ray among
+    ALL real graph links. Unlike a vertex->vertex successor dictionary, this
+    handles a boundary that touches itself at an original vertex (a pinch).
+
+    A face boundary may be a closed walk with repeated *vertices*, but never
+    repeat a directed boundary half-edge. We add only positive-area bounded
+    faces; the unique negative-area outer face remains the MCF grounding face.
+    No synthetic spatial edges or interpolated points are introduced.
+    """
+    if not island.manifold:
+        raise ValueError('Non-manifold triangle edges: hole-face augmentation forbidden')
+    tri=np.asarray(island.triangles,dtype=np.int32)
+    xy=np.asarray(island.points_xy_m,dtype=np.float64)
+    n=island.npoints
+    edges=np.asarray(island.links,dtype=np.int32)
+    if len(xy)!=n or edges.ndim!=2 or edges.shape[1]!=2:
+        raise ValueError('Invalid point coordinates or graph edges')
+    # Verify precisely that the input graph is the 1-skeleton of the triangles.
+    incident={}
+    for a,b,c in tri:
+        for u,v in ((int(a),int(b)),(int(b),int(c)),(int(c),int(a))):
+            key=(min(u,v),max(u,v))
+            incident.setdefault(key,[]).append((u,v))
+    linkset={tuple(map(int,pair)) for pair in edges}
+    if set(incident)!=linkset:
+        raise ValueError('Spatial graph links differ from triangle edges')
+    if any(len(inc) not in (1,2) or
+           (len(inc)==2 and inc[0] != (inc[1][1],inc[1][0]))
+           for inc in incident.values()):
+        raise ValueError('Invalid triangle orientations or edge incidences')
+    # Only boundary arcs have a missing face. Orient those with missing face left.
+    missing={(inc[0][1],inc[0][0]) for inc in incident.values() if len(inc)==1}
+    if len(missing)!=len(island.boundary):
+        raise ValueError('Boundary incidence mismatch')
+    # Geometry-derived clockwise rotation order for each existing graph vertex.
+    nbrs=[[] for _ in range(n)]
+    for u,v in edges:
+        u=int(u);v=int(v)
+        nbrs[u].append(v);nbrs[v].append(u)
+    clockwise_next={}
+    for v, neigh in enumerate(nbrs):
+        if not neigh:
+            continue
+        dd=xy[np.asarray(neigh)]-xy[v]
+        angles=np.arctan2(dd[:,1],dd[:,0])
+        order=np.argsort(angles,kind='mergesort')
+        sorted_angles=angles[order]
+        if len(order)>1 and (np.any(np.diff(sorted_angles)<1e-12) or
+                             sorted_angles[0]+2*np.pi-sorted_angles[-1]<1e-12):
+            raise ValueError('Ambiguous collinear incident edges in planar embedding')
+        ordered=np.asarray(neigh,dtype=np.int32)[order]
+        for k,u in enumerate(ordered):
+            clockwise_next[(v,int(u))]=int(ordered[k-1])
+    # A directed missing-face edge u->v is followed by v->w, where the
+    # ray v->w is immediately clockwise of the reverse ray v->u.
+    successor={}
+    for u,v in missing:
+        w=clockwise_next[(v,u)]
+        next_halfedge=(v,w)
+        if next_halfedge not in missing:
+            raise ValueError('Boundary halfedge traversal escapes missing faces')
+        successor[(u,v)]=next_halfedge
+    if len(set(successor.values()))!=len(successor):
+        raise ValueError('Boundary halfedge rotation is not a permutation')
+    unseen=set(missing)
+    walks=[]
+    while unseen:
+        first=min(unseen)
+        curr=first
+        walk=[]
+        while curr in unseen:
+            unseen.remove(curr)
+            walk.append(curr[0])
+            curr=successor[curr]
+        if curr!=first or len(walk)<3:
+            raise ValueError('Invalid closed boundary face walk')
+        walks.append(np.asarray(walk,dtype=np.int32))
+    if sum(map(len,walks))!=len(missing):
+        raise ValueError('Not every boundary halfedge belongs to exactly one face')
+    # On the LEFT of each reversed boundary edge is a missing face. The unique
+    # unbounded face walks clockwise (negative area); genuine holes CCW.
+    signed_areas=[]
+    for walk in walks:
+        pos=xy[walk]
+        area=0.5*np.sum(pos[:,0]*np.roll(pos[:,1],-1)-
+                        np.roll(pos[:,0],-1)*pos[:,1],dtype=np.float64)
+        if not np.isfinite(area) or abs(area)<1e-6:
+            raise ValueError('Degenerate boundary face walk')
+        signed_areas.append(float(area))
+    exterior=[k for k,area in enumerate(signed_areas) if area<0]
+    hole_ids=[k for k,area in enumerate(signed_areas) if area>0]
+    expected_holes=island.nlinks-island.npoints+1-island.ntriangles
+    if len(exterior)!=1 or len(hole_ids)!=expected_holes:
+        raise ValueError('Face count/orientation incompatible with planar embedding: '
+                         f'exterior={len(exterior)}, bounded={len(hole_ids)}, '
+                         f'Euler bounded faces={expected_holes}')
+    hole_faces=[walks[k] for k in hole_ids]
+    # Validate that each real link borders 1 or 2 positively oriented bounded
+    # faces and never 3. Repeated pinch vertices are fine, repeated edges not.
+    directions={key:[] for key in incident}
+    for face in [*tri,*hole_faces]:
+        for u,v in zip(face,np.roll(face,-1)):
+            key=(min(int(u),int(v)),max(int(u),int(v)))
+            if key not in directions:
+                raise RuntimeError('A bounded face introduced a synthetic link')
+            directions[key].append(1 if u<v else -1)
+    if any(len(signs) not in (1,2) or
+           (len(signs)==2 and sum(signs)!=0)
+           for signs in directions.values()):
+        raise ValueError('Invalid bounded-face incidence or orientation')
+    if sum(len(signs)==1 for signs in directions.values())!=len(walks[exterior[0]]):
+        raise ValueError('External grounding-face incidence failed')
+    return hole_faces
+
+
 class NativePlanarGraph:
-    """Spurt-compatible graph: triangle-derived edges, oriented cycles and boundary."""
-    def __init__(self, island: Island):
-        if not island.solver_eligible:
-            raise ValueError('Spurt MCF requires a connected, manifold, hole-free triangulated island')
-        self._island = island
+    """Spurt-compatible planar graph, optionally with true void-face cycles.
+
+    On hole-enabled graphs, `cycles` is a list of variable-length polygon faces.
+    Only ORMCFSolver.compute_residues_from_gradients is supported, as used by
+    Spurt EMCFSolver's spatial step. Do not call compute_residues(point_phase):
+    its implementation assumes constant-length triangular cycles.
+    """
+    def __init__(self, island: Island, *, enable_hole_faces=False):
+        if not island.manifold:
+            raise ValueError('Non-manifold triangulated island')
+        if not island.solver_eligible and not enable_hole_faces:
+            raise ValueError('Island has holes; use --enable-hole-faces only after audit')
+        self._island=island
+        self.hole_faces=build_hole_face_cycles(island) if enable_hole_faces else []
+        self._cycles=([*island.triangles,*self.hole_faces]
+                      if self.hole_faces else island.triangles)
 
     @property
     def npoints(self):
@@ -176,7 +308,7 @@ class NativePlanarGraph:
 
     @property
     def cycles(self):
-        return self._island.triangles
+        return self._cycles
 
     @property
     def links(self):
@@ -211,15 +343,18 @@ def temporal_triangle_closure(phase, links, triangles):
 
 
 def run_spurt_emcf(point_wrapped_phase, island, *, workers=2, links_per_batch=1024,
-                   time_cost_type='distance', spatial_cost_type='distance'):
+                   time_cost_type='distance', spatial_cost_type='distance',
+                   enable_hole_faces=False):
     """Call actual Spurt EMCF; return aligned, per-IFG phase (NOT point time series).
 
     Standard Hop3Graph time network; no ad-hoc time branch integration.
     """
-    if not island.solver_eligible:
-        raise ValueError('Unfit spatial topology: disconnected/hole/nonmanifold island')
+    if not island.manifold or (not island.solver_eligible and not enable_hole_faces):
+        raise ValueError('Unfit spatial topology: use hole-face option only for manifold holes')
     if workers<1 or links_per_batch<1:
         raise ValueError('workers and links_per_batch must be positive')
+    if enable_hole_faces and spatial_cost_type != 'distance':
+        raise ValueError('Hole-aware dual faces are supported only with spatial distance costs')
     ph=np.asarray(point_wrapped_phase, dtype=np.float32)
     if ph.shape[0]!=island.npoints or ph.ndim!=2 or ph.shape[1]<4:
         raise ValueError('Point phase must be [island point,>=4 acquisitions]')
@@ -234,9 +369,10 @@ def run_spurt_emcf(point_wrapped_phase, island, *, workers=2, links_per_batch=10
         from spurt.workflows.emcf._settings import SolverSettings
     except ImportError as exc:
         raise RuntimeError('Spurt is not installed. Install in a separate environment; see docs.') from exc
-    spatial=ORMCFSolver(NativePlanarGraph(island))
+    space_graph=NativePlanarGraph(island,enable_hole_faces=enable_hole_faces)
+    spatial=ORMCFSolver(space_graph)
     temporal=ORMCFSolver(Hop3Graph(ph.shape[1]))
-    settings=SolverSettings(t_worker_count=workers,s_worker_count=1,
+    settings=SolverSettings(t_worker_count=workers,s_worker_count=int(__import__('os').environ.get('NINGBO_EMCF_SPATIAL_WORKERS', '3')),
                             links_per_batch=links_per_batch,
                             t_cost_type=time_cost_type,s_cost_type=spatial_cost_type,
                             num_parallel_tiles=1)
@@ -265,7 +401,8 @@ def run_spurt_emcf(point_wrapped_phase, island, *, workers=2, links_per_batch=10
             'wrapped_phase_parity_max_rad':parity,
             'anchor_offset_rad':anchor_offset.astype(np.float32),
             'temporal_closure_relative':loop_relative,
-            'temporal_closure_with_wrapped_anchor':loop_with_anchor}
+            'temporal_closure_with_wrapped_anchor':loop_with_anchor,
+            'spatial_hole_faces':len(space_graph.hole_faces)}
 
 
 def _outdir_is_safe(output, stackdir):
@@ -298,6 +435,8 @@ def main(argv=None):
     ap.add_argument('--links-per-batch',type=int,default=1024)
     ap.add_argument('--output-dir',type=Path,required=True)
     ap.add_argument('--audit-only',action='store_true')
+    ap.add_argument('--enable-hole-faces',action='store_true',
+                    help='Explicitly admit validated real hole boundary faces; no filling')
     args=ap.parse_args(argv)
     if args.island_rank<0 or args.max_run_points<3:
         ap.error('Island rank must be >=0 and maximum run points >=3')
@@ -337,12 +476,13 @@ def main(argv=None):
     if args.island_rank>=len(islands):
         raise RuntimeError(f'Island rank {args.island_rank} unavailable; only {len(islands)}')
     island=islands[args.island_rank]
-    if not island.solver_eligible:
-        raise RuntimeError('Chosen triangle island has unsupported holes/manifold. Never create synthetic edges; choose another island.')
+    if not island.manifold or (not island.solver_eligible and not args.enable_hole_faces):
+        raise RuntimeError('Chosen island has holes or non-manifold geometry. For validated manifold holes, explicitly pass --enable-hole-faces.')
     if island.npoints>args.max_run_points:
         raise RuntimeError(f'Island contains {island.npoints:,} points > max-run-points={args.max_run_points:,}; explicitly raise limit after topology audit')
     emcf=run_spurt_emcf(phase[island.original_indices],island,
-        workers=args.workers,links_per_batch=args.links_per_batch)
+        workers=args.workers,links_per_batch=args.links_per_batch,
+        enable_hole_faces=args.enable_hole_faces)
     import spurt
     info.update({'spurt_version':str(getattr(spurt,'__version__','unknown')),
         'temporal_closure_relative':emcf['temporal_closure_relative'],
@@ -352,6 +492,9 @@ def main(argv=None):
         'boundary_edges':len(island.boundary),'max_edge_m':island.max_edge_m,
         'manifold':island.manifold,'simply_connected':island.simply_connected},
         'time_ifgs':int(len(emcf['time_ifg_pairs_0based'])),
+        'hole_face_count':int(emcf['spatial_hole_faces']),
+        'spatial_cycle_count':int(island.ntriangles+emcf['spatial_hole_faces']),
+        'hole_faces_input_only_original_boundary_edges':True,
         'wrapped_phase_parity_max_rad':float(emcf['wrapped_phase_parity_max_rad']),
         'output_is_acquisition_timeseries':False,
         'not_validated':'No independent measurement, no cross-island gauge, no temporal inversion.',
